@@ -1,10 +1,10 @@
  
 "use client"
 import React, { useEffect, useState } from 'react'
-import LocationList from './LocationList'
 import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
+import LocationList from './locationList';
 
 
 const Location = () => {

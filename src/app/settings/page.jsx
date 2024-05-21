@@ -1,8 +1,11 @@
 import React from 'react'
+import Location from './location/page'
 
 const Settings = () => {
   return (
-    <div>Settings</div>
+    <div>
+      <Location />
+    </div>
   )
 }
 

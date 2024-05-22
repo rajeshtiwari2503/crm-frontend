@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import InputIcon from '@mui/icons-material/Input';
 import { useForm } from 'react-hook-form';
@@ -15,9 +15,16 @@ const SignUp = () => {
 
   const [loading, setLoading] = useState(false)
 
-  const regData = ["ADMIN", "BRAND", "USER", "SERVICE CENTER", "DEALER"]
+  const regData = [ "BRAND", "USER", "SERVICE CENTER", "DEALER"]
 
   const [selectedItem, setSelectedItem] = useState("USER");
+
+
+   
+  useEffect(() => {
+    generateCaptcha();
+  }, []);
+
 
   const handleClick = (item) => {
     setSelectedItem(item);
@@ -31,9 +38,10 @@ const SignUp = () => {
       setLoading(true)
       let response = await http_request.post(`/${regApi}`, reqdata)
       const { data } = response
+      localStorage.setItem('userInfo', JSON.stringify(reqdata));
       ToastMessage(data)
       setLoading(false)
-      router.push("/sign_in")
+      router.push("/verification")
     }
     catch (err) {
       setLoading(false)
@@ -45,7 +53,25 @@ const SignUp = () => {
   }
 
   const onSubmit = (data) => {
-    Regiter(data)
+    if (parseInt(data.captcha) !== captchaAnswer) {
+      alert('CAPTCHA answer is incorrect');
+      generateCaptcha();
+    } else {
+      Regiter(data)
+    }
+  
+  };
+
+  const [captchaQuestion, setCaptchaQuestion] = useState('');
+  const [captchaAnswer, setCaptchaAnswer] = useState(0);
+
+
+
+  const generateCaptcha = () => {
+    const num1 = Math.floor(Math.random() * 10) + 1;
+    const num2 = Math.floor(Math.random() * 10) + 1;
+    setCaptchaQuestion(`${num1} + ${num2} = ?`);
+    setCaptchaAnswer(num1 + num2);
   };
 
 
@@ -73,13 +99,13 @@ const SignUp = () => {
                 <div className="flex justify-center">
                   <InputIcon fontSize="large" />
                 </div>
-                <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                <h2 className="mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                   Create a new {selectedItem?.toLocaleLowerCase()} account
                 </h2>
               </div>
-              <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="grid md:grid-cols-2 gap-6" onSubmit={handleSubmit(onSubmit)}>
-                  <div>
+              <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
+                <form className="grid md:grid-cols-2 gap-3" onSubmit={handleSubmit(onSubmit)}>
+                  <div className='md:col-span-2'>
                     <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
                       Name
                     </label>
@@ -164,7 +190,52 @@ const SignUp = () => {
                     </div>
                     {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
                   </div>
-
+               
+                  <div className='md:col-span-2'>
+                    <label htmlFor="address" className="block text-sm font-medium leading-6 text-gray-900">
+                     Address
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="address"
+                        name="address"
+                        type="text"
+                        autoComplete="name"
+                        required
+                        {...register('address', { required: 'address is required', minLength: { value: 10, message: 'address must be at least 10 characters long' } })}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.address ? 'border-red-500' : ''}`}
+                      />
+                    </div>
+                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+                  </div>
+                  <div className=" ">
+                    <label className="flex items-start">
+                      <input
+                        type="checkbox"
+                        name="acceptTerms"
+                        {...register('acceptTerms', { required: 'You must accept the terms and conditions' })}
+                        className={`h-4 w-4 text-indigo-600 focus:ring-indigo-600 border-gray-300 rounded ${errors.acceptTerms ? 'border-red-500' : ''}`}
+                      />
+                      <span className="ml-2 text-sm text-gray-900">I accept the terms and conditions</span>
+                    </label>
+                    {errors.acceptTerms && <p className="text-red-500 text-sm mt-1">{errors.acceptTerms.message}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="captcha" className="block text-sm font-medium leading-6 text-gray-900">
+                      {captchaQuestion}
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="captcha"
+                        name="captcha"
+                        type="text"
+                        required
+                        {...register('captcha', { required: 'CAPTCHA is required' })}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.captcha ? 'border-red-500' : ''}`}
+                      />
+                    </div>
+                    {errors.captcha && <p className="text-red-500 text-sm mt-1">{errors.captcha.message}</p>}
+                  </div>
                 </form>
                 <div className='mt-5'>
                   <button
@@ -176,7 +247,7 @@ const SignUp = () => {
                     Sign up
                   </button>
                 </div>
-                <p className="mt-10 text-center text-sm text-gray-500">
+                <p className="mt-3 text-center text-sm text-gray-500">
                   Already registered?{' '}
                   <Link href="/sign_in" className="cursor-pointer font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
                     Sign In

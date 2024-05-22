@@ -27,11 +27,13 @@ const OtpVerification = () => {
         try {
             setLoading(true)
 
-            let response = await http_request.post('/otpVerification', {data1:{...reqdata,email:value}})
+            let response = await http_request.post('/otpVerification', {...reqdata,email:value} )
             const { data } = response
             ToastMessage(data)
             setLoading(false)
-            router.push("/forget_Password")
+            if(data?.status===true){
+                router.push("/forget_Password")
+            }
         }
         catch (err) {
             setLoading(false)
@@ -45,14 +47,27 @@ const OtpVerification = () => {
     const onSubmit = (data) => {
         SendOtp(data)
     };
-
+    const ResendOtp = async () => {
+        try {
+          setLoading(true);
+          let response = await http_request.post('/sendOtp', { email: value });
+          const { data } = response;
+          ToastMessage(data);
+          setLoading(false);
+        } catch (err) {
+          setLoading(false);
+          ToastMessage(err?.response?.data);
+          console.log(err);
+        }
+      };
+    
 
     return (
         <div>
             <Toaster />
-            <div className="flex justify-center mt-16">
+            <div className="h-screen flex justify-center items-center ">
                 <div style={{ minWidth: "30%" }}>
-                    <div className="shadow-lg flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+                    <div className="shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
                         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                             <div className="flex justify-center">
                                 <InputIcon fontSize="large" />
@@ -61,7 +76,7 @@ const OtpVerification = () => {
                                OTP Verification
                             </h2>
                         </div>
-                        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+                        <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -71,7 +86,7 @@ const OtpVerification = () => {
                                     <input
                                         id="otp"
                                         name="otp"
-                                        type="otp"
+                                        type="number"
                                         autoComplete="otp"
                                         required
                                         {...register('otp', { required: 'Otp is required', minLength: { value: 6, message: 'Otp must be at least 6 characters long' } })}
@@ -80,12 +95,20 @@ const OtpVerification = () => {
                                 </div>
                                 {errors.otp && <p className="text-red-500 text-sm mt-1">{errors.otp.message}</p>}
                             </div>
-                            <div className='mt-5'>
+                            <div className='flex justify-center  mt-10'>
+                                <button
+                                    type="button"
+                                    disabled={loading}
+                                    onClick={ResendOtp}
+                                    className="flex w-[70%] justify-center rounded-md bg-indigo-600 px-3  py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                >
+                                    Resend OTP
+                                </button>
                                 <button
                                     type="button"
                                     disabled={loading}
                                     onClick={handleSubmit(onSubmit)}
-                                    className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    className="ms-5  flex w-full justify-center rounded-md bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                 >
                                     Verify OTP
                                 </button>

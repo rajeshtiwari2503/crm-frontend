@@ -52,10 +52,10 @@ const ForgetPassword = () => {
 
     return (
         <>
-            {/* <Toaster /> */}
-            <div className="flex justify-center mt-4">
+            <Toaster />
+            <div className="h-screen flex justify-center items-center  ">
                 <div style={{ minWidth: "30%" }}>
-                    <div className="shadow-lg flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8">
+                    <div className="shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8">
                         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                             <div className="flex justify-center">
                                 <InputIcon fontSize="large" />

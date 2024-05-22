@@ -12,17 +12,33 @@ export default function SignIn() {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm();  
+  const [userData, setUserData] = useState("");
+  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
   const Login = async (reqdata) => {
     try {
       setLoading(true);
       let response = await http_request.post('/login', reqdata);
-      const { data } = response;
-      localStorage.setItem('user', JSON.stringify(data));
-      ToastMessage(data);
-      setLoading(false);
-      router.push("/dashboard");
+      let { data } = response;
+      setUserData(data)
+      console.log(data);
+      if(data.verification==="VERIFIED"){
+        localStorage.setItem('user', JSON.stringify(data));
+        ToastMessage(data);
+        setLoading(false);
+        router.push("/dashboard");
+      }
+      else{
+        // console.log(data);
+        let response = await http_request.post('/mobileEmailSendOtp', {contact: "9565892772"});
+        const { data } = response;
+        if(data?.status===true){
+          ToastMessage(data);
+          setLoading(false);
+          router.push("/verification");
+        }
+      }
+    
     } catch (err) {
       setLoading(false);
       ToastMessage(err?.response?.data);
@@ -31,7 +47,7 @@ export default function SignIn() {
   };
 
   const onSubmit = (data) => {
-    
+
     Login(data);
   };
 
@@ -50,9 +66,26 @@ export default function SignIn() {
       console.log(err);
     }
   };
+ const sendVerificationOtp = async (reqdata) => {
 
+        try {
+            setLoading(true);
+            let response = await http_request.post('/mobileEmailSendOtp', {contact: userData?.contact});
+            const { data } = response;
+            if(data?.status===true){
+              ToastMessage(data);
+              setLoading(false);
+              router.push("/verification");
+            }
+           
+        } catch (err) {
+            setLoading(false);
+            ToastMessage(err?.response?.data);
+            console.log(err);
+        }
+    };
   const handleForgetPassword = () => {
-    const data ={ status: false, msg: "Please Enter Email!" }
+    const data = { status: false, msg: "Please Enter Email!" }
     const email = getValues('email');
     if (!email) {
       ToastMessage(data)
@@ -64,9 +97,9 @@ export default function SignIn() {
   return (
     <>
       <Toaster />
-      <div className="h-screen flex justify-center ">
-        <div style={{ minWidth: "30%" }} className="my-12">
-          <div className="shadow-lg flex bg-[#ade1e4] rounded-xl min-h-full flex-1 flex-col justify-center px-6  lg:px-8">
+      <div className="h-screen flex justify-center items-center  ">
+        <div style={{ minWidth: "30%" }} className="">
+          <div className="shadow-lg flex bg-[#ade1e4] rounded-xl min-h-full flex-1 flex-col justify-center px-6 py-5 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
               <div className="flex justify-center ">
                 <InputIcon fontSize="large" />

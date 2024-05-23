@@ -18,7 +18,6 @@ const CategoryList = (props) => {
 
   const router = useRouter()
 
-  const data = props?.data;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
@@ -28,6 +27,17 @@ const CategoryList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
 
+  const [userData, setUserData] = React.useState(null);
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setUserData(JSON.parse(storedValue));
+    }
+  }, []);
+ 
+  const filterData=props?.data?.filter((item)=>item?.userId===userData?.user?._id)
+  const data = filterData;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -91,27 +101,27 @@ const CategoryList = (props) => {
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'id'}
+                      active={sortBy === '_id'}
                       direction={sortDirection}
-                      onClick={() => handleSort('id')}
+                      onClick={() => handleSort('_id')}
                     >
                       ID
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'name'}
+                      active={sortBy === 'categoryName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('name')}
+                      onClick={() => handleSort('categoryName')}
                     >
-                      Category
+                      Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'email'}
+                      active={sortBy === 'status'}
                       direction={sortDirection}
-                      onClick={() => handleSort('email')}
+                      onClick={() => handleSort('status')}
                     >
                       Status
                     </TableSortLabel>
@@ -135,7 +145,7 @@ const CategoryList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.status}</TableCell>
-                    <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view"  >
                         <Visibility color='primary' />
@@ -179,7 +189,7 @@ const CategoryList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddCategory existingCategory={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddCategory userData={userData} existingCategory={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

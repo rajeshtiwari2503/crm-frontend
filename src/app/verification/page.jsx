@@ -24,7 +24,7 @@ const OtpVerification = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+    const { register, handleSubmit, formState: { errors }, getValues,reset } = useForm();
 
     
     const verifyOtp = async (reqdata) => {
@@ -33,7 +33,7 @@ const OtpVerification = () => {
             const reqdata1=emailVerify?{ ...reqdata,email: value?.email }:{...reqdata, contact: value?.contact }
             let response = await http_request.post('/mobileEmailOtpVerification', reqdata1)
             const { data } = response
-            console.log(data);
+            // console.log(data);
             if(data?.status &&emailVerify===true ){
                 ToastMessage(data)
             setLoading(false)
@@ -42,6 +42,8 @@ const OtpVerification = () => {
             }
             ToastMessage(data)
             setLoading(false)
+            reset()
+            ResendOtp()
             setEmailVerify(true)
         }
         catch (err) {

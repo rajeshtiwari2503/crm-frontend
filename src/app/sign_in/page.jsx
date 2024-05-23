@@ -2,7 +2,7 @@
 import Link from "next/link";
 import InputIcon from '@mui/icons-material/Input';
 import { useForm } from 'react-hook-form';
-import http_request from '../../../http-request'
+import http_request from '../../../http-request';
 import { ToastMessage } from '../components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 import { useState } from "react";
@@ -12,7 +12,10 @@ export default function SignIn() {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
   const [userData, setUserData] = useState("");
+
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
   const Login = async (reqdata) => {
@@ -20,25 +23,26 @@ export default function SignIn() {
       setLoading(true);
       let response = await http_request.post('/login', reqdata);
       let { data } = response;
-      setUserData(data)
-      console.log(data);
-      if(data.verification==="VERIFIED"){
-        localStorage.setItem('user', JSON.stringify(data));
+      setUserData(data?.user);
+      if (data?.user?.verification === "VERIFIED") {
+        if (rememberMe) {
+          localStorage.setItem('user', JSON.stringify(data));
+        } else {
+          sessionStorage.setItem('user', JSON.stringify(data));
+        }
         ToastMessage(data);
         setLoading(false);
         router.push("/dashboard");
-      }
-      else{
-        // console.log(data);
-        let response = await http_request.post('/mobileEmailSendOtp', {contact: "9565892772"});
+      } else {
+        // console.log(userData);
+        let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
         const { data } = response;
-        if(data?.status===true){
+        if (data?.status === true) {
           ToastMessage(data);
           setLoading(false);
           router.push("/verification");
         }
       }
-    
     } catch (err) {
       setLoading(false);
       ToastMessage(err?.response?.data);
@@ -47,7 +51,6 @@ export default function SignIn() {
   };
 
   const onSubmit = (data) => {
-
     Login(data);
   };
 
@@ -66,29 +69,12 @@ export default function SignIn() {
       console.log(err);
     }
   };
- const sendVerificationOtp = async (reqdata) => {
 
-        try {
-            setLoading(true);
-            let response = await http_request.post('/mobileEmailSendOtp', {contact: userData?.contact});
-            const { data } = response;
-            if(data?.status===true){
-              ToastMessage(data);
-              setLoading(false);
-              router.push("/verification");
-            }
-           
-        } catch (err) {
-            setLoading(false);
-            ToastMessage(err?.response?.data);
-            console.log(err);
-        }
-    };
   const handleForgetPassword = () => {
-    const data = { status: false, msg: "Please Enter Email!" }
+    const data = { status: false, msg: "Please Enter Email!" };
     const email = getValues('email');
     if (!email) {
-      ToastMessage(data)
+      ToastMessage(data);
       return;
     }
     SendOtp(email);
@@ -97,11 +83,11 @@ export default function SignIn() {
   return (
     <>
       <Toaster />
-      <div className="h-screen flex justify-center items-center  ">
-        <div style={{ minWidth: "30%" }} className="">
+      <div className="h-screen flex justify-center items-center">
+        <div style={{ minWidth: "30%" }}>
           <div className="shadow-lg flex bg-[#ade1e4] rounded-xl min-h-full flex-1 flex-col justify-center px-6 py-5 lg:px-8">
-            <div className="sm:mx-auto sm:w-full sm:max-w-sm ">
-              <div className="flex justify-center ">
+            <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+              <div className="flex justify-center">
                 <InputIcon fontSize="large" />
               </div>
               <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -150,6 +136,19 @@ export default function SignIn() {
                     />
                   </div>
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+                </div>
+                <div className="flex items-center">
+                  <input
+                    id="rememberMe"
+                    name="rememberMe"
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                    className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
+                    Remember me
+                  </label>
                 </div>
                 <div>
                   <button

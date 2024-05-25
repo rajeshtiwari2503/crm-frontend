@@ -384,15 +384,15 @@ function Sidenav(props) {
           </ListItemButton>
         </ListItem>
       
-         <ListItem disablePadding className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+         {/* <ListItem disablePadding className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
           <ListItemButton>
             <ListItemIcon className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
               <AccountBalance />
             </ListItemIcon>
             <ListItemText primary={"Account"} />
-            {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+            {isCollapse ? <ExpandLess /> : <ExpandMore />}
           </ListItemButton>
-        </ListItem>
+        </ListItem> */}
       
         {value?.user?.role === "ADMIN" ||value?.user?.role === "USER"
         ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
@@ -492,13 +492,15 @@ function Sidenav(props) {
             </div>
             <div className='flex items-center'>
               <div className='font-semibold'>{value?.user?.name}</div>
-              <div className='ms-5 w-[40px] h-[40px] bg-blue-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
+              <div  onClick={( ) => {
+               router.push(`/profile/${value?.user?._id}`)}} 
+              className='ms-5 w-[30px] h-[30px] bg-blue-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                 <Person />
               </div>
-              <div className='ms-5 w-[40px] h-[40px] bg-yellow-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
+              <div className='ms-5 w-[30px] h-[30px] bg-yellow-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                 <NotificationsNone />
               </div>
-              <div onClick={handleLogout} className='ms-5 w-[40px] h-[40px] bg-red-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
+              <div onClick={handleLogout} className='ms-5 w-[30px] h-[30px] bg-red-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                 <Logout fontSize='large' className='pl-2' />
               </div>
             </div>

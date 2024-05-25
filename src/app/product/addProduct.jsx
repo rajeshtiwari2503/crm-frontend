@@ -6,7 +6,18 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 
 const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categories }) => {
     const [loading, setLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm();
+    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); 
+   
+    const calculateWarrantyStatus = (purchaseDate, selectedYear) => {
+        if (!purchaseDate) return false;
+        const currentDate = new Date();
+        const purchaseDateObj = new Date(purchaseDate);
+        const warrantyPeriod = 365; // Assume 1-year warranty period
+        const warrantyEndDate = new Date(purchaseDateObj.setDate(purchaseDateObj.getDate() + warrantyPeriod));
+        const yearDifference = selectedYear - purchaseDateObj.getFullYear();
+        return yearDifference >= 0 && currentDate <= warrantyEndDate;
+    };
 
     const AddProductData = async (data) => {
         try {
@@ -18,8 +29,10 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                 categoryName: selectedCategory?.categoryName,
                 categoryId: selectedCategory?._id,
                 userId: userData?.user?._id,
-                userName: userData?.user?.name
+                userName: userData?.user?.name,
+                warrantyStatus: calculateWarrantyStatus(data.purchaseDate, selectedYear),
             };
+
             const endpoint = existingProduct?._id ? `/editProduct/${existingProduct._id}` : '/addProduct';
             const response = existingProduct?._id ? await http_request.patch(endpoint, reqData) : await http_request.post(endpoint, reqData);
             const { data: responseData } = response;
@@ -44,14 +57,12 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
             setValue('productName', existingProduct.productName);
             setValue('productDescription', existingProduct.productDescription);
             setValue('categoryId', existingProduct.categoryId);
-            setValue('warrantyStatus', existingProduct.warrantyStatus);
             setValue('serialNo', existingProduct.serialNo);
             setValue('modelNo', existingProduct.modelNo);
             setValue('purchaseDate', existingProduct.purchaseDate);
             setValue('productBrand', existingProduct.productBrand);
         }
     }, [existingProduct, setValue]);
-
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -112,7 +123,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                 </div>
                 <div className=''>
                     <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
-                     Brand
+                        Brand
                     </label>
                     <div className="mt-2">
                         <input
@@ -126,18 +137,6 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                         />
                     </div>
                     {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
-                </div>
-                <div className='flex items-center'>
-                    <label htmlFor="warrantyStatus" className="block text-sm font-medium leading-6 text-gray-900">
-                        Warranty Status
-                    </label>
-                    <input
-                        id="warrantyStatus"
-                        name="warrantyStatus"
-                        type="checkbox"
-                        {...register('warrantyStatus')}
-                        className="ml-2 h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
                 </div>
                 <div className='w-[400px]'>
                     <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
@@ -169,6 +168,27 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                         />
                     </div>
                 </div>
+                <div className='w-[400px]'>
+                    <label htmlFor="selectedYear" className="block text-sm font-medium leading-6 text-gray-900">
+                        Select Year
+                    </label>
+                    <div className="mt-2">
+                        <select
+                            id="selectedYear"
+                            name="selectedYear"
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                            className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                        >
+                            {/* Generate year options dynamically */}
+                            {Array.from({ length: 10 }, (_, index) => new Date().getFullYear() + index).map((year) => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    </div>
                 <div className='w-[400px]'>
                     <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
                         Purchase Date

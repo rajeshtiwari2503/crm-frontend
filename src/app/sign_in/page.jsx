@@ -28,7 +28,7 @@ export default function SignIn() {
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(data));
         } else {
-          sessionStorage.setItem('user', JSON.stringify(data));
+          localStorage.setItem('user', JSON.stringify(data));
         }
         ToastMessage(data);
         setLoading(false);

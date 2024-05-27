@@ -1,36 +1,31 @@
 "use client"
-import React, { useEffect, useState } from 'react'
-import Sidenav from '../../components/Sidenav'
+import React, { useEffect, useState } from 'react';
+import Sidenav from '../../components/Sidenav';
 import { Close, Edit } from '@mui/icons-material';
 import EditProfile from './EditProfile';
 import http_request from '../../../../http-request';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { ReactLoader } from '@/app/components/common/Loading';
-import { useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 const Profile = () => {
-    const router = useRouter();
-    const { query } = router;
-    const [userData, setUserData] = useState(null);
+    const searchParams = useSearchParams();
+    const userId = searchParams.get('id');
+    const [users, setUsers] = useState([]);
     const [refresh, setRefresh] = useState(false);
     const [editModelOpen, setEditModalOpen] = useState(false);
 
     useEffect(() => {
-      if(userData ){
-        getUserById();
-      }
-       
+        if (userId) {
+            getUserById();
+        }
+    }, [userId, refresh]);
 
-    }, [   refresh]);
-
-    console.log(userData);
     const getUserById = async () => {
         try {
-            // console.log(data,"sdbs");
-            const response = await http_request.get(`/getUserBy/${query.id}`);
+            const response = await http_request.get(`/getAllUser`);
             const { data } = response;
-            console.log(data,"sdhghhghghtyft");
-            setUserData(data);
+            setUsers(data);
         } catch (err) {
             console.error('Failed to fetch user data:', err);
         }
@@ -39,6 +34,12 @@ const Profile = () => {
     const handleEdit = () => {
         setEditModalOpen(!editModelOpen);
     };
+
+    console.log('User ID:', userId);
+
+    const userData = userId && users?.find((item) => item?._id === userId);
+
+    console.log('User Data:', userData);
 
     return (
         <Sidenav>
@@ -62,23 +63,23 @@ const Profile = () => {
                     <div>
                         <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4">
                             <div className='text-1xl font-bold'>Created :</div>
-                            <div className='text-1xl font-bold'>{new Date(userData?.user?.createdAt).toLocaleString()}</div>
+                            <div className='text-1xl font-bold'>{new Date(userData?.createdAt).toLocaleString()}</div>
                             <div className='text-1xl font-bold'>Updated :</div>
-                            <div className='text-1xl font-bold'>{new Date(userData?.user?.updatedAt).toLocaleString()}</div>
+                            <div className='text-1xl font-bold'>{new Date(userData?.updatedAt).toLocaleString()}</div>
                             <div className='text-1xl font-semibold'>User Name :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.name}</div>
+                            <div className='text-lg font-medium'>{userData?.name}</div>
                             <div className='text-1xl font-semibold'>Email :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.email}</div>
+                            <div className='text-lg font-medium'>{userData?.email}</div>
                             <div className='text-1xl font-semibold'>Contact :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.contact}</div>
+                            <div className='text-lg font-medium'>{userData?.contact}</div>
                             <div className='text-1xl font-semibold'>Password :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.password}</div>
+                            <div className='text-lg font-medium'>{userData?.password}</div>
                             <div className='text-1xl font-semibold'>Status :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
+                            <div className='text-lg font-medium'>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
                             <div className='text-1xl font-semibold'>Accept Terms & Conditions :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.acceptTerms ? "TRUE" : "FALSE"}</div>
+                            <div className='text-lg font-medium'>{userData?.acceptTerms ? "TRUE" : "FALSE"}</div>
                             <div className='text-1xl font-semibold'>Address :</div>
-                            <div className='text-lg font-medium'>{userData?.user?.address}</div>
+                            <div className='text-lg font-medium'>{userData?.address}</div>
                         </div>
                     </div>
                 )}
@@ -98,11 +99,11 @@ const Profile = () => {
                     <Close />
                 </IconButton>
                 <DialogContent>
-                    <EditProfile editData={userData?.user} RefreshData={setRefresh} onClose={handleEdit} />
+                    <EditProfile editData={userData} RefreshData={setRefresh} onClose={handleEdit} />
                 </DialogContent>
             </Dialog>
         </Sidenav>
     );
-}
+};
 
 export default Profile;

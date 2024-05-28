@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import http_request from '../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -7,9 +7,9 @@ import Rating from 'react-rating';
 
 const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
     const [loading, setLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+    const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm();
 
-    const AddProductCategory = async (data) => {
+    const AddFeedback = async (data) => {
         try {
             setLoading(true);
             const endpoint = existingFeedback?._id ? `/editFeedback/${existingFeedback._id}` : '/addFeedback';
@@ -28,7 +28,8 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
     };
 
     const onSubmit = (data) => {
-        AddProductCategory(data);
+        AddFeedback(data);
+        console.log(data);
     };
 
     useEffect(() => {
@@ -46,7 +47,12 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
             setValue('futureServiceInterest', existingFeedback.futureServiceInterest);
         }
     }, [existingFeedback, setValue]);
+    const [ratingValue, setRatingValue] = useState({});
 
+    const handleRatingChange = (name, value) => {
+        setRatingValue({ ...ratingValue, [name]: value });
+        setValue(name, value, { shouldValidate: true });
+    };
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -65,7 +71,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                             <input
                                 type="text"
                                 value={new Date().toLocaleDateString()}
-                                readOnly
+                                // readOnly
                                 className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                             />
                         </label>
@@ -78,7 +84,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                         <input
                             type="text"
                             {...register("customerName", { required: true })}
-                            readOnly
+                            // readOnly
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                         />
                     </label>
@@ -87,7 +93,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                         <input
                             type="email"
                             {...register("emailAddress", { required: true })}
-                            readOnly
+                            // readOnly
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                         />
                     </label>
@@ -95,22 +101,30 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
 
                 <div className="flex flex-col space-y-2">
                     {['Overall Satisfaction', 'Service Quality', 'Timeliness', 'Professionalism'].map(field => (
-                        <div>
-                            <div className='flex justify-between items-center' >
-                                <label key={field} >
+                        <div key={field}>
+                            <div className='flex justify-between items-center'>
+                                <label htmlFor={field.toLowerCase().replace(/\s/g, '')}>
                                     {field}:
-
                                 </label>
-                                <Rating
-                                    {...register(field.toLowerCase().replace(/\s/g, ''), { required: true })}
-                                    emptySymbol="far fa-star text-gray-300 text-2xl"
-                                    fullSymbol="fas fa-star text-yellow-500 text-2xl"
-                                    fractions={2}
+                                <Controller
+                                    name={field.toLowerCase().replace(/\s/g, '')}
+                                    control={control}
+                                    // defaultValue={0}
+                                    rules={{ required: true }}
+                                    render={({ field: { onChange, value, ref } }) => (
+                                        <Rating
+                                            emptySymbol="far fa-star text-gray-300 text-2xl"
+                                            fullSymbol="fas fa-star text-yellow-500 text-2xl"
+                                            fractions={2}
+                                            initialRating={value}
+                                            onChange={onChange}
+                                            ref={ref}
+                                        />
+                                    )}
                                 />
                             </div>
                             {errors[field.toLowerCase().replace(/\s/g, '')] && <p className="text-red-500 text-sm">This field is required</p>}
                         </div>
-
                     ))}
                 </div>
 
@@ -132,22 +146,29 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                     </label>
                 </div>
                 <div className="flex flex-col space-y-2">
-                    {['ReqLikelihood'].map(field => (
-                        <div>
-                        <div className='flex justify-between items-center' >
-                            <label key={field} >
-                                {field}:
-
-                            </label>
-                            <Rating
-                                {...register(field.toLowerCase().replace(/\s/g, ''), { required: true })}
-                                emptySymbol="far fa-star text-gray-300 text-2xl"
-                                fullSymbol="fas fa-star text-yellow-500 text-2xl"
-                                fractions={2}
-                            />
+                    {['recommendationLikelihood'].map((field) => (
+                        <div key={field}>
+                            <div className="flex justify-between items-center">
+                                <label htmlFor={field}>Recommendation Likelihood:</label>
+                                <Controller
+                                    name={field}
+                                    control={control}
+                                    // defaultValue={0}
+                                    rules={{ required: true }}
+                                    render={({ field: { onChange, value, ref } }) => (
+                                        <Rating
+                                            emptySymbol="far fa-star text-gray-300 text-2xl"
+                                            fullSymbol="fas fa-star text-yellow-500 text-2xl"
+                                            fractions={2}
+                                            initialRating={value}
+                                            onChange={(newValue) => onChange(newValue)}
+                                            ref={ref}
+                                        />
+                                    )}
+                                />
+                            </div>
+                            {errors[field] && <p className="text-red-500 text-sm">This field is required</p>}
                         </div>
-                        {errors[field.toLowerCase().replace(/\s/g, '')] && <p className="text-red-500 text-sm">This field is required</p>}
-                    </div>
                     ))}
                 </div>
                 <div className="flex flex-col space-y-2">

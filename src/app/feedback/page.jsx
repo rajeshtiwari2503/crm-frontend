@@ -5,6 +5,7 @@ import http_request from "../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import FeedbackList from './FeedbackList';
+import Thankyou from './thankYou';
 
 
 const Feedback = () => {
@@ -36,7 +37,7 @@ const Feedback = () => {
       <Toaster />
       <>
      <FeedbackList data={data} RefreshData={RefreshData}/>
-       
+       <Thankyou />
       </>
     </Sidenav>
   )

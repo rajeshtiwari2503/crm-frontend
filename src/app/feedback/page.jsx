@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react'
 import http_request from "../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
-import FeedbackList from './FeedbackList';
-import Thankyou from './thankYou';
+import FeedbackList from './feedbackList';
 
 
 const Feedback = () => {

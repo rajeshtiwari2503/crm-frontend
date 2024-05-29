@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Visibility } from '@mui/icons-material';
+import { Add, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -16,13 +16,14 @@ const ComplaintList = (props) => {
 
   const router = useRouter()
 
-  const data = props?.data;
+  const filteredData = props?.data;
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -38,6 +39,14 @@ const ComplaintList = (props) => {
     setSortDirection(isAsc ? 'desc' : 'asc');
     setSortBy(property);
   };
+
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const data = filteredData?.filter(
+    (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -80,9 +89,20 @@ const ComplaintList = (props) => {
           <div className=' ml-2 '>Add Complaint</div>
         </div>
       </div>
+      <div className="flex items-center mb-3">
+      <Search  className="text-gray-500" />
+      <input
+        type="text"
+        placeholder="Search by ID"
+        value={searchTerm}
+        onChange={handleSearch}
+        className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+    </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
+       
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -98,23 +118,41 @@ const ComplaintList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'customerName'}
+                      active={sortBy === '_id'}
                       direction={sortDirection}
-                      onClick={() => handleSort('customerName')}
+                      onClick={() => handleSort('_id')}
+                    >
+                     Ticket Id
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'fullName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('fullName')}
                     >
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'customerEmail'}
+                      active={sortBy === 'emailAddress'}
                       direction={sortDirection}
-                      onClick={() => handleSort('customerEmail')}
+                      onClick={() => handleSort('emailAddress')}
                     >
-                      Eustomer Email
+                      Customer Email
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'serviceAddress'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('serviceAddress')}
+                    >
+                     Service Address
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'city'}
                       direction={sortDirection}
@@ -131,7 +169,7 @@ const ComplaintList = (props) => {
                     >
                      State
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'customerMobile'}
@@ -167,14 +205,15 @@ const ComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.customerName}</TableCell>
-                    <TableCell>{row?.customerEmail}</TableCell>
-                    <TableCell>{row?.city}</TableCell>
-                    <TableCell>{row?.state}</TableCell>
-                    <TableCell>{row?.customerMobile}</TableCell>
+                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.fullName}</TableCell>
+                    <TableCell>{row?.emailAddress}</TableCell>
+                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.state}</TableCell> */}
+                    <TableCell>{row?.phoneNumber}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell>
+                    <TableCell className='flex'>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>

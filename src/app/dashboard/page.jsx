@@ -5,6 +5,7 @@ import AdminDashboard from './adminDashboard'
 import BrandDashboard from './brandDashboard'
 import ServiceDashboard from './serviceDashboard'
 import EmployeeDashboard from './employeeDashboard'
+import UserDashboard from './userDashboard'
 
 
 const Dashboard = () => {
@@ -30,7 +31,8 @@ const Dashboard = () => {
        <ServiceDashboard />
        : value?.user?.role==="EMPLOYEE" ?
        <EmployeeDashboard />
-       :""
+       :value?.user?.role==="USER" ?
+       <UserDashboard />:""
   }
       </>
     </Sidenav>

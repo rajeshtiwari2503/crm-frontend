@@ -7,17 +7,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Add, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
-import http_request from '.././../../../http-request'
+import http_request from '.././../../http-request'
 import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
-import AddCategory from './addCategory';
 import { ReactLoader } from '@/app/components/common/Loading';
+import AddFeedback from './addFeedback';
 
-const CategoryList = (props) => {
+const FeedbackList = (props) => {
 
 
   const router = useRouter()
 
+  const data = props?.data;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
@@ -27,17 +28,6 @@ const CategoryList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
 
-  const [userData, setUserData] = React.useState(null);
-
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setUserData(JSON.parse(storedValue));
-    }
-  }, []);
- 
-  const filterData=props?.data?.filter((item)=>item?.userId===userData?.user?._id)
-  const data = filterData;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -68,7 +58,7 @@ const CategoryList = (props) => {
   }
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteProductCategory/${cateId}`);
+      let response = await http_request.deleteData(`/deleteLocation/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -86,10 +76,10 @@ const CategoryList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Category Information</div>
+        <div className='font-bold text-2xl'>Location Feedback</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Category</div>
+          <div className=' ml-2 '>Add Feedback</div>
         </div>
       </div>
       {!data.length>0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -101,27 +91,36 @@ const CategoryList = (props) => {
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === '_id'}
+                      active={sortBy === 'id'}
                       direction={sortDirection}
-                      onClick={() => handleSort('_id')}
+                      onClick={() => handleSort('id')}
                     >
                       ID
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'categoryName'}
+                      active={sortBy === 'stateName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
+                      onClick={() => handleSort('stateName')}
                     >
-                      Category Name
+                      State Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'status'}
+                      active={sortBy === 'zone'}
                       direction={sortDirection}
-                      onClick={() => handleSort('status')}
+                      onClick={() => handleSort('zone')}
+                    >
+                      zone
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'email'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('email')}
                     >
                       Status
                     </TableSortLabel>
@@ -143,7 +142,8 @@ const CategoryList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
+                    <TableCell>{row?.stateName}</TableCell>
+                    <TableCell>{row?.zone}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell>
@@ -175,7 +175,7 @@ const CategoryList = (props) => {
         </>}
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditModalClose}>
-        <DialogTitle>{editData?._id ? "Edit Category" : "Add Category"}</DialogTitle>
+        <DialogTitle>{editData?._id ? "Edit Location" : "Add Location"}</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleEditModalClose}
@@ -189,7 +189,7 @@ const CategoryList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddCategory userData={userData} existingCategory={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddFeedback existingLocation={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -201,7 +201,7 @@ const CategoryList = (props) => {
   );
 };
 
-export default CategoryList;
+export default FeedbackList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

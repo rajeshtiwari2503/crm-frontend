@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import http_request from '../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
@@ -13,13 +13,22 @@ const AddComplaint = () => {
   const router = useRouter()
 
   const [loading, setLoading] = useState(false)
+  const [productName, setProductName] = useState("")
 
-  const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
+  const [products, setProducts] = useState([])
+  const [value, setLocalValue] = useState('');
 
+ 
+  const getAllProducts = async () => {
+    let response = await http_request.get("/getAllProduct")
+    let { data } = response;
+
+    setProducts(data)
+  }
   const RegiterComplaint = async (reqdata) => {
     try {
       setLoading(true)
-
       let response = await http_request.post('/createComplaint', reqdata)
       const { data } = response
       ToastMessage(data)
@@ -39,16 +48,38 @@ const AddComplaint = () => {
     RegiterComplaint(data)
   };
 
-  const [selectedOption, setSelectedOption] = useState('');
 
-  const handleSelectChange = (e) => {
-    setSelectedOption(e.target.value);
+  const handleProductChange = (e) => {
+    const selectedProductId = e.target.value;
+    setProductName(selectedProductId)
+    const selectedProduct = products.find(product => product.productName === selectedProductId);
+    if (selectedProduct) {
+      setValue('productName', selectedProduct.productName);
+      setValue('categoryName', selectedProduct.categoryName);
+      setValue('productBrand', selectedProduct.productBrand);
+      setValue('modelNo', selectedProduct.modelNo);
+      setValue('serialNo', selectedProduct.serialNo);
+      setValue('purchaseDate', selectedProduct.purchaseDate);
+    
+    }
   };
-  const options = [
-    { label: 'Option 1', value: 'option1' },
-    { label: 'Option 2', value: 'option2' },
-    { label: 'Option 3', value: 'option3' },
-  ];
+  
+  useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setLocalValue(JSON.parse(storedValue));
+    }
+     
+    if(productName){
+      setValue('fullName', value.user.name); 
+      setValue('phoneNumber', value.user.contact);
+      setValue('emailAddress', value.user.email);
+      setValue('serviceAddress', value.user.address);
+    }
+    getAllProducts()
+
+  }, [productName])
+
   return (
     <>
 
@@ -61,340 +92,337 @@ const AddComplaint = () => {
 
             <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Brand  Name
-                </label>
-                <select
-                  className="block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={selectedOption}
-                  onChange={handleSelectChange}
+              <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
+              Product Name
+            </label>
+            <select
+                  id="productName"
+                  name="productName"
+                  onChange={handleProductChange}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productName ? 'border-red-500' : ''}`}
                 >
-                  {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                  <option value="">Select a product</option>
+                  {products.map(product => (
+                    <option key={product.productId} value={product.productId}>
+                      {product.productName}
                     </option>
                   ))}
                 </select>
+                {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+                <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
                   Product Category
                 </label>
+                <input
+                  id="categoryName"
+                  name="categoryName"
+                  type="text"
+                  autoComplete="off"
+                  readOnly
+                  {...register('categoryName', { required: 'Category is required' })}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
+                />
+                {errors.categoryName && <p className="text-red-500 text-sm mt-1">{errors.categoryName.message}</p>}
+              </div>
+              <div>
+                <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
+                  Brand
+                </label>
+                <input
+                  id="productBrand"
+                  name="productBrand"
+                  type="text"
+                  autoComplete="off"
+                  readOnly
+                  {...register('productBrand', { required: 'Product Brand is required' })}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
+                />
+                {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
+              </div>
+             
+              {/* <div className=''>
+                <label htmlFor="productDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                  Product Description
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="productDescription"
+                    name="productDescription"
+                    type="text"
+                    autoComplete="off"
+                    required
+                    {...register('productDescription', { required: 'Product Description is required', minLength: { value: 3, message: 'Product Description must be at least 3 characters long' } })}
+                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productDescription ? 'border-red-500' : ''}`}
+                  />
+                </div>
+                {errors.productDescription && <p className="text-red-500 text-sm mt-1">{errors.productDescription.message}</p>}
+              </div> */}
+             
+                
+              
+              <div className=' '>
+                <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
+                  Serial No
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="serialNo"
+                    name="serialNo"
+                    type="text"
+                    autoComplete="off"
+                    {...register('serialNo')}
+                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serialNo ? 'border-red-500' : ''}`}
+                  />
+                </div>
+              </div>
+              <div className=' '>
+                <label htmlFor="modelNo" className="block text-sm font-medium leading-6 text-gray-900">
+                  Model No
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="modelNo"
+                    name="modelNo"
+                    type="text"
+                    autoComplete="off"
+                    {...register('modelNo')}
+                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.modelNo ? 'border-red-500' : ''}`}
+                  />
+                </div>
+              </div>
+              <div className=' '>
+                <label htmlFor="selectedYear" className="block text-sm font-medium leading-6 text-gray-900">
+                  Select Year
+                </label>
+                <div className="mt-2">
+                  <select
+                    id="selectedYear"
+                    name="selectedYear"
+                    // value={selectedYear}
+                    // onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    className={` block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                  >
+                    {/* Generate year options dynamically */}
+                    {Array.from({ length: 10 }, (_, index) => new Date().getFullYear() + index).map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className=' '>
+                <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
+                  Purchase Date
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="purchaseDate"
+                    name="purchaseDate"
+                    type="date"
+                    {...register('purchaseDate')}
+                    className={`block p-3 w-full rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.purchaseDate ? 'border-red-500' : ''}`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">
+                  Issue Type
+                </label>
                 <select
-                  className="block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={selectedOption}
-                  onChange={handleSelectChange}
+                  id="issueType"
+                  name="issueType"
+                  autoComplete="issueType"
+                  required
+                  {...register('issueType', { required: 'Issue Type is required' })}
+                  className={` block mt-2 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueType ? 'border-red-500' : ''}`}
                 >
-                  {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
+                  <option value="">Select an issue type</option>
+                  <option value="Hardware">Hardware</option>
+                  <option value="Software">Software</option>
+                  <option value="Performance">Performance</option>
+                  <option value="Physical Damage">Physical Damage</option>
                 </select>
+                {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
               </div>
               <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                  Product Name
+                <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
+                  Upload Images/Videos
                 </label>
-                <select
-                  className="block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  value={selectedOption}
-                  onChange={handleSelectChange}
-                >
-                  {options.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                <input
+                  id="images"
+                  name="images"
+                  type="file"
+                  multiple
+                  accept="image/*, video/*"
+                  {...register('images', { required: 'Images/Videos are required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.images ? 'border-red-500' : ''}`}
+                />
+                {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
+              </div>
+              <div className=' flex md:col-span-3 gap-4'>
+              <div className=' w-full'>
+                <label htmlFor="detailedDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                  Detailed Description
+                </label>
+                <textarea
+                  id="detailedDescription"
+                  name="detailedDescription"
+                  autoComplete="detailedDescription"
+                  required
+                  {...register('detailedDescription', { required: 'Detailed Description is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.detailedDescription ? 'border-red-500' : ''}`}
+                />
+                {errors.detailedDescription && <p className="text-red-500 text-sm mt-1">{errors.detailedDescription.message}</p>}
+              </div>
+
+              <div className='w-full '>
+                <label htmlFor="errorMessages" className="block text-sm font-medium leading-6 text-gray-900">
+                  Error Messages
+                </label>
+                <textarea
+                  id="errorMessages"
+                  name="errorMessages"
+                  autoComplete="errorMessages"
+                  {...register('errorMessages')}
+                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.errorMessages ? 'border-red-500' : ''}`}
+                />
+                {errors.errorMessages && <p className="text-red-500 text-sm mt-1">{errors.errorMessages.message}</p>}
+              </div>
+              </div>
+
+              <div>
+                <label htmlFor="preferredServiceDate" className="block text-sm font-medium leading-6 text-gray-900">
+                  Preferred Service Date
+                </label>
+                <input
+                  id="preferredServiceDate"
+                  name="preferredServiceDate"
+                  type="date"
+                  autoComplete="preferredServiceDate"
+                  required
+                  {...register('preferredServiceDate', { required: 'Preferred Service Date is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceDate ? 'border-red-500' : ''}`}
+                />
+                {errors.preferredServiceDate && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceDate.message}</p>}
               </div>
               <div>
-                <label htmlFor="customerName" className="block text-sm font-medium leading-6 text-gray-900">
-                 Customer Name
+                <label htmlFor="preferredServiceTime" className="block text-sm font-medium leading-6 text-gray-900">
+                  Preferred Service Time
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="customerName"
-                    name="customerName"
-                    type="text"
-                    autoComplete="customerEmail"
-                    required
-                    {...register('customerName', { required: 'Name is required', minLength: { value: 3, message: 'Name must be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.customerName ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.customerName && <p className="text-red-500 text-sm mt-1">{errors.customerName.message}</p>}
+                <input
+                  id="preferredServiceTime"
+                  name="preferredServiceTime"
+                  type="time"
+                  autoComplete="preferredServiceTime"
+                  required
+                  {...register('preferredServiceTime', { required: 'Preferred Service Time is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceTime ? 'border-red-500' : ''}`}
+                />
+                {errors.preferredServiceTime && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceTime.message}</p>}
               </div>
               <div>
-                <label htmlFor="customerEmail" className="block text-sm font-medium leading-6 text-gray-900">
-                Customer Email  
+                <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
+                  Service Location
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="customerEmail"
-                    name="customerEmail"
-                    type="customerEmail"
-                    autoComplete="customerEmail"
-                    required
-                    {...register('customerEmail', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email address' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.customerEmail ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.customerEmail && <p className="text-red-500 text-sm mt-1">{errors.customerEmail.message}</p>}
+                <input
+                  id="serviceLocation"
+                  name="serviceLocation"
+                  type="text"
+                  autoComplete="serviceLocation"
+                  required
+                  {...register('serviceLocation', { required: 'Service Location is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceLocation ? 'border-red-500' : ''}`}
+                />
+                {errors.serviceLocation && <p className="text-red-500 text-sm mt-1">{errors.serviceLocation.message}</p>}
               </div>
               <div>
-                <label htmlFor="customerMobile" className="block text-sm font-medium leading-6 text-gray-900">
-                Customer Contact No.
+                <label htmlFor="alternateContactInfo" className="block text-sm font-medium leading-6 text-gray-900">
+                  Alternate Contact Info
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="customerMobile"
-                    name="customerMobile"
-                    type="number"
-                    autoComplete="tel"
-                    required
-
-                    {...register('customerMobile', { required: 'Contact number is required', pattern: { value: /^\d{10}$/, message: 'Contact No. must be at least 10 characters long' } })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.customerMobile ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.customerMobile) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.customerMobile ? errors.customerMobile.message : 'Contact number is required'}
-                  </p>
-                )}
+                <input
+                  id="alternateContactInfo"
+                  name="alternateContactInfo"
+                  type="text"
+                  autoComplete="alternateContactInfo"
+                  required
+                  {...register('alternateContactInfo', { required: 'Alternate Contact Info is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.alternateContactInfo ? 'border-red-500' : ''}`}
+                />
+                {errors.alternateContactInfo && <p className="text-red-500 text-sm mt-1">{errors.alternateContactInfo.message}</p>}
               </div>
               <div>
-                <label htmlFor="zipCode" className="block text-sm font-medium leading-6 text-gray-900">
-                Zip
+                <label htmlFor="fullName" className="block text-sm font-medium leading-6 text-gray-900">
+                  Full Name
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="zipCode"
-                    name="zipCode"
-                    type="text"
-                    autoComplete="tel"
-                    required
-
-                    {...register('zipCode', { required: 'zipCode number is required',    message: 'zipCode must be at least 10 characters long'  })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.zipCode ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.zipCode) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.zipCode ? errors.zipCode.message : 'zipCode is required'}
-                  </p>
-                )}
+                <input
+                  id="fullName"
+                  name="fullName"
+                  type="text"
+                  autoComplete="fullName"
+                  required
+                  {...register('fullName', { required: 'Full Name is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.fullName ? 'border-red-500' : ''}`}
+                />
+                {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName.message}</p>}
               </div>
               <div>
-                <label htmlFor="address1" className="block text-sm font-medium leading-6 text-gray-900">
-               Address1
+                <label htmlFor="phoneNumber" className="block text-sm font-medium leading-6 text-gray-900">
+                  Phone Number
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="address1"
-                    name="address1"
-                    type="text"
-                    autoComplete="text"
-                    required
-
-                    {...register('address1', { required: 'address1 is required',  message: 'address1 must be at least 10 characters long'  })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.address1 ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.address1) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.address1 ? errors.address1.message : 'address1 is required'}
-                  </p>
-                )}
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  type="tel"
+                  autoComplete="phoneNumber"
+                  required
+                  {...register('phoneNumber', {
+                    required: 'Phone Number is required',
+                    pattern: {
+                      value: /^\d{10}$/,
+                      message: 'Please enter a valid 10-digit phone number',
+                    },
+                  })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.phoneNumber ? 'border-red-500' : ''}`}
+                />
+                {errors.phoneNumber && <p className="text-red-500 text-sm mt-1">{errors.phoneNumber.message}</p>}
               </div>
               <div>
-                <label htmlFor="address1" className="block text-sm font-medium leading-6 text-gray-900">
-               Address2
+                <label htmlFor="emailAddress" className="block text-sm font-medium leading-6 text-gray-900">
+                  Email Address
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="address2"
-                    name="address2"
-                    type="text"
-                    autoComplete="text"
-                    required
-
-                    {...register('address2', { required: 'address2 is required',  message: 'address2 must be at least 10 characters long'  })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.address2 ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.address2) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.address2 ? errors.address2.message : 'address2 is required'}
-                  </p>
-                )}
+                <input
+                  id="emailAddress"
+                  name="emailAddress"
+                  type="email"
+                  autoComplete="emailAddress"
+                  required
+                  {...register('emailAddress', {
+                    required: 'Email Address is required',
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Please enter a valid email address',
+                    },
+                  })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.emailAddress ? 'border-red-500' : ''}`}
+                />
+                {errors.emailAddress && <p className="text-red-500 text-sm mt-1">{errors.emailAddress.message}</p>}
               </div>
-              <div>
-                <label htmlFor="listOfArea" className="block text-sm font-medium leading-6 text-gray-900">
-               List Of Area
+              <div className='md:col-span-2'>
+                <label htmlFor="serviceAddress" className="block text-sm font-medium leading-6 text-gray-900">
+                  Service Address
                 </label>
-                <div className="mt-1">
-                  <input
-                    id="listOfArea"
-                    name="listOfArea"
-                    type="text"
-                    autoComplete="tel"
-                    required
-
-                    {...register('listOfArea', { required: 'listOfArea is required',  message:'listOfArea must be at least 10 characters long' } )}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.listOfArea ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.listOfArea) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.listOfArea ? errors.listOfArea.message : 'listOfArea is required'}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="state" className="block text-sm font-medium leading-6 text-gray-900">
-                State
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="state"
-                    name="state"
-                    type="text"
-                    autoComplete="tel"
-                    required
-
-                    {...register('state', { required: 'state is required',   message: 'state must be at least 10 characters long'  })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.state ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.state) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.state ? errors.state.message : 'state is required'}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="district" className="block text-sm font-medium leading-6 text-gray-900">
-              District
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="district"
-                    name="district"
-                    type="district"
-                    autoComplete="tel"
-                    required
-
-                    {...register('district', { required: 'district is required',  message: 'district must be at least 10 characters long' })}
-                    className={`block p-3  w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.district ? 'border-red-500' : ''
-                      }`}
-
-                  />
-                </div>
-                {(errors.district) && (
-                  <p className="text-red-500 text-sm mt-1">
-                    {errors.district ? errors.district.message : 'district is required'}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
-              City
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="city"
-                    name="city"
-                    type="text"
-                    autoComplete="tel"
-                    required
-                    {...register('city', { required: 'city is required', minLength: { value: 3, message: 'city must be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.city ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>}
-              </div>
-              <div>
-                <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-               Locality
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="locality"
-                    name="locality"
-                    type="text"
-                    autoComplete="tel"
-                    required
-                    {...register('locality', { required: 'Locality is required', minLength: { value: 3, message: 'Locality must be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.locality ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.locality && <p className="text-red-500 text-sm mt-1">{errors.locality.message}</p>}
-              </div>
-              <div>
-                <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-               Landmark
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="Lankmark"
-                    name="landmark"
-                    type="text"
-                    autoComplete="tel"
-                    required
-                    {...register('landmark', { required: 'Landmark is required', minLength: { value: 3, message: 'Landmark must be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.landmark ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.landmark && <p className="text-red-500 text-sm mt-1">{errors.landmark.message}</p>}
-              </div>
-              <div>
-                <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-               Nature of Complaint
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="complaintNature"
-                    name="complaintNature"
-                    type="text"
-                    autoComplete="tel"
-                    required
-                    {...register('complaintNature', { required: 'Complaint Nature is required', minLength: { value: 3, message: 'Complaint Nature must be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.complaintNature ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.complaintNature && <p className="text-red-500 text-sm mt-1">{errors.complaintNature.message}</p>}
-              </div>
-              <div>
-                <label htmlFor="contact" className="block text-sm font-medium leading-6 text-gray-900">
-               Complaint Details
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="complaintDetails"
-                    name="complaintDetails"
-                    type="text"
-                    autoComplete="tel"
-                    required
-
-                    {...register('complaintDetails', { required: 'Complaint Details is required', minLength: { value: 3, message: 'Complaint Details be at least 3 characters long' } })}
-                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.complaintDetails ? 'border-red-500' : ''}`}
-                  />
-                </div>
-                {errors.complaintDetails && <p className="text-red-500 text-sm mt-1">{errors.complaintDetails.message}</p>}
+                <textarea
+                  id="serviceAddress"
+                  name="serviceAddress"
+                  autoComplete="serviceAddress"
+                  required
+                  {...register('serviceAddress', { required: 'Service Address is required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceAddress ? 'border-red-500' : ''}`}
+                />
+                {errors.serviceAddress && <p className="text-red-500 text-sm mt-1">{errors.serviceAddress.message}</p>}
               </div>
             </form>
             <div className='mt-5  '>

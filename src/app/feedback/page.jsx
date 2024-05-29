@@ -20,25 +20,32 @@ const Feedback = () => {
   }, [refresh])
 
   const getAllFeedback = async() => {
-    let response = await http_request.get("/getAllFeedback")
-    let { data } = response;
-
-    setFeedbacks(data)
+    try{
+      let response = await http_request.get("/getAllFeedback")
+      let { data } = response;
+  
+      setFeedbacks(data)
+    }
+    
+    catch(err){
+      console.log(err);
+    }
   }
-
+ 
   const data = feedbacks?.map((item, index) => ({ ...item, i: index + 1}));
 
   const RefreshData = (data) => {
     setRefresh(data)
   }
-
+ 
   return (
     <Sidenav>
+        <>
       <Toaster />
-      <>
-     <FeedbackList data={data} RefreshData={RefreshData}/>
-       <Thankyou />
-      </>
+    
+     <FeedbackList data={data}   RefreshData={RefreshData}/>
+       {/* <Thankyou /> */}
+       </>
     </Sidenav>
   )
 }

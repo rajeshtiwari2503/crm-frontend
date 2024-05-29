@@ -5,8 +5,12 @@ import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import Rating from 'react-rating';
 
-const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
+const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => {
+
+    
     const [loading, setLoading] = useState(false);
+
+
     const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm();
 
     const AddFeedback = async (data) => {
@@ -29,16 +33,18 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
 
     const onSubmit = (data) => {
         AddFeedback(data);
-        console.log(data);
+        // console.log(data);
     };
 
     useEffect(() => {
         if (existingFeedback) {
+           
             setValue('ticketNumber', existingFeedback.ticketNumber);
             setValue('customerName', existingFeedback.customerName);
             setValue('emailAddress', existingFeedback.emailAddress);
-            setValue('overallSatisfaction', existingFeedback.overallSatisfaction);
-            setValue('serviceQuality', existingFeedback.serviceQuality);
+            setValue('serviceDate', existingFeedback.serviceDate);
+            setValue('overallsatisfaction', existingFeedback.overallsatisfaction);
+            setValue('servicequality', existingFeedback.servicequality);
             setValue('timeliness', existingFeedback.timeliness);
             setValue('professionalism', existingFeedback.professionalism);
             setValue('comments', existingFeedback.comments);
@@ -46,13 +52,19 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
             setValue('recommendationLikelihood', existingFeedback.recommendationLikelihood);
             setValue('futureServiceInterest', existingFeedback.futureServiceInterest);
         }
-    }, [existingFeedback, setValue]);
-    const [ratingValue, setRatingValue] = useState({});
-
-    const handleRatingChange = (name, value) => {
-        setRatingValue({ ...ratingValue, [name]: value });
-        setValue(name, value, { shouldValidate: true });
+    }, [existingFeedback ]);
+  
+    const handleTicket = (e) => {
+        const searchTerm = e.target.value;
+        const ticket = conplaints?.find((item) => item?._id === searchTerm);
+        if (ticket) {
+            setValue('ticketNumber', ticket?._id);
+            setValue('customerName', ticket?.fullName);
+            setValue('emailAddress', ticket?.emailAddress);
+            setValue('serviceDate', new Date(ticket?.updatedAt).toLocaleDateString());
+        }
     };
+
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -61,17 +73,19 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                         Ticket Number:
                         <input
                             type="text"
-                            {...register("ticketNumber", { required: true })}
+                            onChange={handleTicket}
+                            // {...register("ticketNumber", { required: true })}
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </label>
-                    <div>
+                    <div className='mt-2'>
                         <label className="block">
                             Service Date:
                             <input
                                 type="text"
-                                value={new Date().toLocaleDateString()}
-                                // readOnly
+                                // value={new Date().toLocaleDateString()}
+                                {...register("serviceDate", { required: true })}
+                                readOnly
                                 className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                             />
                         </label>
@@ -84,7 +98,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                         <input
                             type="text"
                             {...register("customerName", { required: true })}
-                            // readOnly
+                            readOnly
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                         />
                     </label>
@@ -93,7 +107,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose }) => {
                         <input
                             type="email"
                             {...register("emailAddress", { required: true })}
-                            // readOnly
+                            readOnly
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"
                         />
                     </label>

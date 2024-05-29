@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -27,6 +27,8 @@ const FeedbackList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [complaints, setComplaints] = useState([])
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -58,7 +60,7 @@ const FeedbackList = (props) => {
   }
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteLocation/${cateId}`);
+      let response = await http_request.deleteData(`/deleteFeedback/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -71,12 +73,27 @@ const FeedbackList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-
+  useEffect(() => {
+    getAllComplaints()
+  }, [ ])
+  const getAllComplaints = async() => {
+    try{
+      let response = await http_request.get("/getAllComplaint")
+      let { data } = response;
+  
+      setComplaints(data)
+    }
+    
+    catch(err){
+      console.log(err);
+    }
+  }
+ 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Location Feedback</div>
+        <div className='font-bold text-2xl'>  Feedback Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Feedback</div>
@@ -104,7 +121,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('stateName')}
                     >
-                      State Name
+                     Ticket No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -113,16 +130,94 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('zone')}
                     >
-                      zone
+                      User Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'email'}
+                      active={sortBy === 'emailAddress'}
                       direction={sortDirection}
-                      onClick={() => handleSort('email')}
+                      onClick={() => handleSort('emailAddress')}
                     >
-                      Status
+                      Email Address
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'overallsatisfaction'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('overallsatisfaction')}
+                    >
+                     Over All Satisfaction
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'servicequality'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('servicequality')}
+                    >
+                     servicequality
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'timeliness'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('timeliness')}
+                    >
+                     timeliness
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'professionalism'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('professionalism')}
+                    >
+                      professionalism
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'comments'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('comments')}
+                    >
+                    comments
+                    </TableSortLabel>
+                  </TableCell>
+
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'issuesFaced'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('issuesFaced')}
+                    >
+                     issuesFaced
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'recommendationLikelihood'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('recommendationLikelihood')}
+                    >
+                     recommendationLikelihood
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'futureServiceInterest'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('futureServiceInterest')}
+                    >
+                     futureServiceInterest
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -142,11 +237,19 @@ const FeedbackList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.stateName}</TableCell>
-                    <TableCell>{row?.zone}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>{row?.ticketNumber}</TableCell>
+                    <TableCell>{row?.customerName}</TableCell>
+                    <TableCell>{row?.emailAddress}</TableCell>
+                    <TableCell>{row?.overallsatisfaction}</TableCell>
+                    <TableCell>{row?.servicequality}</TableCell>
+                    <TableCell>{row?.timeliness}</TableCell>
+                    <TableCell>{row?.professionalism}</TableCell>
+                    <TableCell>{row?.comments}</TableCell>
+                    <TableCell>{row?.issuesFaced}</TableCell>
+                    <TableCell>{row?.recommendationLikelihood}</TableCell>
+                    <TableCell>{row?.futureServiceInterest}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
-                    <TableCell>
+                    <TableCell className='flex'>
                       <IconButton aria-label="view"  >
                         <Visibility color='primary' />
                       </IconButton>
@@ -175,7 +278,7 @@ const FeedbackList = (props) => {
         </>}
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditModalClose}>
-        <DialogTitle>{editData?._id ? "Edit Location" : "Add Location"}</DialogTitle>
+        <DialogTitle>{editData?._id ? "Edit Feedback" : "Add Feedback"}</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleEditModalClose}
@@ -189,7 +292,7 @@ const FeedbackList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddFeedback existingLocation={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddFeedback existingFeedback={editData} conplaints={complaints} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

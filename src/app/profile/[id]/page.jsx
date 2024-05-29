@@ -35,11 +35,11 @@ const Profile = () => {
         setEditModalOpen(!editModelOpen);
     };
 
-    console.log('User ID:', userId);
+    // console.log('User ID:', userId);
 
     const userData = userId && users?.find((item) => item?._id === userId);
 
-    console.log('User Data:', userData);
+    // console.log('User Data:', userData);
 
     return (
         <Sidenav>

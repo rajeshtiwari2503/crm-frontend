@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Search, Visibility } from '@mui/icons-material';
+import { Add, Print, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -45,7 +45,8 @@ const ComplaintList = (props) => {
   };
 
   const data = filteredData?.filter(
-    (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase())
+    (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase()) || item?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+
   );
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -69,7 +70,7 @@ const ComplaintList = (props) => {
   }
 
   const handleAdd = () => {
-    router.push("/complaint/add")
+    router.push("/complaint/create")
   }
   
   const handleDetails = (id) => {
@@ -214,8 +215,11 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                    <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
+                      </IconButton>
+                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                        <Print color='primary' />
                       </IconButton>
                       <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                         <EditIcon color='success' />

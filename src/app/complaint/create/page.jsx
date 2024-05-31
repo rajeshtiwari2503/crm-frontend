@@ -79,6 +79,13 @@ const AddComplaint = () => {
     getAllProducts()
 
   }, [productName])
+  const handleFileChange = (e) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+        reader.readAsDataURL(e.target.files[0])
+        setValue('issueImages', e.target.files[0]);
+    }}
+
 
   return (
     <>
@@ -255,9 +262,10 @@ const AddComplaint = () => {
                   id="images"
                   name="images"
                   type="file"
+                  // onChange={(e) => handleFileChange(e)}
                   multiple
                   accept="image/*, video/*"
-                  {...register('images', { required: 'Images/Videos are required' })}
+                  {...register('issueImages', { required: 'Images/Videos are required' })}
                   className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.images ? 'border-red-500' : ''}`}
                 />
                 {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}

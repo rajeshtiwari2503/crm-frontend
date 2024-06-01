@@ -6,23 +6,25 @@ import http_request from '../../../../http-request'
 import { useRouter } from 'next/navigation';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const EditServiceCenter = () => {
+const EditServiceCenter = (props) => {
+    const {userData}=props
+    
     const [captchaQuestion, setCaptchaQuestion] = useState('');
     const [captchaAnswer, setCaptchaAnswer] = useState(0);
     const [loading, setLoading] = useState(false)
     const router = useRouter()
     const { register, handleSubmit, watch, formState: { errors }, setValue } = useForm();
 
-    const Regiter = async (reqdata) => {
+    const EditServiceProfile = async (reqdata) => {
         try {
             
             setLoading(true)
-            let response = await http_request.post(`/serviceRegistration`, reqdata)
+            let response = await http_request.patch(`/editService/${userData?._id}`, reqdata)
             const { data } = response
             localStorage.setItem('userInfo', JSON.stringify(reqdata));
             ToastMessage(data)
             setLoading(false)
-            router.push("/verification")
+          router.push(`/dashboard`)
         }
         catch (err) {
             setLoading(false)
@@ -38,7 +40,7 @@ const EditServiceCenter = () => {
             alert('CAPTCHA answer is incorrect');
             generateCaptcha();
         } else {
-            Regiter(data)
+            EditServiceProfile(data)
         }
 
     };
@@ -46,6 +48,43 @@ const EditServiceCenter = () => {
 
     useEffect(() => {
         generateCaptcha();
+        setValue('name', userData.name);
+        setValue('email', userData.email);
+        setValue('password', userData.password);
+        setValue('contact', userData.contact);
+        setValue('address', userData.address);
+        setValue('agreement', userData.agreement);
+        setValue('city', userData.city);
+        setValue('contactPersonName', userData.contactPersonName);
+        setValue('averageTurnaroundTime', userData.averageTurnaroundTime);
+        setValue('contactPersonPosition', userData.contactPersonPosition);
+        setValue('country', userData.country);
+        setValue('insuranceCoverage', userData.insuranceCoverage);
+        setValue('numberOfTechnicians', userData.numberOfTechnicians);
+        setValue('operatingHours', userData.operatingHours);
+        setValue('postalCode', userData.postalCode);
+        setValue('privacyPolicy', userData.privacyPolicy);
+        setValue('registrationNumber', userData.registrationNumber);
+        setValue('serviceCenterName', userData.serviceCenterName);
+        setValue('serviceCenterType', userData.serviceCenterType);
+        setValue('state', userData.state);
+        setValue('streetAddress', userData.streetAddress);
+        setValue('technicianCertifications', userData.technicianCertifications);
+        setValue('tin', userData.tin);
+        setValue('yearsInOperation', userData.yearsInOperation);
+        setValue('username', userData.username);
+        setValue('insuranceCoverage', userData.insuranceCoverage);
+        setValue('privacyPolicy', userData.privacyPolicy);
+        setValue('serviceCategories', userData.serviceCategories);
+        setValue('brandsSupported', userData?.brandsSupported?.map(option => option.value));
+        // Object.keys(userData).forEach(key => {
+        //     setValue(key, userData[key]);
+        // });
+        const mappedBrands = userData?.brandsSupported?.map(brand => ({ value: brand, label: brand })) || [];
+        const mappedCategories = userData?.serviceCategories?.map(category => ({ value: category, label: category })) || [];
+
+        setSelectedBrands(mappedBrands);
+        setSelectedCategories(mappedCategories);
     }, []);
 
     const generateCaptcha = () => {
@@ -167,6 +206,8 @@ const EditServiceCenter = () => {
                 <Select
                     isMulti
                     options={categoriesOptions}
+                    value={selectedCategories}
+
                     className="basic-multi-select"
                     classNamePrefix="select"
                     onChange={handleCategoryChange}
@@ -184,6 +225,7 @@ const EditServiceCenter = () => {
                 <Select
                     isMulti
                     options={brandsOptions}
+                    value={selectedBrands}
                     className="basic-multi-select"
                     classNamePrefix="select"
                     onChange={handleBrandChange}
@@ -237,11 +279,11 @@ const EditServiceCenter = () => {
                 <input type="password" {...register('password', { required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters' } })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
-            <div>
+            {/* <div>
                 <label className="text-sm">Confirm Password</label>
                 <input type="password" {...register('confirmPassword', { required: 'Confirm Password is required', validate: value => value === password || 'Passwords do not match' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
-            </div>
+            </div> */}
 
             <div className='md:col-span-2'>
                 <label className="text-sm">Upload Business License</label>

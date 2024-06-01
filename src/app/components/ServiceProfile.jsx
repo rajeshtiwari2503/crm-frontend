@@ -1,13 +1,9 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React  from 'react';
  
- 
-
 const ServiceProfile = (props) => {
   
-    const {userData} =    props
-
-    console.log('userData', userData);
+    const {userData} =    props 
 
     return (
        
@@ -31,21 +27,47 @@ const ServiceProfile = (props) => {
                             <div className='text-lg font-medium'>{userData?.city}</div>
                             <div className='text-1xl font-semibold'>State :</div>
                             <div className='text-lg font-medium'>{userData?.state}</div> 
+                            <div className='text-1xl font-semibold'>country :</div>
+                            <div className='text-lg font-medium'>{userData?.country}</div> 
                             <div className='text-1xl font-semibold'>postalCode :</div>
                             <div className='text-lg font-medium'>{userData?.postalCode}</div> 
-                            <div className='text-1xl font-semibold'>Address :</div>
-                            <div className='text-lg font-medium'>{userData?.streetAddress}</div>
-                            <div className='text-1xl font-semibold'>Address :</div>
-                            <div className='text-lg font-medium'>{userData?.streetAddress}</div>
-                            <div className='text-1xl font-semibold'>Address :</div>
-                            <div className='text-lg font-medium'>{userData?.streetAddress}</div>
-                            <div className='text-1xl font-semibold'>Address :</div>
-                            <div className='text-lg font-medium'>{userData?.streetAddress}</div>
+                            <div className='text-1xl font-semibold'>Tin :</div>
+                            <div className='text-lg font-medium'>{userData?.tin}</div> 
+                            <div className='text-1xl font-semibold'>contactPersonName :</div>
+                            <div className='text-lg font-medium'>{userData?.contactPersonName}</div>
+                            <div className='text-1xl font-semibold'>contactPersonPosition :</div>
+                            <div className='text-lg font-medium'>{userData?.contactPersonPosition}</div>
+                            <div className='text-1xl font-semibold'>insuranceCoverage :</div>
+                            <div className='text-lg font-medium'>{userData?.insuranceCoverage}</div>
+                            <div className='text-1xl font-semibold'>numberOfTechnicians :</div>
+                            <div className='text-lg font-medium'>{userData?.numberOfTechnicians}</div>
+                            <div className='text-1xl font-semibold'>operatingHours :</div>
+                            <div className='text-lg font-medium'>{userData?.operatingHours}</div>
+                            <div className='text-1xl font-semibold'>serviceCenterType :</div>
+                            <div className='text-lg font-medium'>{userData?.serviceCenterType}</div>
+                            <div className='text-1xl font-semibold'>serviceCenterType :</div>
+                            <div className='text-lg font-medium'>
+                                {
+                             userData?.serviceCategories?.map((item,i)=>
+                                <div>{item} { " "} </div>
+                            )
+                             }
+                            </div>
+                            <div className='text-1xl font-semibold'>brandsSupported :</div>
+                            <div className='text-lg font-medium'>
+                                {
+                             userData?.brandsSupported?.map((item,i)=>
+                                <div>{item} { " "} </div>
+                            )
+                             }
+                            </div>
                             <div className='text-1xl font-semibold'>Status :</div>
                             <div className='text-lg font-medium'>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
-                            <div className='text-1xl font-semibold'>Accept Terms & Conditions :</div>
-                            <div className='text-lg font-medium'>{userData?.acceptTerms ? "TRUE" : "FALSE"}</div>
-                          
+                            <div className='text-1xl font-semibold'>insuranceCoverage :</div>
+                            <div className='text-lg font-medium'>{userData?.insuranceCoverage===true ? "TRUE" : "FALSE"}</div>
+                            <div className='text-1xl font-semibold'>agreement :</div>
+                            <div className='text-lg font-medium'>{userData?.agreement===true ? "TRUE" : "FALSE"}</div>
+                            
                         </div>
                     </div>
               

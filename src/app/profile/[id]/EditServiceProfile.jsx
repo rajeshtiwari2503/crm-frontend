@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
-import { ToastMessage } from './common/Toastify';
-import http_request from '../../../http-request'
+import http_request from '../../../../http-request'
 import { useRouter } from 'next/navigation';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
-const ServiceCenterSignUpForm = () => {
+const EditServiceCenter = () => {
     const [captchaQuestion, setCaptchaQuestion] = useState('');
     const [captchaAnswer, setCaptchaAnswer] = useState(0);
     const [loading, setLoading] = useState(false)
@@ -288,4 +288,4 @@ const ServiceCenterSignUpForm = () => {
     );
 };
 
-export default ServiceCenterSignUpForm;
+export default EditServiceCenter;

@@ -60,13 +60,32 @@ const ComplaintDetails = ({ params }) => {
                             <div className='text-1xl font-bold'>Updated :  </div>
                             <div className='text-1xl font-bold'> {new Date(complaint?.updatedAt).toLocaleString()} </div>
                             <div className='text-1xl font-semibold'>Brand : </div>
-                            <div className='text-lg font-medium'>{complaint?.brandName}</div>
+                            <div className='text-lg font-medium'>{complaint?.productBrand}</div>
+                            <div className='text-1xl font-semibold'>Category Name : </div>
+                            <div className='text-lg font-medium'>{complaint?.categoryName}</div>
+                            <div className='text-1xl font-semibold'>Status: </div>
+                            <div className='text-lg font-medium'>{complaint?.status}</div>
+                            <div className='text-1xl font-semibold'>Issue Type : </div>
+                            <div className='text-lg font-medium'>{complaint?.issueType}</div>
+                            <div className='text-1xl font-semibold'>Detailed Description : </div>
+                            <div className='text-lg font-medium'>{complaint?.detailedDescription}</div>
+                            <div className='text-1xl font-semibold'>Error Messages : </div>
+                            <div className='text-lg font-medium'>{complaint?.errorMessages}</div>
+                            <div className='text-1xl font-semibold'>Preferred ServiceDate : </div>
+                            <div className='text-lg font-medium'>{new Date(complaint?.preferredServiceDate).toLocaleString()}</div>
+                            <div className='text-1xl font-semibold'>Preferred ServiceTime   : </div>
+                            <div className='text-lg font-medium'>{complaint?.preferredServiceTime}</div>
+                            <div className='text-1xl font-semibold'>Service Location  : </div>
+                            <div className='text-lg font-medium'>{complaint?.serviceLocation}</div>
                             <div className='text-1xl font-semibold'>Customer Name : </div>
-                            <div className='text-lg font-medium'>{complaint?.customerName}</div>
+                            <div className='text-lg font-medium'>{complaint?.fullName}</div>
                             <div className='text-1xl font-semibold'>Customer Email : </div>
-                            <div className='text-lg font-medium'>{complaint?.customerEmail}</div>
+                            <div className='text-lg font-medium'>{complaint?.emailAddress}</div>
                             <div className='text-1xl font-semibold'>Customer Contact : </div>
-                            <div className='text-lg font-medium'>{complaint?.customerMobile}</div>
+                            <div className='text-lg font-medium'>{complaint?.phoneNumber}</div>
+                            <div className='text-1xl font-semibold'>Service Address : </div>
+                            <div className='text-lg font-medium'>{complaint?.serviceAddress}</div>
+                          
 
                         </div>
                     </div>

@@ -8,10 +8,10 @@ import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../../http-request'
+import http_request from '.././../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 
-const ComplaintList = (props) => {
+const InventoryList = (props) => {
 
 
   const router = useRouter()
@@ -55,7 +55,7 @@ const ComplaintList = (props) => {
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteComplaint/${id}`);
+      let response = await http_request.deleteData(`/deleteInventory/${id}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -70,24 +70,24 @@ const ComplaintList = (props) => {
   }
 
   const handleAdd = () => {
-    router.push("/complaint/create")
+    router.push("/Inventory/create")
   }
   
   const handleDetails = (id) => {
-    router.push(`/complaint/details/${id}`)
+    router.push(`/Inventory/details/${id}`)
   }
 
   const handleEdit = (id) => {
-    router.push(`/complaint/edit/${id}`);
+    router.push(`/Inventory/edit/${id}`);
   };
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Complaint Information</div>
+        <div className='font-bold text-2xl'>Inventory Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Complaint</div>
+          <div className=' ml-2 '>Add Inventory</div>
         </div>
       </div>
       <div className="flex items-center mb-3">
@@ -250,7 +250,7 @@ const ComplaintList = (props) => {
   );
 };
 
-export default ComplaintList;
+export default InventoryList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);

@@ -10,6 +10,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => 
     
     const [loading, setLoading] = useState(false);
 
+    const [ticket, setTicket] = useState(null);
 
     const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm();
 
@@ -38,7 +39,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => 
 
     useEffect(() => {
         if (existingFeedback) {
-           
+             setTicket(existingFeedback.ticketNumber);
             setValue('ticketNumber', existingFeedback.ticketNumber);
             setValue('customerName', existingFeedback.customerName);
             setValue('emailAddress', existingFeedback.emailAddress);
@@ -74,6 +75,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => 
                         <input
                             type="text"
                             onChange={handleTicket}
+                            value={ticket  || ""}
                             // {...register("ticketNumber", { required: true })}
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />

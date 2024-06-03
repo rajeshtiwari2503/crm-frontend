@@ -27,8 +27,10 @@ const AddComplaint = () => {
     setProducts(data)
   }
   const RegiterComplaint = async (reqdata) => {
+    
     try {
       setLoading(true)
+     
       let response = await http_request.post('/createComplaint', reqdata)
       const { data } = response
       ToastMessage(data)

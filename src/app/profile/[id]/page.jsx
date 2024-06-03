@@ -24,7 +24,7 @@ const Profile = ({ params }) => {
 
         getUserById();
 
-    }, []);
+    }, [refresh]);
 
     const getUserById = async () => {
         try {

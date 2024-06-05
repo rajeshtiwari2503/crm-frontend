@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import BrandRegistration from '../components/registration/brandRegistration';
 import ServiceCenterSignUpForm from '../components/ServiceRegistration';
+import BrandSignUpForm from '../components/BrandRegistration';
 
 const SignUp = () => {
 
@@ -82,7 +83,7 @@ const SignUp = () => {
       <div className="  flex justify-center items-center">
         <div className='container flex justify-center my-8 '>
 
-          <div className={selectedItem==="SERVICE CENTER" ? "w-full   grid grid-cols-1 md:grid-cols-3 justify-center items-center" :`w-full md:w-[75%] grid grid-cols-1 md:grid-cols-2 justify-center items-center`}>
+          <div className={selectedItem==="SERVICE CENTER" || selectedItem==="BRAND" ? "w-full   grid grid-cols-1 md:grid-cols-3 justify-center items-center" :`w-full md:w-[75%] grid grid-cols-1 md:grid-cols-2 justify-center items-center`}>
             <div className='shadow-md bg-[#fafcfd] rounded-tl-xl rounded-bl-xl '>
               {regData.map((item, i) => (
                 <div key={i}>
@@ -95,7 +96,7 @@ const SignUp = () => {
                 </div>
               ))}
             </div>
-            <div className={selectedItem==="SERVICE CENTER"?"col-span-2 shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8":"shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8"}>
+            <div className={selectedItem==="SERVICE CENTER" || selectedItem==="BRAND" ?"col-span-2 shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8":"shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8"}>
               <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <div className="flex justify-center">
                   <InputIcon fontSize="large" />
@@ -105,6 +106,7 @@ const SignUp = () => {
                 </h2>
               </div>
            {selectedItem==="SERVICE CENTER"?<ServiceCenterSignUpForm  />
+          : selectedItem==="BRAND"?<BrandSignUpForm  />
            :   <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="grid md:grid-cols-2 gap-3" onSubmit={handleSubmit(onSubmit)}>
                   <div className='md:col-span-2'>

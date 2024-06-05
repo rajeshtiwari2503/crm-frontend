@@ -149,7 +149,7 @@ function Sidenav(props) {
 
   const text1 = "ps"
 const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
-
+const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product']
   const drawer = (
     <div>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -197,7 +197,7 @@ const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Custo
         : ""}
       <Collapse in={isCollapseProduct} timeout={300} unmountOnExit>
         <List className=' '>
-          {(value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ) ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product'].map((text, index) => (
+          {productSide?.map((text, index) => (
             <ListItem key={text} disablePadding
               className={
                 text === "Product" ? (pathname === "/product" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
@@ -537,7 +537,7 @@ const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Custo
               Dashboard
             </div>
             <div className='flex items-center'>
-              <div className='font-semibold'>{value?.user?.name}</div>
+              <div className='font-semibold'>{value?.user?.role==="SERVICE" ?(value?.user?.serviceCenterName):value?.user?.role==="BRAND" ?(value?.user?.brandName):value?.user?.name}</div>
               <div  onClick={( ) => {
                router.push(`/profile/${value?.user?._id}`)}} 
               className='ms-5 w-[30px] h-[30px] bg-blue-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>

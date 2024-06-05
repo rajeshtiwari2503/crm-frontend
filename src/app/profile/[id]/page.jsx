@@ -9,6 +9,8 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useRouter } from 'next/navigation';
 import EditServiceCenter from './EditServiceProfile';
 import ServiceProfile from '@/app/components/ServiceProfile';
+import EditBrandProfile from './EditBrandProfile';
+import BrandProfile from '@/app/components/BrandProfile';
 
 const Profile = ({ params }) => {
 
@@ -16,6 +18,7 @@ const Profile = ({ params }) => {
     const [refresh, setRefresh] = useState(false);
     const [editModelOpen, setEditModalOpen] = useState(false);
     const [editService, setEditService] = useState(false);
+    const [editBrand, setEditBrand] = useState(false);
     const router = useRouter();
 
 
@@ -24,7 +27,7 @@ const Profile = ({ params }) => {
 
         getUserById();
 
-    }, []);
+    }, [refresh]);
 
     const getUserById = async () => {
         try {
@@ -40,7 +43,11 @@ const Profile = ({ params }) => {
     const handleEdit = () => {
         if (userData?.role === "SERVICE") {
             setEditService(!editService)
-        } setEditModalOpen(!editModelOpen);
+        } 
+        if (userData?.role === "BRAND") {
+        setEditBrand(!editBrand)
+        } 
+        setEditModalOpen(!editModelOpen);
     };
 
     // console.log('User ID:', userId);
@@ -57,6 +64,16 @@ const Profile = ({ params }) => {
                         </div>
                     </div>
                     <EditServiceCenter userData={userData} />
+                </div>
+                :editBrand === true ?
+                <div>
+                    <div onClick={handleEdit} className='flex   items-center' >
+                        <div className='text-xl font-bold cursor-pointer'>Back</div>
+                        <div className="ms-8 text-xl font-bold leading-9 tracking-tight text-gray-900">
+                            {userData?.role} Details
+                        </div>
+                    </div>
+                    <EditBrandProfile userData={userData} />
                 </div>
                 : <>
                     <div>
@@ -100,7 +117,9 @@ const Profile = ({ params }) => {
                                     <div className='text-lg font-medium'>{userData?.address}</div>
                                 </div>
                             </div>
-                            :<ServiceProfile userData={userData} />
+                            : userData?.role==="SERVICE"?<ServiceProfile userData={userData} />
+                            :userData?.role==="BRAND"?<BrandProfile userData={userData} />
+                            :""
                         }
                         </>
                         )}

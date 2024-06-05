@@ -156,8 +156,8 @@ const ServiceCenterSignUpForm = () => {
                 <label className="text-sm">Country</label>
                 <select {...register('country', { required: 'Country is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" >
                     <option value="">Select...</option>
-                    <option value="Country1">Country 1</option>
-                    <option value="Country2">Country 2</option>
+                    <option value="India">India</option>
+                    <option value="Others">Others</option>
                 </select>
                 {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>}
             </div>

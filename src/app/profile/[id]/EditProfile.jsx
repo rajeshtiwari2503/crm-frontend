@@ -8,6 +8,7 @@ const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
 
 
     const [loading, setLoading] = useState(false);
+    const [refresh, setRefresh] = useState("");
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
     
     const editProfileData = async (data) => {
@@ -20,6 +21,7 @@ const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
 
             ToastMessage(responseData);
             setLoading(false);
+            setRefresh(responseData);
             RefreshData(responseData);
             onClose(true);
         } catch (err) {
@@ -43,7 +45,7 @@ const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
             setValue('contact', editData.contact);
             setValue('address', editData.address);
         }
-    }, [editData, setValue]);
+    }, [editData,refresh, setValue]);
 
     return (
         <div>

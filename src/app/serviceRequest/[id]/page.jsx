@@ -8,7 +8,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 
 
-const AddComplaint = () => {
+const ServiceRequest = ({params}) => {
 
   const router = useRouter()
 
@@ -16,16 +16,35 @@ const AddComplaint = () => {
   const [productName, setProductName] = useState("")
 
   const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState("")
   const [value, setLocalValue] = useState('');
 
  
   const getAllProducts = async () => {
-    let response = await http_request.get("/getAllProduct")
-    let { data } = response;
-
-    setProducts(data)
+    try{
+        let response = await http_request.get(`/getProduct/${params.id}`)
+        let { data } = response; 
+        setProducts(data) 
+        if (data) {
+            setValue('productName', data.productName);
+            setValue('categoryName', data.categoryName);
+            setValue('productBrand', data.productBrand);
+            setValue('modelNo', data.modelNo);
+            setValue('serialNo', data.serialNo);
+            setValue('purchaseDate', data.purchaseDate);
+            // setValue('fullName', value.user.name); 
+            // setValue('phoneNumber', value.user.contact);
+            // setValue('emailAddress', value.user.email);
+            // setValue('serviceAddress', value.user.address);
+          
+          }
+    }
+   
+    catch(err){
+        console.log(err);
+    }
   }
+
   const RegiterComplaint = async (reqdata) => {
     
     try {
@@ -62,25 +81,24 @@ const AddComplaint = () => {
       setValue('modelNo', selectedProduct.modelNo);
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
+      
     
     }
   };
   
   useEffect(() => {
+    getAllProducts()
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setLocalValue(JSON.parse(storedValue));
+      const localVal=JSON.parse(storedValue)
+      setValue('fullName', localVal.user.name); 
+      setValue('phoneNumber', localVal.user.contact);
+      setValue('emailAddress', localVal.user.email);
+      setValue('serviceAddress', localVal.user.address);
     }
-     
-    if(productName){
-      setValue('fullName', value.user.name); 
-      setValue('phoneNumber', value.user.contact);
-      setValue('emailAddress', value.user.email);
-      setValue('serviceAddress', value.user.address);
-    }
-    getAllProducts()
-
-  }, [productName])
+  
+  }, [loading ])
   const handleFileChange = (e) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
@@ -96,7 +114,7 @@ const AddComplaint = () => {
         <div className=" ">
           <div  >
             <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
-              Create a new complaint
+              Create a new Service Request
             </h2>
 
             <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
@@ -107,15 +125,16 @@ const AddComplaint = () => {
             <select
                   id="productName"
                   name="productName"
+                  value={products.productName || ""}
                   onChange={handleProductChange}
                   className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productName ? 'border-red-500' : ''}`}
                 >
                   <option value="">Select a product</option>
-                  {products.map(product => (
-                    <option key={product.productId} value={product.productId}>
-                      {product.productName}
+               
+                    <option key={products.productName} value={products.productName}>
+                      {products.productName}
                     </option>
-                  ))}
+              
                 </select>
                 {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
               </div>
@@ -455,7 +474,7 @@ const AddComplaint = () => {
   )
 }
 
-export default AddComplaint
+export default ServiceRequest
 
 
 

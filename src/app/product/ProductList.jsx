@@ -23,6 +23,8 @@ const ProductList = (props) => {
   // const data = props?.data;
   const categories = props?.categories;
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [isWarranty, setIsWarranty] = useState(false);
+  const [warranty, setWarranty] = useState("");
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
   const [editData, setEditData] = useState(null);
@@ -65,7 +67,9 @@ const ProductList = (props) => {
   const handleEditModalClose = () => {
     setEditModalOpen(false);
   };
-
+  const handleWarrantyClose = () => {
+    setIsWarranty(false);
+  };
 
   const handleAdd = (row) => {
     setEditData(row)
@@ -85,6 +89,10 @@ const ProductList = (props) => {
   const handleDelete = (id) => {
     setCateId(id)
     setConfirmBoxView(true);
+  }
+  const handleWarranty = (data) => {
+    setWarranty(data)
+    setIsWarranty(true)
   }
 
   return (
@@ -131,14 +139,14 @@ const ProductList = (props) => {
                       Product Description
                     </TableSortLabel>
                   </TableCell>
-                  
+
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'categoryName'}
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
                     >
-                     Category Name
+                      Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -147,7 +155,7 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('warrantyStatus')}
                     >
-                   In Warranty  
+                      In Warranty
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -189,11 +197,17 @@ const ProductList = (props) => {
                     <TableCell>{row?.productName}</TableCell>
                     <TableCell>{row?.productDescription}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.warrantyStatus===true?"true":"false"}</TableCell>
-                    <TableCell>{row?.purchaseDate }</TableCell>
+                    <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell>
                     <TableCell>{row?.status}</TableCell>
+                    <TableCell>{row?.purchaseDate}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
+                      <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
+                        Request Service
+                      </div>
+                      <div onClick={()=>handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
+                        View Warranty
+                      </div>
                       <IconButton aria-label="view"  >
                         <Visibility color='primary' />
                       </IconButton>
@@ -244,6 +258,29 @@ const ProductList = (props) => {
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
 
+
+      <Dialog open={isWarranty} onClose={handleWarrantyClose}>
+        <div className= {warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>
+        <DialogTitle  > {"Warranty Status"}</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleWarrantyClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <div className='md:w-[350px]'>
+            <div className={warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>{warranty? "Your product is under Warranty":"Your product is not under Warranty"}</div>
+          </div>
+        </DialogContent>
+        </div>
+      </Dialog>
     </div>
   );
 };

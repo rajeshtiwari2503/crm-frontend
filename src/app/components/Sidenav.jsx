@@ -148,6 +148,8 @@ function Sidenav(props) {
 
 
   const text1 = "ps"
+const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
+const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product']
   const drawer = (
     <div>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -160,9 +162,9 @@ function Sidenav(props) {
       </Toolbar>
       <Divider />
 
-      <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+      <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard")  ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
         <ListItemButton>
-          <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+          <ListItemIcon className={pathname.startsWith("/dashboard")  ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
             <Dashboard />
           </ListItemIcon>
           <ListItemText primary={"Dashboard"} />
@@ -195,7 +197,7 @@ function Sidenav(props) {
         : ""}
       <Collapse in={isCollapseProduct} timeout={300} unmountOnExit>
         <List className=' '>
-          {(value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ) ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product'].map((text, index) => (
+          {productSide?.map((text, index) => (
             <ListItem key={text} disablePadding
               className={
                 text === "Product" ? (pathname === "/product" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
@@ -239,7 +241,7 @@ function Sidenav(props) {
         : ""}
       <Collapse in={isCollapseUser} timeout={"auto"} unmountOnExit >
         <List className=' '>
-          {['Brand', 'Service', 'Dealer', 'Customer', 'Employee'].map((text, index) => (
+          {  userSide?.map((text, index) => (
             <ListItem key={text} disablePadding
               className={pathname.startsWith(`/user/${text.toLowerCase()}`)
                 ? '  text-sky-600 pl-4'
@@ -413,21 +415,16 @@ function Sidenav(props) {
           {['Knowledge',"Contact","Chat"].map((text, index) => (
             <ListItem key={text} disablePadding
               className={
-                text === "Service Center" ? (pathname === "/reports/serviceCenter" ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4') :
-                pathname === `/reports/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                 pathname === "/reports/serviceCenter" ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'  
               }
               onClick={(event) => {
-                text==="Service Center"?router.push(`/reports/serviceCenter`)
-               : router.push(`/reports/${text.toLowerCase()}`)
+           router.push(`/support/${text.toLowerCase()}`)
               }}
             >
               <ListItemButton>
                 <ListItemIcon
                   className={
-                text === "Service Center" ? (pathname === "/reports/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  ') :
-
-                    pathname === `/reports/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
-                  }
+              pathname === "/support/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  '    }
                 >
                   {text?.toLocaleLowerCase() === "service center" ? <Person /> : <Warning />}
                 </ListItemIcon>
@@ -452,7 +449,7 @@ function Sidenav(props) {
           </ListItemButton>
         </ListItem>
         : ""}
-      {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  || value?.user?.role === "SERVICE"
+      {/* {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  || value?.user?.role === "SERVICE"
         ? <ListItem disablePadding
         onClick={(event) => {
           router.push(`/technician`)
@@ -463,10 +460,10 @@ function Sidenav(props) {
               <Settings />
             </ListItemIcon>
             <ListItemText primary={"Technician"} />
-            {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+            
           </ListItemButton>
         </ListItem>
-        : ""}
+        : ""} */}
         {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  || value?.user?.role === "SERVICE"
         ? <ListItem disablePadding 
         onClick={(event) => {
@@ -540,7 +537,7 @@ function Sidenav(props) {
               Dashboard
             </div>
             <div className='flex items-center'>
-              <div className='font-semibold'>{value?.user?.name}</div>
+              <div className='font-semibold'>{value?.user?.role==="SERVICE" ?(value?.user?.serviceCenterName):value?.user?.role==="BRAND" ?(value?.user?.brandName):value?.user?.name}</div>
               <div  onClick={( ) => {
                router.push(`/profile/${value?.user?._id}`)}} 
               className='ms-5 w-[30px] h-[30px] bg-blue-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>

@@ -148,7 +148,7 @@ function Sidenav(props) {
 
 
   const text1 = "ps"
-const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
+const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:value?.user?.role==="BRAND"?[  'Service',  'Customer','Technician' ]:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
 const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product']
   const drawer = (
     <div>
@@ -272,15 +272,17 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
         : ""}
       <Collapse in={isCollapseComplaint} timeout={"auto"} unmountOnExit >
         <List className=' '>
-          {['Create', 'All Complaint', 'Asign', 'Close', 'Cancel'].map((text, index) => (
+          {['Create','Bulk Upload', 'All Complaint', 'Asign', 'Close', 'Cancel'].map((text, index) => (
             <ListItem key={text1} disablePadding
               className={
                 text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'):
                   pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
               }
               onClick={(event) => {
 
                 text === "All Complaint" ? router.push(`/complaint/allComplaint`) :
+                text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
                   router.push(`/complaint/${text.toLowerCase()}`)
               }}
             >
@@ -288,6 +290,7 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
                 <ListItemIcon
                   className={
                     text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                    text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  '):
                       pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                   }
                 >

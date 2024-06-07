@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import http_request from '../../../../http-request'
 import { useRouter } from 'next/navigation';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
 const EditBrandProfile = (props) => {
     const {userData}=props
@@ -70,7 +71,7 @@ const EditBrandProfile = (props) => {
         setValue('termsAndConditions', userData.termsAndConditions);
         setValue('privacyPolicy', userData.privacyPolicy);
  
-        setValue('industry', userData?.industry?.map(option => option.value));
+        setValue('industry', userData?.industry?.map(option => option?.value));
         // Object.keys(userData).forEach(key => {
         //     setValue(key, userData[key]);
         // });
@@ -92,7 +93,7 @@ const EditBrandProfile = (props) => {
      
 
     const handleIndustryChange = (selectedOptions) => {
-        selectedIndustry(selectedOptions || []);
+        setSelectedIndustry(selectedOptions || []);
         setValue('industry', selectedOptions.map(option => option.value));
     };
  

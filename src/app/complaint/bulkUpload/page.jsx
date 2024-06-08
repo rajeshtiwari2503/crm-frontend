@@ -26,7 +26,7 @@ const BulkServiceRequestForm =  () => {
          
           let { data}=response
            ToastMessage(data)
-          //  router.push("/complaint/allComplaint")
+           router.push("/complaint/allComplaint")
           // alert('File uploaded successfully');
       } catch (error) {
           console.error('Error uploading file:', error);

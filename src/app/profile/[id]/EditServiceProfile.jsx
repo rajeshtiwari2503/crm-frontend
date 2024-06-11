@@ -76,7 +76,7 @@ const EditServiceCenter = (props) => {
         setValue('insuranceCoverage', userData.insuranceCoverage);
         setValue('privacyPolicy', userData.privacyPolicy);
         setValue('serviceCategories', userData.serviceCategories);
-        setValue('brandsSupported', userData?.brandsSupported?.map(option => option.value));
+        setValue('brandsSupported', userData?.brandsSupported?.map(option => option?.value));
         // Object.keys(userData).forEach(key => {
         //     setValue(key, userData[key]);
         // });

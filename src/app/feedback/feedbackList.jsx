@@ -12,6 +12,8 @@ import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '@/app/components/common/Loading';
 import AddFeedback from './addFeedback';
+import { useForm } from 'react-hook-form';
+
 
 const FeedbackList = (props) => {
 
@@ -19,7 +21,10 @@ const FeedbackList = (props) => {
   const router = useRouter()
 
   const data = props?.data;
+  const [value, setValue] = React.useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [replyMessage, setReplyMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
   const [editData, setEditData] = useState(null);
@@ -74,32 +79,64 @@ const FeedbackList = (props) => {
     setConfirmBoxView(true);
   }
   useEffect(() => {
-    getAllComplaints()
-  }, [ ])
-  const getAllComplaints = async() => {
-    try{
-      let response = await http_request.get("/getAllComplaint")
-      let { data } = response;
-  
-      setComplaints(data)
+
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
     }
-    
-    catch(err){
+  }, [])
+
+  const handleReplyMessage = (id) => {
+    setCateId(id)
+    setReplyMessage(true)
+  }
+  const handleReplyMessageClose = () => {
+
+    setReplyMessage(false)
+  }
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true)
+      const response = await http_request.patch(`/editFeedback/${cateId}`, data);
+      let { data: reponseData } = response
+      ToastMessage(reponseData)
+      setLoading(false)
+      setReplyMessage(false)
+      props?.RefreshData(reponseData)
+    } catch (error) {
+      setLoading(false)
+
+      console.error('Error submitting reply:', error);
+    }
+  };
+
+  const handleMarkReviewed=async(id)=>{
+    try {
+      let response = await http_request.patch(`/editFeedback/${id}`,{status:"REVIEWED"});
+      let { data } = response;
+      setConfirmBoxView(false);
+      props?.RefreshData(data)
+      ToastMessage(data);
+    } catch (err) {
       console.log(err);
     }
   }
- 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>  Feedback Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Feedback</div>
-        </div>
+        {value?.user?.role === "USER" ?
+          <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '>Add Feedback</div>
+          </div>
+          : ""
+        }
       </div>
-      {!data.length>0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
           <TableContainer component={Paper}>
@@ -121,7 +158,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('stateName')}
                     >
-                     Ticket No.
+                      Ticket No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -143,37 +180,45 @@ const FeedbackList = (props) => {
                     </TableSortLabel>
                   </TableCell>
 
-                    <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'status'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('status')}
+                    >
+                      Status
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'overallsatisfaction'}
                       direction={sortDirection}
                       onClick={() => handleSort('overallsatisfaction')}
                     >
-                     Over All Satisfaction
+                      Over All Satisfaction
                     </TableSortLabel>
                   </TableCell>
-
-                    <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'servicequality'}
                       direction={sortDirection}
                       onClick={() => handleSort('servicequality')}
                     >
-                     servicequality
+                      servicequality
                     </TableSortLabel>
                   </TableCell>
 
-                    <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'timeliness'}
                       direction={sortDirection}
                       onClick={() => handleSort('timeliness')}
                     >
-                     timeliness
+                      timeliness
                     </TableSortLabel>
                   </TableCell>
 
-                    <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'professionalism'}
                       direction={sortDirection}
@@ -183,23 +228,40 @@ const FeedbackList = (props) => {
                     </TableSortLabel>
                   </TableCell>
 
-                    <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'comments'}
                       direction={sortDirection}
                       onClick={() => handleSort('comments')}
                     >
-                    comments
+                      comments
                     </TableSortLabel>
                   </TableCell>
-
-                    <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'comments'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('comments')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'comments'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('comments')}
+                    >
+                      Brand_Reply_Message
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'issuesFaced'}
                       direction={sortDirection}
                       onClick={() => handleSort('issuesFaced')}
                     >
-                     issuesFaced
+                      issuesFaced
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -208,7 +270,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('recommendationLikelihood')}
                     >
-                     recommendationLikelihood
+                      recommendationLikelihood
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -217,7 +279,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('futureServiceInterest')}
                     >
-                     futureServiceInterest
+                      futureServiceInterest
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -240,25 +302,39 @@ const FeedbackList = (props) => {
                     <TableCell>{row?.ticketNumber}</TableCell>
                     <TableCell>{row?.customerName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
+                    <TableCell>{row?.status}</TableCell>
                     <TableCell>{row?.overallsatisfaction}</TableCell>
                     <TableCell>{row?.servicequality}</TableCell>
                     <TableCell>{row?.timeliness}</TableCell>
                     <TableCell>{row?.professionalism}</TableCell>
                     <TableCell>{row?.comments}</TableCell>
+                    <TableCell>{row?.brandName}</TableCell>
+                    <TableCell>{row?.replyMessage}</TableCell>
                     <TableCell>{row?.issuesFaced}</TableCell>
                     <TableCell>{row?.recommendationLikelihood}</TableCell>
                     <TableCell>{row?.futureServiceInterest}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                      <IconButton aria-label="view"  >
+                      {/* <IconButton aria-label="view"  >
                         <Visibility color='primary' />
-                      </IconButton>
-                      <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
+                      </IconButton> */}
+                      {value?.user?.role === "USER" ?
+                        <>
+                          <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                            <EditIcon color='success' />
+                          </IconButton>
+                          <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                            <DeleteIcon color='error' />
+                          </IconButton>
+                        </>
+                        : value?.user?.role === "BRAND" ?
+                        <div className='flex justify-between'>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
+                        <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Contact Customer</Button>
+                        </div>
+                          : ""}
+
                     </TableCell>
                   </TableRow>
                 ))}
@@ -296,7 +372,39 @@ const FeedbackList = (props) => {
         </DialogContent>
 
       </Dialog>
+      <Dialog open={replyMessage} onClose={handleReplyMessageClose}>
+        <DialogTitle>Reply Message</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleReplyMessageClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <TextField
+              {...register('replyMessage')}
+              label="Your Reply"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={4}
+              required
+            />
 
+            <Button onClick={handleSubmit(onSubmit)} disabled={loading} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+              Submit Reply
+            </Button>
+          </form>
+        </DialogContent>
+
+      </Dialog>
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
 

@@ -24,6 +24,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { ReactLoader } from './common/Loading';
 
 const drawerWidth = 240;
 
@@ -148,10 +149,13 @@ function Sidenav(props) {
 
 
   const text1 = "ps"
-const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
+const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:value?.user?.role==="BRAND"?[  'Service',  'Customer'  ]:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
 const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product']
   const drawer = (
-    <div>
+    <> 
+    {value ?
+    <>
+     <div>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <div>
           <img src="/Logo.png" height={40} width={60} alt='logo' className='rounded-lg' />
@@ -184,7 +188,7 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
         : "dfdfd"} */}
   
 
-      {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"   || value?.user?.role === "USER" 
+      {value?.user?.role === "ADMIN" ||  value?.user?.role === "USER" 
         ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
           <ListItemButton>
             <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -272,15 +276,17 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
         : ""}
       <Collapse in={isCollapseComplaint} timeout={"auto"} unmountOnExit >
         <List className=' '>
-          {['Create', 'All Complaint', 'Asign', 'Close', 'Cancel'].map((text, index) => (
+          {['Create','Bulk Upload', 'All Complaint', 'Asign', 'Close', 'Cancel'].map((text, index) => (
             <ListItem key={text1} disablePadding
               className={
                 text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'):
                   pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
               }
               onClick={(event) => {
 
                 text === "All Complaint" ? router.push(`/complaint/allComplaint`) :
+                text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
                   router.push(`/complaint/${text.toLowerCase()}`)
               }}
             >
@@ -288,6 +294,7 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
                 <ListItemIcon
                   className={
                     text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                    text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  '):
                       pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                   }
                 >
@@ -505,12 +512,18 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
      
 
     </div>
+    </>
+    : <ReactLoader />
+      }
+      </>
   );
 
   // Remove this const when copying and pasting into your project.ndbh
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
+    <>
+    {value?
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
@@ -594,6 +607,11 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
         <main>{children}</main>
       </Box>
     </Box>
+    : <div className='h-[600px] flex justify-center items-center'>
+      <ReactLoader />
+    </div>
+    }
+    </>
   );
 }
 

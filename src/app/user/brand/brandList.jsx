@@ -98,9 +98,9 @@ const BrandList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'name'}
+                      active={sortBy === 'brandName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('name')}
+                      onClick={() => handleSort('brandName')}
                     >
                       Name
                     </TableSortLabel>
@@ -114,6 +114,25 @@ const BrandList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                 
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'status'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('status')}
+                    >
+                      Status
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      CreatedAt
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -122,8 +141,10 @@ const BrandList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.name}</TableCell>
+                    <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

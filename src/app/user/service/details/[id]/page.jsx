@@ -7,6 +7,7 @@ import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
+import ServiceProfile from '@/app/components/ServiceProfile';
 
 const serviceDetails = ({ params }) => {
     const router = useRouter();
@@ -58,16 +59,7 @@ const serviceDetails = ({ params }) => {
                     </div>
                     <hr />
                     <div  >
-                        <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4" >
-                            <div className='text-1xl font-semibold'>Service Name : </div>
-                            <div className='text-lg font-medium'>{service?.name}</div>
-                            <div className='text-1xl font-semibold'>Email : </div>
-                            <div className='text-lg font-medium'>{service?.email}</div>
-                            <div className='text-1xl font-semibold'>Contact : </div>
-                            <div className='text-lg font-medium'>{service?.contact}</div>
-                            <div className='text-1xl font-semibold'>Password : </div>
-                            <div className='text-lg font-medium'>{service?.password}</div>
-                        </div>
+                       <ServiceProfile userData={service} />
                     </div>
                 </div>
 

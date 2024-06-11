@@ -11,11 +11,12 @@ import ComplaintList from './complaintList';
 const Service = () => {
 
   const [complaint, setComplaint] = useState([])
+  const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
 
   useEffect(() => {
     getAllComplaint()
-
+    getAllServiceCenter()
   }, [refresh])
 
   const getAllComplaint = async () => {
@@ -29,7 +30,17 @@ const Service = () => {
       console.log(err);
     }
   }
+  const getAllServiceCenter = async () => {
+    try {
+      let response = await http_request.get("/getAllService")
+      let { data } = response;
 
+      setServiceCenter(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
   const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
@@ -40,7 +51,7 @@ const Service = () => {
     <Sidenav>
       <Toaster />
       <>
-        <ComplaintList data={data} RefreshData={RefreshData} />
+        <ComplaintList data={data} serviceCenter={serviceCenter} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

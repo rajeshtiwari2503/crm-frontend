@@ -24,6 +24,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { ReactLoader } from './common/Loading';
 
 const drawerWidth = 240;
 
@@ -148,10 +149,13 @@ function Sidenav(props) {
 
 
   const text1 = "ps"
-const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:value?.user?.role==="BRAND"?[  'Service',  'Customer','Technician' ]:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
+const userSide=value?.user?.role==="ADMIN"?['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']:value?.user?.role==="SERVICE"?[ 'Customer','Technician']:value?.user?.role==="BRAND"?[  'Service',  'Customer'  ]:['Brand', 'Service', 'Dealer', 'Customer','Technician', 'Employee']
 const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  ? ['Category', 'Product', 'SparePart', 'Complaint Nature']:['Category', 'Product']
   const drawer = (
-    <div>
+    <> 
+    {value ?
+    <>
+     <div>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <div>
           <img src="/Logo.png" height={40} width={60} alt='logo' className='rounded-lg' />
@@ -508,12 +512,18 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
      
 
     </div>
+    </>
+    : <ReactLoader />
+      }
+      </>
   );
 
   // Remove this const when copying and pasting into your project.ndbh
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
+    <>
+    {value?
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
       <AppBar
@@ -597,6 +607,11 @@ const productSide=value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
         <main>{children}</main>
       </Box>
     </Box>
+    : <div className='h-[600px] flex justify-center items-center'>
+      <ReactLoader />
+    </div>
+    }
+    </>
   );
 }
 

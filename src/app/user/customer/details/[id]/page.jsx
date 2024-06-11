@@ -36,7 +36,7 @@ const CutomerDetails = ({ params }) => {
     }
 
     const handleEdit = ( ) => {
-        router.push(`/user/user/edit/${user?._id}`);
+        router.push(`/user/customer/edit/${user?._id}`);
       };
 
 

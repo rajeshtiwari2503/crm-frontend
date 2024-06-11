@@ -98,11 +98,11 @@ const ServiceList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'name'}
+                      active={sortBy === 'serviceCenterName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('name')}
+                      onClick={() => handleSort('serviceCenterName')}
                     >
-                      Name
+                     Service Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -114,6 +114,24 @@ const ServiceList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'serviceCenterType'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('serviceCenterType')}
+                    >
+                      Type
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'contact'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('contact')}
+                    >
+                      contact
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -122,8 +140,10 @@ const ServiceList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.name}</TableCell>
+                    <TableCell>{row?.serviceCenterName}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+                    <TableCell>{row?.serviceCenterType}</TableCell>
+                    <TableCell>{row?.contact}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

@@ -14,14 +14,15 @@ import { useForm } from 'react-hook-form';
 
 
 const ComplaintList = (props) => {
-  const  serviceCenter = props?.serviceCenter 
- 
-  const { register, handleSubmit, reset, setValue } = useForm();
+  const serviceCenter = props?.serviceCenter
+
+  const { register, handleSubmit, formState: { errors } , reset, setValue } = useForm();
   const router = useRouter()
 
   const filteredData = props?.data;
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [assign, setAssign] = useState(false);
+  const [status, setStatus] = useState(false);
   const [id, setId] = useState("");
   const [selectedService, setSelectedService] = useState('');
   const [page, setPage] = useState(0);
@@ -90,29 +91,46 @@ const ComplaintList = (props) => {
     setId(id)
     setAssign(true)
   }
+  const handleUpdateStatus = async (id) => {
+    setId(id)
+    setStatus(true)
+  }
   const handleAssignClose = () => {
 
     setAssign(false)
   }
+  const handleUpdateClose = () => {
+
+    setStatus(false)
+  }
   const handleServiceChange = (event) => {
+   if(status===true){
+    setValue("status",event.target.value)
+    console.log(event.target.value);
+   }
+   if(status===false){
     const selectedId = event.target.value;
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
     setValue('status', "ASSIGN");
-    setValue('assignServiceCenterId', selectedServiceCenter._id);
-    setValue('assignServiceCenter', selectedServiceCenter.serviceCenterName);
+    setValue('assignServiceCenterId', selectedServiceCenter?._id);
+    setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
+   }
   };
   const onSubmit = async (data) => {
     try {
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
       setAssign(false)
+      setStatus(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const preStatus=["In Progress","Part Pending","Completed"]
   return (
     <div>
       <Toaster />
@@ -359,22 +377,34 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.phoneNumber1}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell className='flex'>
-                   
-                        <div onClick={() => handleAssignServiceCenter(row?._id)}className='rounded-md p-2 cursor-pointer bg-[#2e7d32]  text-black hover:bg-[#2e7d32] hover:text-white'> Assign Service</div>
-                     
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Print color='primary' />
-                      </IconButton>
-                      <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
+                    <TableCell className="p-0">
+                      <div className="flex items-center space-x-2">
+                        <div
+                          onClick={() => handleUpdateStatus(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                        >
+                          Update Status
+                        </div>
+                        <div
+                          onClick={() => handleAssignServiceCenter(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                        >
+                          Assign Service
+                        </div>
+
+                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                          <Visibility color="primary" />
+                        </IconButton>
+                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                          <Print color="primary" />
+                        </IconButton>
+                        <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                          <EditIcon color="success" />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -392,9 +422,64 @@ const ComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
+        <Dialog open={status} onClose={handleUpdateClose}>
+        <DialogTitle> Update Status</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleUpdateClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className='w-[350px] mb-5'>
+              <label id="service-center-label" className="block text-sm font-medium text-gray-700">
+               Update Status
+              </label>
+              <select
+                id="service-center-label"
+                value={selectedService}
+                onChange={handleServiceChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled> Update Status</option>
+                {preStatus?.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="mb-4">
+        <label htmlFor="statusComment" className="block text-sm font-medium text-gray-700">
+          Status Comment
+        </label>
+        <input
+          id="statusComment"
+          {...register('statusComment', { required: 'Status comment is required' })}
+          className={`mt-1 block w-full px-3 py-2 border ${
+            errors.statusComment ? 'border-red-500' : 'border-gray-300'
+          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+        />
+        {errors.statusComment && (
+          <p className="mt-2 text-sm text-red-600">{errors.statusComment.message}</p>
+        )}
+      </div>
+            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+            Update Status
+            </Button>
+          </form>
+        </DialogContent>
 
+      </Dialog>
       <Dialog open={assign} onClose={handleAssignClose}>
-        <DialogTitle>Reply Message</DialogTitle>
+        <DialogTitle>  Assign Service Center</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleAssignClose}
@@ -409,25 +494,25 @@ const ComplaintList = (props) => {
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='w-[350px]'>
-            <label id="service-center-label" className="block text-sm font-medium text-gray-700">
-          Assign Service Center
-        </label>
-        <select
-          id="service-center-label"
-          value={selectedService}
-          onChange={handleServiceChange}
-          className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-        >
-           <option value=""  disabled>Select Service Center</option>
-          {serviceCenter?.map((center) => (
-            <option key={center.id} value={center._id}>
-              {center.serviceCenterName}
-            </option>
-          ))}
-        </select>
+            <div className='w-[350px] mb-5'>
+              <label id="service-center-label" className="block text-sm font-medium text-gray-700">
+                Assign Service Center
+              </label>
+              <select
+                id="service-center-label"
+                value={selectedService}
+                onChange={handleServiceChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Service Center</option>
+                {serviceCenter?.map((center) => (
+                  <option key={center.id} value={center._id}>
+                    {center.serviceCenterName}
+                  </option>
+                ))}
+              </select>
             </div>
-            <Button onClick={handleSubmit(onSubmit)}   variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
               Assign Service Center
             </Button>
           </form>

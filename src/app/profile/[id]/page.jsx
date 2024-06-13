@@ -11,6 +11,10 @@ import EditServiceCenter from './EditServiceProfile';
 import ServiceProfile from '@/app/components/ServiceProfile';
 import EditBrandProfile from './EditBrandProfile';
 import BrandProfile from '@/app/components/BrandProfile';
+import EditTechProfile from './EditTechProfile';
+import { Toaster } from 'react-hot-toast';
+import EditDealerProfile from './EditeDealerProfile';
+import DealerProfile from '@/app/components/DealerProfile';
 
 const Profile = ({ params }) => {
 
@@ -19,6 +23,8 @@ const Profile = ({ params }) => {
     const [editModelOpen, setEditModalOpen] = useState(false);
     const [editService, setEditService] = useState(false);
     const [editBrand, setEditBrand] = useState(false);
+    const [editTech, setEditTech] = useState(false);
+    const [editDealer, setEditDealer] = useState(false);
     const router = useRouter();
 
 
@@ -39,7 +45,7 @@ const Profile = ({ params }) => {
             console.error('Failed to fetch user data:', err);
         }
     };
-    const userData = users?.user?.role ? (users?.user) : users?.service?.role ? (users?.service) : users?.brand
+    const userData = users?.user?.role ? (users?.user) : users?.service?.role ? (users?.service) :users?.technician?.role ?(users?.technician): users?.dealer?.role ?(users?.dealer): users?.brand
     const handleEdit = () => {
         if (userData?.role === "SERVICE") {
             setEditService(!editService)
@@ -47,6 +53,12 @@ const Profile = ({ params }) => {
         if (userData?.role === "BRAND") {
         setEditBrand(!editBrand)
         } 
+        if (userData?.role === "TECHNICIAN") {
+            setEditTech(!editTech)
+            } 
+            if (userData?.role === "DEALER") {
+                setEditDealer(!editDealer)
+                } 
         setEditModalOpen(!editModelOpen);
     };
 
@@ -55,6 +67,7 @@ const Profile = ({ params }) => {
 
     return (
         <Sidenav>
+            <Toaster />
             {editService === true ?
                 <div>
                     <div onClick={handleEdit} className='flex   items-center' >
@@ -75,6 +88,7 @@ const Profile = ({ params }) => {
                     </div>
                     <EditBrandProfile userData={userData} />
                 </div>
+                   
                 : <>
                     <div>
                         <div className='flex justify-between items-center pb-5'>
@@ -94,7 +108,7 @@ const Profile = ({ params }) => {
                             </div>
                         ) : (
                             <>
-                            {userData?.role==="USER"?
+                            {userData?.role==="USER" ||userData?.role==="TECHNICIAN"?
                              <div>
                                 <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4">
                                     <div className='text-1xl font-bold'>Created :</div>
@@ -119,6 +133,7 @@ const Profile = ({ params }) => {
                             </div>
                             : userData?.role==="SERVICE"?<ServiceProfile userData={userData} />
                             :userData?.role==="BRAND"?<BrandProfile userData={userData} />
+                            :userData?.role==="DEALER"?<DealerProfile userData={userData} />
                             :""
                         }
                         </>
@@ -139,7 +154,12 @@ const Profile = ({ params }) => {
                             <Close />
                         </IconButton>
                         <DialogContent>
-                            <EditProfile editData={userData} RefreshData={setRefresh} onClose={handleEdit} />
+                           {editTech === true ?
+                           <EditTechProfile editData={userData} RefreshData={setRefresh} onClose={handleEdit} />
+                          : editDealer === true ?
+                          <EditDealerProfile editData={userData} RefreshData={setRefresh} onClose={handleEdit} />
+                           : <EditProfile editData={userData} RefreshData={setRefresh} onClose={handleEdit} />
+}
                         </DialogContent>
                     </Dialog>
                 </>}

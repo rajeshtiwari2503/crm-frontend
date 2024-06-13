@@ -15,14 +15,16 @@ import { useForm } from 'react-hook-form';
 
 const ComplaintList = (props) => {
   const serviceCenter = props?.serviceCenter
-
-  const { register, handleSubmit, formState: { errors } , reset, setValue } = useForm();
+  const userData = props?.userData
+  console.log(userData);
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
 
   const filteredData = props?.data;
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [assign, setAssign] = useState(false);
   const [status, setStatus] = useState(false);
+  const [order, setOrder] = useState(false);
   const [id, setId] = useState("");
   const [selectedService, setSelectedService] = useState('');
   const [page, setPage] = useState(0);
@@ -95,6 +97,10 @@ const ComplaintList = (props) => {
     setId(id)
     setStatus(true)
   }
+  const handleOrderPart = async (id) => {
+    setId(id)
+    setOrder(true)
+  }
   const handleAssignClose = () => {
 
     setAssign(false)
@@ -103,19 +109,23 @@ const ComplaintList = (props) => {
 
     setStatus(false)
   }
+  const handleOrderClose = () => {
+
+    setOrder(false)
+  }
   const handleServiceChange = (event) => {
-   if(status===true){
-    setValue("status",event.target.value)
-    console.log(event.target.value);
-   }
-   if(status===false){
-    const selectedId = event.target.value;
-    const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
-    setSelectedService(selectedId);
-    setValue('status', "ASSIGN");
-    setValue('assignServiceCenterId', selectedServiceCenter?._id);
-    setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
-   }
+    if (status === true) {
+      setValue("status", event.target.value)
+      console.log(event.target.value);
+    }
+    if (status === false) {
+      const selectedId = event.target.value;
+      const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
+      setSelectedService(selectedId);
+      setValue('status', "ASSIGN");
+      setValue('assignServiceCenterId', selectedServiceCenter?._id);
+      setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
+    }
   };
   const onSubmit = async (data) => {
     try {
@@ -130,7 +140,7 @@ const ComplaintList = (props) => {
     }
   };
 
-  const preStatus=["In Progress","Part Pending","Completed"]
+  const preStatus = ["In Progress", "Part Pending", "Completed"]
   return (
     <div>
       <Toaster />
@@ -148,7 +158,7 @@ const ComplaintList = (props) => {
           placeholder="Search by ID"
           value={searchTerm}
           onChange={handleSearch}
-          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -385,13 +395,22 @@ const ComplaintList = (props) => {
                         >
                           Update Status
                         </div>
-                        <div
-                          onClick={() => handleAssignServiceCenter(row?._id)}
+                        {userData?.role === "SERVICE" ?
+                         <div
+                          onClick={() => handleOrderPart(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
-                          Assign Service
+                          Order Part
                         </div>
-
+                        :""}
+                        {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
+                          <div
+                            onClick={() => handleAssignServiceCenter(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Assign Service
+                          </div>
+                          : ""}
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
@@ -422,7 +441,144 @@ const ComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
+      <Dialog open={order} onClose={handleOrderClose}>
+        <DialogTitle> Part Order</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleOrderClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md">
+            
+            <div className="mb-4">
+              <label className="block text-black ">Part Name:</label>
+              <input
+                type="text"
+                {...register("partName", { required: "Part name is required" })}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              />
+              {errors.partName && <p className="text-red-500 text-sm mt-1">{errors.partName.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Part Number/Model Number:</label>
+              <input
+                type="text"
+                {...register("partNumber", { required: "Part number is required" })}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              />
+              {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Quantity:</label>
+              <input
+                type="number"
+                {...register("quantity", { required: "Quantity is required", min: 1 })}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              />
+              {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Priority Level:</label>
+              <select {...register("priorityLevel", { required: "Priority level is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                <option value="">Select Priority</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+              </select>
+              {errors.priorityLevel && <p className="text-red-500 text-sm mt-1">{errors.priorityLevel.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Supplier Information:</label>
+              <div className="mb-2">
+                <label className="block text-black ">Supplier Name:</label>
+                <input
+                  type="text"
+                  {...register("supplierName", { required: "Supplier name is required" })}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                />
+                {errors.supplierName && <p className="text-red-500 text-sm mt-1">{errors.supplierName.message}</p>}
+              </div>
+              <div className="mb-2">
+                <label className="block text-black ">Supplier Contact:</label>
+                <input
+                  type="text"
+                  {...register("supplierContact", { required: "Supplier contact is required" })}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                />
+                {errors.supplierContact && <p className="text-red-500 text-sm mt-1">{errors.supplierContact.message}</p>}
+              </div>
+              <div className="mb-2">
+                <label className="block text-black ">Supplier Address:</label>
+                <input
+                  type="text"
+                  {...register("supplierAddress", { required: "Supplier address is required" })}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                />
+                {errors.supplierAddress && <p className="text-red-500 text-sm mt-1">{errors.supplierAddress.message}</p>}
+              </div>
+            </div>
+            {/* <div className="mb-4">
+              <label className="block text-black ">Order Date:</label>
+              <input
+                type="date"
+                {...register("orderDate", { required: "Order date is required" })}
+                defaultValue="2023-05-18"
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              />
+              {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Expected Delivery Date:</label>
+              <input
+                type="date"
+                {...register("expectedDeliveryDate", { required: "Expected delivery date is required" })}
+                defaultValue="2023-05-25"
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              />
+              {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
+            </div> */}
+            <div className="mb-4">
+              <label className="block text-black ">Shipping Method:</label>
+              <select {...register("shippingMethod", { required: "Shipping method is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                <option value="">Select Shipping Method</option>
+                <option value="Air">Air</option>
+                <option value="Sea">Sea</option>
+                <option value="Land">Land</option>
+              </select>
+              {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Comments/Notes:</label>
+              <textarea
+                {...register("comments")}
+                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+              ></textarea>
+            </div>
+            <div className="mb-4">
+              <label className="block text-black ">Attachments:</label>
+              <input
+                type="file"
+                {...register("attachments")}
+                className="block w-full mt-1"
+              />
+            </div>
+            <button type="submit" className="px-4 py-2 bg-blue-500 text-white font-bold rounded-md shadow-sm hover:bg-blue-600">
+              Submit Order
+            </button>
+          </form>
+        </DialogContent>
+
+      </Dialog>
+
+      <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle> Update Status</DialogTitle>
         <IconButton
           aria-label="close"
@@ -437,44 +593,101 @@ const ComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-gray-700">
-               Update Status
-              </label>
-              <select
-                id="service-center-label"
-                value={selectedService}
-                onChange={handleServiceChange}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled> Update Status</option>
-                {preStatus?.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-        <label htmlFor="statusComment" className="block text-sm font-medium text-gray-700">
-          Status Comment
-        </label>
-        <input
-          id="statusComment"
-          {...register('statusComment', { required: 'Status comment is required' })}
-          className={`mt-1 block w-full px-3 py-2 border ${
-            errors.statusComment ? 'border-red-500' : 'border-gray-300'
-          } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-        />
-        {errors.statusComment && (
-          <p className="mt-2 text-sm text-red-600">{errors.statusComment.message}</p>
-        )}
-      </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-            Update Status
-            </Button>
-          </form>
+          {userData?.role === "BRAND" ?
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className='w-[350px] mb-5'>
+                <label id="service-center-label" className="block text-sm font-medium text-black ">
+                  Update Status
+                </label>
+                <select
+                  id="service-center-label"
+                  value={selectedService}
+                  onChange={handleServiceChange}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled> Update Status</option>
+                  {preStatus?.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-4">
+                <label htmlFor="statusComment" className="block text-sm font-medium text-black ">
+                  Status Comment
+                </label>
+                <input
+                  id="statusComment"
+                  {...register('statusComment', { required: 'Status comment is required' })}
+                  className={`mt-1 block w-full px-3 py-2 border ${errors.statusComment ? 'border-red-500' : 'border-gray-300'
+                    } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                />
+                {errors.statusComment && (
+                  <p className="mt-2 text-sm text-red-600">{errors.statusComment.message}</p>
+                )}
+              </div>
+              <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+                Update Status
+              </Button>
+            </form>
+            :
+            <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md">
+
+
+              <div className="mb-4">
+                <label className="block text-black ">New Status:</label>
+                <select {...register("newStatus", { required: "New status is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
+                  <option value="">Select Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Awaiting Parts">Awaiting Parts </option>
+                  <option value="On Hold">On Hold </option>
+                  <option value="In Progress">In Progress </option>
+                  <option value="Canceled">Canceled </option>
+                  <option value="Completed">Completed </option>
+                </select>
+                {errors.newStatus && <p className="text-red-500 text-sm mt-1">{errors.newStatus.message}</p>}
+              </div>
+              {/* <div className="mb-4">
+            <label className="block text-black ">Update Date and Time:</label>
+            <input
+              type="datetime-local"
+              {...register("updateDateTime", { required: "Update date and time is required" })}
+              defaultValue="2023-05-18T14:30"
+              className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+            />
+            {errors.updateDateTime && <p className="text-red-500 text-sm mt-1">{errors.updateDateTime.message}</p>}
+          </div> */}
+              <div className="mb-4">
+                <label className="block text-black ">Technician Name:</label>
+                <input
+                  type="text"
+                  {...register("technicianName", { required: "Technician name is required" })}
+
+                  className="block p-2 w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                />
+                {errors.technicianName && <p className="text-red-500 text-sm mt-1">{errors.technicianName.message}</p>}
+              </div>
+              <div className="mb-4">
+                <label className="block text-black ">Comments/Notes:</label>
+                <textarea
+                  {...register("comments")}
+                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
+                ></textarea>
+              </div>
+              <div className="mb-4">
+                <label className="block text-black ">Attachments:</label>
+                <input
+                  type="file"
+                  {...register("attachments")}
+                  className="block w-full mt-1"
+                />
+              </div>
+              <button type="submit" className="px-4 py-2 bg-blue-500 text-white font-bold rounded-md shadow-sm hover:bg-blue-600">
+                Update Status
+              </button>
+            </form>
+          }
         </DialogContent>
 
       </Dialog>
@@ -495,7 +708,7 @@ const ComplaintList = (props) => {
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-gray-700">
+              <label id="service-center-label" className="block text-sm font-medium text-black ">
                 Assign Service Center
               </label>
               <select

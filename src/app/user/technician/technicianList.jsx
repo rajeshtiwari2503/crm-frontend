@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../http-request'
+import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 
 const TechnicianList = (props) => {
@@ -70,15 +70,15 @@ const TechnicianList = (props) => {
   }
 
   const handleAdd = () => {
-    router.push("/Technician/create")
+    router.push("/user/technician/add")
   }
   
   const handleDetails = (id) => {
-    router.push(`/Technician/details/${id}`)
+    router.push(`/user/technician/details/${id}`)
   }
 
   const handleEdit = (id) => {
-    router.push(`/Technician/edit/${id}`);
+    router.push(`/user/technician/edit/${id}`);
   };
   return (
     <div>
@@ -104,98 +104,35 @@ const TechnicianList = (props) => {
         :
         <>
        
-          <TableContainer component={Paper}>
+       <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === '_id'}
+                      active={sortBy === 'id'}
                       direction={sortDirection}
-                      onClick={() => handleSort('_id')}
+                      onClick={() => handleSort('id')}
                     >
                       ID
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === '_id'}
+                      active={sortBy === 'name'}
                       direction={sortDirection}
-                      onClick={() => handleSort('_id')}
+                      onClick={() => handleSort('name')}
                     >
-                     Ticket Id
+                      Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'fullName'}
+                      active={sortBy === 'email'}
                       direction={sortDirection}
-                      onClick={() => handleSort('fullName')}
+                      onClick={() => handleSort('email')}
                     >
-                      Customer Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'emailAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
-                    >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                     Service Address
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'customerMobile'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('customerMobile')}
-                    >
-                     Contact No.
-                    </TableSortLabel>
-                  </TableCell> 
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                     Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                     Created_At
+                      Email
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>Actions</TableCell>
@@ -206,20 +143,11 @@ const TechnicianList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
-                    <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
-                    {/* <TableCell>{row?.state}</TableCell> */}
-                    <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
-                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell className='flex'>
-                    <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
+                    <TableCell>{row?.name}</TableCell>
+                    <TableCell>{row?.email}</TableCell>
+                    <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Print color='primary' />
+                        <Visibility color='primary' />
                       </IconButton>
                       <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                         <EditIcon color='success' />

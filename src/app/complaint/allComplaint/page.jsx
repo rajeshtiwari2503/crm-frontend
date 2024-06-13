@@ -13,10 +13,15 @@ const Service = () => {
   const [complaint, setComplaint] = useState([])
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
+  const [value, setValue] = React.useState(null);
 
   useEffect(() => {
     getAllComplaint()
     getAllServiceCenter()
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
   }, [refresh])
 
   const getAllComplaint = async () => {
@@ -51,7 +56,7 @@ const Service = () => {
     <Sidenav>
       <Toaster />
       <>
-        <ComplaintList data={data} serviceCenter={serviceCenter} RefreshData={RefreshData} />
+        <ComplaintList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

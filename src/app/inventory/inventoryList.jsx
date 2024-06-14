@@ -70,7 +70,7 @@ const InventoryList = (props) => {
   }
 
   const handleAdd = () => {
-    router.push("/Inventory/create")
+    router.push("/inventory/sparepart/add")
   }
   
   const handleDetails = (id) => {

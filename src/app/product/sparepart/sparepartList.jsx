@@ -19,10 +19,10 @@ const SparepartList = (props) => {
   const router = useRouter()
 
   const data = props?.data;
-  const [editModalOpen, setEditModalOpen] = useState(false);
+ 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
-  const [editData, setEditData] = useState(null);
+  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
@@ -47,10 +47,7 @@ const SparepartList = (props) => {
 
  
 
-  const handleEditModalClose = () => {
-    setEditModalOpen(false);
-  };
-
+  
 
   const handleAdd = (row) => {
     router.push("/product/sparepart/add")

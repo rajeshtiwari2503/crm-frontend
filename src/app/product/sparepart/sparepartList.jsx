@@ -10,7 +10,7 @@ import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import http_request from '.././../../../http-request'
 import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
-import AddSparepart from './addSparepart';
+ 
 import { ReactLoader } from '@/app/components/common/Loading';
 
 const SparepartList = (props) => {
@@ -53,8 +53,13 @@ const SparepartList = (props) => {
 
 
   const handleAdd = (row) => {
-    setEditData(row)
-    setEditModalOpen(true);
+    router.push("/product/sparepart/add")
+  }
+  const handleEdit = (id) => {
+    router.push(`/product/sparepart/edit/${id}`)
+  }
+  const handleDetails = (id) => {
+    router.push(`/product/sparepart/details/${id}`)
   }
   const deleteData = async () => {
     try {
@@ -127,6 +132,24 @@ const SparepartList = (props) => {
               </TableCell> 
               <TableCell>
                 <TableSortLabel
+                  active={sortBy === 'category'}
+                  direction={sortDirection}
+                  onClick={() => handleSort('category')}
+                >
+                  Category 
+                </TableSortLabel>
+              </TableCell> 
+              <TableCell>
+                <TableSortLabel
+                  active={sortBy === 'productModel'}
+                  direction={sortDirection}
+                  onClick={() => handleSort('productModel')}
+                >
+                  Product Model 
+                </TableSortLabel>
+              </TableCell> 
+              <TableCell>
+                <TableSortLabel
                   active={sortBy === 'email'}
                   direction={sortDirection}
                   onClick={() => handleSort('email')}
@@ -151,16 +174,18 @@ const SparepartList = (props) => {
             {sortedData?.map((row) => (
               <TableRow key={row?.i} hover>
                 <TableCell>{row?.i}</TableCell>
-                <TableCell>{row?.sparepartName}</TableCell>
-                <TableCell>{row?.sparepartDescription}</TableCell>
-                <TableCell>{row?.sku}</TableCell>
+                <TableCell>{row?.partName}</TableCell>
+                <TableCell>{row?.description}</TableCell>
+                <TableCell>{row?.skuNo}</TableCell>
+                <TableCell>{row?.category}</TableCell>
+                <TableCell>{row?.productModel}</TableCell>
                 <TableCell>{row?.status}</TableCell>
                 <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
-                <TableCell>
-                  <IconButton aria-label="view"  >
+                <TableCell className='flex'>
+                  <IconButton aria-label="view" onClick={() => handleDetails(row._id)} >
                     <Visibility color='primary' />
                   </IconButton>
-                  <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                  <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
                     <EditIcon color='success' />
                   </IconButton>
                   <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
@@ -184,26 +209,7 @@ const SparepartList = (props) => {
       />
 </>}
 
-      {/* Edit Modal */}
-      <Dialog open={editModalOpen} onClose={handleEditModalClose}>
-        <DialogTitle>{editData?._id?"Edit Sparepart" :"Add Sparepart"}</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleEditModalClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <AddSparepart existingSparepart={editData}  RefreshData={props?.RefreshData} onClose={handleEditModalClose}/>
-        </DialogContent>
-        
-      </Dialog>
+      
 
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />

@@ -4,18 +4,18 @@ import http_request from '../../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
+const EditTechProfile = ({ editData, RefreshData, onClose,userData }) => {
 
 
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState("");
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
     
-    const editProfileData = async (data) => {
+    const EditTechProfileData = async (data) => {
         try {
 
             setLoading(true);
-            const endpoint =   `/editUser/${editData._id}`  ;
+            const endpoint =   `/editTechnician/${editData._id}`  ;
             const response =   await http_request.patch(endpoint, data)  ;
             const { data: responseData } = response;
 
@@ -33,7 +33,7 @@ const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
     };
 
     const onSubmit = (data) => {
-        editProfileData(data);
+        EditTechProfileData(data);
     };
 
     
@@ -156,4 +156,4 @@ const EditProfile = ({ editData, RefreshData, onClose,userData }) => {
     );
 };
 
-export default EditProfile;
+export default EditTechProfile;

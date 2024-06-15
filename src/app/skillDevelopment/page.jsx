@@ -1,12 +1,12 @@
 import React from 'react'
 import Sidenav from '../components/Sidenav'
 
-const Reports = () => {
+const SkillDevelopment = () => {
   return (
     <Sidenav>
-    <div>Reports</div>
+    <div>SkillDevelopment</div>
     </Sidenav>
   )
 }
 
-export default Reports
+export default SkillDevelopment

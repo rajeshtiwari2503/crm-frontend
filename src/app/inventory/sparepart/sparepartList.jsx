@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../http-request'
+import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 
 const SparepartList = (props) => {

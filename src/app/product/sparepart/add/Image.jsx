@@ -27,7 +27,7 @@ function Images(props) {
                 <small className="block text-gray-400 mb-2">Only portrait or square images, 2M max and 2000px max-height.</small>
                 <div id='create-token' className='dropzone'>
                 <div className='dz-message flex items-center justify-center'>
-                        <h1 className='text-5xl'>+</h1>
+                        {/* <h1 className='text-5xl'>+</h1> */}
                     </div>
                     {
                         images?.length > 0 ?

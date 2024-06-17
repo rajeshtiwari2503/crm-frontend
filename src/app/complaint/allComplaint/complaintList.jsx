@@ -16,7 +16,7 @@ import { useForm } from 'react-hook-form';
 const ComplaintList = (props) => {
   const serviceCenter = props?.serviceCenter
   const userData = props?.userData
-  console.log(userData);
+  
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
 
@@ -99,6 +99,7 @@ const ComplaintList = (props) => {
   }
   const handleOrderPart = async (id) => {
     setId(id)
+    setValue("ticketID",id)
     setOrder(true)
   }
   const handleAssignClose = () => {
@@ -133,6 +134,17 @@ const ComplaintList = (props) => {
       let { data: responseData } = response;
       setAssign(false)
       setStatus(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const partOrder = async (data) => {
+    try {
+      let response = await http_request.post(`/addOrder`, data);
+      let { data: responseData } = response;
+       setOrder(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
     } catch (err) {
@@ -395,14 +407,14 @@ const ComplaintList = (props) => {
                         >
                           Update Status
                         </div>
-                        {userData?.role === "SERVICE" ?
-                         <div
-                          onClick={() => handleOrderPart(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Order Part
-                        </div>
-                        :""}
+                        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleOrderPart(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Order Part
+                          </div>
+                          : ""}
                         {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
@@ -456,238 +468,96 @@ const ComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md">
-            
-            <div className="mb-4">
-              <label className="block text-black ">Part Name:</label>
-              <input
-                type="text"
-                {...register("partName", { required: "Part name is required" })}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              />
+          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+
+            <div>
+              <label className="block text-gray-700  ">Ticket ID</label>
+              <input {...register('ticketID')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.ticketID && <p className="text-red-500 text-sm mt-1">{errors.ticketID.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700  ">Part Name</label>
+              <input {...register('partName')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.partName && <p className="text-red-500 text-sm mt-1">{errors.partName.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Part Number/Model Number:</label>
-              <input
-                type="text"
-                {...register("partNumber", { required: "Part number is required" })}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              />
+
+            <div>
+              <label className="block text-gray-700 ">Part Number/Model Number</label>
+              <input {...register('partNumber')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Quantity:</label>
-              <input
-                type="number"
-                {...register("quantity", { required: "Quantity is required", min: 1 })}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              />
+
+            <div>
+              <label className="block text-gray-700 ">Quantity</label>
+              <input {...register('quantity', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Priority Level:</label>
-              <select {...register("priorityLevel", { required: "Priority level is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                <option value="">Select Priority</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option>
+
+            <div>
+              <label className="block text-gray-700 ">Priority Level</label>
+              <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="Standard">Standard</option>
+                <option value="Urgent">Urgent</option>
               </select>
               {errors.priorityLevel && <p className="text-red-500 text-sm mt-1">{errors.priorityLevel.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Supplier Information:</label>
-              <div className="mb-2">
-                <label className="block text-black ">Supplier Name:</label>
-                <input
-                  type="text"
-                  {...register("supplierName", { required: "Supplier name is required" })}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-                {errors.supplierName && <p className="text-red-500 text-sm mt-1">{errors.supplierName.message}</p>}
-              </div>
-              <div className="mb-2">
-                <label className="block text-black ">Supplier Contact:</label>
-                <input
-                  type="text"
-                  {...register("supplierContact", { required: "Supplier contact is required" })}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-                {errors.supplierContact && <p className="text-red-500 text-sm mt-1">{errors.supplierContact.message}</p>}
-              </div>
-              <div className="mb-2">
-                <label className="block text-black ">Supplier Address:</label>
-                <input
-                  type="text"
-                  {...register("supplierAddress", { required: "Supplier address is required" })}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-                {errors.supplierAddress && <p className="text-red-500 text-sm mt-1">{errors.supplierAddress.message}</p>}
-              </div>
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Name</label>
+              <input {...register('supplierInformation.name')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
             </div>
-            {/* <div className="mb-4">
-              <label className="block text-black ">Order Date:</label>
-              <input
-                type="date"
-                {...register("orderDate", { required: "Order date is required" })}
-                defaultValue="2023-05-18"
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              />
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Contact</label>
+              <input {...register('supplierInformation.contact')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Address</label>
+              <input {...register('supplierInformation.address')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Order Date</label>
+              <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
               {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Expected Delivery Date:</label>
-              <input
-                type="date"
-                {...register("expectedDeliveryDate", { required: "Expected delivery date is required" })}
-                defaultValue="2023-05-25"
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              />
+
+            <div>
+              <label className="block text-gray-700 ">Expected Delivery Date</label>
+              <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
-            </div> */}
-            <div className="mb-4">
-              <label className="block text-black ">Shipping Method:</label>
-              <select {...register("shippingMethod", { required: "Shipping method is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                <option value="">Select Shipping Method</option>
-                <option value="Air">Air</option>
-                <option value="Sea">Sea</option>
-                <option value="Land">Land</option>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Shipping Method</label>
+              <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="Standard">Standard</option>
+                <option value="Express">Express</option>
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Comments/Notes:</label>
-              <textarea
-                {...register("comments")}
-                className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-              ></textarea>
+
+            <div>
+              <label className="block text-gray-700 ">Comments/Notes</label>
+              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
-            <div className="mb-4">
-              <label className="block text-black ">Attachments:</label>
-              <input
-                type="file"
-                {...register("attachments")}
-                className="block w-full mt-1"
-              />
-            </div>
-            <button type="submit" className="px-4 py-2 bg-blue-500 text-white font-bold rounded-md shadow-sm hover:bg-blue-600">
-              Submit Order
-            </button>
+
+            {/* <div>
+              <label className="block text-gray-700 ">Attachments</label>
+              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
+              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
+            </div> */}
+
+            <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+
           </form>
-        </DialogContent>
-
-      </Dialog>
-
-      <Dialog open={status} onClose={handleUpdateClose}>
-        <DialogTitle> Update Status</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleUpdateClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <DialogContent>
-          {userData?.role === "BRAND" ?
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className='w-[350px] mb-5'>
-                <label id="service-center-label" className="block text-sm font-medium text-black ">
-                  Update Status
-                </label>
-                <select
-                  id="service-center-label"
-                  value={selectedService}
-                  onChange={handleServiceChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled> Update Status</option>
-                  {preStatus?.map((item) => (
-                    <option key={item} value={item}>
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="statusComment" className="block text-sm font-medium text-black ">
-                  Status Comment
-                </label>
-                <input
-                  id="statusComment"
-                  {...register('statusComment', { required: 'Status comment is required' })}
-                  className={`mt-1 block w-full px-3 py-2 border ${errors.statusComment ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                />
-                {errors.statusComment && (
-                  <p className="mt-2 text-sm text-red-600">{errors.statusComment.message}</p>
-                )}
-              </div>
-              <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                Update Status
-              </Button>
-            </form>
-            :
-            <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md">
-
-
-              <div className="mb-4">
-                <label className="block text-black ">New Status:</label>
-                <select {...register("newStatus", { required: "New status is required" })} className="block w-full mt-1 border-gray-300 rounded-md shadow-sm">
-                  <option value="">Select Status</option>
-                  <option value="Pending">Pending</option>
-                  <option value="Awaiting Parts">Awaiting Parts </option>
-                  <option value="On Hold">On Hold </option>
-                  <option value="In Progress">In Progress </option>
-                  <option value="Canceled">Canceled </option>
-                  <option value="Completed">Completed </option>
-                </select>
-                {errors.newStatus && <p className="text-red-500 text-sm mt-1">{errors.newStatus.message}</p>}
-              </div>
-              {/* <div className="mb-4">
-            <label className="block text-black ">Update Date and Time:</label>
-            <input
-              type="datetime-local"
-              {...register("updateDateTime", { required: "Update date and time is required" })}
-              defaultValue="2023-05-18T14:30"
-              className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-            />
-            {errors.updateDateTime && <p className="text-red-500 text-sm mt-1">{errors.updateDateTime.message}</p>}
-          </div> */}
-              <div className="mb-4">
-                <label className="block text-black ">Technician Name:</label>
-                <input
-                  type="text"
-                  {...register("technicianName", { required: "Technician name is required" })}
-
-                  className="block p-2 w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                />
-                {errors.technicianName && <p className="text-red-500 text-sm mt-1">{errors.technicianName.message}</p>}
-              </div>
-              <div className="mb-4">
-                <label className="block text-black ">Comments/Notes:</label>
-                <textarea
-                  {...register("comments")}
-                  className="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-                ></textarea>
-              </div>
-              <div className="mb-4">
-                <label className="block text-black ">Attachments:</label>
-                <input
-                  type="file"
-                  {...register("attachments")}
-                  className="block w-full mt-1"
-                />
-              </div>
-              <button type="submit" className="px-4 py-2 bg-blue-500 text-white font-bold rounded-md shadow-sm hover:bg-blue-600">
-                Update Status
-              </button>
-            </form>
-          }
+          
         </DialogContent>
 
       </Dialog>

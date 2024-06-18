@@ -97,6 +97,10 @@ const ComplaintList = (props) => {
     setId(id)
     setStatus(true)
   }
+  const handleUpdateClose = () => {
+
+    setStatus(false)
+  }
   const handleOrderPart = async (id) => {
     setId(id)
     setValue("ticketID",id)
@@ -106,10 +110,7 @@ const ComplaintList = (props) => {
 
     setAssign(false)
   }
-  const handleUpdateClose = () => {
-
-    setStatus(false)
-  }
+  
   const handleOrderClose = () => {
 
     setOrder(false)
@@ -117,7 +118,7 @@ const ComplaintList = (props) => {
   const handleServiceChange = (event) => {
     if (status === true) {
       setValue("status", event.target.value)
-      console.log(event.target.value);
+      // console.log(event.target.value);
     }
     if (status === false) {
       const selectedId = event.target.value;
@@ -426,9 +427,9 @@ const ComplaintList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -602,6 +603,46 @@ const ComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
+      <Dialog open={status} onClose={handleUpdateClose}>
+        <DialogTitle>  Update Status</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleUpdateClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='w-[350px] mb-5'>
+          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            {...register('status')}
+            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          >
+            <option value="NEW">New</option>
+            <option value="IN PROGRESS">In Progress</option>
+            <option value="AWAITING PART">Awaiting Parts</option>
+            <option value="ONHOLD">On Hold</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELED">Canceled</option>
+          </select>
+        </div>
+        <div>
+          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+            Submit
+          </button>
+        </div>
+          </form>
+        </DialogContent>
+
+      </Dialog>
+    
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );

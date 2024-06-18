@@ -133,7 +133,7 @@ const data=props?.data
                 direction={sortDirection}
                 onClick={() => handleSort('partNumber')}
               >
-                Part Number/Model Number
+                Part_Number
               </TableSortLabel>
             </TableCell>
             <TableCell>
@@ -160,7 +160,7 @@ const data=props?.data
                 direction={sortDirection}
                 onClick={() => handleSort('supplierInformation.name')}
               >
-                Supplier Name
+                Supplier_Name
               </TableSortLabel>
             </TableCell>
             <TableCell>
@@ -169,7 +169,7 @@ const data=props?.data
                 direction={sortDirection}
                 onClick={() => handleSort('orderDate')}
               >
-                Order Date
+                Order_Date
               </TableSortLabel>
             </TableCell>
             <TableCell>
@@ -178,7 +178,7 @@ const data=props?.data
                 direction={sortDirection}
                 onClick={() => handleSort('expectedDeliveryDate')}
               >
-                Expected Delivery Date
+                Expected_Delivery_Date
               </TableSortLabel>
             </TableCell>
             <TableCell>
@@ -187,7 +187,7 @@ const data=props?.data
                 direction={sortDirection}
                 onClick={() => handleSort('shippingMethod')}
               >
-                Shipping Method
+                Shipping_Method
               </TableSortLabel>
             </TableCell>
             <TableCell>
@@ -211,21 +211,21 @@ const data=props?.data
               <TableCell>{row.quantity}</TableCell>
               <TableCell>{row.priorityLevel}</TableCell>
               <TableCell>{row.supplierInformation?.name}</TableCell>
-              <TableCell>{row.orderDate}</TableCell>
-              <TableCell>{row.expectedDeliveryDate}</TableCell>
+              <TableCell>{ new Date(row.orderDate).toLocaleString()}</TableCell>
+              <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell>
               <TableCell>{row.shippingMethod}</TableCell>
               <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
               <TableCell className='flex'>
-                <IconButton aria-label="view" onClick={() => handleDetails(row.ticketID)}>
+                <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                   <Visibility color='primary' />
                 </IconButton>
-                <IconButton aria-label="print" onClick={() => handleDetails(row.ticketID)}>
+                {/* <IconButton aria-label="print" onClick={() => handleDetails(row._id)}>
                   <Print color='primary' />
-                </IconButton>
-                <IconButton aria-label="edit" onClick={() => handleEdit(row.ticketID)}>
+                </IconButton> */}
+                <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
                   <EditIcon color='success' />
                 </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(row.ticketID)}>
+                <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                   <DeleteIcon color='error' />
                 </IconButton>
               </TableCell>

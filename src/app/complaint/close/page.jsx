@@ -29,7 +29,7 @@ const Close = () => {
       console.log(err);
     }
   }
-  const sortData = complaint?.filter((f1) => f1?.status ==="CLOSE")
+  const sortData = complaint?.filter((f1) => f1?.status ==="COMPLETED")
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
 

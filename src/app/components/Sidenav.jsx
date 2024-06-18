@@ -25,6 +25,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { ReactLoader } from './common/Loading';
+import http_request from "../../../http-request"
 
 const drawerWidth = 240;
 
@@ -45,19 +46,59 @@ function Sidenav(props) {
   const [isCollapseSettings, setIsCollapseSettings] = React.useState(false);
   const [isCollapseReports, setIsCollapseReports] = React.useState(false);
   const [isCollapseSupport, setIsCollapseSupport] = React.useState(false);
+  const [isCollapseInventory, setIsCollapseInventory] = React.useState(false);
 
-
+  const [isOpen, setIsOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
+  const [notifications, setNotifications] = React.useState([]);
 
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setValue(JSON.parse(storedValue));
     }
+    getAllNotification()
   }, []);
 
 
 
+  const getAllNotification = async () => {
+    try {
+      let response = await http_request.get("/getAllNotification")
+      let { data } = response;
+
+      setNotifications(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  // console.log(notifications);
+
+  const dropdownRef = React.useRef(null);
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  React.useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -141,6 +182,18 @@ function Sidenav(props) {
 
 
   };
+  const handleCollapseInventory = () => {
+    setIsCollapseProduct(false);
+    setIsCollapseUser(false);
+    setIsCollapseComplaint(false);
+    setIsCollapse(false);
+    setIsCollapseReports(false);
+    setIsCollapseSettings(false)
+    setIsCollapseSupport(false)
+    setIsCollapseInventory(!isCollapseInventory)
+
+
+  };
   const handleLogout = () => {
     localStorage.removeItem("user")
     router.push("/sign_in")
@@ -174,20 +227,20 @@ function Sidenav(props) {
                   <Dashboard />
                 </ListItemIcon>
                 <ListItemText primary={"Dashboard"} />
-               
+
               </ListItemButton>
             </ListItem>
-          {value?.user?.role==="DEALER"
-          ?  <ListItem disablePadding onClick={() => { router.push("/wallet") }} className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-              <ListItemButton>
-                <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <Dashboard />
-                </ListItemIcon>
-                <ListItemText primary={"Wallet"} />
-               
-              </ListItemButton>
-            </ListItem>
-            :""}
+            {value?.user?.role === "DEALER"
+              ? <ListItem disablePadding onClick={() => { router.push("/wallet") }} className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <Dashboard />
+                  </ListItemIcon>
+                  <ListItemText primary={"Wallet"} />
+
+                </ListItemButton>
+              </ListItem>
+              : ""}
             {/* {value?.user?.role === "ADMIN"
         ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
           <ListItemButton>
@@ -276,7 +329,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "USER"|| value?.user?.role === "DEALER"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "USER" || value?.user?.role === "DEALER" || value?.user?.role === "TECHNICIAN"
               ? <ListItem onClick={handleCollapseComplaint} disablePadding className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -437,17 +490,9 @@ function Sidenav(props) {
               </>
               : ""
             }
-            {/* <ListItem disablePadding className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-          <ListItemButton>
-            <ListItemIcon className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-              <AccountBalance />
-            </ListItemIcon>
-            <ListItemText primary={"Account"} />
-            {isCollapse ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-        </ListItem> */}
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "USER"|| value?.user?.role === "DEALER"
+
+            {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER"
               ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -482,57 +527,66 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE"
-              ? <ListItem disablePadding
-                onClick={(event) => {
-                  router.push(`/inventory`)
-                }}
-                className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "TECHNICIAN" || value?.user?.role === "SERVICE"
+              ?
+
+              <ListItem onClick={handleCollapseInventory} disablePadding className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
                     <Inventory />
                   </ListItemIcon>
                   <ListItemText primary={"Inventory"} />
-                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                  {isCollapseInventory ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
               </ListItem>
               : ""}
-            {/* {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  || value?.user?.role === "SERVICE"
-        ? <ListItem disablePadding
-        onClick={(event) => {
-          router.push(`/technician`)
-        }}
-        className={pathname.startsWith("/technician" ) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-          <ListItemButton>
-            <ListItemIcon className={pathname.startsWith("/technician" )? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-              <Settings />
-            </ListItemIcon>
-            <ListItemText primary={"Technician"} />
-            
-          </ListItemButton>
-        </ListItem>
-        : ""} */}
+            <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {['Sparepart', "Order"].map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={
+                      pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => {
+                      router.push(`/inventory/${text.toLowerCase()}`)
+                    }}
+                  >
+                    <ListItemButton>
+                      <ListItemIcon
+                        className={
+                          pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '}
+                      >
+                        {text?.toLocaleLowerCase() === "service center" ? <Person /> : <Warning />}
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+
+
             {/* {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" */}
-              <ListItem disablePadding
-                onClick={(event) => {
-                  router.push(`/notification`)
-                }}
-                className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                    <NotificationsNone />
-                  </ListItemIcon>
-                  <ListItemText primary={"Notification"} />
-                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
-                </ListItemButton>
-              </ListItem>
-              {/* : ""} */}
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE"|| value?.user?.role === "DEALER"
-              ?<ListItem  onClick={(event) => {
+            <ListItem disablePadding
+              onClick={(event) => {
+                router.push(`/notification`)
+              }}
+              className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              <ListItemButton>
+                <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                  <NotificationsNone />
+                </ListItemIcon>
+                <ListItemText primary={"Notification"} />
+                {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+              </ListItemButton>
+            </ListItem>
+            {/* : ""} */}
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
+              ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
-              }}disablePadding className={pathname.startsWith("/reports" ) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/reports" ) ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                  <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
                     <Report />
                   </ListItemIcon>
                   <ListItemText primary={"Report & Analysis"} />
@@ -541,17 +595,7 @@ function Sidenav(props) {
               </ListItem>
               : ""}
 
-            {/* {value?.user?.role === "ADMIN"
-              ? <ListItem disablePadding className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/" + text1.toLocaleLowerCase()) ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                    <Chat />
-                  </ListItemIcon>
-                  <ListItemText primary={"Chat"} />
-                  
-                </ListItemButton>
-              </ListItem>
-              : ""} */}
+
 
 
           </div>
@@ -600,8 +644,35 @@ function Sidenav(props) {
                     className='ms-5 w-[30px] h-[30px] bg-blue-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                     <Person />
                   </div>
-                  <div className='ms-5 w-[30px] h-[30px] bg-yellow-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
-                    <NotificationsNone />
+                  <div className='relative' ref={dropdownRef}>
+                    <div
+                      className='ms-5 w-[30px] h-[30px] bg-yellow-600 flex justify-center items-center text-white font-bold cursor-pointer rounded-full'
+                      onClick={toggleDropdown}
+                    >
+                      <NotificationsNone />
+                    </div>
+                    {isOpen && (
+                      <div className='absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-20'>
+                        <div className='p-2  '>
+                          {notifications.length > 0 ? (
+                            notifications.map((notification, i) => (
+                              <div key={notification?.id} className='p-2 flex justify-center items-center'>
+                                <div className='  me-3'>
+                                  <div className=' flex justify-center items-center bg-slate-400  rounded-full w-[30px] h-[30px] text-white'>
+                                    {i + 1}
+                                  </div>
+                                </div>
+                                <div className='  border-b'>
+                                  {notification?.message}
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className='p-2 text-center'>No notifications</div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div onClick={handleLogout} className='ms-5 w-[30px] h-[30px] bg-red-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                     <Logout fontSize='large' className='pl-2' />

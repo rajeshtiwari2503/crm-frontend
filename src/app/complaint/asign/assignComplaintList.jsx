@@ -3,20 +3,24 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Print, Visibility } from '@mui/icons-material';
+import { Add, Close, Print, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useForm } from 'react-hook-form';
 
 const AssignComplaintList = (props) => {
 
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
   const router = useRouter()
 
   const data = props?.data;
+  const [status, setStatus] = useState(false);
+
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
   const [page, setPage] = useState(0);
@@ -54,6 +58,18 @@ const AssignComplaintList = (props) => {
       console.log(err);
     }
   }
+  const onSubmit = async (data) => {
+    try {
+      let response = await http_request.patch(`/editComplaint/${id}`, data);
+      let { data: responseData } = response;
+      
+      setStatus(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleDelete = (id) => {
     setConfirmBoxView(true);
     setId(id)
@@ -70,23 +86,31 @@ const AssignComplaintList = (props) => {
   const handleEdit = (id) => {
     router.push(`/complaint/edit/${id}`);
   };
+  const handleUpdateStatus = async (id) => {
+    setId(id)
+    setStatus(true)
+  }
+  const handleUpdateClose = () => {
+
+    setStatus(false)
+  }
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Assign Complaint Information</div>
-        {props?.dashboard===true?""
+        {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Complaint</div>
         </div>
-        }
+        } */}
       </div>
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-            <TableContainer component={Paper}>
+             <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -99,15 +123,15 @@ const AssignComplaintList = (props) => {
                       ID
                     </TableSortLabel>
                   </TableCell>
-                  {/* <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === '_id'}
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                     Ticket Id
+                      Ticket Id
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'fullName'}
@@ -117,7 +141,7 @@ const AssignComplaintList = (props) => {
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
-                  {/* <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'emailAddress'}
                       direction={sortDirection}
@@ -125,14 +149,14 @@ const AssignComplaintList = (props) => {
                     >
                       Customer Email
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'serviceAddress'}
                       direction={sortDirection}
                       onClick={() => handleSort('serviceAddress')}
                     >
-                     Service_Address
+                      Service_Address
                     </TableSortLabel>
                   </TableCell>
                   {/* <TableCell>
@@ -159,62 +183,62 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('customerMobile')}
                     >
-                     Contact No.
+                      Contact No.
                     </TableSortLabel>
-                  </TableCell> 
-                  {/* <TableCell>
+                  </TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'categoryName'}
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
                     >
-                    categoryName
+                      categoryName
                     </TableSortLabel>
-                  </TableCell> 
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
                       direction={sortDirection}
                       onClick={() => handleSort('productBrand')}
                     >
-                    productBrand
+                      productBrand
                     </TableSortLabel>
-                  </TableCell> 
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'modelNo'}
                       direction={sortDirection}
                       onClick={() => handleSort('modelNo')}
                     >
-                    modelNo
+                      modelNo
                     </TableSortLabel>
-                  </TableCell> 
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'serialNo'}
                       direction={sortDirection}
                       onClick={() => handleSort('serialNo')}
                     >
-                    serialNo
+                      serialNo
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'issueType'}
                       direction={sortDirection}
                       onClick={() => handleSort('issueType')}
                     >
-                    issueType
+                      issueType
                     </TableSortLabel>
                   </TableCell>
-                  
-                  {/* <TableCell>
+
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'detailedDescription'}
                       direction={sortDirection}
                       onClick={() => handleSort('detailedDescription')}
                     >
-                    detailedDescription
+                      detailedDescription
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -223,7 +247,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('errorMessages')}
                     >
-                    errorMessages
+                      errorMessages
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -232,16 +256,25 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianName')}
                     >
-                    technicianName
+                      Assign Service Center
                     </TableSortLabel>
-                  </TableCell> */}
-                  {/* <TableCell>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'technicianName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('technicianName')}
+                    >
+                      technicianName
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'technicianContact'}
                       direction={sortDirection}
                       onClick={() => handleSort('technicianContact')}
                     >
-                    technicianContact
+                      technicianContact
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -250,16 +283,16 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianComments')}
                     >
-                    technicianComments
+                      technicianComments
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
                     >
-                     Status
+                      Status
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -268,7 +301,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('createdAt')}
                     >
-                     Created_At
+                      Created_At
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>Actions</TableCell>
@@ -279,38 +312,48 @@ const AssignComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    {/* <TableCell>{row?._id}</TableCell> */}
+                    <TableCell>{row?._id}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.serviceAddress}</TableCell>
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    {/* <TableCell>{row?.categoryName}</TableCell>
+                    <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.productBrand}</TableCell>
                     <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell> */}
-                   
+                    <TableCell>{row?.serialNo}</TableCell>
+
                     <TableCell>{row?.issueType}</TableCell>
-                    {/* <TableCell>{row?.detailedDescription}</TableCell>
+                    <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.phoneNumber1}</TableCell>
                     <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell> */}
+                    <TableCell>{row?.phoneNumber1}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell className='flex'>
-                    <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Print color='primary' />
-                      </IconButton> */}
-                      {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton> */}
+                    <TableCell className="p-0">
+                      <div className="flex items-center space-x-2">
+                        <div
+                          onClick={() => handleUpdateStatus(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                        >
+                          Update Status
+                        </div>
+                       
+                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                          <Visibility color="primary" />
+                        </IconButton>
+                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                          <Print color="primary" />
+                        </IconButton>
+                        <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                          <EditIcon color="success" />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -328,7 +371,45 @@ const AssignComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
+        <Dialog open={status} onClose={handleUpdateClose}>
+        <DialogTitle>  Update Status</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleUpdateClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='w-[350px] mb-5'>
+          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            {...register('status')}
+            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          >
+            <option value="NEW">New</option>
+            <option value="IN PROGRESS">In Progress</option>
+            <option value="AWAITING PART">Awaiting Parts</option>
+            <option value="ONHOLD">On Hold</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="CANCELED">Canceled</option>
+          </select>
+        </div>
+        <div>
+          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+            Submit
+          </button>
+        </div>
+          </form>
+        </DialogContent>
 
+      </Dialog>
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );

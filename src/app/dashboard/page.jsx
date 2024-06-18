@@ -34,25 +34,25 @@ const Dashboard = () => {
       console.log(err);
     }
   }
-console.log("bhghggh",dashData);
+ 
 
   return (
     <Sidenav  >
       <>
       {value?.user?.role==="ADMIN" ?
-       <AdminDashboard />
+       <AdminDashboard  dashData={dashData} />
        : value?.user?.role==="BRAND" ?
-       <BrandDashboard />  
+       <BrandDashboard dashData={dashData}/>  
        : value?.user?.role==="SERVICE" ?
-       <ServiceDashboard />
+       <ServiceDashboard dashData={dashData}/>
        : value?.user?.role==="EMPLOYEE" ?
-       <EmployeeDashboard />
+       <EmployeeDashboard dashData={dashData}/>
        :value?.user?.role==="USER" ?
-       <UserDashboard />
+       <UserDashboard dashData={dashData}/>
        :value?.user?.role==="TECHNICIAN" ?
-       <UserDashboard />
+       <UserDashboard dashData={dashData}/>
        :value?.user?.role==="DEALER" ?
-       <DealerDashboard />:""
+       <DealerDashboard dashData={dashData}/>:""
   }
       </>
     </Sidenav>

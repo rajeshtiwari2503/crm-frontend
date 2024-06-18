@@ -12,7 +12,11 @@ const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
 const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
   loading: () => <p>Chart loading.........</p>
 });
-const AdminDashboard = () => {
+const AdminDashboard = (props) => {
+
+const data=props?.dashData;
+
+console.log(data);
   return (
     <>
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>
@@ -26,7 +30,7 @@ const AdminDashboard = () => {
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Users</div>
                   <div className='text-3xl font-semibold'>
-                    <CountUp start={0} end={100} delay={1} />
+                    <CountUp start={0} end={data?.customers} delay={1} />
                   </div>
                 </div>
               </div>
@@ -43,7 +47,7 @@ const AdminDashboard = () => {
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Brands</div>
                   <div className='text-3xl font-semibold'>
-                    <CountUp start={0} end={100} delay={1} />
+                    <CountUp start={0} end={data?.brands} delay={1} />
                   </div>
                 </div>
               </div>
@@ -58,9 +62,9 @@ const AdminDashboard = () => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='large' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Employees</div>
+                  <div className='text-blue-600 font-semibold'>Dealer</div>
                   <div className='text-3xl font-semibold'>
-                    <CountUp start={0} end={100} delay={1} />
+                    <CountUp start={0} end={data?.dealers} delay={1} />
                   </div>
                 </div>
               </div>
@@ -77,7 +81,24 @@ const AdminDashboard = () => {
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Service Centers</div>
                   <div className='text-3xl font-semibold'>
-                    <CountUp start={0} end={100} delay={1} />
+                    <CountUp start={0} end={data?.services} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-3 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PeopleAlt fontSize='large' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>Technician</div>
+                  <div className='text-3xl font-semibold'>
+                    <CountUp start={0} end={data?.technicians} delay={1} />
                   </div>
                 </div>
               </div>
@@ -87,14 +108,14 @@ const AdminDashboard = () => {
       </div>
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mb-3'>Complaints</div>
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        {/* <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>
               <div className='ml-5 mt-3'>
                 <PeopleAlt fontSize='large' />
               </div>
               <div className='mr-7 mt-3 roundProgress'>
-                {/* <h2>Progress</h2> */}
+            
                 <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
               </div>
             </div>
@@ -105,7 +126,7 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4 gap-4'>
           <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>
@@ -120,7 +141,7 @@ const AdminDashboard = () => {
             <div className='pl-5 py-3'>
               <div className='text-blue-600 font-semibold'>New</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.new} delay={1} />
               </div>
             </div>
           </div>
@@ -142,7 +163,7 @@ const AdminDashboard = () => {
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>In Progress</div>
                   <div className='text-3xl font-semibold'>
-                    <CountUp start={0} end={100} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
                   </div>
                 </div>
               </div>
@@ -167,7 +188,7 @@ const AdminDashboard = () => {
             <div className='pl-5 py-3'>
               <div className='text-blue-600 font-semibold'>Completed</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.complete} delay={1} />
               </div>
             </div>
           </div>
@@ -184,9 +205,9 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className='pl-5 py-3'>
-              <div className='text-blue-600 font-semibold'>Close</div>
+              <div className='text-blue-600 font-semibold'>Cancel</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
               </div>
             </div>
           </div>
@@ -203,21 +224,21 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className='pl-5 py-3'>
-              <div className='text-blue-600 font-semibold'>Un Paid </div>
+              <div className='text-blue-600 font-semibold'>Assign</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.assign} delay={1} />
               </div>
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        {/* <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>
               <div className='ml-5 mt-3'>
                 <PeopleAlt fontSize='large' />
               </div>
               <div className='mr-7 mt-3 roundProgress'>
-                {/* <h2>Progress</h2> */}
+              
                 <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
               </div>
             </div>
@@ -236,7 +257,7 @@ const AdminDashboard = () => {
                 <PeopleAlt fontSize='large' />
               </div>
               <div className='mr-7 mt-3 roundProgress'>
-                {/* <h2>Progress</h2> */}
+                
                 <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
               </div>
             </div>
@@ -247,7 +268,7 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>
@@ -262,7 +283,7 @@ const AdminDashboard = () => {
             <div className='pl-5 py-3'>
               <div className='text-blue-600 font-semibold'>Total Complaints</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
               </div>
             </div>
           </div>
@@ -281,7 +302,7 @@ const AdminDashboard = () => {
             <div className='pl-5 py-3'>
               <div className='text-blue-600 font-semibold'>Total Pending</div>
               <div className='text-3xl font-semibold'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={data?.complaints?.pending} delay={1} />
               </div>
             </div>
           </div>

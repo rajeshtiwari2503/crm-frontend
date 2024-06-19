@@ -7,11 +7,14 @@ import VisualizationOptions from '../components/reports/VisualizationArea';
 import ReportDisplayArea from '../components/reports/ReportDisplarOption';
 import Sidenav from '../components/Sidenav';
 import http_request from '.././../../http-request';
+import DownloadFiterDataExcel from '../components/reports/DownloadFilterDataExcel';
+import DownloadExcel from '../components/DownLoadExcel';
 
 const Report = () => {
-  const [reportType, setReportType] = useState(null);
+  const [reportType, setReportType] = useState("USER");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     userType: {
       customer: false,
@@ -38,6 +41,7 @@ const Report = () => {
 
   const handleGenerateReport = async () => {
     try {
+      setLoading(true)
       const response = await http_request.post('/filterData', {
         reportType,
         startDate,
@@ -47,7 +51,11 @@ const Report = () => {
       });
 
       setReportData(response.data);
+      setLoading(false)
+
     } catch (error) {
+      setLoading(false)
+
       console.error('Error generating report:', error);
     }
   };
@@ -69,9 +77,10 @@ const Report = () => {
    
   return (
     <Sidenav>
-      <div className="container mx-auto p-4">
-        <div className="mb-4 grid grid-cols-1 gap-4">
-          <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
+      <div className="container mx-auto p-2">
+      <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
+        <div className="mb-4 grid grid-cols-1 gap-2">
+        
           <ReportTypeSelector reportType={reportType} setReportType={setReportType} />
           <DateRangePicker
             startDate={startDate}
@@ -80,15 +89,24 @@ const Report = () => {
             setEndDate={setEndDate}
           />
           <FilterOptions userData={userData} filters={filters} setFilters={setFilters} />
-          <VisualizationOptions includeCharts={includeCharts} setIncludeCharts={setIncludeCharts} />
+          {/* <VisualizationOptions includeCharts={includeCharts} setIncludeCharts={setIncludeCharts} /> */}
+         
+         <div className='flex'>
           <button
-            className="bg-blue-500 w-52 rounded-md text-white px-4 py-2 mt-4"
+           className="px-4 py-2 me-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
             onClick={handleGenerateReport}
-          >
-            Generate Report
+            disabled={loading}
+            >
+              {loading ? 'Generating...' : 'Generate Report'}
           </button>
+          {reportType==="USER"?
+          <DownloadFiterDataExcel reportData= {reportData} fileName="UserReport" />
+          : <DownloadExcel data={reportData?.complaints} fileName="ComplaintsList"/>
+          }
+
         </div>
-        <ReportDisplayArea reportData={reportData} />
+        </div> 
+        {/* <ReportDisplayArea reportData={reportData} /> */}
       </div>
     </Sidenav>
   );

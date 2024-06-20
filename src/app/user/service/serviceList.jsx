@@ -62,7 +62,7 @@ const ServiceList = (props) => {
   const handleAdd = () => {
     router.push("/user/service/add")
   }
-  
+
   const handleDetails = (id) => {
     router.push(`/user/service/details/${id}`)
   }
@@ -75,10 +75,12 @@ const ServiceList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Service Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Service</div>
-        </div>
+        {props?.report === true ? ""
+          : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '>Add Service</div>
+          </div>
+        }
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
@@ -102,7 +104,7 @@ const ServiceList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('serviceCenterName')}
                     >
-                     Service Name
+                      Service Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -148,12 +150,18 @@ const ServiceList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
-                      <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
+                      {props?.report === true ? ""
+                        :
+                        <>
+                          <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                            <EditIcon color='success' />
+                          </IconButton>
+                          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                            <DeleteIcon color='error' />
+                          </IconButton>
+
+                        </>
+                      }
                     </TableCell>
                   </TableRow>
                 ))}

@@ -72,7 +72,7 @@ const TechnicianList = (props) => {
   const handleAdd = () => {
     router.push("/user/technician/add")
   }
-  
+
   const handleDetails = (id) => {
     router.push(`/user/technician/details/${id}`)
   }
@@ -85,26 +85,30 @@ const TechnicianList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Technician Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Technician</div>
-        </div>
+        {props?.report === true ? ""
+          : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '>Add Technician</div>
+          </div>
+        }
       </div>
-      <div className="flex items-center mb-3">
-      <Search  className="text-gray-500" />
-      <input
-        type="text"
-        placeholder="Search by ID"
-        value={searchTerm}
-        onChange={handleSearch}
-        className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-      />
-    </div>
+      {props?.report === true ? ""
+        : <div className="flex items-center mb-3">
+          <Search className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search by ID"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+      }
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-       
-       <TableContainer component={Paper}>
+
+          <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>

@@ -202,6 +202,8 @@ const ProductList = (props) => {
                     <TableCell>{row?.purchaseDate}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
+                  <div className='flex'>
+
                       <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
                         Request Service
                       </div>
@@ -217,6 +219,7 @@ const ProductList = (props) => {
                       <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <DeleteIcon color='error' />
                       </IconButton>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

@@ -21,7 +21,7 @@ const ReportDisplayArea = ({ reportData }) => {
       <h2>Detailed Data</h2>
       <pre>{JSON.stringify(reportData.details, null, 2)}</pre>
       <h2>Visualizations</h2>
-      {/* <Bar data={chartData} /> */}
+      <Bar data={chartData} />
       <div>
         <button>Download PDF</button>
         <button>Download Excel</button>

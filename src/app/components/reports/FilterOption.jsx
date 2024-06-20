@@ -74,7 +74,7 @@ const cityOptions = [{
     label: technician.name,
   }));
   const brandOptions =  userData?.brands?.map(brand => ({
-    value: brand._id,
+    value: brand.brandName,
     label: brand.brandName,
   }));
   

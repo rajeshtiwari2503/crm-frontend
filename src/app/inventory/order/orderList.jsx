@@ -75,12 +75,12 @@ const data=props?.data
   }
   
   const handleDetails = (id) => {
-    router.push(`/Inventory/details/${id}`)
+    router.push(`/inventory/order/details/${id}`)
   }
 
-  const handleEdit = (id) => {
-    router.push(`/Inventory/edit/${id}`);
-  };
+  // const handleEdit = (id) => {
+  //   router.push(`/Inventory/edit/${id}`);
+  // };
   return (
     <div>
       <Toaster />
@@ -216,18 +216,21 @@ const data=props?.data
               <TableCell>{row.shippingMethod}</TableCell>
               <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
               <TableCell className='flex'>
+              <div className='flex'>
+
                 <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                   <Visibility color='primary' />
                 </IconButton>
                 {/* <IconButton aria-label="print" onClick={() => handleDetails(row._id)}>
                   <Print color='primary' />
                 </IconButton> */}
-                <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
+                {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
                   <EditIcon color='success' />
-                </IconButton>
-                <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                  <DeleteIcon color='error' />
-                </IconButton>
+                </IconButton> */}
+                  {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                    <DeleteIcon color='error' />
+                  </IconButton> */}
+                  </div>
               </TableCell>
             </TableRow>
           ))}

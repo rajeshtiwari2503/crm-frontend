@@ -1,9 +1,9 @@
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, Select, MenuItem, InputLabel } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, Close, Print, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -12,26 +12,21 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 
-
 const ComplaintList = (props) => {
-  const serviceCenter = props?.serviceCenter
-  const userData = props?.userData
-  
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+
   const router = useRouter()
 
-  const filteredData = props?.data;
-  const [confirmBoxView, setConfirmBoxView] = useState(false);
-  const [assign, setAssign] = useState(false);
+  const data = props?.data;
   const [status, setStatus] = useState(false);
-  const [order, setOrder] = useState(false);
+
+  const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
-  const [selectedService, setSelectedService] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
-  const [searchTerm, setSearchTerm] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -48,15 +43,6 @@ const ComplaintList = (props) => {
     setSortBy(property);
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const data = filteredData?.filter(
-    (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase()) || item?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
-
-  );
-
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
@@ -72,13 +58,25 @@ const ComplaintList = (props) => {
       console.log(err);
     }
   }
+  const onSubmit = async (data) => {
+    try {
+      let response = await http_request.patch(`/editComplaint/${id}`, data);
+      let { data: responseData } = response;
+      
+      setStatus(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleDelete = (id) => {
     setConfirmBoxView(true);
     setId(id)
   }
 
   const handleAdd = () => {
-    router.push("/complaint/create")
+    router.push("/complaint/add")
   }
 
   const handleDetails = (id) => {
@@ -88,11 +86,6 @@ const ComplaintList = (props) => {
   const handleEdit = (id) => {
     router.push(`/complaint/edit/${id}`);
   };
-
-  const handleAssignServiceCenter = async (id) => {
-    setId(id)
-    setAssign(true)
-  }
   const handleUpdateStatus = async (id) => {
     setId(id)
     setStatus(true)
@@ -101,84 +94,23 @@ const ComplaintList = (props) => {
 
     setStatus(false)
   }
-  const handleOrderPart = async (id) => {
-    setId(id)
-    setValue("ticketID",id)
-    setOrder(true)
-  }
-  const handleAssignClose = () => {
-
-    setAssign(false)
-  }
-  
-  const handleOrderClose = () => {
-
-    setOrder(false)
-  }
-  const handleServiceChange = (event) => {
-    if (status === true) {
-      setValue("status", event.target.value)
-      // console.log(event.target.value);
-    }
-    if (status === false) {
-      const selectedId = event.target.value;
-      const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
-      setSelectedService(selectedId);
-      setValue('status', "ASSIGN");
-      setValue('assignServiceCenterId', selectedServiceCenter?._id);
-      setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
-    }
-  };
-  const onSubmit = async (data) => {
-    try {
-      let response = await http_request.patch(`/editComplaint/${id}`, data);
-      let { data: responseData } = response;
-      setAssign(false)
-      setStatus(false)
-      props?.RefreshData(responseData)
-      ToastMessage(responseData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const partOrder = async (data) => {
-    try {
-      let response = await http_request.post(`/addOrder`, data);
-      let { data: responseData } = response;
-       setOrder(false)
-      props?.RefreshData(responseData)
-      ToastMessage(responseData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const preStatus = ["In Progress", "Part Pending", "Completed"]
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Complaint Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+        <div className='font-bold text-2xl'> Complaint Information</div>
+        {/* {props?.dashboard===true?""
+        : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Complaint</div>
         </div>
+        } */}
       </div>
-      <div className="flex items-center mb-3">
-        <Search className="text-gray-500" />
-        <input
-          type="text"
-          placeholder="Search by ID"
-          value={searchTerm}
-          onChange={handleSearch}
-          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
+
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-
-          <TableContainer component={Paper}>
+             <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -402,40 +334,25 @@ const ComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        <div
+                        {/* <div
                           onClick={() => handleUpdateStatus(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
                           Update Status
-                        </div>
-                        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                          <div
-                            onClick={() => handleOrderPart(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                          >
-                            Order Part
-                          </div>
-                          : ""}
-                        {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
-                          <div
-                            onClick={() => handleAssignServiceCenter(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                          >
-                            Assign Service
-                          </div>
-                          : ""}
+                        </div> */}
+                       
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
                         {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
-                        </IconButton> */}
+                        </IconButton>
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
-                        </IconButton>
+                        </IconButton> */}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -454,156 +371,7 @@ const ComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-      <Dialog open={order} onClose={handleOrderClose}>
-        <DialogTitle> Part Order</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleOrderClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
-
-            <div>
-              <label className="block text-gray-700  ">Ticket ID</label>
-              <input {...register('ticketID')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.ticketID && <p className="text-red-500 text-sm mt-1">{errors.ticketID.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700  ">Part Name</label>
-              <input {...register('partName')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.partName && <p className="text-red-500 text-sm mt-1">{errors.partName.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Part Number/Model Number</label>
-              <input {...register('partNumber')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Quantity</label>
-              <input {...register('quantity', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Priority Level</label>
-              <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="Standard">Standard</option>
-                <option value="Urgent">Urgent</option>
-              </select>
-              {errors.priorityLevel && <p className="text-red-500 text-sm mt-1">{errors.priorityLevel.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Supplier Name</label>
-              <input {...register('supplierInformation.name')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Supplier Contact</label>
-              <input {...register('supplierInformation.contact')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Supplier Address</label>
-              <input {...register('supplierInformation.address')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Order Date</label>
-              <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
-              {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Expected Delivery Date</label>
-              <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Shipping Method</label>
-              <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="Standard">Standard</option>
-                <option value="Express">Express</option>
-              </select>
-              {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-gray-700 ">Comments/Notes</label>
-              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-            </div>
-
-            {/* <div>
-              <label className="block text-gray-700 ">Attachments</label>
-              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
-              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
-            </div> */}
-
-            <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
-
-          </form>
-          
-        </DialogContent>
-
-      </Dialog>
-      <Dialog open={assign} onClose={handleAssignClose}>
-        <DialogTitle>  Assign Service Center</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleAssignClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign Service Center
-              </label>
-              <select
-                id="service-center-label"
-                value={selectedService}
-                onChange={handleServiceChange}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled>Select Service Center</option>
-                {serviceCenter?.map((center) => (
-                  <option key={center.id} value={center._id}>
-                    {center.serviceCenterName}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign Service Center
-            </Button>
-          </form>
-        </DialogContent>
-
-      </Dialog>
-      <Dialog open={status} onClose={handleUpdateClose}>
+        {/* <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton
           aria-label="close"
@@ -642,8 +410,7 @@ const ComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
-    
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
+      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} /> */}
     </div>
   );
 };

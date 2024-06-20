@@ -179,6 +179,7 @@ const SparepartList = (props) => {
                 <TableCell>{row?.status}</TableCell>
                 <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                 <TableCell className='flex'>
+                  <div className='flex'>
                   <IconButton aria-label="view" onClick={() => handleDetails(row._id)} >
                     <Visibility color='primary' />
                   </IconButton>
@@ -188,6 +189,7 @@ const SparepartList = (props) => {
                   <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                     <DeleteIcon color='error' />
                   </IconButton>
+                  </div>
                 </TableCell>
               </TableRow>
             ))}

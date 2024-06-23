@@ -7,6 +7,7 @@ import ProductList from './ProductList'
 
 
 const Product = () => {
+    const [brands, setBrands] = useState([])
     const [products, setProducts] = useState([])
     const [categories, setCategories] = useState([])
 
@@ -15,6 +16,7 @@ const Product = () => {
     useEffect(() => {
       getAllProducts()
       getAllCategories()
+      getAllBrands()
     }, [refresh])
   
   
@@ -30,18 +32,26 @@ const Product = () => {
   
       setCategories(data)
     }
+    const getAllBrands = async () => {
+      let response = await http_request.get("/getAllBrand")
+      let { data } = response;
+  
+      setBrands(data)
+    }
     const data = products?.map((item, index) => ({ ...item, i: index + 1}));
+   
 
     const RefreshData = (data) => {
       setRefresh(data)
     }
 
+    
 
     return (
         <>
             <Sidenav>
                
-                <ProductList categories={categories} data={data}RefreshData={RefreshData}/>
+                <ProductList categories={categories} brands={brands}  data={data}RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

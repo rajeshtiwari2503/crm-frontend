@@ -75,6 +75,10 @@ const ProductList = (props) => {
     setEditData(row)
     setEditModalOpen(true);
   }
+  const handleDetails = (row) => {
+    setEditData(row)
+    setEditModalOpen(true);
+  }
   const deleteData = async () => {
     try {
       let response = await http_request.deleteData(`/deleteProduct/${cateId}`);
@@ -151,6 +155,15 @@ const ProductList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'productBrand'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('productBrand')}
+                    >
+                     Brand
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'warrantyStatus'}
                       direction={sortDirection}
                       onClick={() => handleSort('warrantyStatus')}
@@ -197,6 +210,7 @@ const ProductList = (props) => {
                     <TableCell>{row?.productName}</TableCell>
                     <TableCell>{row?.productDescription}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
+                    <TableCell>{row?.productBrand}</TableCell>
                     <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{row?.purchaseDate}</TableCell>
@@ -210,9 +224,9 @@ const ProductList = (props) => {
                       <div onClick={()=>handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
                         View Warranty
                       </div>
-                      <IconButton aria-label="view"  >
+                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                         <EditIcon color='success' />
                       </IconButton>
@@ -253,7 +267,7 @@ const ProductList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddProduct categories={categories} userData={userData} existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddProduct categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

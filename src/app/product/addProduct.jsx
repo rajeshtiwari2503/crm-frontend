@@ -4,7 +4,7 @@ import http_request from '../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categories }) => {
+const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categories,brands }) => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); 
@@ -24,10 +24,14 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
             setLoading(true);
 
             const selectedCategory = categories.find(category => category._id === data.categoryId);
+            const selectedBrand= brands.find(brand => brand._id === data.brandId);
+            
             const reqData = {
                 ...data,
                 categoryName: selectedCategory?.categoryName,
                 categoryId: selectedCategory?._id,
+                productBrand: selectedBrand?.brandName,
+                brandId: selectedBrand?._id,
                 userId: userData?.user?._id,
                 userName: userData?.user?.name,
                 warrantyStatus: calculateWarrantyStatus(data.purchaseDate, selectedYear),
@@ -61,8 +65,12 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
             setValue('modelNo', existingProduct.modelNo);
             setValue('purchaseDate', existingProduct.purchaseDate);
             setValue('productBrand', existingProduct.productBrand);
+            setValue('brandId', existingProduct.brandId);
         }
     }, [existingProduct, setValue]);
+
+     
+ 
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -112,6 +120,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                             {...register('categoryId', { required: 'Category is required' })}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryId ? 'border-red-500' : ''}`}
                         >
+                             <option value="">Select a Category</option>
                             {categories?.map((category) => (
                                 <option key={category._id} value={category._id}>
                                     {category.categoryName}
@@ -121,7 +130,9 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                     </div>
                     {errors.categoryId && <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>}
                 </div>
+              
                 <div className=''>
+
                     <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
                         Brand
                     </label>
@@ -135,6 +146,31 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                             {...register('productBrand', { required: 'Product Brand is required', minLength: { value: 3, message: 'Product Brand must be at least 3 characters long' } })}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
                         />
+                    </div>
+                    {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
+                </div>
+                <div className=''>
+                    OR
+                </div>
+                <div className='w-[400px] mt-[-13px]'>
+                    <label htmlFor="brandId" className="block text-sm font-medium leading-6 text-gray-900">
+                        Brand
+                    </label>
+                    <div className="mt-2">
+                        <select
+                            id="brandId"
+                            name="brandId"
+                            required
+                            {...register('brandId' )}
+                            className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
+                        >
+                             <option value="">Select a Brand</option>
+                            {brands?.map((brand) => (
+                                <option key={brand._id} value={brand._id}>
+                                    {brand.brandName}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
                 </div>

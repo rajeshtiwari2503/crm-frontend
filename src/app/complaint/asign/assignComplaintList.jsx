@@ -19,8 +19,11 @@ const AssignComplaintList = (props) => {
   const router = useRouter()
 
   const data = props?.data;
+  const userData = props?.userData;
+  const technician = props?.technicians
   const [status, setStatus] = useState(false);
-
+  const [assignTech, setAssignTech] = useState(false);
+  const [selectedTechnician, setSelectedTechnician] = useState('');
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
   const [page, setPage] = useState(0);
@@ -58,12 +61,24 @@ const AssignComplaintList = (props) => {
       console.log(err);
     }
   }
+  const handleTechnicianChange = (event) => {
+
+    const selectedId = event.target.value;
+    const selectedTechnician = technician.find(center => center._id === selectedId);
+    setSelectedTechnician(selectedTechnician);
+    setValue('status', "ASSIGN");
+    setValue('technicianId', selectedTechnician?._id);
+    setValue('assignTechnician', selectedTechnician?.name);
+    setValue('technicianContact', selectedTechnician?.contact);
+
+  };
   const onSubmit = async (data) => {
     try {
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
       
       setStatus(false)
+      setAssignTech(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
     } catch (err) {
@@ -75,10 +90,15 @@ const AssignComplaintList = (props) => {
     setId(id)
   }
 
-  const handleAdd = () => {
-    router.push("/complaint/add")
-  }
+  const handleAssignTechnician = async (id) => {
+    setId(id)
 
+    setAssignTech(true)
+  }
+  const handleTechnicianClose = () => {
+
+    setAssignTech(false)
+  }
   const handleDetails = (id) => {
     router.push(`/complaint/details/${id}`)
   }
@@ -327,9 +347,9 @@ const AssignComplaintList = (props) => {
                     <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    <TableCell>{row?.assignTechnician}</TableCell>
+                    <TableCell>{row?.technicianContact}</TableCell>
+                    <TableCell>{row?.comments}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -340,13 +360,20 @@ const AssignComplaintList = (props) => {
                         >
                           Update Status
                         </div>
-                       
+                        {userData?.role === "SERVICE" || userData?.role === "ADMIN" ?
+                          <div
+                            onClick={() => handleAssignTechnician(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Assign Technician
+                          </div>
+                          : ""}
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -406,6 +433,59 @@ const AssignComplaintList = (props) => {
             Submit
           </button>
         </div>
+          </form>
+        </DialogContent>
+
+      </Dialog>
+      <Dialog open={assignTech} onClose={handleTechnicianClose}>
+        <DialogTitle>  Assign Technician</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleTechnicianClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className='w-[350px] mb-5'>
+              <label id="service-center-label" className="block text-sm font-medium text-black ">
+                Assign Technician 
+              </label>
+            
+                <select
+                  id="service-center-label"
+                  value={selectedTechnician}
+                  onChange={handleTechnicianChange}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled>Select Technician</option>
+                  {technician?.map((tech) => (
+                    <option key={tech.id} value={tech._id}>
+                      {tech.name}
+                    </option>
+                  ))}
+                </select>
+                <div>
+                <div>
+              <label className="block text-gray-700 ">Contact</label>
+              <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
+            </div>
+              <label className="block text-gray-700 mt-3">Comments/Notes</label>
+              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
+                
+            </div>
+            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+              Assign  Technician 
+            </Button>
           </form>
         </DialogContent>
 

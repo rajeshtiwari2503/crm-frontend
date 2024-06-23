@@ -11,19 +11,36 @@ import AssignComplaintList from './assignComplaintList';
 const Assign = () => {
 
   const [complaint, setComplaint] = useState([])
+  const [technicians, setTechnicians] = useState([])
   const [refresh, setRefresh] = useState("")
+  const [value, setValue] = React.useState(null);
 
+  
   useEffect(() => {
     getAllComplaint()
-
+    getAllTechnician()
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
   }, [refresh])
-
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint")
       let { data } = response;
 
       setComplaint(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+  const getAllTechnician = async () => {
+    try {
+      let response = await http_request.get("/getAllTechnician")
+      let { data } = response;
+
+      setTechnicians(data)
     }
     catch (err) {
       console.log(err);
@@ -42,7 +59,7 @@ const Assign = () => {
     <Sidenav>
       <Toaster />
       <>
-        <AssignComplaintList data={data} RefreshData={RefreshData} />
+        <AssignComplaintList data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

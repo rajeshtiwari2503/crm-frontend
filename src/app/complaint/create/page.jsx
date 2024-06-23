@@ -19,7 +19,7 @@ const AddComplaint = () => {
   const [products, setProducts] = useState([])
   const [value, setLocalValue] = useState('');
 
- 
+
   const getAllProducts = async () => {
     let response = await http_request.get("/getAllProduct")
     let { data } = response;
@@ -27,10 +27,10 @@ const AddComplaint = () => {
     setProducts(data)
   }
   const RegiterComplaint = async (reqdata) => {
-    
+
     try {
       setLoading(true)
-     
+
       let response = await http_request.post('/createComplaint', reqdata)
       const { data } = response
       ToastMessage(data)
@@ -54,26 +54,30 @@ const AddComplaint = () => {
   const handleProductChange = (e) => {
     const selectedProductId = e.target.value;
     setProductName(selectedProductId)
-    const selectedProduct = products.find(product => product.productName === selectedProductId);
+    const selectedProduct = products.find(product => product._id === selectedProductId);
+    console.log(selectedProduct);
     if (selectedProduct) {
       setValue('productName', selectedProduct.productName);
       setValue('categoryName', selectedProduct.categoryName);
       setValue('productBrand', selectedProduct.productBrand);
+      setValue('productId', selectedProduct._id);
+      setValue('categoryId', selectedProduct.categoryId);
+      setValue('brandId', selectedProduct.brandId);
       setValue('modelNo', selectedProduct.modelNo);
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
-    
+
     }
   };
-  
+
   useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setLocalValue(JSON.parse(storedValue));
     }
-     
-    if(productName){
-      setValue('fullName', value.user.name); 
+
+    if (productName) {
+      setValue('fullName', value.user.name);
       setValue('phoneNumber', value.user.contact);
       setValue('emailAddress', value.user.email);
       setValue('serviceAddress', value.user.address);
@@ -84,9 +88,10 @@ const AddComplaint = () => {
   const handleFileChange = (e) => {
     const reader = new FileReader();
     if (e.target.files[0]) {
-        reader.readAsDataURL(e.target.files[0])
-        setValue('issueImages', e.target.files[0]);
-    }}
+      reader.readAsDataURL(e.target.files[0])
+      setValue('issueImages', e.target.files[0]);
+    }
+  }
 
 
   return (
@@ -101,18 +106,34 @@ const AddComplaint = () => {
 
             <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
               <div>
+                <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
+                  Product Name
+                </label>
+                <input
+                  id="productName"
+                  name="productName"
+                  type="text"
+                  autoComplete="off"
+                  // readOnly
+                  {...register('productName', { required: 'Product is required' })}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
+                />
+                {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
+              </div>
+              <div>
               <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
-              Product Name
-            </label>
-            <select
+                  Product Name
+                </label>
+                <select
                   id="productName"
                   name="productName"
                   onChange={handleProductChange}
+                  // {...register('productName', { required: 'Product is required' })}
                   className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productName ? 'border-red-500' : ''}`}
                 >
                   <option value="">Select a product</option>
                   {products.map(product => (
-                    <option key={product.productId} value={product.productId}>
+                    <option key={product.productId} value={product._id}>
                       {product.productName}
                     </option>
                   ))}
@@ -128,10 +149,29 @@ const AddComplaint = () => {
                   name="categoryName"
                   type="text"
                   autoComplete="off"
-                  readOnly
+                  // readOnly
                   {...register('categoryName', { required: 'Category is required' })}
                   className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
                 />
+                {errors.categoryName && <p className="text-red-500 text-sm mt-1">{errors.categoryName.message}</p>}
+              </div>
+              <div>
+                <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
+                  Product Category
+                </label>
+                <select
+                  id="categoryName"
+                  name="categoryName"
+                  // onChange={handleProductChange}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
+                >
+                  <option value="">Select a product</option>
+                  {products.map(product => (
+                    <option key={product.productId} value={product.productId}>
+                      {product.productName}
+                    </option>
+                  ))}
+                </select>
                 {errors.categoryName && <p className="text-red-500 text-sm mt-1">{errors.categoryName.message}</p>}
               </div>
               <div>
@@ -143,13 +183,31 @@ const AddComplaint = () => {
                   name="productBrand"
                   type="text"
                   autoComplete="off"
-                  readOnly
+                  // readOnly
                   {...register('productBrand', { required: 'Product Brand is required' })}
                   className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
                 />
                 {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
               </div>
-             
+              <div>
+                <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
+                  Brand
+                </label>
+                <select
+                  id="productBrand"
+                  name="productBrand"
+                  // onChange={handleProductChange}
+                  className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
+                >
+                  <option value="">Select a Brand</option>
+                  {products.map(product => (
+                    <option key={product.productId} value={product.productId}>
+                      {product.productName}
+                    </option>
+                  ))}
+                </select>
+                {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
+              </div>
               {/* <div className=''>
                 <label htmlFor="productDescription" className="block text-sm font-medium leading-6 text-gray-900">
                   Product Description
@@ -167,9 +225,9 @@ const AddComplaint = () => {
                 </div>
                 {errors.productDescription && <p className="text-red-500 text-sm mt-1">{errors.productDescription.message}</p>}
               </div> */}
-             
-                
-              
+
+
+
               <div className=' '>
                 <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
                   Serial No
@@ -273,34 +331,34 @@ const AddComplaint = () => {
                 {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
               </div>
               <div className=' flex md:col-span-3 gap-4'>
-              <div className=' w-full'>
-                <label htmlFor="detailedDescription" className="block text-sm font-medium leading-6 text-gray-900">
-                  Detailed Description
-                </label>
-                <textarea
-                  id="detailedDescription"
-                  name="detailedDescription"
-                  autoComplete="detailedDescription"
-                  required
-                  {...register('detailedDescription', { required: 'Detailed Description is required' })}
-                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.detailedDescription ? 'border-red-500' : ''}`}
-                />
-                {errors.detailedDescription && <p className="text-red-500 text-sm mt-1">{errors.detailedDescription.message}</p>}
-              </div>
+                <div className=' w-full'>
+                  <label htmlFor="detailedDescription" className="block text-sm font-medium leading-6 text-gray-900">
+                    Detailed Description
+                  </label>
+                  <textarea
+                    id="detailedDescription"
+                    name="detailedDescription"
+                    autoComplete="detailedDescription"
+                    required
+                    {...register('detailedDescription', { required: 'Detailed Description is required' })}
+                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.detailedDescription ? 'border-red-500' : ''}`}
+                  />
+                  {errors.detailedDescription && <p className="text-red-500 text-sm mt-1">{errors.detailedDescription.message}</p>}
+                </div>
 
-              <div className='w-full '>
-                <label htmlFor="errorMessages" className="block text-sm font-medium leading-6 text-gray-900">
-                  Error Messages
-                </label>
-                <textarea
-                  id="errorMessages"
-                  name="errorMessages"
-                  autoComplete="errorMessages"
-                  {...register('errorMessages')}
-                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.errorMessages ? 'border-red-500' : ''}`}
-                />
-                {errors.errorMessages && <p className="text-red-500 text-sm mt-1">{errors.errorMessages.message}</p>}
-              </div>
+                <div className='w-full '>
+                  <label htmlFor="errorMessages" className="block text-sm font-medium leading-6 text-gray-900">
+                    Error Messages
+                  </label>
+                  <textarea
+                    id="errorMessages"
+                    name="errorMessages"
+                    autoComplete="errorMessages"
+                    {...register('errorMessages')}
+                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 resize-none ${errors.errorMessages ? 'border-red-500' : ''}`}
+                  />
+                  {errors.errorMessages && <p className="text-red-500 text-sm mt-1">{errors.errorMessages.message}</p>}
+                </div>
               </div>
 
               <div>

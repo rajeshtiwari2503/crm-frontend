@@ -15,8 +15,9 @@ import { useForm } from 'react-hook-form';
 
 const ComplaintList = (props) => {
   const serviceCenter = props?.serviceCenter
+
   const userData = props?.userData
-  
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
 
@@ -89,6 +90,7 @@ const ComplaintList = (props) => {
     router.push(`/complaint/edit/${id}`);
   };
 
+  
   const handleAssignServiceCenter = async (id) => {
     setId(id)
     setAssign(true)
@@ -103,18 +105,20 @@ const ComplaintList = (props) => {
   }
   const handleOrderPart = async (id) => {
     setId(id)
-    setValue("ticketID",id)
+    setValue("ticketID", id)
     setOrder(true)
   }
   const handleAssignClose = () => {
 
     setAssign(false)
   }
-  
+
   const handleOrderClose = () => {
 
     setOrder(false)
   }
+
+ 
   const handleServiceChange = (event) => {
     if (status === true) {
       setValue("status", event.target.value)
@@ -145,7 +149,7 @@ const ComplaintList = (props) => {
     try {
       let response = await http_request.post(`/addOrder`, data);
       let { data: responseData } = response;
-       setOrder(false)
+      setOrder(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
     } catch (err) {
@@ -395,9 +399,9 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    <TableCell>{row?.assignTechnician}</TableCell>
+                    <TableCell>{row?.technicianContact}</TableCell>
+                    <TableCell>{row?.comments}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -408,6 +412,7 @@ const ComplaintList = (props) => {
                         >
                           Update Status
                         </div>
+                       
                         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
@@ -558,7 +563,7 @@ const ComplaintList = (props) => {
             <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
           </form>
-          
+
         </DialogContent>
 
       </Dialog>
@@ -580,24 +585,26 @@ const ComplaintList = (props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[350px] mb-5'>
               <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign Service Center
+                Assign  Service Center 
               </label>
+              
               <select
-                id="service-center-label"
-                value={selectedService}
-                onChange={handleServiceChange}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled>Select Service Center</option>
-                {serviceCenter?.map((center) => (
-                  <option key={center.id} value={center._id}>
-                    {center.serviceCenterName}
-                  </option>
-                ))}
-              </select>
+                  id="service-center-label"
+                  value={selectedService}
+                  onChange={handleServiceChange}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled>Select Service Center</option>
+                  {serviceCenter?.map((center) => (
+                    <option key={center.id} value={center._id}>
+                      {center.serviceCenterName}
+                    </option>
+                  ))}
+                </select>
+            
             </div>
             <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign Service Center
+              Assign   Service Center 
             </Button>
           </form>
         </DialogContent>
@@ -619,30 +626,30 @@ const ComplaintList = (props) => {
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='w-[350px] mb-5'>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="NEW">New</option>
-            <option value="IN PROGRESS">In Progress</option>
-            <option value="AWAITING PART">Awaiting Parts</option>
-            <option value="ONHOLD">On Hold</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELED">Canceled</option>
-          </select>
-        </div>
-        <div>
-          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-            Submit
-          </button>
-        </div>
+            <div className='w-[350px] mb-5'>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <select
+                {...register('status')}
+                className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                <option value="NEW">New</option>
+                <option value="IN PROGRESS">In Progress</option>
+                <option value="AWAITING PART">Awaiting Parts</option>
+                <option value="ONHOLD">On Hold</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELED">Canceled</option>
+              </select>
+            </div>
+            <div>
+              <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                Submit
+              </button>
+            </div>
           </form>
         </DialogContent>
 
       </Dialog>
-    
+
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );

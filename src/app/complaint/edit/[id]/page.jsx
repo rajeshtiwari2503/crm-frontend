@@ -6,49 +6,51 @@ import http_request from '../../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
+import { Toaster } from 'react-hot-toast';
 
 const Editservice = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [service, setService] = useState("")
     const [productName, setProductName] = useState("")
+    const [uploadedImage, setUploadedImage] = useState("")
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
 
     useEffect(() => {
-          getAllProducts()
-          getServiceById()
-        if(service){
-          setValue('fullName', service.fullName); 
-          setValue('phoneNumber', service.phoneNumber);
-          setValue('emailAddress', service.emailAddress);
-          setValue('serviceAddress', service.serviceAddress);
-          setValue('errorMessages', service.errorMessages);
-          setValue('issueType', service.issueType);
-          setValue('modelNo', service.modelNo);
-        //   setValue('preferredServiceDate', service.preferredServiceDate);
-        //   setValue('preferredServiceTime', service.preferredServiceTime);
-        //   setValue('purchaseDate',  service.purchaseDate );
-          setValue('productName', service.productName);
-          setValue('productBrand', service.productBrand);
-          setValue('categoryName', service.categoryName);
-        //   setValue('purchaseDate', new Date(service.purchaseDate).toLocaleDateString());
-         
-          setValue('serialNo', service.serialNo);
-          setValue('serviceLocation', service.serviceLocation);
-          setValue('detailedDescription', service.detailedDescription); 
-          setValue('alternateContactInfo', service.alternateContactInfo); 
-          if (service.preferredServiceDate) {
-            setValue('preferredServiceDate', new Date(service.preferredServiceDate).toISOString().split('T')[0]);
-        }
-        if (service.preferredServiceTime) {
-            setValue('preferredServiceTime', service.preferredServiceTime);
-        }
-        if (service.purchaseDate) {
-            setValue('purchaseDate', new Date(service.purchaseDate).toISOString().split('T')[0]);
-        }
+        getAllProducts()
+        getServiceById()
+        if (service) {
+            setValue('fullName', service.fullName);
+            setValue('phoneNumber', service.phoneNumber);
+            setValue('emailAddress', service.emailAddress);
+            setValue('serviceAddress', service.serviceAddress);
+            setValue('errorMessages', service.errorMessages);
+            setValue('issueType', service.issueType);
+            setValue('modelNo', service.modelNo);
+            //   setValue('preferredServiceDate', service.preferredServiceDate);
+            //   setValue('preferredServiceTime', service.preferredServiceTime);
+            //   setValue('purchaseDate',  service.purchaseDate );
+            setValue('productName', service.productName);
+            setValue('productBrand', service.productBrand);
+            setValue('categoryName', service.categoryName);
+            //   setValue('purchaseDate', new Date(service.purchaseDate).toLocaleDateString());
+
+            setValue('serialNo', service.serialNo);
+            setValue('serviceLocation', service.serviceLocation);
+            setValue('detailedDescription', service.detailedDescription);
+            setValue('alternateContactInfo', service.alternateContactInfo);
+            if (service.preferredServiceDate) {
+                setValue('preferredServiceDate', new Date(service.preferredServiceDate).toISOString().split('T')[0]);
+            }
+            if (service.preferredServiceTime) {
+                setValue('preferredServiceTime', service.preferredServiceTime);
+            }
+            if (service.purchaseDate) {
+                setValue('purchaseDate', new Date(service.purchaseDate).toISOString().split('T')[0]);
+            }
         }
     }, [id])
 
@@ -65,7 +67,7 @@ const Editservice = ({ params }) => {
             console.log(err);
         }
     }
- 
+
 
     const Updateservice = async (reqdata) => {
         try {
@@ -91,35 +93,55 @@ const Editservice = ({ params }) => {
     const getAllProducts = async () => {
         let response = await http_request.get("/getAllProduct")
         let { data } = response;
-    
+
         setProducts(data)
-      }
-  
+    }
+
+
 
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         setProductName(selectedProductId)
         const selectedProduct = products.find(product => product.productName === selectedProductId);
         if (selectedProduct) {
-          setValue('productName', selectedProduct.productName);
-          setValue('categoryName', selectedProduct.categoryName);
-          setValue('productBrand', selectedProduct.productBrand);
-          setValue('modelNo', selectedProduct.modelNo);
-          setValue('serialNo', selectedProduct.serialNo);
-          setValue('purchaseDate', selectedProduct.purchaseDate);
-        
-        }
-      };
+            setValue('productName', selectedProduct.productName);
+            setValue('categoryName', selectedProduct.categoryName);
+            setValue('productBrand', selectedProduct.productBrand);
+            setValue('modelNo', selectedProduct.modelNo);
+            setValue('serialNo', selectedProduct.serialNo);
+            setValue('purchaseDate', selectedProduct.purchaseDate);
 
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setUploadedImage(file)
+        }
+    };
+    const changeImage = async () => {
+        try {
+            const formData = new FormData();
+            formData.append("issueImages", uploadedImage);
+            let response = await http_request.patch(`/editImage/${id}`, formData);
+            let { data } = response;
+            ToastMessage(data);
+            //   router.push("/product/sparepart");
+        } catch (err) {
+            console.log(err);
+        }
+    }
 
     return (
         <>
 
             <Sidenav >
+                <Toaster />
                 <div className=" ">
                     <div  >
                         <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                            Edit Service
+                            Edit Complaint
                         </h2>
 
                         <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
@@ -280,22 +302,7 @@ const Editservice = ({ params }) => {
                                 </select>
                                 {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
                             </div>
-                            <div>
-                                <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Upload Images/Videos
-                                </label>
-                                <input
-                                    id="images"
-                                    name="images"
-                                    type="file"
-                                    // onChange={(e) => handleFileChange(e)}
-                                    multiple
-                                    accept="image/*, video/*"
-                                    {...register('issueImages', { required: 'Images/Videos are required' })}
-                                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.images ? 'border-red-500' : ''}`}
-                                />
-                                {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
-                            </div>
+
                             <div className=' flex md:col-span-3 gap-4'>
                                 <div className=' w-full'>
                                     <label htmlFor="detailedDescription" className="block text-sm font-medium leading-6 text-gray-900">
@@ -457,6 +464,57 @@ const Editservice = ({ params }) => {
                                     className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceAddress ? 'border-red-500' : ''}`}
                                 />
                                 {errors.serviceAddress && <p className="text-red-500 text-sm mt-1">{errors.serviceAddress.message}</p>}
+                            </div>
+                            <div>
+                                <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Upload Images/Videos
+                                </label>
+                                <input
+                                    id="images"
+                                    name="images"
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e)}
+                                    multiple
+                                    accept="image/*, video/*"
+                                    // {...register('issueImages', { required: 'Images/Videos are required' })}
+                                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.images ? 'border-red-500' : ''}`}
+                                />
+                                {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
+
+                                <div className='mt-5  '>
+                                    <button
+                                        type="button"
+                                        disabled={loading}
+                                        onClick={changeImage}
+                                        className="flex   justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                    >
+                                        Update Image
+                                    </button>
+                                </div>
+                            </div>
+                            <div>
+                                {
+                                    uploadedImage === "" ?
+
+                                        <img
+
+                                            src={service?.issueImages}
+                                            height="200px"
+                                            width="200px"
+                                            className='m-2'
+                                            alt='image'
+                                        />
+
+                                        :
+                                        <img
+                                            src={URL.createObjectURL(uploadedImage)}
+                                            height="200px"
+                                            width="200px"
+                                            className='m-2'
+                                            alt=''
+                                        />
+
+                                }
                             </div>
                         </form>
 

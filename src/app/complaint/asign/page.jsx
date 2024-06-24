@@ -59,7 +59,7 @@ const Assign = () => {
     <Sidenav>
       <Toaster />
       <>
-        <AssignComplaintList data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
+        <AssignComplaintList   data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

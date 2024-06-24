@@ -40,19 +40,19 @@ const Dashboard = () => {
     <Sidenav  >
       <>
       {value?.user?.role==="ADMIN" ?
-       <AdminDashboard  dashData={dashData} />
+       <AdminDashboard  dashData={dashData} userData={value?.user} />
        : value?.user?.role==="BRAND" ?
-       <BrandDashboard dashData={dashData}/>  
+       <BrandDashboard dashData={dashData}userData={value?.user}/>  
        : value?.user?.role==="SERVICE" ?
-       <ServiceDashboard dashData={dashData}/>
+       <ServiceDashboard dashData={dashData} userData={value?.user}/>
        : value?.user?.role==="EMPLOYEE" ?
-       <EmployeeDashboard dashData={dashData}/>
+       <EmployeeDashboard dashData={dashData} userData={value?.user}/>
        :value?.user?.role==="USER" ?
-       <UserDashboard dashData={dashData}/>
+       <UserDashboard dashData={dashData} userData={value?.user}/>
        :value?.user?.role==="TECHNICIAN" ?
-       <UserDashboard dashData={dashData}/>
+       <UserDashboard dashData={dashData} userData={value?.user}/>
        :value?.user?.role==="DEALER" ?
-       <DealerDashboard dashData={dashData}/>:""
+       <DealerDashboard dashData={dashData} userData={value?.user}/>:""
   }
       </>
     </Sidenav>

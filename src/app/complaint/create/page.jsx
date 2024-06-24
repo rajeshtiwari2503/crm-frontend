@@ -14,6 +14,7 @@ const AddComplaint = () => {
 
   const [loading, setLoading] = useState(false)
   const [productName, setProductName] = useState("")
+  const [image, setImage] = useState("")
 
   const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
   const [products, setProducts] = useState([])
@@ -30,8 +31,19 @@ const AddComplaint = () => {
 
     try {
       setLoading(true)
+      const formData = new FormData();
 
-      let response = await http_request.post('/createComplaint', reqdata)
+      for (const key in reqdata) {
+        if (reqdata.hasOwnProperty(key)) {
+          formData.append(key, reqdata[key]);
+        }
+      }
+      const issueImages = image;
+      // console.log("dhhh",issueImages);
+      if (issueImages) {
+        formData.append('issueImages', issueImages);
+      }
+      let response = await http_request.post('/createComplaint', formData)
       const { data } = response
       ToastMessage(data)
       setLoading(false)
@@ -47,6 +59,7 @@ const AddComplaint = () => {
   }
 
   const onSubmit = (data) => {
+    // console.log(data);
     RegiterComplaint(data)
   };
 
@@ -55,7 +68,7 @@ const AddComplaint = () => {
     const selectedProductId = e.target.value;
     setProductName(selectedProductId)
     const selectedProduct = products.find(product => product._id === selectedProductId);
-    console.log(selectedProduct);
+    // console.log(selectedProduct);
     if (selectedProduct) {
       setValue('productName', selectedProduct.productName);
       setValue('categoryName', selectedProduct.categoryName);
@@ -89,10 +102,22 @@ const AddComplaint = () => {
     const reader = new FileReader();
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0])
-      setValue('issueImages', e.target.files[0]);
+      setImage(e.target.files[0]);
+      // console.log("dhhh",e.target.files[0]);
+
+      if (value?.user?.role === "USER") {
+        setValue('userId', value?.user?._id)
+        setValue('userName', value?.user?.name);
+      } else if (value?.user?.role === "DEALER") {
+        setValue('dealerName', value?.user?.name)
+        setValue('dealerId', value?.user?._id);
+      } else if (value?.user?.role === "BRAND") {
+        setValue('brandId', value?.user?._id);
+      }
+     
     }
   }
-
+ 
 
   return (
     <>
@@ -322,13 +347,13 @@ const AddComplaint = () => {
                   id="images"
                   name="images"
                   type="file"
-                  // onChange={(e) => handleFileChange(e)}
+                  onChange={(e) => handleFileChange(e)}
                   multiple
                   accept="image/*, video/*"
-                  {...register('issueImages', { required: 'Images/Videos are required' })}
-                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.images ? 'border-red-500' : ''}`}
+                  // {...register('issueImages', { required: 'Images/Videos are required' })}
+                  className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueImages ? 'border-red-500' : ''}`}
                 />
-                {errors.images && <p className="text-red-500 text-sm mt-1">{errors.images.message}</p>}
+                {image==="" ?<p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p>:""}
               </div>
               <div className=' flex md:col-span-3 gap-4'>
                 <div className=' w-full'>

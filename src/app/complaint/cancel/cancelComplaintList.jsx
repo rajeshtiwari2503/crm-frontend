@@ -18,7 +18,17 @@ const CancelComplaintList = (props) => {
 
   const router = useRouter()
 
-  const data = props?.data;
+  const complaint = props?.data;
+  const userData = props?.data;
+
+  const data = userData.role === "ADMIN" ? complaint
+  : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+    : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+      : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
+        : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
+          : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
+            :complaint
+
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -98,7 +108,7 @@ const CancelComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Assign Complaint Information</div>
+        <div className='font-bold text-2xl'>Cancel Complaint Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />

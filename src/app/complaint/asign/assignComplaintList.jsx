@@ -18,8 +18,19 @@ const AssignComplaintList = (props) => {
 
   const router = useRouter()
 
-  const data = props?.data;
-  const userData = props?.userData;
+  const complaint = props?.data;
+
+  const userData = props?.userData
+
+  const data = userData?.role === "ADMIN" ? complaint
+  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
+        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
+          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
+            : complaint
+
+
   const technician = props?.technicians
   const [status, setStatus] = useState(false);
   const [assignTech, setAssignTech] = useState(false);

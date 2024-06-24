@@ -13,7 +13,8 @@ const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
 const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
   loading: () => <p>Chart loading.........</p>
 });
-const DealerDashboard = () => {
+const DealerDashboard = (props) => {
+  const userData=props?.userData
 
   const [complaint, setComplaint] = useState([])
   const [refresh, setRefresh] = useState("")
@@ -35,7 +36,15 @@ const DealerDashboard = () => {
     }
   }
 
-  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
+  const filterData = userData?.role === "ADMIN" ? complaint
+  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
+        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
+          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
+            : complaint
+
+  const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
     setRefresh(data)

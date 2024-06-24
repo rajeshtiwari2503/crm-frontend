@@ -13,9 +13,14 @@ const Close = () => {
   const [complaint, setComplaint] = useState([])
   const [refresh, setRefresh] = useState("")
 
+  const [value, setValue] = React.useState(null);
+
   useEffect(() => {
     getAllComplaint()
-
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
   }, [refresh])
 
   const getAllComplaint = async () => {
@@ -42,7 +47,7 @@ const Close = () => {
     <Sidenav>
       <Toaster />
       <>
-        <CloseComplaintList data={data} RefreshData={RefreshData} />
+        <CloseComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

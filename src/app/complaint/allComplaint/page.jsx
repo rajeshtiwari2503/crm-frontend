@@ -46,6 +46,8 @@ const Service = () => {
       console.log(err);
     }
   }
+
+ 
   const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {

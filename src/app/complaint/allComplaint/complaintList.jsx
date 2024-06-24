@@ -14,14 +14,23 @@ import { useForm } from 'react-hook-form';
 
 
 const ComplaintList = (props) => {
+  
   const serviceCenter = props?.serviceCenter
-
+  const complaint = props?.data;
   const userData = props?.userData
+
+  const filteredData = userData.role === "ADMIN" ? complaint
+  : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+    : userData.role === "USER" ? complaint.filter((item) => item?.userId  === userData._id)
+      : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+        : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId   === userData._id)
+          : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId  === userData._id)
+            : complaint
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
 
-  const filteredData = props?.data;
+ 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [assign, setAssign] = useState(false);
   const [status, setStatus] = useState(false);

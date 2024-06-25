@@ -26,10 +26,11 @@ import { useForm } from 'react-hook-form';
 
 
 import { ReactLoader } from '../../components/common/Loading';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
-const BankDetailsList = () => {
-    const [brandDetails, setBrandDetails] = useState();
-    const [walletDetails, setWalletDetails] = useState([]);
+const BankDetailsList = ({ RefreshData, data, value }) => {
+
+    const [existingDetails, setExistingDetails] = useState(null);
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [page, setPage] = useState(0);
@@ -37,54 +38,63 @@ const BankDetailsList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm();
+
+    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
 
 
-    const handleSort = (column) => {
-        const isAsc = sortBy === column && sortDirection === 'asc';
-        setSortDirection(isAsc ? 'desc' : 'asc');
-        setSortBy(column);
-    };
 
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
 
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
 
-    const sortedData = walletDetails.sort((a, b) => {
-        const isAsc = sortDirection === 'asc';
-        switch (sortBy) {
-            case 'id':
-                return isAsc ? a.id - b.id : b.id - a.id;
-            case 'name':
-                return isAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
-            case 'email':
-                return isAsc ? a.email.localeCompare(b.email) : b.email.localeCompare(a.email);
-            default:
-                return 0;
+
+    const AddBankDetails = async (data) => {
+        try {
+
+            const reqData = { ...data, userId: value?.user?._id, userName: value?.user?.name }
+
+            setLoading(true);
+            const endpoint = existingDetails?._id ? `/editBankDetails/${existingDetails._id}` : '/addBankDetails';
+            const response = existingDetails?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, reqData);
+            const { data: responseData } = response;
+            ToastMessage(responseData);
+            setLoading(false);
+            RefreshData(responseData);
+            setIsModalOpen(false)
+        } catch (err) {
+            setLoading(false);
+
+            console.log(err);
         }
-    });
-
-    const onSubmit = async (data) => {
-        console.log("fjgh");
     };
+    const onSubmit = async (data) => {
 
+        AddBankDetails(data)
+    };
+    const handleEditModalOpen = (row) => {
+        setExistingDetails(row)
+        setValue("bankName", row?.bankName)
+        setValue("accountHolderName", row?.accountHolderName)
+        setValue("accountNumber", row?.accountNumber)
+        setValue("IFSC", row?.IFSC)
+        setValue("commission", row?.commission)
+        setIsModalOpen(true)
+    }
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">
             <div className="container-xxl">
 
+
                 <div className="flex justify-between mb-5">
                     <div className='font-bold text-xl'>Wallet & Bank Details</div>
-                    <Button variant="contained" color="primary" onClick={() => setIsModalOpen(true)}>
-                        Add Bank Details
-                    </Button>
+                    {data === ""  ?
+                        <Button className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center ' variant="contained" color="primary" onClick={() => setIsModalOpen(true)}>
+                            Add Bank Details
+                        </Button>
+                        : ""
+                    }
                 </div>
+
 
                 <div className="row clearfix g-3">
                     {loading ? (
@@ -106,13 +116,41 @@ const BankDetailsList = () => {
                                                     User Name
                                                 </TableSortLabel>
                                             </TableCell>
+
                                             <TableCell>
                                                 <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
                                                     onClick={() => handleSort('addedAmount')}
                                                 >
-                                                    Paid Amount
+                                                    Bank Name
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'addedAmount'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('addedAmount')}
+                                                >
+                                                    Account Holder Name
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'addedAmount'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('addedAmount')}
+                                                >
+                                                    Account No.
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'addedAmount'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('addedAmount')}
+                                                >
+                                                    IFSC Code
                                                 </TableSortLabel>
                                             </TableCell>
                                             <TableCell>
@@ -121,43 +159,42 @@ const BankDetailsList = () => {
                                                     direction={sortDirection}
                                                     onClick={() => handleSort('createdAt')}
                                                 >
-                                                    Payment Release Date
+                                                    CreatedAt
                                                 </TableSortLabel>
                                             </TableCell>
                                             <TableCell>Actions</TableCell>
                                         </TableRow>
                                     </TableHead>
-                                    <TableBody>
-                                        {sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                                            <TableRow key={index} hover>
-                                                <TableCell>{row.brandName}</TableCell>
-                                                <TableCell>{row.addedAmount} INR</TableCell>
-                                                <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
+                                    {data === "" ? "" :
+                                        <TableBody>
+
+                                            <TableRow hover>
+                                                <TableCell>{data?.userName}  </TableCell>
+                                                <TableCell>{data?.bankName}</TableCell>
+                                                <TableCell>{data?.accountHolderName}</TableCell>
+                                                <TableCell>{data?.accountNumber}  </TableCell>
+                                                <TableCell>{data?.IFSC}  </TableCell>
+
+
+                                                <TableCell>{new Date(data?.createdAt).toLocaleString()}</TableCell>
                                                 <TableCell>
-                                                    <IconButton aria-label="view" onClick={() => handleView(row.id)}>
+                                                    {/* <IconButton aria-label="view" onClick={() => handleView(row.id)}>
                                                         <Visibility color='primary' />
-                                                    </IconButton>
-                                                    <IconButton aria-label="edit" onClick={() => handleEditModalOpen(row)}>
+                                                    </IconButton> */}
+                                                    <IconButton aria-label="edit" onClick={() => handleEditModalOpen(data)}>
                                                         <EditIcon color='success' />
                                                     </IconButton>
-                                                    <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
+                                                    {/* <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
                                                         <DeleteIcon color='error' />
-                                                    </IconButton>
+                                                    </IconButton> */}
                                                 </TableCell>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
+
+                                        </TableBody>
+                                    }
                                 </Table>
                             </TableContainer>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25]}
-                                component="div"
-                                count={walletDetails.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                            />
+
                         </div>
                     )}
                 </div>
@@ -239,7 +276,7 @@ const BankDetailsList = () => {
                             </Button>
 
                             <Button disabled={loading} variant="outlined" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                                Add Bank Details
+                                {existingDetails ? "Edit Bank Details" : "Add Bank Details"}
                             </Button>
 
                         </div>
@@ -254,3 +291,4 @@ const BankDetailsList = () => {
 };
 
 export default BankDetailsList;
+

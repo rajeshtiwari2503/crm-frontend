@@ -16,7 +16,7 @@ const AdminDashboard = (props) => {
 
 const data=props?.dashData;
 
-console.log(data);
+// console.log(data);
   return (
     <>
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>

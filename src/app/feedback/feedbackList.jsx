@@ -323,6 +323,15 @@ const FeedbackList = (props) => {
                           <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                             <EditIcon color='success' />
                           </IconButton>
+                          {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                            <DeleteIcon color='error' />
+                          </IconButton> */}
+                        </>
+                        :value?.user?.role === "ADMIN" ?
+                        <>
+                          <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                            <EditIcon color='success' />
+                          </IconButton>
                           <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>

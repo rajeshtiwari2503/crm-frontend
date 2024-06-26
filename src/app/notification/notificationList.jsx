@@ -85,12 +85,12 @@ const NotificationList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Notification Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+        {/* <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Inventory</div>
-        </div>
+        </div> */}
       </div>
-      <div className="flex items-center mb-3">
+      {/* <div className="flex items-center mb-3">
       <Search  className="text-gray-500" />
       <input
         type="text"
@@ -99,7 +99,7 @@ const NotificationList = (props) => {
         onChange={handleSearch}
         className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
-    </div>
+    </div> */}
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
@@ -132,7 +132,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('userId')}
                     >
-                     UserId
+                     User Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -146,7 +146,15 @@ const NotificationList = (props) => {
                   </TableCell>
                 
                  
-                  
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'status'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('status')}
+                    >
+                     Status
+                    </TableSortLabel>
+                  </TableCell>
                  
                   <TableCell>
                     <TableSortLabel
@@ -166,8 +174,9 @@ const NotificationList = (props) => {
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?._id}</TableCell>
-                    <TableCell>{row?.userId}</TableCell>
+                    <TableCell>{row?.userName}</TableCell>
                     <TableCell>{row?.message}</TableCell>
+                    <TableCell>{row?.status}</TableCell>
                  
                    
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>

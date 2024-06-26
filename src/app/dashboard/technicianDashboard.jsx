@@ -9,7 +9,7 @@ import { Chart } from 'react-google-charts';
 
  
 
-const UserDashboard = (props) => {
+const TechnicianDashboard = (props) => {
   const userData = props?.userData;
   const dashData = props?.dashData;
   const [complaint, setComplaint] = useState([]);
@@ -148,4 +148,4 @@ const UserDashboard = (props) => {
   );
 };
 
-export default UserDashboard;
+export default TechnicianDashboard;

@@ -52,22 +52,25 @@ function Sidenav(props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
   const [notifications, setNotifications] = React.useState([]);
-
+const [refresh,setRefresh]=React.useState("")
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setValue(JSON.parse(storedValue));
     }
     getAllNotification()
-  }, []);
+  }, [refresh]);
 
 
 
   const getAllNotification = async () => {
+    const storedValue = localStorage.getItem("user");
+    const userType = JSON.parse(storedValue)
     try {
-      let response = await http_request.get("/getAllNotification")
-      let { data } = response;
 
+      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : `/getNotificationByUserId/${userType?.user?._id}`
+      let response = await http_request.get(endPoint)
+      let { data } = response;
       setNotifications(data)
     }
     catch (err) {
@@ -75,7 +78,19 @@ function Sidenav(props) {
     }
   }
 
-  // console.log(notifications);
+
+  const unreadNoti = notifications?.filter((item) => item?.status === "UNREAD")
+ 
+const handleReadMark=async(id)=>{
+  try {
+    let response = await http_request.patch(`/editNotification/${id}`,{status:"READ"})
+    let { data } = response;
+    setRefresh(data)
+  }
+  catch (err) {
+    console.log(err);
+  }
+}
 
   const dropdownRef = React.useRef(null);
 
@@ -284,11 +299,11 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" ||   value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
               ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <AccountBalance />
+                    <AccountBalance />
                   </ListItemIcon>
                   <ListItemText primary={"Wallet"} />
                   {isCollapseUser ? <ExpandLess /> : <ExpandMore />}
@@ -297,18 +312,18 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseWallet} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {["Bank Details","Transactions"]?.map((text, index) => (
+                {["Bank Details", "Transactions"]?.map((text, index) => (
                   <ListItem key={text} disablePadding
-                 className={ text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                  pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
-                 }
+                    className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                      pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                    }
                     onClick={(event) => { text === "Bank Details" ? router.push(`/wallet/bankDetails`) : router.push(`/wallet/${text.toLowerCase()}`) }}
                   >
                     <ListItemButton>
-                      <ListItemIcon  className={ text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600  ' : 'text-slate-700  ') :
-                  pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
-                 }>
-                      <AccountBalance />
+                      <ListItemIcon className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                        pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
+                      }>
+                        <AccountBalance />
                       </ListItemIcon>
                       <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
                     </ListItemButton>
@@ -534,7 +549,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "TECHNICIAN"
+            {value?.user?.role === "TECHNICIAN" || value?.user?.role === "USER" 
               ?
               <>
                 <ListItem onClick={(event) => {
@@ -667,7 +682,7 @@ function Sidenav(props) {
               </ListItemButton>
             </ListItem>
             {/* : ""} */}
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
               ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
               }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
@@ -736,20 +751,34 @@ function Sidenav(props) {
                       onClick={toggleDropdown}
                     >
                       <NotificationsNone />
+                      {unreadNoti?.length > 0 && (
+                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-xs">
+                          {unreadNoti?.length}
+                        </div>
+                      )}
                     </div>
                     {isOpen && (
-                      <div className='absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-20'>
+                      <div className='absolute right-0 mt-2 w-[420px] bg-white rounded-md shadow-lg z-20'>
                         <div className='p-2  '>
                           {notifications.length > 0 ? (
                             notifications.map((notification, i) => (
-                              <div key={notification?.id} className='p-2 flex justify-center items-center'>
+                              <div key={notification?._id} className='p-2 flex justify-left items-center'>
                                 <div className='  me-3'>
                                   <div className=' flex justify-center items-center bg-slate-400  rounded-full w-[30px] h-[30px] text-white'>
                                     {i + 1}
                                   </div>
                                 </div>
-                                <div className='  border-b'>
-                                  {notification?.message}
+                                <div className='flex  border-b'>
+                                  <div>
+                                    {notification?.message}
+                                  </div>
+                                  {notification?.status==="UNREAD" && (
+                                     <div>
+                                    <button onClick={()=>handleReadMark(notification?._id)} className="bg-green-500 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
+                                     Mark_Read
+                                    </button>
+                                  </div>
+                                  )}
                                 </div>
                               </div>
                             ))

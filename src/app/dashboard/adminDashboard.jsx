@@ -5,6 +5,7 @@ import { PeopleAlt } from '@mui/icons-material'
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
 import dynamic from 'next/dynamic'
+import Chart from 'react-google-charts';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -16,7 +17,27 @@ const AdminDashboard = (props) => {
 
 const data=props?.dashData;
 
-// console.log(data);
+const pieChartData = [
+  ["Task", "Hours per Day"],
+  ["AllComplaints", data?.complaints?.allComplaints],
+  ["Assign", data?.complaints?.assign],
+  ["Pending", data?.complaints?.pending],
+  ["Complete", data?.complaints?.complete],
+  ["PartPending", data?.complaints?.partPending],
+];
+
+const barChartData = [
+  ["Complaint Status", "Count"],
+  ["AllComplaints", data?.complaints?.allComplaints],
+  ["Assign", data?.complaints?.assign],
+  ["Pending", data?.complaints?.pending],
+  ["Complete", data?.complaints?.complete],
+  ["PartPending", data?.complaints?.partPending],
+];
+
+const options = {
+  title: "Complaints Summary",
+};
   return (
     <>
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>
@@ -602,13 +623,24 @@ const data=props?.dashData;
           </div>
         </div>
       </div>
-      <div className='grid grid-cols-12 gap-4 my-8'>
-        <div className='col-span-5 rounded-lg shadow px-4 py-4 bg-white'>
-          <AreaChart />
+      <div className='grid grid-cols-2 gap-4 my-8'>
+      <div className='rounded-lg shadow px-4 py-4 bg-white'>
+          <Chart
+            chartType="PieChart"
+            data={pieChartData}
+            options={options}
+            width={"100%"}
+            height={"400px"}
+          />
         </div>
-        <div className='col-span-7 rounded-lg shadow px-4 py-4 bg-white'>
-          <PieChart />
-
+        <div className='rounded-lg shadow px-4 py-4 bg-white'>
+          <Chart
+            chartType="BarChart"
+            data={barChartData}
+            options={options}
+            width={"100%"}
+            height={"400px"}
+          />
         </div>
       </div>
     </>

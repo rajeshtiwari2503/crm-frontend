@@ -20,8 +20,12 @@ const Notification = () => {
   }, [refresh])
 
   const getAllNotification = async () => {
+    const storedValue = localStorage.getItem("user");
+    const userType = JSON.parse(storedValue)
     try {
-      let response = await http_request.get("/getAllNotification")
+      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : `/getNotificationByUserId/${userType?.user?._id}`
+
+      let response = await http_request.get(endPoint)
       let { data } = response;
 
       setNotification(data)

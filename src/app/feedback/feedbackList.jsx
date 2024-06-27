@@ -34,7 +34,22 @@ const FeedbackList = (props) => {
   const [sortBy, setSortBy] = useState('id');
   const [complaints, setComplaints] = useState([])
 
+  useEffect(() => {
+    getAllComplaint()
 
+  }, [ ])
+
+  const getAllComplaint = async () => {
+    try {
+      let response = await http_request.get("/getAllComplaint")
+      let { data } = response;
+
+      setComplaints(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -377,7 +392,7 @@ const FeedbackList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddFeedback existingFeedback={editData} conplaints={complaints} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddFeedback existingFeedback={editData} complaints={complaints} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

@@ -137,6 +137,15 @@ const NotificationList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'userId'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('userId')}
+                    >
+                    Title
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'message'}
                       direction={sortDirection}
                       onClick={() => handleSort('message')}
@@ -175,6 +184,7 @@ const NotificationList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?._id}</TableCell>
                     <TableCell>{row?.userName}</TableCell>
+                    <TableCell>{row?.title}</TableCell>
                     <TableCell>{row?.message}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                  

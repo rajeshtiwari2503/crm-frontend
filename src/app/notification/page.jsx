@@ -23,11 +23,15 @@ const Notification = () => {
     const storedValue = localStorage.getItem("user");
     const userType = JSON.parse(storedValue)
     try {
-      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : `/getNotificationByUserId/${userType?.user?._id}`
 
+      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : (userType?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
+        : (userType?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${userType?.user?._id}`
+          : (userType?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${userType?.user?._id}`
+            : (userType?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${userType?.user?._id}`
+              : (userType?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${userType?.user?._id}`
+                : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
-
       setNotification(data)
     }
     catch (err) {

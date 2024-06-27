@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import Rating from 'react-rating';
 
-const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => {
+const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => {
 
     
     const [loading, setLoading] = useState(false);
@@ -57,10 +57,17 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => 
   
     const handleTicket = (e) => {
         const searchTerm = e.target.value;
-        const ticket = conplaints?.find((item) => item?._id === searchTerm);
+        
+        const ticket = complaints?.find((item) => item?._id ===searchTerm);
+      
         if (ticket) {
             setValue('ticketNumber', ticket?._id);
-            setValue('customerName', ticket?.fullName);
+            setValue('customerName', ticket?.fullName); 
+            setValue('complaintId', ticket?._id);
+            setValue('brandId', ticket?.brandId);
+            setValue('userId', ticket?.userId);
+            setValue('technicianId', ticket?.technicianId);
+            setValue('serviceCenterId', ticket?.assignServiceCenterId);
             setValue('emailAddress', ticket?.emailAddress);
             setValue('serviceDate', new Date(ticket?.updatedAt).toLocaleDateString());
         }
@@ -75,7 +82,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, conplaints }) => 
                         <input
                             type="text"
                             onChange={handleTicket}
-                            value={ticket  || ""}
+                            value={ticket}
                             // {...register("ticketNumber", { required: true })}
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />

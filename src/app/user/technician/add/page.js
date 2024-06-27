@@ -17,10 +17,12 @@ const AddTechnician = () => {
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
 
     const RegisterTechnician = async (reqdata) => {
+        const storedValue = localStorage.getItem("user");
+    const userType = JSON.parse(storedValue)
         try {
             setLoading(true)
-
-            let response = await http_request.post('/addTechnician', reqdata)
+              const req=userType?.user?.role==="SERVICE"?{...reqdata,serviceId:userType?.user?._id}:reqdata
+            let response = await http_request.post('/addTechnician', req)
             const { data } = response
             ToastMessage(data)
             setLoading(false)

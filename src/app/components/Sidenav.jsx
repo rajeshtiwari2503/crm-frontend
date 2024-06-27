@@ -52,7 +52,8 @@ function Sidenav(props) {
   const [isOpen, setIsOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
   const [notifications, setNotifications] = React.useState([]);
-const [refresh,setRefresh]=React.useState("")
+
+  const [refresh, setRefresh] = React.useState("")
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
@@ -68,7 +69,12 @@ const [refresh,setRefresh]=React.useState("")
     const userType = JSON.parse(storedValue)
     try {
 
-      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : `/getNotificationByUserId/${userType?.user?._id}`
+      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : (userType?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
+        : (userType?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${userType?.user?._id}`
+          : (userType?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${userType?.user?._id}`
+            : (userType?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${userType?.user?._id}`
+              : (userType?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${userType?.user?._id}`
+                : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
       setNotifications(data)
@@ -78,19 +84,36 @@ const [refresh,setRefresh]=React.useState("")
     }
   }
 
+  const unreadNoti = value?.user?.role === "ADMIN" ? notifications?.filter((item) => item?.adminStatus === "UNREAD")
+    : value?.user?.role === "BRAND" ? notifications?.filter((item) => item?.brandStatus === "UNREAD")
+      : value?.user?.role === "SERVICE" ? notifications?.filter((item) => item?.serviceCenterStatus === "UNREAD")
+        : value?.user?.role === "TECHNICIAN" ? notifications?.filter((item) => item?.technicianStatus === "UNREAD")
+          : value?.user?.role === "USER" ? notifications?.filter((item) => item?.userStatus === "UNREAD")
+            : value?.user?.role === "DEALER" ? notifications?.filter((item) => item?.userStatus === "UNREAD")
+              : ""
 
-  const unreadNoti = notifications?.filter((item) => item?.status === "UNREAD")
- 
-const handleReadMark=async(id)=>{
-  try {
-    let response = await http_request.patch(`/editNotification/${id}`,{status:"READ"})
-    let { data } = response;
-    setRefresh(data)
+
+  const handleReadMark = async (id) => {
+    const storedValue = localStorage.getItem("user");
+    const userType = JSON.parse(storedValue)
+    try {
+
+      const status = (userType?.user?.role) === "ADMIN" ? {adminStatus: "READ"}
+        : (userType?.user?.role) === "USER" ? {userStatus: "READ"}
+          : (userType?.user?.role) === "BRAND" ? { brandStatus: "READ" }
+            : (userType?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
+              : (userType?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
+                : (userType?.user?.role) === "DEALER" ? { dealerStatus: "READ" }
+                  : ""
+
+      let response = await http_request.patch(`/editNotification/${id}`, status)
+      let { data } = response;
+      setRefresh(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
-  catch (err) {
-    console.log(err);
-  }
-}
 
   const dropdownRef = React.useRef(null);
 
@@ -255,7 +278,7 @@ const handleReadMark=async(id)=>{
 
               </ListItemButton>
             </ListItem>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "USER"
+            {/* {value?.user?.role === "ADMIN" || value?.user?.role === "USER"
               ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -296,7 +319,7 @@ const handleReadMark=async(id)=>{
                   </ListItem>
                 ))}
               </List>
-            </Collapse>
+            </Collapse> */}
 
 
             {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
@@ -549,21 +572,26 @@ const handleReadMark=async(id)=>{
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "TECHNICIAN" || value?.user?.role === "USER" 
+            {value?.user?.role === "TECHNICIAN" || value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
+              ?
+              <ListItem onClick={(event) => {
+                router.push(`/feedback`)
+              }}
+                disablePadding className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <AccountBalance />
+                  </ListItemIcon>
+                  <ListItemText primary={"Feedback"} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+              : ""
+            }
+            {value?.user?.role === "TECHNICIAN"
               ?
               <>
-                <ListItem onClick={(event) => {
-                  router.push(`/feedback`)
-                }}
-                  disablePadding className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                  <ListItemButton>
-                    <ListItemIcon className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                      <AccountBalance />
-                    </ListItemIcon>
-                    <ListItemText primary={"Feedback"} />
-                    {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
-                  </ListItemButton>
-                </ListItem>
+
                 <ListItem onClick={(event) => {
                   router.push(`/skillDevelopment`)
                 }}
@@ -772,13 +800,20 @@ const handleReadMark=async(id)=>{
                                   <div>
                                     {notification?.message}
                                   </div>
-                                  {notification?.status==="UNREAD" && (
-                                     <div>
-                                    <button onClick={()=>handleReadMark(notification?._id)} className="bg-green-500 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
-                                     Mark_Read
-                                    </button>
-                                  </div>
-                                  )}
+                                  {(value?.user?.role === "ADMIN" ? notification?.adminStatus === "UNREAD"
+                                    : value?.user?.role === "BRAND" ? notification?.brandStatus === "UNREAD"
+                                      : value?.user?.role === "USER" ? notification?.userStatus === "UNREAD"
+                                        : value?.user?.role === "SERVICE" ? notification?.serviceCenterStatus === "UNREAD"
+                                          : value?.user?.role === "TECHNICIAN" ? notification?.technicianStatus === "UNREAD"
+                                            : value?.user?.role === "DEALER" ? notification?.userStatus === "UNREAD"
+                                              : ""
+                                  ) && (
+                                      <div>
+                                        <button onClick={() => handleReadMark(notification?._id)} className="bg-green-500 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
+                                          Mark_Read
+                                        </button>
+                                      </div>
+                                    )}
                                 </div>
                               </div>
                             ))

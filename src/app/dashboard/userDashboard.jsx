@@ -106,14 +106,7 @@ const UserDashboard = (props) => {
               <div className='text-center mt-2'>Pending Requests</div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={100} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Wallet Amount</div>
-            </div>
-          </div>
+          
         </div>
       </div>
 

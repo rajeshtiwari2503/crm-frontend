@@ -4,14 +4,14 @@ import http_request from '../../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const AddCategory = ({ existingCategory, RefreshData, onClose,userData }) => {
+const AddCategory = ({ existingCategory, RefreshData, onClose, userData }) => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
-    
+
     const AddProductCategory = async (data) => {
         try {
-
-            const reqData={...data,userId:userData?.user?._id,userName:userData?.user?.name}
+            const reqData = userData?.user?.role === "USER" ? {...data, userId: userData?.user?._id, userName: userData?.user?.name } : {...data, brandId: userData?.user?._id, brandName: userData?.user?.name }
+          
             setLoading(true);
             const endpoint = existingCategory?._id ? `/editProductCategory/${existingCategory._id}` : '/addProductCategory';
             const response = existingCategory?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, reqData);
@@ -32,7 +32,7 @@ const AddCategory = ({ existingCategory, RefreshData, onClose,userData }) => {
         AddProductCategory(data);
     };
 
-    
+
     React.useEffect(() => {
         if (existingCategory) {
             setValue('categoryName', existingCategory.categoryName);

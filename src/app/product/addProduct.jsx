@@ -4,11 +4,11 @@ import http_request from '../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categories,brands }) => {
+const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categories, brands }) => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
-    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); 
-   
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+
     const calculateWarrantyStatus = (purchaseDate, selectedYear) => {
         if (!purchaseDate) return false;
         const currentDate = new Date();
@@ -24,14 +24,11 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
             setLoading(true);
 
             const selectedCategory = categories.find(category => category._id === data.categoryId);
-            const selectedBrand= brands.find(brand => brand._id === data.brandId);
-            
             const reqData = {
                 ...data,
                 categoryName: selectedCategory?.categoryName,
                 categoryId: selectedCategory?._id,
-                productBrand: selectedBrand?.brandName,
-                brandId: selectedBrand?._id,
+
                 userId: userData?.user?._id,
                 userName: userData?.user?.name,
                 warrantyStatus: calculateWarrantyStatus(data.purchaseDate, selectedYear),
@@ -69,8 +66,16 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
         }
     }, [existingProduct, setValue]);
 
-     
- 
+    const handleChangeBrand = (id) => {
+        const selectedBrand = brands.find(brand => brand._id === id);
+        console.log(selectedBrand);
+        if (selectedBrand) {
+            setValue('productBrand', selectedBrand?.brandName);
+            setValue('brandId', selectedBrand?._id);
+        }
+
+    }
+
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -91,7 +96,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                     </div>
                     {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
                 </div>
-                <div className=''> 
+                <div className=''>
                     <label htmlFor="productDescription" className="block text-sm font-medium leading-6 text-gray-900">
                         Product Description
                     </label>
@@ -120,7 +125,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                             {...register('categoryId', { required: 'Category is required' })}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryId ? 'border-red-500' : ''}`}
                         >
-                             <option value="">Select a Category</option>
+                            <option value="">Select a Category</option>
                             {categories?.map((category) => (
                                 <option key={category._id} value={category._id}>
                                     {category.categoryName}
@@ -130,7 +135,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                     </div>
                     {errors.categoryId && <p className="text-red-500 text-sm mt-1">{errors.categoryId.message}</p>}
                 </div>
-              
+
                 <div className=''>
 
                     <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
@@ -159,12 +164,14 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                     <div className="mt-2">
                         <select
                             id="brandId"
-                            name="brandId"
-                            required
-                            {...register('brandId' )}
+                            name="productBrand"
+                             
+                            onChange={(e)=>handleChangeBrand(e.target.value)}
+
+                            // {...register('productBrand' )}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
                         >
-                             <option value="">Select a Brand</option>
+                            <option value="">Select a Brand</option>
                             {brands?.map((brand) => (
                                 <option key={brand._id} value={brand._id}>
                                     {brand.brandName}
@@ -224,7 +231,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                             ))}
                         </select>
                     </div>
-                    </div>
+                </div>
                 <div className='w-[400px]'>
                     <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
                         Purchase Date

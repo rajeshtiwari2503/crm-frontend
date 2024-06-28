@@ -54,6 +54,9 @@ function Sidenav(props) {
   const [notifications, setNotifications] = React.useState([]);
 
   const [refresh, setRefresh] = React.useState("")
+  const [currentPage, setCurrentPage] = React.useState(0);
+  const notificationsPerPage = 5;
+
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
@@ -84,6 +87,23 @@ function Sidenav(props) {
     }
   }
 
+
+  const handleNextPage = () => {
+    if ((currentPage + 1) * notificationsPerPage < notifications.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const indexOfLastNotification = (currentPage + 1) * notificationsPerPage;
+  const indexOfFirstNotification = indexOfLastNotification - notificationsPerPage;
+  const currentNotifications = notifications.slice(indexOfFirstNotification, indexOfLastNotification);
+
   const unreadNoti = value?.user?.role === "ADMIN" ? notifications?.filter((item) => item?.adminStatus === "UNREAD")
     : value?.user?.role === "BRAND" ? notifications?.filter((item) => item?.brandStatus === "UNREAD")
       : value?.user?.role === "SERVICE" ? notifications?.filter((item) => item?.serviceCenterStatus === "UNREAD")
@@ -98,8 +118,8 @@ function Sidenav(props) {
     const userType = JSON.parse(storedValue)
     try {
 
-      const status = (userType?.user?.role) === "ADMIN" ? {adminStatus: "READ"}
-        : (userType?.user?.role) === "USER" ? {userStatus: "READ"}
+      const status = (userType?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
+        : (userType?.user?.role) === "USER" ? { userStatus: "READ" }
           : (userType?.user?.role) === "BRAND" ? { brandStatus: "READ" }
             : (userType?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
               : (userType?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
@@ -788,12 +808,12 @@ function Sidenav(props) {
                     {isOpen && (
                       <div className='absolute right-0 mt-2 w-[420px] bg-white rounded-md shadow-lg z-20'>
                         <div className='p-2  '>
-                          {notifications.length > 0 ? (
-                            notifications.map((notification, i) => (
+                          {currentNotifications.length > 0 ? (
+                            currentNotifications.map((notification, i) => (
                               <div key={notification?._id} className='p-2 flex justify-left items-center'>
                                 <div className='  me-3'>
                                   <div className=' flex justify-center items-center bg-slate-400  rounded-full w-[30px] h-[30px] text-white'>
-                                    {i + 1}
+                                    {i + 1 + currentPage * notificationsPerPage}
                                   </div>
                                 </div>
                                 <div className='flex  border-b'>
@@ -820,9 +840,28 @@ function Sidenav(props) {
                           ) : (
                             <div className='p-2 text-center'>No notifications</div>
                           )}
+                          <div className='p-2 flex justify-between'>
+                            <button
+                              onClick={handlePrevPage}
+                              className={`font-medium py-1 px-2 rounded ${currentPage === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700 text-white'
+                                }`}
+                              disabled={currentPage === 0}
+                            >
+                              Previous
+                            </button>
+                            <button
+                              onClick={handleNextPage}
+                              className={`font-medium py-1 px-2 rounded ${(currentPage + 1) * notificationsPerPage >= notifications.length ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700 text-white'
+                                }`}
+                              disabled={(currentPage + 1) * notificationsPerPage >= notifications.length}
+                            >
+                              Next
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
+
                   </div>
                   <div onClick={handleLogout} className='ms-5 w-[30px] h-[30px] bg-red-600 flex justify-center items-center  text-white  font-bold cursor-pointer rounded-full'>
                     <Logout fontSize='large' className='pl-2' />

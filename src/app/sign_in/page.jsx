@@ -23,6 +23,7 @@ export default function SignIn() {
       setLoading(true);
       let response = await http_request.post('/login', reqdata);
       let { data } = response;
+      localStorage.setItem('user', JSON.stringify(data));
       setUserData(data?.user);
       if (data?.user?.verification === "VERIFIED") {
         if (rememberMe) {
@@ -33,19 +34,20 @@ export default function SignIn() {
         ToastMessage(data);
         setLoading(false);
         router.push("/dashboard");
-      } else {
+      } 
+      else {
         // console.log(userData);
-        let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
-        const { data } = response;
-        if (data?.status === true) {
-          ToastMessage(data);
-          setLoading(false);
+        // let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
+        // const { data } = response;
+        // if (data?.status === true) {
+        //   ToastMessage(data);
+        //   setLoading(false);
           router.push("/verification");
-        }
+        // }
       }
     } catch (err) {
       setLoading(false);
-      ToastMessage(err?.response?.data);
+      // ToastMessage(err?.response?.data);
       console.log(err);
     }
   };

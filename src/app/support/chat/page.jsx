@@ -35,35 +35,46 @@ const Chat = () => {
     const sendMessageRequest = async () => {
         const storedValue = localStorage.getItem("user");
         const userType = JSON.parse(storedValue)
+        localStorage.setItem("userTickId",userType?.user?._id)
         const data = { userId: userType?.user?._id, userName: userType?.user?.name }
-
-        try {
-            await http_request.post('/addChatTicket', data);
-            setMessage('');
-            ToastMessage(data)
+        const chat = chatMessages?.find((item) => item?.userId === userType?.user?._id)
+        if (chat) {
             router.push("/support/chat/messages")
-        } catch (error) {
-            console.error('Error sending message:', error);
+        }
+        else {
+            try {
+                await http_request.post('/addChatTicket', data);
+                setMessage('');
+                ToastMessage(data)
+       
+                router.push("/support/chat/messages")
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
         }
     };
-
+    const handleChat = (id) => {
+        localStorage.setItem("userTickId",id)
+        router.push("/support/chat/messages")
+    }
+    console.log(chatMessages);
     return (
         <Sidenav >
             <>
                 <Toaster />
-                <div>
-                    <div onClick={() => sendMessageRequest()} className='w-[350px] cursor-pointer font-bold text-xl bg-yellow-200 rounded-md p-2 '>Create Chat with Support Team</div>
-                </div>
+
                 {value?.user?.role === "ADMIN" ?
                     <div>
                         {chatMessages?.map((item, i) => (
-                            <div className='w-[300px] bg-blue-400 text-lg rounded-md p-3 mt-5 flex items-center' key={i}>
+                            <div onClick={() =>handleChat(item?.userId)} className='w-[300px] cursor-pointer bg-blue-400 text-lg rounded-md p-3 mt-5 flex items-center' key={i}>
                                 <div className='flex justify-center items-center bg-white font-bold rounded-full w-[50px] h-[50px]'>{i + 1}</div>
                                 <div className='text-black ms-5 font-bold'>{item?.userName}</div>
                             </div>
                         ))}
                     </div>
-                    : ""
+                    : <div>
+                        <div onClick={() => sendMessageRequest()} className='w-[350px] cursor-pointer font-bold text-xl bg-yellow-200 rounded-md p-2 '>Create Chat with Support Team</div>
+                    </div>
                 }
             </>
         </Sidenav>

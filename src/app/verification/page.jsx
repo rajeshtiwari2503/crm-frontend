@@ -13,7 +13,7 @@ const OtpVerification = () => {
     const [emailVerify, setEmailVerify] = React.useState(false);
 
     React.useEffect(() => {
-        const storedValue = localStorage.getItem("userInfo");
+        const storedValue = localStorage.getItem("user");
         if (storedValue) {
             setValue(JSON.parse(storedValue));
 
@@ -32,15 +32,19 @@ const OtpVerification = () => {
         setContactVerify(false)
     }
     const verifyOtp = async (reqdata) => {
+        const storedValue = localStorage.getItem("user");
+        const userData = JSON.parse(storedValue);
+        
         try {
             setLoading(true)
-            const reqdata1 = emailVerify ? { ...reqdata, email: value?.email } : { ...reqdata, contact: value?.contact }
+            const reqdata1 = emailVerify ? { ...reqdata, email: userData?.user?.email } : { ...reqdata, contact: userData?.user?.contact }
             let response = await http_request.post('/mobileEmailOtpVerification', reqdata1)
             const { data } = response
             // console.log(data);
             if (data?.status && emailVerify === true) {
                 ToastMessage(data)
                 setLoading(false)
+                reset()
                 setEmailVerify(true)
                 router.push("/sign_in")
             }
@@ -59,15 +63,23 @@ const OtpVerification = () => {
     }
 
     const onSubmit = (data) => {
-        verifyOtp(data)
+        if(emailVerify === true){
+            verifyOtp(data)
+        }
+      else{
+        ResendOtp()
+      }
     };
 
     const ResendOtp = async () => {
+        const storedValue = localStorage.getItem("user");
+        const userData = JSON.parse(storedValue);
         try {
             setLoading(true);
-            const reqdata = emailVerify ? { email: value?.email } : { contact: value?.contact }
-            let response = await http_request.post('/mobileEmailSendOtp', reqdata);
+            const reqdata = emailVerify ? { email: userData?.user?.email } : { contact: userData?.user?.contact }
+            let response = await http_request.post('/mobileEmailSendOtp', {email: userData?.user?.email});
             const { data } = response;
+            setEmailVerify(true)
             ToastMessage(data);
             setLoading(false);
         } catch (err) {
@@ -101,7 +113,7 @@ const OtpVerification = () => {
                                         onClick={ContactVerify}
                                         className="flex w-[70%] justify-center rounded-md bg-indigo-600 px-3  py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                     >
-                                      Click to  Send OTP By Mobile Number
+                                        Click to  Send OTP By Mobile Number
                                     </button>
                                 </div>
                                 : <form onSubmit={handleSubmit(onSubmit)}>

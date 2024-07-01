@@ -516,7 +516,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN"
+            {/* {value?.user?.role === "ADMIN"
               ? <ListItem onClick={handleCollapseSettings} disablePadding className={pathname.startsWith("/settings") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/settings") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -551,7 +551,7 @@ function Sidenav(props) {
                   </ListItem>
                 ))}
               </List>
-            </Collapse>
+            </Collapse> */}
             {value?.user?.role === "ADMIN"
               ? <ListItem onClick={handleCollapseReports} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>

@@ -42,12 +42,14 @@ export default function SignIn() {
         // if (data?.status === true) {
         //   ToastMessage(data);
         //   setLoading(false);
-          router.push("/verification");
+          // router.push("/verification");
+        router.push("/dashboard");
+
         // }
       }
     } catch (err) {
       setLoading(false);
-      // ToastMessage(err?.response?.data);
+      ToastMessage(err?.response?.data);
       console.log(err);
     }
   };

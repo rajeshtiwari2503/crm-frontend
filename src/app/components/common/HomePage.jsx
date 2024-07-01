@@ -18,7 +18,7 @@ const HomePageCRM = () => {
     return (
         <main className="   ">
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "USER"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER" || value?.user?.role === "USER"|| value?.user?.role === "TECHNICIAN"
                 ? <Dashboard />
                 : <SignIn />
             }

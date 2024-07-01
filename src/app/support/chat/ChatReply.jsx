@@ -52,9 +52,14 @@ const ChatReply = () => {
 
     return (
         <div>
-            <div className="max-w-xl mx-auto my-4 p-4 bg-gray-200 rounded-lg shadow-md">
-                <div className='font-bold text-md '>Chat Message</div>
-                <div className="flex flex-col-reverse overflow-y-auto h-96">
+            <div className="max-w-xl mx-auto my-2 p-4 bg-gray-200 rounded-lg shadow-md">
+                <div className='font-bold text-md bg-[#0284c7] rounded-md p-2 text-center'>Chat Message</div>
+                <div className='flex justify-between mt-3 mb-3'>
+                        <div className='bg-green-500 rounded-md font-bold p-1'>Support Team</div>
+                        <div className='bg-blue-400 rounded-md font-bold p-1'>You</div>
+                    </div>
+                <div className="flex flex-col-reverse overflow-y-auto h-80">
+                   
                 <div className="mt-3 space-y-2">
                     {sortedMessages?.map((msg, index) => (
                         <div className={`flex ${msg.sender === 'user' ? 'justify-end' : ''}`} key={index}>
@@ -66,7 +71,8 @@ const ChatReply = () => {
                     ))}
                 </div>
             </div>
-                <div className="flex self-end mt-5  w-64">
+                <div className="flex  justify-center  mt-5  ">
+                    <div className="flex justify-center ">
                     <input
                         type="text"
                         value={message}
@@ -80,6 +86,7 @@ const ChatReply = () => {
                     >
                         Send
                     </button>
+                    </div>
                 </div>
             </div>
 

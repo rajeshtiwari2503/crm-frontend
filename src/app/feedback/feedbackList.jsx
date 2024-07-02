@@ -143,13 +143,13 @@ const FeedbackList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>  Feedback Information</div>
-        {value?.user?.role === "USER" ?
+        {/* {value?.user?.role === "USER" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Feedback</div>
           </div>
           : ""
-        }
+        } */}
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
@@ -335,14 +335,14 @@ const FeedbackList = (props) => {
                       </IconButton> */}
                       {value?.user?.role === "USER" ?
                         <>
-                          <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                          {/* <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                             <EditIcon color='success' />
-                          </IconButton>
+                          </IconButton> */}
                           {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <DeleteIcon color='error' />
                           </IconButton> */}
                         </>
-                        :value?.user?.role === "ADMIN" ?
+                        :value?.user?.role === "ADMIN" ?  
                         <>
                           <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                             <EditIcon color='success' />

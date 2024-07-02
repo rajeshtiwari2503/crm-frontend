@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import AddFeedback from '@/app/feedback/addFeedback';
 
 const CloseComplaintList = (props) => {
 
@@ -94,8 +95,8 @@ const CloseComplaintList = (props) => {
   const handleEdit = (id) => {
     router.push(`/complaint/edit/${id}`);
   };
-  const handleUpdateStatus = async (id) => {
-    setId(id)
+  const handleUpdateStatus = async (row) => {
+    setId(row)
     setStatus(true)
   }
   const handleUpdateClose = () => {
@@ -342,17 +343,17 @@ const CloseComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {/* <div
-                          onClick={() => handleUpdateStatus(row?._id)}
+                        <div
+                          onClick={() => handleUpdateStatus(row)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
-                          Update Status
-                        </div> */}
+                          Add Feedback
+                        </div>
                        
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
                         </IconButton>
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
@@ -360,7 +361,7 @@ const CloseComplaintList = (props) => {
                         </IconButton>
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
-                        </IconButton>
+                        </IconButton> */}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -394,27 +395,8 @@ const CloseComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='w-[350px] mb-5'>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            <option value="NEW">New</option>
-            <option value="IN PROGRESS">In Progress</option>
-            <option value="AWAITING PART">Awaiting Parts</option>
-            <option value="ONHOLD">On Hold</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELED">Canceled</option>
-          </select>
-        </div>
-        <div>
-          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-            Submit
-          </button>
-        </div>
-          </form>
+           
+         <AddFeedback  complaints={id}  onClose={handleUpdateClose}/>
         </DialogContent>
 
       </Dialog>

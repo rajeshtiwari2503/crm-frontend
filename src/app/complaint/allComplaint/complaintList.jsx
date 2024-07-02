@@ -171,10 +171,10 @@ const ComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Complaint Information</div>
+        <div className='font-bold text-2xl'>Service Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Complaint</div>
+          <div className=' ml-2 '>Add Service Request</div>
         </div>
       </div>
       <div className="flex items-center mb-3">
@@ -415,12 +415,14 @@ const ComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
+                      {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
                         <div
                           onClick={() => handleUpdateStatus(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
                           Update Status
                         </div>
+                        :""}
                        
                         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
@@ -441,15 +443,16 @@ const ComplaintList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
-                          <Print color="primary" />
-                        </IconButton> */}
+                        {userData?.role === "ADMIN" ?
+                        <>
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
                         </IconButton>
+                        </>
+                        :""}
                       </div>
                     </TableCell>
                   </TableRow>

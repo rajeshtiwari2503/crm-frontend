@@ -79,6 +79,8 @@ const AddComplaint = () => {
       setValue('modelNo', selectedProduct.modelNo);
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
+      setValue('warrantyStatus', selectedProduct.warrantyStatus); 
+      setValue('warrantyYears', selectedProduct.warrantyYears); 
 
     }
   };
@@ -283,25 +285,40 @@ const AddComplaint = () => {
                   />
                 </div>
               </div>
-              <div className=' '>
+              {/* <div className=' '>
                 <label htmlFor="selectedYear" className="block text-sm font-medium leading-6 text-gray-900">
                   Select Year
                 </label>
                 <div className="mt-2">
                   <select
                     id="selectedYear"
-                    name="selectedYear"
-                    // value={selectedYear}
-                    // onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                    name="selectedYear" 
+                    aria-readonly
+                    value={selectedYear}
+                    onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                     className={` block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
                   >
-                    {/* Generate year options dynamically */}
+                    
                     {Array.from({ length: 10 }, (_, index) => new Date().getFullYear() + index).map((year) => (
                       <option key={year} value={year}>
                         {year}
                       </option>
                     ))}
                   </select>
+                </div>
+              </div> */}
+              <div className=' '>
+                <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
+                Warranty Years
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="purchaseDate"
+                    name="warrantyYears"
+                    type="text"
+                    {...register('warrantyYears')}
+                    className={`block p-3 w-full rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.purchaseDate ? 'border-red-500' : ''}`}
+                  />
                 </div>
               </div>
               <div className=' '>

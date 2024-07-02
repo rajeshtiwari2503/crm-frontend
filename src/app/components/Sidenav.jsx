@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, BrandingWatermark, Category, Chat, Dashboard, ExpandLess, ExpandMore, Inventory, LocationOn, Logout, NotificationsNone, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Warning } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, BrandingWatermark, Category, Chat, Dashboard, ExpandLess, ExpandMore, Inventory, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Warning } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -269,12 +269,12 @@ function Sidenav(props) {
 
 
 
-   const primaryText="#007BFF"
-   const secondaryText="#007BFF"
+  const primaryText = "#007BFF"
+  const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? ['Create', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Asign', 'Close' ] : value?.user?.role === "USER" ?['Create', 'All Service', 'Asign', 'Close', ]:['Create', 'All Service', 'Asign', 'Close', ]
+  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : ['Create', 'All Service', 'Pending', 'Asign', 'Close',]
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "SERVICE" ? ['Customer', 'Technician'] : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']
-  const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : [  'Product']
+  const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
     <>
       {value ?
@@ -293,7 +293,7 @@ function Sidenav(props) {
             <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton>
                 <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
-                  <Dashboard  style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }}/>
+                  <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
                 </ListItemIcon  >
                 <ListItemText primary={"Dashboard"} />
 
@@ -509,7 +509,7 @@ function Sidenav(props) {
                               pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
-                         <Warning />
+                        <Warning />
                       </ListItemIcon>
                       <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
                     </ListItemButton>
@@ -692,7 +692,7 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {['Sparepart',"Stock", "Order"].map((text, index) => (
+                {['Sparepart', "Stock", "Order"].map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
                       pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
@@ -783,8 +783,13 @@ function Sidenav(props) {
                 <MenuIcon />
               </IconButton>
               <div className='w-full flex justify-between'>
-                <div className='font-bold text-2xl'  >
-                  Dashboard
+                <div className='flex'>
+                  <div className='font-bold text-2xl'  >
+                    Dashboard
+                  </div>
+                  <div className='font-bold text-xl ms-8'  >
+                    <Payment fontSize='large' />1000.0 INR
+                  </div>
                 </div>
                 <div className='flex items-center'>
                   <div className='font-semibold'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>

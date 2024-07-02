@@ -6,10 +6,13 @@ import CountUp from 'react-countup';
  
 import AssignComplaintList from '../complaint/asign/assignComplaintList';
 import { Chart } from 'react-google-charts';
+import { useRouter } from 'next/navigation';
 
- 
+
 
 const UserDashboard = (props) => {
+
+  const router=useRouter()
   const userData = props?.userData;
   const dashData = props?.dashData;
   const [complaint, setComplaint] = useState([]);
@@ -36,7 +39,7 @@ const UserDashboard = (props) => {
         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : complaint;
+              : [];
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
 
@@ -79,7 +82,7 @@ const UserDashboard = (props) => {
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
-              <div className='text-center mt-2'>Total Service Requests</div>
+              <div className='text-center mt-2'>Total Service  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -87,7 +90,7 @@ const UserDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
-              <div className='text-center mt-2'>Completed Requests</div>
+              <div className='text-center mt-2'>Completed  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -95,7 +98,7 @@ const UserDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
-              <div className='text-center mt-2'>Assigned Requests</div>
+              <div className='text-center mt-2'>Assigned  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -103,11 +106,26 @@ const UserDashboard = (props) => {
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
-              <div className='text-center mt-2'>Pending Requests</div>
+              <div className='text-center mt-2'>Pending  </div>
             </div>
           </div>
-          
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+              </div>
+              <div className='text-center mt-2'>TAT</div>
+            </div>
+          </div>
+          <div onClick={()=>router.push("/complaint/create")} className='ms-8 bg-yellow-400 rounded-md mt-3 cursor-pointer p-4'>
+                Add Service Request
+              </div>
+              <div onClick={()=>router.push("/product")}className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
+                Add Product
+              </div>
+      
         </div>
+        
       </div>
 
       <div className='grid grid-cols-2 gap-4 my-8'>

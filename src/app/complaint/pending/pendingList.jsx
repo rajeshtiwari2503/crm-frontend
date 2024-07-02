@@ -13,21 +13,22 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
 
-const CloseComplaintList = (props) => {
+const PendingComplaintList = (props) => {
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
   const router = useRouter()
   const complaint = props?.data;
   const userData = props?.userData;
-
+   
   const data = userData.role === "ADMIN" ? complaint
   : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
     : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
       : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
         : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
           : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+            :[]
+           
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -107,7 +108,7 @@ const CloseComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Close Service Information</div>
+        <div className='font-bold text-2xl'>Pending Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
@@ -343,12 +344,12 @@ const CloseComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        <div
+                        {/* <div
                           onClick={() => handleUpdateStatus(row)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
-                          Give Feedback
-                        </div>
+                          Add Feedback
+                        </div> */}
                        
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
@@ -405,7 +406,7 @@ const CloseComplaintList = (props) => {
   );
 };
 
-export default CloseComplaintList;
+export default PendingComplaintList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

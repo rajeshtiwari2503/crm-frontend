@@ -28,7 +28,7 @@ const AssignComplaintList = (props) => {
       : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
         : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
           : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : complaint
+            : []
 
 
   const technician = props?.technicians
@@ -129,7 +129,7 @@ const AssignComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Assign Complaint Information</div>
+        <div className='font-bold text-2xl'>Assign Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
@@ -143,7 +143,7 @@ const AssignComplaintList = (props) => {
         <>
              <TableContainer component={Paper}>
             <Table>
-              <TableHead>
+            <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
@@ -223,7 +223,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
                     >
-                      categoryName
+                      Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -232,7 +232,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('productBrand')}
                     >
-                      productBrand
+                      Product Brand
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -241,7 +241,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('modelNo')}
                     >
-                      modelNo
+                      Model No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -250,7 +250,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('serialNo')}
                     >
-                      serialNo
+                      Serial No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -259,7 +259,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('issueType')}
                     >
-                      issueType
+                      Issue Type
                     </TableSortLabel>
                   </TableCell>
 
@@ -269,7 +269,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('detailedDescription')}
                     >
-                      detailedDescription
+                      Detailed Description
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -278,7 +278,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('errorMessages')}
                     >
-                      errorMessages
+                      Error Messages
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -296,7 +296,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianName')}
                     >
-                      technicianName
+                      Technician Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -305,7 +305,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianContact')}
                     >
-                      technicianContact
+                      Technician Contact
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -314,7 +314,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianComments')}
                     >
-                      technicianComments
+                      Technician Comments
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>

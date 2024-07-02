@@ -219,7 +219,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('servicequality')}
                     >
-                      servicequality
+                      Service quality
                     </TableSortLabel>
                   </TableCell>
 
@@ -229,7 +229,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('timeliness')}
                     >
-                      timeliness
+                      Timeliness
                     </TableSortLabel>
                   </TableCell>
 
@@ -239,7 +239,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('professionalism')}
                     >
-                      professionalism
+                      Professionalism
                     </TableSortLabel>
                   </TableCell>
 
@@ -249,7 +249,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('comments')}
                     >
-                      comments
+                      Comments
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -276,7 +276,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('issuesFaced')}
                     >
-                      issuesFaced
+                      Issues Faced
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -285,7 +285,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('recommendationLikelihood')}
                     >
-                      recommendationLikelihood
+                      Recommendation Likelihood
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -294,7 +294,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('futureServiceInterest')}
                     >
-                      futureServiceInterest
+                      Future Service Interest
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>

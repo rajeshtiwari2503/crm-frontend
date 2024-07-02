@@ -25,7 +25,7 @@ const ComplaintList = (props) => {
       : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
         : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId   === userData._id)
           : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId  === userData._id)
-            : complaint
+            : []
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
@@ -273,7 +273,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
                     >
-                      categoryName
+                      Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -282,7 +282,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('productBrand')}
                     >
-                      productBrand
+                      Product Brand
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -291,7 +291,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('modelNo')}
                     >
-                      modelNo
+                      Model No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -300,7 +300,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('serialNo')}
                     >
-                      serialNo
+                      Serial No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -309,7 +309,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('issueType')}
                     >
-                      issueType
+                      Issue Type
                     </TableSortLabel>
                   </TableCell>
 
@@ -319,7 +319,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('detailedDescription')}
                     >
-                      detailedDescription
+                      Detailed Description
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -328,7 +328,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('errorMessages')}
                     >
-                      errorMessages
+                      Error Messages
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -346,7 +346,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianName')}
                     >
-                      technicianName
+                      Technician Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -355,7 +355,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianContact')}
                     >
-                      technicianContact
+                      Technician Contact
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -364,7 +364,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianComments')}
                     >
-                      technicianComments
+                      Technician Comments
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>

@@ -168,7 +168,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('brandStatus')}
                     >
-                      brandStatus 
+                      Brand Status 
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -177,7 +177,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('serviceCenterStatus')}
                     >
-                      serviceCenterStatus 
+                      Service Center Status 
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -186,7 +186,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('technicianStatus')}
                     >
-                      technicianStatus 
+                      Technician Status 
                     </TableSortLabel>
                   </TableCell> <TableCell>
                     <TableSortLabel
@@ -194,7 +194,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('userStatus')}
                     >
-                      userStatus 
+                      User Status 
                     </TableSortLabel>
                   </TableCell> <TableCell>
                     <TableSortLabel
@@ -202,7 +202,7 @@ const NotificationList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('dealerStatus')}
                     >
-                      dealerStatus 
+                      Dealer Status 
                     </TableSortLabel>
                   </TableCell>
                  

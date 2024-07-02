@@ -22,11 +22,11 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);
-            RefreshData(responseData);
+            // RefreshData(responseData);
             onClose(true);
         } catch (err) {
             setLoading(false);
-            ToastMessage(err?._message);
+            
             onClose(true);
             console.log(err);
         }
@@ -38,6 +38,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
     };
 
     useEffect(() => {
+
         if (existingFeedback) {
              setTicket(existingFeedback.ticketNumber);
             setValue('ticketNumber', existingFeedback.ticketNumber);
@@ -53,6 +54,15 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
             setValue('recommendationLikelihood', existingFeedback.recommendationLikelihood);
             setValue('futureServiceInterest', existingFeedback.futureServiceInterest);
         }
+        setValue('ticketNumber', complaints?._id);
+        setValue('customerName', complaints?.fullName); 
+        setValue('complaintId', complaints?._id);
+        setValue('brandId', complaints?.brandId);
+        setValue('userId', complaints?.userId);
+        setValue('technicianId', complaints?.technicianId);
+        setValue('serviceCenterId', complaints?.assignServiceCenterId);
+        setValue('emailAddress', complaints?.emailAddress);
+        setValue('serviceDate', new Date(complaints?.updatedAt).toLocaleDateString());
     }, [existingFeedback ]);
   
     const handleTicket = (e) => {
@@ -82,8 +92,9 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
                         <input
                             type="text"
                             onChange={handleTicket}
+                            readOnly
                             value={ticket}
-                            // {...register("ticketNumber", { required: true })}
+                            {...register("ticketNumber", { required: true })}
                             className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </label>
@@ -93,6 +104,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
                             <input
                                 type="text"
                                 // value={new Date().toLocaleDateString()}
+                                
                                 {...register("serviceDate", { required: true })}
                                 readOnly
                                 className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 bg-gray-100 cursor-not-allowed"

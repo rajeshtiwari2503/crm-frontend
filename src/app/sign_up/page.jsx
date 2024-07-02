@@ -18,9 +18,9 @@ const SignUp = () => {
 
   const [loading, setLoading] = useState(false)
 
-  const regData = ["BRAND", "USER", "SERVICE CENTER", "DEALER"]
+  const regData = ["BRAND", "CUSTOMER", "SERVICE CENTER", "DEALER"]
 
-  const [selectedItem, setSelectedItem] = useState("USER");
+  const [selectedItem, setSelectedItem] = useState("CUSTOMER");
 
 
 
@@ -37,7 +37,7 @@ const SignUp = () => {
 
   const Regiter = async (reqdata) => {
     try {
-      const regApi = selectedItem === "ADMIN" ? "registration" : selectedItem === "BRAND" ? "brandRegistration" : selectedItem === "USER" ? "userRegistration" : selectedItem === "SERVICE CENTER" ? "serviceRegistration" : "dealerRegistration"
+      const regApi = selectedItem === "ADMIN" ? "registration" : selectedItem === "BRAND" ? "brandRegistration" : selectedItem === "CUSTOMER" ? "userRegistration" : selectedItem === "SERVICE CENTER" ? "serviceRegistration" : "dealerRegistration"
       setLoading(true)
       let response = await http_request.post(`/${regApi}`, reqdata)
       const { data } = response

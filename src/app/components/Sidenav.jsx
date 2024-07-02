@@ -269,11 +269,12 @@ function Sidenav(props) {
 
 
 
-  const text1 = "ps"
+   const primaryText="#007BFF"
+   const secondaryText="#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Complaint', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? ['Create', 'All Complaint', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Complaint', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Complaint', 'Asign', 'Close', 'Cancel'] : ['Create', 'All Complaint', 'Asign', 'Close', 'Cancel']
+  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? ['Create', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Asign', 'Close' ] : value?.user?.role === "USER" ?['Create', 'All Service', 'Asign', 'Close', ]:['Create', 'All Service', 'Asign', 'Close', ]
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "SERVICE" ? ['Customer', 'Technician'] : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']
-  const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Category', 'Product']
+  const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : [  'Product']
   const drawer = (
     <>
       {value ?
@@ -291,9 +292,9 @@ function Sidenav(props) {
 
             <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton>
-                <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <Dashboard />
-                </ListItemIcon>
+                <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
+                  <Dashboard  style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }}/>
+                </ListItemIcon  >
                 <ListItemText primary={"Dashboard"} />
 
               </ListItemButton>
@@ -479,7 +480,7 @@ function Sidenav(props) {
                   <ListItemIcon className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
                     <Warning />
                   </ListItemIcon>
-                  <ListItemText primary={"Complaint"} />
+                  <ListItemText primary={"Service  "} />
                   {isCollapseComplaint ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
               </ListItem>
@@ -487,15 +488,15 @@ function Sidenav(props) {
             <Collapse in={isCollapseComplaint} timeout={"auto"} unmountOnExit >
               <List className=' '>
                 {complaints.map((text, index) => (
-                  <ListItem key={text1} disablePadding
+                  <ListItem key={index} disablePadding
                     className={
-                      text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                      text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
 
-                      text === "All Complaint" ? router.push(`/complaint/allComplaint`) :
+                      text === "All Service" ? router.push(`/complaint/allComplaint`) :
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
                           router.push(`/complaint/${text.toLowerCase()}`)
                     }}
@@ -503,12 +504,12 @@ function Sidenav(props) {
                     <ListItemButton>
                       <ListItemIcon
                         className={
-                          text === "All Complaint" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                          text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
                               pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
-                        {text1?.toLocaleLowerCase() === "brand" ? <BrandingWatermark /> : <Warning />}
+                         <Warning />
                       </ListItemIcon>
                       <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
                     </ListItemButton>
@@ -691,7 +692,7 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {['Sparepart', "Order"].map((text, index) => (
+                {['Sparepart',"Stock", "Order"].map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
                       pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'

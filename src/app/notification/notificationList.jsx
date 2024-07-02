@@ -153,9 +153,60 @@ const NotificationList = (props) => {
                       Message 
                     </TableSortLabel>
                   </TableCell>
-                
-                 
                   <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'adminStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('adminStatus')}
+                    >
+                      Admin Status 
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandStatus')}
+                    >
+                      brandStatus 
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'serviceCenterStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('serviceCenterStatus')}
+                    >
+                      serviceCenterStatus 
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'technicianStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('technicianStatus')}
+                    >
+                      technicianStatus 
+                    </TableSortLabel>
+                  </TableCell> <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'userStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('userStatus')}
+                    >
+                      userStatus 
+                    </TableSortLabel>
+                  </TableCell> <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'dealerStatus'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('dealerStatus')}
+                    >
+                      dealerStatus 
+                    </TableSortLabel>
+                  </TableCell>
+                 
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
@@ -163,7 +214,7 @@ const NotificationList = (props) => {
                     >
                      Status
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                  
                   <TableCell>
                     <TableSortLabel
@@ -186,25 +237,29 @@ const NotificationList = (props) => {
                     <TableCell>{row?.userName}</TableCell>
                     <TableCell>{row?.title}</TableCell>
                     <TableCell>{row?.message}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>{row?.adminStatus}</TableCell>
+                    <TableCell>{row?.brandStatus}</TableCell>
+                    <TableCell>{row?.serviceCenterStatus}</TableCell>
+                    <TableCell>{row?.technicianStatus}</TableCell>
+                    <TableCell>{row?.userStatus}</TableCell>
+                    <TableCell>{row?.dealerStatus}</TableCell>
+                    {/* <TableCell>{row?.status}</TableCell> */}
                  
                    
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className='flex'>
                   <div className='flex'>
 
-                    <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                    {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
-                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Print color='primary' />
-                      </IconButton> */}
+                      
                       <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                         <EditIcon color='success' />
                       </IconButton>
                       <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                         <DeleteIcon color='error' />
-                      </IconButton>
+                      </IconButton> */}
                       </div>
                     </TableCell>
                   </TableRow>

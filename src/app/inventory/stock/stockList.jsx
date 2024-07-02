@@ -8,14 +8,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Add, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
-import http_request from '.././../../http-request'
+import http_request from '.././../../../http-request'
 import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
+import { ReactLoader } from '../../components/common/Loading';
+import AddStock from './addStock';
 
-import AddProduct from './addProduct';
-import { ReactLoader } from '../components/common/Loading';
-
-const ProductList = (props) => {
+const StockList = (props) => {
 
 
   const router = useRouter()
@@ -239,23 +238,16 @@ const ProductList = (props) => {
                     <TableCell className='flex'>
                   <div className='flex'>
 
-                      <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
-                        Request Service
-                      </div>
-                      <div onClick={()=>handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
-                        View Warranty
-                      </div>
-                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                    
+                      <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
-                      </IconButton> */}
+                      </IconButton>
                       <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                         <EditIcon color='success' />
                       </IconButton>
-                    {  userData?.user?.role==="ADMIN" ?
                       <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <DeleteIcon color='error' />
                       </IconButton>
-                      :""}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -290,7 +282,7 @@ const ProductList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddProduct categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddStock categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -325,7 +317,7 @@ const ProductList = (props) => {
   );
 };
 
-export default ProductList;
+export default StockList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

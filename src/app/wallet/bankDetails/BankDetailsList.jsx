@@ -87,7 +87,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
 
                 <div className="flex justify-between mb-5">
                     <div className='font-bold text-xl'>Wallet & Bank Details</div>
-                    {data === ""  ?
+                    {data === "" ?
                         <Button className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center ' variant="contained" color="primary" onClick={() => setIsModalOpen(true)}>
                             Add Bank Details
                         </Button>
@@ -111,7 +111,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'brandName'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('brandName')}
+                                                    // onClick={() => handleSort('brandName')}
                                                 >
                                                     User Name
                                                 </TableSortLabel>
@@ -121,7 +121,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('addedAmount')}
+                                                    // onClick={() => handleSort('addedAmount')}
                                                 >
                                                     Bank Name
                                                 </TableSortLabel>
@@ -130,7 +130,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('addedAmount')}
+                                                    // onClick={() => handleSort('addedAmount')}
                                                 >
                                                     Account Holder Name
                                                 </TableSortLabel>
@@ -139,7 +139,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('addedAmount')}
+                                                    // onClick={() => handleSort('addedAmount')}
                                                 >
                                                     Account No.
                                                 </TableSortLabel>
@@ -148,7 +148,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('addedAmount')}
+                                                    // onClick={() => handleSort('addedAmount')}
                                                 >
                                                     IFSC Code
                                                 </TableSortLabel>
@@ -157,7 +157,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                                 <TableSortLabel
                                                     active={sortBy === 'createdAt'}
                                                     direction={sortDirection}
-                                                    onClick={() => handleSort('createdAt')}
+                                                    // onClick={() => handleSort('createdAt')}
                                                 >
                                                     CreatedAt
                                                 </TableSortLabel>
@@ -271,13 +271,23 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                             />
                         </div>
                         <div className='flex justify-between mt-8'>
-                            <Button variant="outlined" onClick={() => setIsModalOpen(false)} className='hover:bg-[#fe3f49] hover:text-white' color="error">
+                            <button
+                                onClick={() => setIsModalOpen(false)}
+                                className={`border border-red-500 text-red-500 hover:bg-[#fe3f49] hover:text-black py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                disabled={loading}
+                                style={{ pointerEvents: loading ? 'none' : 'auto' }}
+                            >
                                 Cancel
-                            </Button>
+                            </button>
 
-                            <Button disabled={loading} variant="outlined" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+                            <button
+                                type="submit"
+                                className={`border border-green-500 text-green-500 hover:bg-[#2e7d32] hover:text-black py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                disabled={loading}
+                                style={{ pointerEvents: loading ? 'none' : 'auto' }}
+                            >
                                 {existingDetails ? "Edit Bank Details" : "Add Bank Details"}
-                            </Button>
+                            </button>
 
                         </div>
 

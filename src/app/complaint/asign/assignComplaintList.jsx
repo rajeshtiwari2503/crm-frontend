@@ -365,12 +365,12 @@ const AssignComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        <div
+                        {/* <div
                           onClick={() => handleUpdateStatus(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
                           Update Status
-                        </div>
+                        </div> */}
                         {userData?.role === "SERVICE" || userData?.role === "ADMIN" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}
@@ -382,15 +382,13 @@ const AssignComplaintList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
-                          <Print color="primary" />
-                        </IconButton> */}
-                        <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                        
+                        {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
-                        </IconButton>
+                        </IconButton> */}
                       </div>
                     </TableCell>
                   </TableRow>

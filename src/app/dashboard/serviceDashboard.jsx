@@ -68,7 +68,7 @@ const ServiceDashboard = (props) => {
   };
 
   const prepareChartData = (timeframe) => {
-    const timeframeData = dashData?.complaints[timeframe];
+    const timeframeData = dashData&& dashData?.complaints[timeframe];
     return [
       ['Status', 'Count'],
       ['New', timeframeData?.new],

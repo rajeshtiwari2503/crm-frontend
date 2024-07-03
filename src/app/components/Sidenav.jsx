@@ -48,6 +48,8 @@ function Sidenav(props) {
   const [isCollapseReports, setIsCollapseReports] = React.useState(false);
   const [isCollapseSupport, setIsCollapseSupport] = React.useState(false);
   const [isCollapseInventory, setIsCollapseInventory] = React.useState(false);
+  const [isCollapseCustomer, setIsCollapseCustomer] = React.useState(false);
+  const [isCollapseTechnician, setIsCollapseTechnician] = React.useState(false);
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [value, setValue] = React.useState(null);
@@ -262,6 +264,31 @@ function Sidenav(props) {
     setIsCollapseInventory(false)
     setIsCollapseWallet(!isCollapseWallet)
   };
+  const handleCollapseCustomer = () => {
+    setIsCollapseProduct(false);
+    setIsCollapseUser(false);
+    setIsCollapseComplaint(false);
+    setIsCollapse(false);
+    setIsCollapseReports(false);
+    setIsCollapseSettings(false)
+    setIsCollapseSupport(false)
+    setIsCollapseInventory(false)
+    setIsCollapseWallet(false)
+    setIsCollapseCustomer(!isCollapseCustomer)
+  };
+  const handleCollapseTechnician = () => {
+    setIsCollapseProduct(false);
+    setIsCollapseUser(false);
+    setIsCollapseComplaint(false);
+    setIsCollapse(false);
+    setIsCollapseReports(false);
+    setIsCollapseSettings(false)
+    setIsCollapseSupport(false)
+    setIsCollapseInventory(false)
+    setIsCollapseWallet(false)
+    setIsCollapseCustomer(false)
+    setIsCollapseTechnician(!isCollapseTechnician)
+  };
   const handleLogout = () => {
     localStorage.removeItem("user")
     router.push("/sign_in")
@@ -272,8 +299,8 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : ['Create', 'All Service', 'Pending', 'Asign', 'Close',]
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "SERVICE" ? ['Customer', 'Technician'] : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']
+  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? [  'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']   : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [' ']
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
     <>
@@ -284,7 +311,7 @@ function Sidenav(props) {
               <div>
                 <img src="/Logo.png" height={40} width={60} alt='logo' className='rounded-lg' />
               </div>
-              <div className='font-bold text-xl'>
+              <div className='font-bold text-ml'>
                 {value?.user?.role}
               </div>
             </Toolbar>
@@ -343,38 +370,7 @@ function Sidenav(props) {
             </Collapse> */}
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
-              ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                    <AccountBalance />
-                  </ListItemIcon>
-                  <ListItemText primary={"Wallet"} />
-                  {isCollapseUser ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-              </ListItem>
-              : ""}
-            <Collapse in={isCollapseWallet} timeout={"auto"} unmountOnExit >
-              <List className=' '>
-                {["Bank Details", "Transactions"]?.map((text, index) => (
-                  <ListItem key={text} disablePadding
-                    className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                      pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
-                    }
-                    onClick={(event) => { text === "Bank Details" ? router.push(`/wallet/bankDetails`) : router.push(`/wallet/${text.toLowerCase()}`) }}
-                  >
-                    <ListItemButton>
-                      <ListItemIcon className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600  ' : 'text-slate-700  ') :
-                        pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
-                      }>
-                        <AccountBalance />
-                      </ListItemIcon>
-                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+          
             {/* {value?.user?.role === "DEALER"
               ? <ListItem disablePadding onClick={() => { router.push("/wallet") }} className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
@@ -443,7 +439,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "TECHNICIAN"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" ||  value?.user?.role === "TECHNICIAN"
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -593,6 +589,38 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
+              ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <AccountBalance />
+                  </ListItemIcon>
+                  <ListItemText primary={"Wallet"} />
+                  {isCollapseUser ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              : ""}
+            <Collapse in={isCollapseWallet} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {["Bank Details", "Transactions"]?.map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                      pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => { text === "Bank Details" ? router.push(`/wallet/bankDetails`) : router.push(`/wallet/${text.toLowerCase()}`) }}
+                  >
+                    <ListItemButton>
+                      <ListItemIcon className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                        pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
+                      }>
+                        <AccountBalance />
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
             {value?.user?.role === "TECHNICIAN" || value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
               ?
               <ListItem onClick={(event) => {
@@ -714,8 +742,85 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
+            {  value?.user?.role === "SERVICE"  
+              ? <ListItem onClick={handleCollapseCustomer} disablePadding   className={`pl-2 ${
+                pathname.startsWith("/user/customer")
+                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                  : pathname.startsWith("/feedback")
+                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                  : "text-slate-700"
+              }`}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/user/customer") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText primary={"Customer"} />
+                  {isCollapseCustomer ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              : ""}
+            <Collapse in={isCollapseCustomer} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {["Customer", "Feedback"]?.map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={text === "Customer" ? (pathname === "/user/customer" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                      pathname === `/feedback` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => { text === "Customer" ? router.push(`/user/customer`) : router.push(`/${text.toLowerCase()}`) }}
+                  >
+                    <ListItemButton>
+                      <ListItemIcon className={text === "Customer" ? (pathname === "/user/customer" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                        pathname === `/feedback` ? 'text-sky-600  ' : 'text-slate-700  '
+                      }>
+                        <Person />
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
 
 
+
+            {  value?.user?.role === "SERVICE"  
+              ? <ListItem onClick={handleCollapseTechnician} disablePadding   className={`pl-2 ${
+                pathname.startsWith("/user/technician")
+                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                  : pathname.startsWith("/feedback")
+                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                  : "text-slate-700"
+              }`}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/user/technician") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <Person />
+                  </ListItemIcon>
+                  <ListItemText primary={"Technician"} />
+                  {isCollapseTechnician ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              : ""}
+            <Collapse in={isCollapseTechnician} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {["Technician List", "Workload"]?.map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={text === "Technician List" ? (pathname === "/user/technician" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                      pathname === `/user/technician/workload` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => { text === "Technician List" ? router.push(`/user/technician`) : router.push(`/user/technician/workload`) }}
+                  >
+                    <ListItemButton>
+                      <ListItemIcon className={text === "Technician List" ? (pathname === "/user/technician" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                        pathname === `/user/technician/workload` ? 'text-sky-600  ' : 'text-slate-700  '
+                      }>
+                        <Person />
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
             {/* {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" */}
             <ListItem disablePadding
               onClick={(event) => {
@@ -784,12 +889,12 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                  <div className='font-bold text-2xl'  >
+                  <div className='font-bold text-xl'  >
                     Dashboard
                   </div>
-                  <div className='font-bold text-xl ms-8'  >
+                  {/* <div className='font-bold text-xl ms-8'  >
                     <Payment fontSize='large' />1000.0 INR
-                  </div>
+                  </div> */}
                 </div>
                 <div className='flex items-center'>
                   <div className='font-semibold'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>

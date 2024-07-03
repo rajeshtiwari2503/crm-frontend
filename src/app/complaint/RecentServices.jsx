@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,34 +8,33 @@ import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../../http-request'
+import http_request from '.././../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
-import AddFeedback from '@/app/feedback/addFeedback';
 
-const CloseComplaintList = (props) => {
+const RecentServicesList = (props) => {
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+     
+    const [status, setStatus] = useState(false);
+
+    const [confirmBoxView, setConfirmBoxView] = useState(false);
+    const [id, setId] = useState("");
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [sortBy, setSortBy] = useState('id');
+  
+  
 
   const router = useRouter()
-  const complaint = props?.data;
+
+   
   const userData = props?.userData;
+  const data1 = props?.data;
 
-  const data = userData.role === "ADMIN" ? complaint
-  : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
-  const [status, setStatus] = useState(false);
+  
+  const data = data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING");
 
-  const [confirmBoxView, setConfirmBoxView] = useState(false);
-  const [id, setId] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [sortBy, setSortBy] = useState('id');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -95,8 +94,8 @@ const CloseComplaintList = (props) => {
   const handleEdit = (id) => {
     router.push(`/complaint/edit/${id}`);
   };
-  const handleUpdateStatus = async (row) => {
-    setId(row)
+  const handleUpdateStatus = async (id) => {
+    setId(id)
     setStatus(true)
   }
   const handleUpdateClose = () => {
@@ -107,7 +106,7 @@ const CloseComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Close Service Information</div>
+        <div className='font-bold text-2xl'> Recent Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
@@ -343,34 +342,11 @@ const CloseComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {userData?.role==="USER"?
-                        <>
-                        <div
-                          // onClick={() => handleUpdateStatus(row)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Give Feedback
-                        </div>
-                        <div
-                          onClick={() => handleUpdateStatus(row)}
-                          className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
-                        >
-                          Pay
-                        </div>
-                        </>
-                        :""}
+                        
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
-                          <Print color="primary" />
-                        </IconButton>
-                        <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                          <EditIcon color="success" />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                          <DeleteIcon color="error" />
-                        </IconButton> */}
+                        
                       </div>
                     </TableCell>
                   </TableRow>
@@ -389,32 +365,12 @@ const CloseComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
-        <DialogTitle>  Update Status</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleUpdateClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <DialogContent>
-           
-         <AddFeedback  complaints={id}  onClose={handleUpdateClose}/>
-        </DialogContent>
-
-      </Dialog>
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
+     
     </div>
   );
 };
 
-export default CloseComplaintList;
+export default RecentServicesList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

@@ -4,8 +4,9 @@ import http_request from '../../../http-request';
  
 import CountUp from 'react-countup';
  
-import AssignComplaintList from '../complaint/asign/assignComplaintList';
+ 
 import { Chart } from 'react-google-charts';
+import RecentServicesList from '../complaint/RecentServices';
 
  
 
@@ -142,7 +143,7 @@ const DealerDashboard = (props) => {
       </div>
 
       <div>
-        <AssignComplaintList data={data} dashboard={true} />
+      <RecentServicesList data={data} userData={userData} />
       </div>
     </>
   );

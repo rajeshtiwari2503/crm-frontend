@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
- 
-import http_request from '../../../http-request';
- 
-import CountUp from 'react-countup';
- 
-import AssignComplaintList from '../complaint/asign/assignComplaintList';
-import { Chart } from 'react-google-charts';
 
- 
+import http_request from '../../../http-request';
+
+import CountUp from 'react-countup';
+
+
+import { Chart } from 'react-google-charts';
+import RecentServicesList from '../complaint/RecentServices';
+
+
 
 const ServiceDashboard = (props) => {
   const userData = props?.userData;
@@ -66,6 +67,17 @@ const ServiceDashboard = (props) => {
     title: "Complaints Summary",
   };
 
+  const prepareChartData = (timeframe) => {
+    const timeframeData = dashData?.complaints[timeframe];
+    return [
+      ['Status', 'Count'],
+      ['New', timeframeData?.new],
+      ['Assign', timeframeData?.assign],
+      ['Pending', timeframeData?.pending],
+      ['Complete', timeframeData?.complete],
+      ['Cancel', timeframeData?.cancel],
+    ];
+  };
   return (
     <>
       <div className='grid grid-cols-2 gap-4'>
@@ -106,6 +118,14 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Pending Requests</div>
             </div>
           </div>
+          <div className='justify-center flex  items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3  cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+              </div>
+              <div className='text-center mt-2'>TAT</div>
+            </div>
+          </div>
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
@@ -139,13 +159,43 @@ const ServiceDashboard = (props) => {
             height={"400px"}
           />
         </div>
-      </div>
-
-      <div>
-        <AssignComplaintList data={data} dashboard={true} />
-      </div>
-    </>
-  );
+       
+          </div>
+          <div className='grid grid-cols-3 gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
+          <div>
+            <h2 className='mb-5'>Monthly Complaints</h2>
+            <Chart
+              chartType="PieChart"
+              width="100%"
+              options={options}
+              height="400px"
+              data={prepareChartData('monthly')}
+            />
+            </div>
+            <div>
+              <h2 className='mb-5'>Weekly Complaints</h2>
+              <Chart
+                chartType="PieChart"
+                width="100%"
+                height="400px"
+                data={prepareChartData('weekly')}
+              />
+             </div>
+             <div >
+                <h2 className='mb-5'>Daily Complaints</h2>
+                <Chart
+                  chartType="PieChart"
+                  width="100%"
+                  height="400px"
+                  data={prepareChartData('daily')}
+                />
+              </div>
+            </div>
+          <div>
+            <RecentServicesList data={data} userData={userData} />
+          </div>
+        </>
+        );
 };
 
-export default ServiceDashboard;
+        export default ServiceDashboard;

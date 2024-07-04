@@ -91,13 +91,13 @@ const ServiceDashboard = (props) => {
       </div>
 
       <div className='my-8'>
-        <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
+      <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
-              <div className='text-center mt-2'>Total Service Requests</div>
+              <div className='text-center mt-2'>Total Service  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -105,7 +105,7 @@ const ServiceDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
-              <div className='text-center mt-2'>Completed Requests</div>
+              <div className='text-center mt-2'>Completed  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -113,7 +113,15 @@ const ServiceDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
-              <div className='text-center mt-2'>Assigned Requests</div>
+              <div className='text-center mt-2'>Assigned  </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
+              </div>
+              <div className='text-center mt-2'>In Progress </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -121,13 +129,37 @@ const ServiceDashboard = (props) => {
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
-              <div className='text-center mt-2'>Pending Requests</div>
+              <div className='text-center mt-2'>Part Pending  </div>
             </div>
           </div>
-          <div className='justify-center flex  items-center'>
+          <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-green-300 rounded-md mt-3  cursor-pointer p-4'>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Pending  </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={1} delay={1} />
+              </div>
+              <div className='text-center mt-2'>RT</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={1} delay={1} />
+              </div>
+              <div className='text-center mt-2'>CT</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={1} delay={1} />
               </div>
               <div className='text-center mt-2'>TAT</div>
             </div>

@@ -121,6 +121,11 @@ const AssignComplaintList = (props) => {
     setId(id)
     setStatus(true)
   }
+  const handleOrderPart = async (id) => {
+    setId(id)
+    setValue("ticketID", id)
+    setOrder(true)
+  }
   const handleUpdateClose = () => {
 
     setStatus(false)
@@ -371,6 +376,23 @@ const AssignComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
+                        {userData?.role === "ADMIN" || userData?.role === "BRAND"|| userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        <div
+                          onClick={() => handleUpdateStatus(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                        >
+                          Update Status
+                        </div>
+                        :""}
+                       
+                        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleOrderPart(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Order Part
+                          </div>
+                          : ""}
                         {userData?.role === "SERVICE" || userData?.role === "ADMIN" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}

@@ -299,7 +299,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "SERVICE" ? [  'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
+  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Part Pending','In Progress','Close', 'Cancel'] : value?.user?.role === "SERVICE" ? [  'All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']   : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [' ']
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
@@ -488,12 +488,16 @@ function Sidenav(props) {
                     className={
                       text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                        text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                        text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
 
                       text === "All Service" ? router.push(`/complaint/allComplaint`) :
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
+                        text === "In Progress" ? router.push(`/complaint/inprogress`) :
+                        text === "Part Pending" ? router.push(`/complaint/partpending`) :
                           router.push(`/complaint/${text.toLowerCase()}`)
                     }}
                   >
@@ -502,6 +506,8 @@ function Sidenav(props) {
                         className={
                           text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                            text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                            text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
                               pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >

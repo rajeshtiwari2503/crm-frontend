@@ -7,21 +7,32 @@ import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
+import AllServicetList from './AllServiceList';
 
 const CutomerDetails = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [user, setUser] = useState("")
     const [loading, setLoading] = useState(false)
+    const [userComplaint, setUserComplaint] = useState([])
 
- 
 
     useEffect(() => {
         getUserById()
-
+        getComplaintByTechId()
     }, [id])
 
+    const getComplaintByTechId = async () => {
+        try {
+            let response = await http_request.get(`/getComplaintByTechId/${params.id}`)
+            let { data } = response;
+            setUserComplaint(data)
 
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
 
     const getUserById = async () => {
         try {
@@ -35,9 +46,9 @@ const CutomerDetails = ({ params }) => {
         }
     }
 
-    const handleEdit = ( ) => {
+    const handleEdit = () => {
         router.push(`/user/technician/edit/${user?._id}`);
-      };
+    };
 
 
 
@@ -49,11 +60,11 @@ const CutomerDetails = ({ params }) => {
                     <div className='flex justify-between items-center' >
                         <div className='' >
                             <h2 className="mb-5  text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                            Technician Details
+                                Technician Details
                             </h2>
                         </div>
                         <div onClick={handleEdit} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-                          <Edit /> <div className='ms-3'>Edit</div>
+                            <Edit /> <div className='ms-3'>Edit</div>
                         </div>
                     </div>
                     <hr />
@@ -70,8 +81,9 @@ const CutomerDetails = ({ params }) => {
                         </div>
                     </div>
                 </div>
-
-
+              <div className='mt-8'>
+                    <AllServicetList data={userComplaint} />
+                </div>
             </Sidenav>
         </>
 

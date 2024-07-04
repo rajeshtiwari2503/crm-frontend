@@ -48,7 +48,7 @@ const ComplaintDetails = ({ params }) => {
     const handleEdit = () => {
         router.push(`/complaint/edit/${complaint?._id}`);
     };
-console.log(userComplaint);
+ 
     return (
         <>
 

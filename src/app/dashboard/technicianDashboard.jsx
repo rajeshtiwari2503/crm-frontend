@@ -15,21 +15,62 @@ const TechnicianDashboard = (props) => {
   const dashData = props?.dashData;
   const [complaint, setComplaint] = useState([]);
   const [refresh, setRefresh] = useState("");
+  const [averageTAT, setAverageTAT] = useState(0);
+  const [averageClosingTime, setAverageClosingTime] = useState(0);
 
   useEffect(() => {
     getAllComplaint();
   }, [refresh]);
 
+
+  const calculateTAT = (createdAt, updatedAt) => {
+    const created = new Date(createdAt);
+    const updated = new Date(updatedAt);
+    const TAT = (updated - created) / (1000 * 60 * 60); // Convert milliseconds to hours
+    return TAT;
+  };
+
+  const calculateTimeDifference = (startTime, endTime) => {
+    const start = new Date(startTime);
+    const end = new Date(endTime);
+    const timeDifference = (end - start) / (1000 * 60 * 60); // Convert milliseconds to hours
+    return timeDifference;
+  };
+
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
+     
+      const completedComplaints1 = data.filter(c => c.status === 'COMPLETED');
+      const tatData = completedComplaints1.map(c => calculateTAT(c.createdAt, c.updatedAt));
+      const totalTAT = tatData.reduce((sum, tat) => sum + tat, 0);
+      const avgTAT = tatData.length ? (totalTAT / tatData.length).toFixed(2) : 0;
 
+      setAverageTAT(avgTAT);
+      const completedComplaints = data.filter(c => c.status === 'COMPLETED' && c.assignTechnicianTime && c.updatedAt);
+      const closingTimes = completedComplaints.map(c => calculateTimeDifference(c.assignTechnicianTime, c.updatedAt));
+      
+      if (closingTimes.length > 0) {
+        const totalClosingTime = closingTimes.reduce((sum, time) => sum + time, 0);
+        const avgClosingTime = (totalClosingTime / closingTimes.length).toFixed(2);
+        console.log('Average Closing Time:', avgClosingTime);
+        setAverageClosingTime(avgClosingTime);
+      } else {
+        console.log('No completed complaints with valid assignTechnicianTime and updatedAt found.');
+      }
+
+     
       setComplaint(data);
     } catch (err) {
       console.log(err);
     }
   };
+
+  
+console.log(averageTAT);
+console.log(averageClosingTime);
+
 
   const filterData = userData?.role === "ADMIN" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
@@ -141,10 +182,10 @@ const TechnicianDashboard = (props) => {
               <div className='text-center mt-2'>CT</div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
+          <div className=' flex justify-center items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={1} delay={1} />
+                <CountUp start={0} end={averageTAT} delay={1} /> {"Hours"}
               </div>
               <div className='text-center mt-2'>TAT</div>
             </div>

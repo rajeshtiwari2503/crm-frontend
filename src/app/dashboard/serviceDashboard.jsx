@@ -39,8 +39,9 @@ const ServiceDashboard = (props) => {
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
               : complaint;
 
-  const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
-
+  const sortedData = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
+  const data = sortedData?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+ 
   const RefreshData = (data) => {
     setRefresh(data);
   };
@@ -64,7 +65,7 @@ const ServiceDashboard = (props) => {
   ];
 
   const options = {
-    title: "Complaints Summary",
+    title: "Service Summary",
   };
 
   const prepareChartData = (timeframe) => {

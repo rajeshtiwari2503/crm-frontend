@@ -300,7 +300,7 @@ function Sidenav(props) {
   const secondaryText = "#007BFF"
 
   const complaints = value?.user?.role === "ADMIN" ?['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service']:value?.user?.role==="BRAND"? ['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "SERVICE" ? [   'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "TECHNICIAN" ? [ 'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']     : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [' ']
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']     : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [ ]
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
     <>
@@ -439,7 +439,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" ||  value?.user?.role === "TECHNICIAN"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"  
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -627,7 +627,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "TECHNICIAN" || value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
+            {  value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
               ?
               <ListItem onClick={(event) => {
                 router.push(`/feedback`)

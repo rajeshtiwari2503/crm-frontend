@@ -45,9 +45,11 @@ const RecentServicesList = (props) => {
 
 
   const userData = props?.userData;
-  const data1 = props?.data;
+  const data11 = props?.data;
+  const sortedData1 = data11.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  const data1 = sortedData1;
 
-
+ 
   const data = userData?.role === "USER" ? data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING") : data1;
 
 
@@ -241,7 +243,7 @@ const RecentServicesList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('createdAt')}
                     >
-                      Created_At
+                      Updated_At
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>Actions</TableCell>
@@ -273,7 +275,7 @@ const RecentServicesList = (props) => {
                         
                       </div>
                     </TableCell>
-                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>{new Date(row?.updatedAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
 

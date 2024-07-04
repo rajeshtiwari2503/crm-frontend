@@ -53,6 +53,7 @@ const ServiceDashboard = (props) => {
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
+    ["InProgress", dashData?.complaints?.inProgress],
   ];
 
   const barChartData = [
@@ -62,21 +63,25 @@ const ServiceDashboard = (props) => {
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
+    ["InProgress", dashData?.complaints?.inProgress],
+
   ];
 
   const options = {
-    title: "Service Summary",
+    title: "Complaint Summary",
   };
 
   const prepareChartData = (timeframe) => {
     const timeframeData = dashData&& dashData?.complaints[timeframe];
     return [
       ['Status', 'Count'],
-      ['New', timeframeData?.new],
+      ['AllComplaints', timeframeData?.allComplaints],
+      ['InProgress', timeframeData?.inProgress],
       ['Assign', timeframeData?.assign],
       ['Pending', timeframeData?.pending],
       ['Complete', timeframeData?.complete],
       ['Cancel', timeframeData?.cancel],
+      ['PartPending', timeframeData?.partPending],
     ];
   };
   return (
@@ -170,7 +175,7 @@ const ServiceDashboard = (props) => {
               width="100%"
               options={options}
               height="400px"
-              data={prepareChartData('monthly')}
+              data={prepareChartData('lastMonth')}
             />
             </div>
             <div>
@@ -179,7 +184,7 @@ const ServiceDashboard = (props) => {
                 chartType="PieChart"
                 width="100%"
                 height="400px"
-                data={prepareChartData('weekly')}
+                data={prepareChartData('lastWeek')}
               />
              </div>
              <div >

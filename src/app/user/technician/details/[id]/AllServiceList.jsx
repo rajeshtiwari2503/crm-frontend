@@ -6,49 +6,34 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Add, Close, Print, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
-import { ToastMessage } from '@/app/components/common/Toastify';
+ 
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../http-request'
+ 
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 
-const StatusComponent = ({ row }) => {
-  let statusToDisplay = row?.status;  
+const AllServicetList = (props) => {
 
-  if (row?.updateHistory?.length > 0) {
-    const lastIndex = row?.updateHistory.length - 1;
-    statusToDisplay = row?.updateHistory[lastIndex]?.changes?.status || row?.status;
-  }
+     
+    const [status, setStatus] = useState(false);
 
-  return (
-    <div className='bg-green-400 text-white p-2 rounded-md'>
-      {statusToDisplay}
-    </div>
-  );
-};
-
-const RecentServicesList = (props) => {
-
-
-  const [status, setStatus] = useState(false);
-
-  const [confirmBoxView, setConfirmBoxView] = useState(false);
-  const [id, setId] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [sortBy, setSortBy] = useState('id');
-
-
+    const [confirmBoxView, setConfirmBoxView] = useState(false);
+    const [id, setId] = useState("");
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [sortDirection, setSortDirection] = useState('asc');
+    const [sortBy, setSortBy] = useState('id');
+  
+  
 
   const router = useRouter()
 
-
+   
   const userData = props?.userData;
-  const data1 = props?.data;
+  const data = props?.data;
 
-
-  const data = userData?.role === "USER" ? data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING") : data1;
+  
+//   const data = data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING");
 
 
   const handleChangePage = (event, newPage) => {
@@ -69,34 +54,7 @@ const RecentServicesList = (props) => {
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
-
-  const deleteData = async () => {
-    try {
-      let response = await http_request.deleteData(`/deleteComplaint/${id}`);
-      let { data } = response;
-      setConfirmBoxView(false);
-      props?.RefreshData(data)
-      ToastMessage(data);
-    } catch (err) {
-      console.log(err);
-    }
-  }
-  const onSubmit = async (data) => {
-    try {
-      let response = await http_request.patch(`/editComplaint/${id}`, data);
-      let { data: responseData } = response;
-
-      setStatus(false)
-      props?.RefreshData(responseData)
-      ToastMessage(responseData);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  const handleDelete = (id) => {
-    setConfirmBoxView(true);
-    setId(id)
-  }
+  
 
   const handleAdd = () => {
     router.push("/complaint/add")
@@ -117,12 +75,11 @@ const RecentServicesList = (props) => {
 
     setStatus(false)
   }
-  
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'> Recent Service Information</div>
+        <div className='font-bold text-2xl'>  User All Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
@@ -134,9 +91,9 @@ const RecentServicesList = (props) => {
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-          <TableContainer component={Paper}>
+             <TableContainer component={Paper}>
             <Table>
-              <TableHead>
+            <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
@@ -156,9 +113,60 @@ const RecentServicesList = (props) => {
                       Ticket Id
                     </TableSortLabel>
                   </TableCell>
-
-
-
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'fullName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('fullName')}
+                    >
+                      Customer Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'emailAddress'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('emailAddress')}
+                    >
+                      Customer Email
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'serviceAddress'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('serviceAddress')}
+                    >
+                      Service_Address
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'city'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('city')}
+                    >
+                     City
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'state'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('state')}
+                    >
+                     State
+                    </TableSortLabel>
+                  </TableCell> */}
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'customerMobile'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('customerMobile')}
+                    >
+                      Contact No.
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'categoryName'}
@@ -177,8 +185,24 @@ const RecentServicesList = (props) => {
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-
-
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'modelNo'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('modelNo')}
+                    >
+                      Model No.
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'serialNo'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('serialNo')}
+                    >
+                      Serial No.
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'issueType'}
@@ -189,7 +213,7 @@ const RecentServicesList = (props) => {
                     </TableSortLabel>
                   </TableCell>
 
-                  {/* <TableCell>
+                  <TableCell>
                     <TableSortLabel
                       active={sortBy === 'detailedDescription'}
                       direction={sortDirection}
@@ -206,7 +230,7 @@ const RecentServicesList = (props) => {
                     >
                       Error Messages
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'technicianName'}
@@ -225,7 +249,24 @@ const RecentServicesList = (props) => {
                       Technician Name
                     </TableSortLabel>
                   </TableCell>
-
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'technicianContact'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('technicianContact')}
+                    >
+                      Technician Contact
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'technicianComments'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('technicianComments')}
+                    >
+                      Technician Comments
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -253,34 +294,32 @@ const RecentServicesList = (props) => {
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?._id}</TableCell>
-
+                    <TableCell>{row?.fullName}</TableCell>
+                    <TableCell>{row?.emailAddress}</TableCell>
+                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.state}</TableCell> */}
+                    <TableCell>{row?.phoneNumber}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.productBrand}</TableCell>
-
+                    <TableCell>{row?.modelNo}</TableCell>
+                    <TableCell>{row?.serialNo}</TableCell>
 
                     <TableCell>{row?.issueType}</TableCell>
-                    {/* <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell> */}
+                    <TableCell>{row?.detailedDescription}</TableCell>
+                    <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.assignTechnician}</TableCell>
-
-                    <TableCell   >
-                      <div className='bg-green-400 text-white p-2 rounded-md'>
-                        
-                         
-                            <StatusComponent row={row} />
-                        
-                        
-                      </div>
-                    </TableCell>
+                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-
+                        
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-
+                        
                       </div>
                     </TableCell>
                   </TableRow>
@@ -299,12 +338,12 @@ const RecentServicesList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-
+     
     </div>
   );
 };
 
-export default RecentServicesList;
+export default AllServicetList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

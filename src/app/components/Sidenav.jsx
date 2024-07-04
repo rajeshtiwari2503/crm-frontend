@@ -299,8 +299,8 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign', 'Part Pending','In Progress','Close', 'Cancel'] : value?.user?.role === "SERVICE" ? [  'All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close', 'Cancel'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close', 'Cancel'] : value?.user?.role === "TECHNICIAN" ? ['All Service', 'Pending', 'Asign',, 'Part Pending','In Progress', 'Close'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']   : value?.user?.role === "TECHNICIAN" ? ['Customer'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [' ']
+  const complaints = value?.user?.role === "ADMIN" ?['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service']:value?.user?.role==="BRAND"? ['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "SERVICE" ? [   'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "TECHNICIAN" ? [ 'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']     : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [' ']
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
     <>
@@ -748,7 +748,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {  value?.user?.role === "SERVICE"  
+            {  value?.user?.role === "SERVICE"  || value?.user?.role === "TECHNICIAN" 
               ? <ListItem onClick={handleCollapseCustomer} disablePadding   className={`pl-2 ${
                 pathname.startsWith("/user/customer")
                   ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"

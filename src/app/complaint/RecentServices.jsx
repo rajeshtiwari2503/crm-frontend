@@ -140,60 +140,9 @@ const RecentServicesList = (props) => {
                       Ticket Id
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'fullName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('fullName')}
-                    >
-                      Customer Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'emailAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
-                    >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                      Service_Address
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'customerMobile'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('customerMobile')}
-                    >
-                      Contact No.
-                    </TableSortLabel>
-                  </TableCell>
+                  
+                 
+                 
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'categoryName'}
@@ -212,24 +161,8 @@ const RecentServicesList = (props) => {
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
+                  
+                 
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'issueType'}
@@ -240,7 +173,7 @@ const RecentServicesList = (props) => {
                     </TableSortLabel>
                   </TableCell>
 
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'detailedDescription'}
                       direction={sortDirection}
@@ -257,7 +190,7 @@ const RecentServicesList = (props) => {
                     >
                       Error Messages
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'technicianName'}
@@ -276,24 +209,7 @@ const RecentServicesList = (props) => {
                       Technician Name
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -321,24 +237,22 @@ const RecentServicesList = (props) => {
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?._id}</TableCell>
-                    <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
-                    {/* <TableCell>{row?.state}</TableCell> */}
-                    <TableCell>{row?.phoneNumber}</TableCell>
+                  
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
+                   
 
                     <TableCell>{row?.issueType}</TableCell>
-                    <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell>
+                    {/* <TableCell>{row?.detailedDescription}</TableCell>
+                    <TableCell>{row?.errorMessages}</TableCell> */}
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>{row?.assignTechnician}</TableCell>
+                    
+                    <TableCell   >
+                      <div className='bg-green-400 text-white p-2 rounded-md'>
+                      {row?.status}
+                        </div>
+                        </TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">

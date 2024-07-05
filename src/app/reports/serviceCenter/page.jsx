@@ -58,8 +58,8 @@ const ServiceCenterList = (props) => {
   useEffect(() => {
     const filteredData = filterDataByDate(service, startDate, endDate);
     const searchFilteredData = filteredData.filter(item =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchTerm.toLowerCase())
+      item?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item?.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredSearchData(searchFilteredData);
   }, [service, startDate, endDate, searchTerm]);

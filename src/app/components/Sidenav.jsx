@@ -299,7 +299,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ?['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service']:value?.user?.role==="BRAND"? ['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "SERVICE" ? [   'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "TECHNICIAN" ? [  'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'All Service', 'Pending', 'Asign', 'Close',]
+  const complaints = value?.user?.role === "ADMIN" ?['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service']:value?.user?.role==="BRAND"? ['Create', 'Bulk Upload',  'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "SERVICE" ? [   'Pending', 'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "TECHNICIAN" ? [  'Asign', 'In Progress','Part Pending', 'Cancel','Close','All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : [  'Create','All Service', 'Pending', 'Asign', 'Close',]
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee']     : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : [ ]
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
@@ -555,7 +555,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse> */}
-            {value?.user?.role === "ADMIN"
+            {/* {value?.user?.role === "DEALER"
               ? <ListItem onClick={handleCollapseReports} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -565,7 +565,7 @@ function Sidenav(props) {
                   {isCollapseReports ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
               </ListItem>
-              : ""}
+              : ""} */}
             <Collapse in={isCollapseReports} timeout={"auto"} unmountOnExit >
               <List className=' '>
                 {['Service Center'].map((text, index) => (
@@ -692,7 +692,7 @@ function Sidenav(props) {
                 {['Knowledge', "Contact", "Chat"].map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
-                      pathname === "/reports/serviceCenter" ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
+                      pathname === `/support/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
                       router.push(`/support/${text.toLowerCase()}`)
@@ -842,7 +842,7 @@ function Sidenav(props) {
               </ListItemButton>
             </ListItem>
             {/* : ""} */}
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "DEALER" 
               ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
               }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>

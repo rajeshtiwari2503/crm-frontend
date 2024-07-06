@@ -5,11 +5,13 @@ import http_request from '.././../../../http-request'
 import StockList from './stockList'
 const Stock = () => {
     const [stocks, setStocks] = useState([])
+    const [products, setProducts] = useState([])
 
     const [refresh, setRefresh] = useState("")
 
     useEffect(() => {
       getAllStocks()
+      getAllProducts()
     }, [refresh])
   
   
@@ -18,6 +20,12 @@ const Stock = () => {
       let { data } = response;
   
       setStocks (data)
+    }
+    const getAllProducts = async () => {
+      let response = await http_request.get("/getAllSparepart")
+      let { data } = response;
+  
+      setProducts (data)
     }
   
     const data = stocks?.map((item, index) => ({ ...item, i: index + 1}));
@@ -30,7 +38,7 @@ const Stock = () => {
         <>
             <Sidenav>
                
-                <StockList data={data} RefreshData={RefreshData}/>
+                <StockList data={data} products={products} RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

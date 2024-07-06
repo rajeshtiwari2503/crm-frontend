@@ -134,6 +134,8 @@ function SparePartAdd() {
             let product = products?.data?.find(p1 => (p1.productName === sparePart.productModel && p1?.brandName === sparePart?.brandName));
             const id = obj?.role === "ADMIN" ? product?.userId : obj?._id
             const formData = new FormData();
+            formData.append("brandId", obj?.user?._id);
+            formData.append("brandName",obj?.user?.brandName);
             formData.append("partName", sparePart?.partName);
             formData.append("description", sparePart?.description);
             formData.append("MRP", sparePart?.MRP);

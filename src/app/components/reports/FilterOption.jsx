@@ -27,7 +27,8 @@ const FilterOptions = ({ filters, setFilters,userData }) => {
   ];
 
   const statusOptions = [
-    { value: 'NEW', label: 'NEW' },
+    { value: 'PENDING', label: 'PENDING' },
+    { value: 'ASSIGN', label: 'ASSIGN' },
     { value: 'IN PROGRESS', label: 'IN PROGRESS' },
     { value: 'COMPLETED', label: 'COMPLETED' },
     { value: 'CANCELED', label: 'CANCELED' },
@@ -74,7 +75,7 @@ const cityOptions = [{
     label: technician.name,
   }));
   const brandOptions =  userData?.brands?.map(brand => ({
-    value: brand.brandName,
+    value: brand._id,
     label: brand.brandName,
   }));
   

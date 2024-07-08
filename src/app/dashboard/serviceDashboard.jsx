@@ -287,7 +287,7 @@ const ServiceDashboard = (props) => {
       let { data } = response;
 
       // Filter complaints assigned to this technician
-      const techComp = data.filter((item) => item?.technicianId === userData._id);
+      const techComp = data.filter((item) => item?.assignServiceCenterId === userData._id);
 
       // Filter completed complaints for TAT calculation
       const completedComplaints1 = techComp.filter(c => c.status === 'COMPLETED');

@@ -15,16 +15,35 @@ const BrandDashboard = (props) => {
   const dashData = props?.dashData;
   const [complaint, setComplaint] = useState([]);
   const [refresh, setRefresh] = useState("");
+  const [averageCT, setAverageCT] = useState(0);
 
   useEffect(() => {
     getAllComplaint();
   }, [refresh]);
 
+
+  const calculateTAT = (createdAt, updatedAt) => {
+    const created = new Date(createdAt);
+    const updated = new Date(updatedAt);
+    return (updated - created) / (1000 * 60 * 60); // Convert milliseconds to hours
+  };
+
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
+      const techComp = data.filter((item) => item?.brandId === userData._id);
 
+      // Filter completed complaints for TAT calculation
+      const completedComplaints1 = techComp.filter(c => c.status === 'COMPLETED');
+      // console.log(completedComplaints1);
+      const CtData = completedComplaints1.map(c => calculateTAT(c.createdAt, c.updatedAt));
+      const totalCT = CtData.reduce((sum, tat) => sum + tat, 0);
+      const avCT = CtData.length ? (totalCT / CtData.length).toFixed(2) : 0;
+
+      const ct = avCT <= 24 ? "99" : avCT <= 32 ? "80" : avCT <= 48 ? "60" : avCT <= 64 ? "40" : avCT <= 72 ? "30" : avCT <= 100 ? "10" : "5"
+
+      setAverageCT(ct);
       setComplaint(data);
     } catch (err) {
       console.log(err);
@@ -40,7 +59,7 @@ const BrandDashboard = (props) => {
               : complaint;
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
-
+ 
   const RefreshData = (data) => {
     setRefresh(data);
   };
@@ -80,7 +99,7 @@ const BrandDashboard = (props) => {
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
-              <div className='text-center mt-2'>Total Service Requests</div>
+              <div className='text-center mt-2'>Total Service  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -88,7 +107,7 @@ const BrandDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
-              <div className='text-center mt-2'>Completed Requests</div>
+              <div className='text-center mt-2'>Completed  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -96,7 +115,15 @@ const BrandDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
-              <div className='text-center mt-2'>Assigned Requests</div>
+              <div className='text-center mt-2'>Assigned  </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
+              </div>
+              <div className='text-center mt-2'>In Progress</div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
@@ -104,7 +131,23 @@ const BrandDashboard = (props) => {
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
-              <div className='text-center mt-2'>Pending Requests</div>
+              <div className='text-center mt-2'>Pending  </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Part Pendind </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={averageCT} delay={1} />
+              </div>
+              <div className='text-center mt-2'> C T</div>
             </div>
           </div>
           <div className='justify-center flex items-center'>

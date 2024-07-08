@@ -5,14 +5,16 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import Images from './Image';
 import BasicInformation from './BasicInformation';
 import Sidenav from '@/app/components/Sidenav';
+import { useRouter } from 'next/navigation';
 
 
 
 function SparePartAdd() {
+const router=useRouter()
 
     const [loading, setLoading] = useState(false);
 
-    const [brands, setBrands] = useState([]);
+    
     const [categories, setCategory] = useState([]);
     const [products, setProduct] = useState([]);
     const [errors, setErrors] = useState({});
@@ -21,7 +23,7 @@ function SparePartAdd() {
 
         GetAllCategory();
         GetAllProducts();
-        GetAllBrands();
+       
 
     }, [])
 
@@ -39,18 +41,7 @@ function SparePartAdd() {
         images: []
     })
 
-    const GetAllBrands = async () => {
-        try {
-            let response = await http_request.get("/getAllBrands")
-            let { data } = response
-            setBrands(data);
-        }
-        catch (err) {
-            console.log(err)
-
-
-        }
-    }
+   
     const GetAllCategory = async () => {
         try {
             let response = await http_request.get("/getAllProductCategory")
@@ -142,6 +133,7 @@ function SparePartAdd() {
         try {
             let user = localStorage.getItem("user");
             let obj = JSON.parse(user);
+            
             const role = obj?.role === "ADMIN" ? "BRAND" : obj?.role;
             let technician = +sparePart?.technician;
             let product = products?.data?.find(p1 => (p1.productName === sparePart.productModel && p1?.brandName === sparePart?.brandName));
@@ -152,6 +144,8 @@ function SparePartAdd() {
             formData.append("MRP", sparePart?.MRP);
             formData.append("bestPrice", sparePart?.bestPrice);
             // formData.append("technician",technician);
+            formData.append("brandId", obj?.user?._id);
+            formData.append("brandName",obj?.user?.brandName);
             formData.append("skuNo", sparePart?.skuNo);
             formData.append("partNo", sparePart?.partNo);
             formData.append("length", +sparePart?.length);
@@ -173,6 +167,7 @@ function SparePartAdd() {
             let { data } = response;
             setLoading(false);
             ToastMessage(data);
+            router.push("/inventory/sparepart")
             // setSpareParts({ partName: "", brandName: "", description: "", MRP: "", bestPrice: "", faultType: [], images: [], technician: "", partNo: "", length: "", weight: "", height: "", breadth: "", skuNo: "" });
         } catch (err) {
             console.log(err);
@@ -191,7 +186,7 @@ function SparePartAdd() {
                             <BasicInformation
                                 errors={errors}
                                 user={user}
-                                brands={brands}
+                             
                                
                                 products={products}
                                 categories={categories}

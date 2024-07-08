@@ -82,6 +82,7 @@ const AssignComplaintList = (props) => {
     setValue('assignTechnician', selectedTechnician?.name);
     setValue('technicianContact', selectedTechnician?.contact);
     setValue('assignTechnicianTime', new Date());
+    setValue('srerviceCenterResponseTime', new Date());
 
   };
   const onSubmit = async (data) => {

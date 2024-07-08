@@ -19,11 +19,9 @@ const StockList = (props) => {
 
   const router = useRouter()
 
-  // const data = props?.data;
-  const categories = props?.categories;
+  
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [isWarranty, setIsWarranty] = useState(false);
-  const [warranty, setWarranty] = useState("");
+ 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
   const [editData, setEditData] = useState(null);
@@ -42,6 +40,7 @@ const StockList = (props) => {
   }, []);
 
   const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  
   const data = userData?.user?.role==="ADMIN"|| "BRAND"?props?.data:filterData;
 
   const handleChangePage = (event, newPage) => {
@@ -66,21 +65,18 @@ const StockList = (props) => {
   const handleEditModalClose = () => {
     setEditModalOpen(false);
   };
-  const handleWarrantyClose = () => {
-    setIsWarranty(false);
-  };
-
+  
   const handleAdd = (row) => {
     setEditData(row)
     setEditModalOpen(true);
   }
-  const handleDetails = (row) => {
+  const handleEdit = (row) => {
     setEditData(row)
     setEditModalOpen(true);
   }
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteProduct/${cateId}`);
+      let response = await http_request.deleteData(`/deleteStock/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -93,19 +89,16 @@ const StockList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-  const handleWarranty = (data) => {
-    setWarranty(data)
-    setIsWarranty(true)
-  }
+  
 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Product Information</div>
+        <div className='font-bold text-2xl'>Stock Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Product</div>
+          <div className=' ml-2 '>Add Stock</div>
         </div>
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -126,87 +119,34 @@ const StockList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'productName'}
+                      active={sortBy === 'sparepartName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('productName')}
+                      onClick={() => handleSort('sparepartName')}
                     >
-                      Product
+                  Spare_Part Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'productDescription'}
+                      active={sortBy === 'freshStock'}
                       direction={sortDirection}
-                      onClick={() => handleSort('productDescription')}
+                      onClick={() => handleSort('freshStock')}
                     >
-                      Product Description
+                     Quantity 
                     </TableSortLabel>
                   </TableCell>
 
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'categoryName'}
+                      active={sortBy === 'brandName'}
                       direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
+                      onClick={() => handleSort('brandName')}
                     >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productBrand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productBrand')}
-                    >
-                     Brand
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                     Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                   Serial No.
+                      Brand Name
                     </TableSortLabel>
                   </TableCell>
                   
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'warrantyStatus'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('warrantyStatus')}
-                    >
-                      In Warranty
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'purchaseDate'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('purchaseDate')}
-                    >
-                      Purchase Date
-                    </TableSortLabel>
-                  </TableCell>
+                  
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -225,24 +165,19 @@ const StockList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.productName}</TableCell>
-                    <TableCell>{row?.productDescription}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
-                    <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
-                    <TableCell>{row?.purchaseDate}</TableCell>
+                    <TableCell>{row?.sparepartName}</TableCell>
+                    <TableCell>{row?.freshStock}</TableCell>
+                    <TableCell>{row?.brandName}</TableCell>
+                    
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
                   <div className='flex'>
 
                     
-                      <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
-                      </IconButton>
-                      <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                      </IconButton> */}
+                      <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
                         <EditIcon color='success' />
                       </IconButton>
                       <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
@@ -268,7 +203,7 @@ const StockList = (props) => {
         </>}
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditModalClose}>
-        <DialogTitle>{editData?._id ? "Edit Product" : "Add Product"}</DialogTitle>
+        <DialogTitle>{editData?._id ? "Edit Stock" : "Add Stock"}</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleEditModalClose}
@@ -282,7 +217,7 @@ const StockList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddStock categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddStock   userData={userData} products={props?.products} data={props?.data}existingStock={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -291,28 +226,7 @@ const StockList = (props) => {
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
 
 
-      <Dialog open={isWarranty} onClose={handleWarrantyClose}>
-        <div className= {warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>
-        <DialogTitle  > {"Warranty Status"}</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleWarrantyClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <div className='md:w-[350px]'>
-            <div className={warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>{warranty? "Your product is under Warranty":"Your product is not under Warranty"}</div>
-          </div>
-        </DialogContent>
-        </div>
-      </Dialog>
+     
     </div>
   );
 };

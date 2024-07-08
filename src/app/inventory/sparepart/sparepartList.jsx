@@ -50,13 +50,13 @@ const SparepartList = (props) => {
   
 
   const handleAdd = (row) => {
-    router.push("/product/sparepart/add")
+    router.push("/inventory/sparepart/add")
   }
   const handleEdit = (id) => {
-    router.push(`/product/sparepart/edit/${id}`)
+    router.push(`/inventory/sparepart/edit/${id}`)
   }
   const handleDetails = (id) => {
-    router.push(`/product/sparepart/details/${id}`)
+    router.push(`/inventory/sparepart/details/${id}`)
   }
   const deleteData = async () => {
     try {

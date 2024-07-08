@@ -16,11 +16,11 @@ const TechnicianDashboard = (props) => {
   const [ctPercentage, setCtPercentage] = useState(0); // State for CT percentage
   const [rtPercentage, setRtPercentage] = useState(0); // State for RT percentage
 
-  const actualTAT = 12; 
-  const actualCT = 6;  
-  const actualRT = 3;   
-  const targetTAT = 24;  
-  const targetCT = 12;   
+  const actualTAT = 12;
+  const actualCT = 6;
+  const actualRT = 3;
+  const targetTAT = 24;
+  const targetCT = 12;
   const targetRT = 6;
   // Fetch data when component mounts or refresh state changes
   useEffect(() => {
@@ -46,7 +46,7 @@ const TechnicianDashboard = (props) => {
     try {
       let response = await http_request.get("/getAllComplaint"); // Assuming endpoint to fetch complaints
       let { data } = response;
-      
+
       // Filter complaints assigned to this technician
       const techComp = data.filter((item) => item?.technicianId === userData._id);
 
@@ -55,11 +55,13 @@ const TechnicianDashboard = (props) => {
       const tatData = completedComplaints1.map(c => calculateTAT(c.createdAt, c.updatedAt));
       const totalTAT = tatData.reduce((sum, tat) => sum + tat, 0);
       const avgTAT = tatData.length ? (totalTAT / tatData.length).toFixed(2) : 0;
-       const comdata=avgTAT<=24 ? "100" :"10"
-      setAverageTAT(avgTAT);
+
+      const tat = avgTAT <= 24 ? "100" : avgTAT <= 32 ? "80" : avgTAT <= 48 ? "60" : avgTAT <= 64 ? "40" : avgTAT <= 72 ? "30" : avgTAT <= 100 ? "10" : "5"
+
+      setAverageTAT(tat);
 
       // Filter completed complaints with valid assign and update times for CT calculation
-      const completedComplaints = techComp.filter(c => 
+      const completedComplaints = techComp.filter(c =>
         c.status === 'COMPLETED' &&
         c.assignTechnicianTime &&
         c.updatedAt &&
@@ -70,15 +72,17 @@ const TechnicianDashboard = (props) => {
       const ctData = completedComplaints.map(c => calculateCT(c.assignTechnicianTime, c.updatedAt));
       const totalCT = ctData.reduce((sum, tat) => sum + tat, 0);
       const avgCT = ctData.length ? (totalCT / ctData.length).toFixed(2) : 0;
-      setAverageClosingTime(avgCT);
-      setAverageResponseTime(avgCT);
+      const ct = avgCT <= 3 ? "100" : avgCT <= 6 ? "80" : avgCT <= 8 ? "60" : avgCT <= 12 ? "40" : avgCT <= 17 ? "30" : avgCT <= 24 ? "10" : "5"
+      const rt = avgCT <= 3 ? "100" : avgCT <= 6 ? "80" : avgCT <= 8 ? "60" : avgCT <= 12 ? "40" : avgCT <= 17 ? "30" : avgCT <= 24 ? "10" : "5"
+      setAverageClosingTime(ct);
+      setAverageResponseTime(rt);
 
       // Calculate TAT percentage
       const tatPercent = completedComplaints1.length ? (avgTAT / targetTAT) * 100 : 0;
       setTatPercentage(tatPercent.toFixed(2));
 
       // Calculate CT percentage
-      const ctPercent = completedComplaints.length ? (avgCT / targetCT) * 100 : 0;
+      const ctPercent = completedComplaints?.length ? (avgCT / targetCT) * 100 : 0;
       setCtPercentage(ctPercent.toFixed(2));
 
       // Calculate RT percentage
@@ -197,68 +201,75 @@ const TechnicianDashboard = (props) => {
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageClosingTime} delay={1} /> {"Hours"}
+                <CountUp start={0} end={averageClosingTime} delay={1} /> {"%"}
               </div>
               <div className='text-center mt-2'>CT</div>
             </div>
           </div>
           {/* Display CT percentage */}
-          <div className='justify-center flex items-center'>
+          {/* <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={ctPercentage} delay={1} /> %
               </div>
               <div className='text-center mt-2'>CT</div>
             </div>
-          </div>
+          </div> */}
           {/* Continue with other statistics like RT, TAT, etc. */}
           {/* Example for average response time (RT) */}
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageResponseTime} delay={1} /> {"Hours"}
+                <CountUp start={0} end={averageResponseTime} delay={1} /> {"%"}
               </div>
               <div className='text-center mt-2'>RT</div>
             </div>
           </div>
           {/* Display RT percentage */}
-          <div className='justify-center flex items-center'>
+          {/* <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={rtPercentage} delay={1} /> %
               </div>
               <div className='text-center mt-2'>RT</div>
             </div>
-          </div>
+          </div> */}
           {/* Continue with other statistics like TAT, etc. */}
           {/* Example for average TAT */}
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageTAT} delay={1} /> {"Hours"}
+                <CountUp start={0} end={averageTAT} delay={1} /> {"%"}
               </div>
               <div className='text-center mt-2'>TAT</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={100} delay={1} />
+              </div>               <div className='text-center mt-2'>Wallet Amount</div>
             </div>
           </div>
           {/* Display TAT percentage */}
-          <div className='justify-center flex items-center'>
+          {/* <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={tatPercentage} delay={1} /> %
               </div>
               <div className='text-center mt-2'>TAT</div>
             </div>
-          </div>
+          </div> */}
           {/* Continue with other statistics like CT, RT, etc. */}
           {/* Example for TAT percentage */}
-          <div className='justify-center flex items-center'>
+          {/* <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={tatPercentage} delay={1} /> %
               </div>
               <div className='text-center mt-2'>TAT</div>
             </div>
-          </div>
+          </div> */}
           {/* Continue with other statistics like RT, CT, etc. */}
         </div>
       </div>

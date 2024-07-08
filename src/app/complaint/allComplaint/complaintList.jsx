@@ -140,6 +140,7 @@ const ComplaintList = (props) => {
       setValue('status', "ASSIGN");
       setValue('assignServiceCenterId', selectedServiceCenter?._id);
       setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
+      setValue('assignServiceCenterTime',  new Date());
     }
   };
   const onSubmit = async (data) => {

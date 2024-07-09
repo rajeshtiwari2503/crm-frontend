@@ -96,7 +96,7 @@ const BrandDashboard = (props) => {
         <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
               <div className='text-center mt-2'>Total Service  </div>
@@ -104,7 +104,7 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
+              <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
               <div className='text-center mt-2'>Completed  </div>
@@ -112,7 +112,7 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
+              <div className='bg-blue-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
               <div className='text-center mt-2'>Assigned  </div>
@@ -120,7 +120,7 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
               </div>
               <div className='text-center mt-2'>In Progress</div>
@@ -136,35 +136,57 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
               </div>
-              <div className='text-center mt-2'>Part Pendind </div>
+              <div className='text-center mt-2'>Part Pending </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 0-1 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 2-5 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> More than Five Days  Service</div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageCT} delay={1} />
+                <CountUp start={0} end={averageCT} delay={1} /> {"%"}
               </div>
               <div className='text-center mt-2'> C T</div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
+          {/* <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={100} delay={1} />
               </div>
               <div className='text-center mt-2'>Wallet Amount</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
       <div className='grid grid-cols-2 gap-4 my-8'>
-        {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
-          <AreaChart />
-        </div> */}
+        
         <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <Chart
             chartType="PieChart"
@@ -186,7 +208,7 @@ const BrandDashboard = (props) => {
       </div>
 
       <div>
-      <RecentServicesList data={data} userData={userData} />
+      <RecentServicesList data={filterData} userData={userData} />
       </div>
     </>
   );

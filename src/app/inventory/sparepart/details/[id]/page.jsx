@@ -65,6 +65,7 @@ const SparepartDetails = ({ params }) => {
             <div>{spareParts?.length}</div>
             <div className='font-bold'>status  </div>
             <div>{spareParts?.status}</div>
+           
             <div className='font-bold'>createdAt  </div>
             <div>{new Date(spareParts?.createdAt).toLocaleString()}</div>
             <div className='font-bold'>updatedAt  </div>
@@ -73,6 +74,7 @@ const SparepartDetails = ({ params }) => {
             <div> 
               <img src={spareParts?.images} alt="image" width={200} height={200} />
             </div>
+           
           </div>
         </>
       }

@@ -43,16 +43,15 @@ const RecentServicesList = (props) => {
 
   const router = useRouter()
 
-
+ 
   const userData = props?.userData;
   const data11 = props?.data;
   const sortedData1 = data11.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  const data1 = sortedData1;
-
+  const sortData = sortedData1?.map((item, index) => ({ ...item, i: index + 1 }));
+  const data1 = sortData;
  
   const data = userData?.role === "USER" ? data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING") : data1;
-
-
+ 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };

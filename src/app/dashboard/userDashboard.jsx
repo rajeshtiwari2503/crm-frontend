@@ -41,7 +41,7 @@ const UserDashboard = (props) => {
           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
               : [];
-
+ 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
@@ -112,6 +112,30 @@ const UserDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 0-1 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 2-5 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> More than Five Days  Service</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
@@ -154,7 +178,7 @@ const UserDashboard = (props) => {
       </div>
 
       <div>
-        <RecentServicesList data={data} userData={userData} />
+        <RecentServicesList data={filterData} userData={userData} />
       </div>
     </>
   );

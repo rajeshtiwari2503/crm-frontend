@@ -71,6 +71,7 @@ const BrandDashboard = (props) => {
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
+    ["In Progress", data?.complaints?.inProgress],
   ];
 
   const barChartData = [
@@ -80,6 +81,7 @@ const BrandDashboard = (props) => {
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
+    ["In Progress", data?.complaints?.inProgress],
   ];
 
   const options = {

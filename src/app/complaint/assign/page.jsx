@@ -12,6 +12,7 @@ const Assign = () => {
 
   const [complaint, setComplaint] = useState([])
   const [technicians, setTechnicians] = useState([])
+  const [sparepart, setSparepart] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
 
@@ -19,6 +20,7 @@ const Assign = () => {
   useEffect(() => {
     getAllComplaint()
     getAllTechnician()
+    getAllSparepart()
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setValue(JSON.parse(storedValue));
@@ -46,6 +48,17 @@ const Assign = () => {
       console.log(err);
     }
   }
+  const getAllSparepart = async () => {
+    try {
+      let response = await http_request.get("/getAllSparePart")
+      let { data } = response;
+
+      setSparepart(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
   const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
@@ -59,7 +72,7 @@ const Assign = () => {
     <Sidenav>
       <Toaster />
       <>
-        <AssignComplaintList   data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
+        <AssignComplaintList  sparepart={sparepart} data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

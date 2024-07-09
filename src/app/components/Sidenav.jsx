@@ -967,7 +967,7 @@ function Sidenav(props) {
                     >
                       <NotificationsNone />
                       {unreadNoti?.length > 0 && (
-                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-xs">
+                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-[10px]">
                           {unreadNoti?.length}
                         </div>
                       )}

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
-import http_request from '.././../../../http-request'
+import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 
@@ -33,6 +33,7 @@ const AssignComplaintList = (props) => {
 
   const technician = props?.technicians
   const [status, setStatus] = useState(false);
+  const [order, setOrder] = useState(false);
   const [assignTech, setAssignTech] = useState(false);
   const [selectedTechnician, setSelectedTechnician] = useState('');
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -41,6 +42,7 @@ const AssignComplaintList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [selectedSparepart, setSelectedSparepart] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -98,6 +100,20 @@ const AssignComplaintList = (props) => {
       console.log(err);
     }
   };
+
+  const partOrder = async (data) => {
+    try {
+      let response = await http_request.post(`/addOrder`, data);
+      let { data: responseData } = response;
+      setOrder(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+      ToastMessage(responseData);
+    }
+  };
+
   const handleDelete = (id) => {
     setConfirmBoxView(true);
     setId(id)
@@ -128,10 +144,29 @@ const AssignComplaintList = (props) => {
     setValue("ticketID", id)
     setOrder(true)
   }
+  const handleOrderClose = () => {
+
+    setOrder(false)
+  }
   const handleUpdateClose = () => {
 
     setStatus(false)
   }
+
+  const handleServiceChange = (event) => {
+    if (status === true) {
+      setValue("status", event.target.value)
+      // console.log(event.target.value);
+    }
+    if (status === false) {
+      const selectedId = event.target.value;
+      const selectedpart = props?.sparepart?.find(center => center._id === selectedId);
+      setSelectedSparepart(selectedId);
+      setValue('sparepartId', selectedpart?._id);
+      setValue('partName', selectedpart?.partName);
+     
+    }
+  };
   return (
     <div>
       <Toaster />
@@ -453,10 +488,10 @@ const AssignComplaintList = (props) => {
             {...register('status')}
             className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           >
-            <option value="NEW">New</option>
+            {/* <option value="NEW">New</option> */}
             <option value="IN PROGRESS">In Progress</option>
-            <option value="AWAITING PART">Awaiting Parts</option>
-            <option value="ONHOLD">On Hold</option>
+            <option value="PART PENDING">Awaiting Parts</option>
+            {/* <option value="ONHOLD">On Hold</option> */}
             <option value="COMPLETED">Completed</option>
             <option value="CANCELED">Canceled</option>
           </select>
@@ -520,6 +555,129 @@ const AssignComplaintList = (props) => {
               Assign  Technician 
             </Button>
           </form>
+        </DialogContent>
+
+      </Dialog>
+      <Dialog open={order} onClose={handleOrderClose}>
+        <DialogTitle> Part Order</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleOrderClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+
+            <div>
+              <label className="block text-gray-700  ">Ticket ID</label>
+              <input {...register('ticketID')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.ticketID && <p className="text-red-500 text-sm mt-1">{errors.ticketID.message}</p>}
+            </div>
+
+            <div>
+            <label id="service-center-label" className="block text-sm font-medium text-black ">
+               Sparepart Name
+              </label>
+              
+              <select
+                  id="service-center-label"
+                  value={selectedSparepart}
+                  onChange={handleServiceChange}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled>Select Sparepart</option>
+                  {props?.sparepart?.map((center) => (
+                    <option key={center.id} value={center._id}>
+                      {center.partName}
+                    </option>
+                  ))}
+                </select>
+            
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Part Number/Model Number</label>
+              <input {...register('partNumber')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Quantity</label>
+              <input {...register('quantity', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Priority Level</label>
+              <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="Standard">Standard</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+              {errors.priorityLevel && <p className="text-red-500 text-sm mt-1">{errors.priorityLevel.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Name</label>
+              <input {...register('supplierInformation.name')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Contact</label>
+              <input {...register('supplierInformation.contact')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Supplier Address</label>
+              <input {...register('supplierInformation.address')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Order Date</label>
+              <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
+              {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Expected Delivery Date</label>
+              <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Shipping Method</label>
+              <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <option value="Standard">Standard</option>
+                <option value="Express">Express</option>
+              </select>
+              {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
+            </div>
+
+            <div>
+              <label className="block text-gray-700 ">Comments/Notes</label>
+              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
+
+            {/* <div>
+              <label className="block text-gray-700 ">Attachments</label>
+              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
+              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
+            </div> */}
+
+            <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+
+          </form>
+
         </DialogContent>
 
       </Dialog>

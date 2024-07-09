@@ -24,6 +24,7 @@ const pieChartData = [
   ["Pending", data?.complaints?.pending],
   ["Complete", data?.complaints?.complete],
   ["PartPending", data?.complaints?.partPending],
+  ["In Progress", data?.complaints?.inProgress],
 ];
 
 const barChartData = [
@@ -33,6 +34,8 @@ const barChartData = [
   ["Pending", data?.complaints?.pending],
   ["Complete", data?.complaints?.complete],
   ["PartPending", data?.complaints?.partPending],
+  ["In Progress", data?.complaints?.inProgress],
+
 ];
 
 const options = {

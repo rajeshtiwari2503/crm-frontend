@@ -403,10 +403,10 @@ const CancelComplaintList = (props) => {
             {...register('status')}
             className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           >
-            <option value="NEW">New</option>
+            {/* <option value="NEW">New</option> */}
             <option value="IN PROGRESS">In Progress</option>
-            <option value="AWAITING PART">Awaiting Parts</option>
-            <option value="ONHOLD">On Hold</option>
+            <option value="PART PENDING">Awaiting Parts</option>
+            {/* <option value="ONHOLD">On Hold</option> */}
             <option value="COMPLETED">Completed</option>
             <option value="CANCELED">Canceled</option>
           </select>

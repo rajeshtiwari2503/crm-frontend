@@ -57,6 +57,8 @@ function Sidenav(props) {
 
   const [refresh, setRefresh] = React.useState("")
   const [currentPage, setCurrentPage] = React.useState(0);
+
+  const [dashData, setData] = React.useState("");
   const notificationsPerPage = 5;
 
   React.useEffect(() => {
@@ -65,9 +67,31 @@ function Sidenav(props) {
       setValue(JSON.parse(storedValue));
     }
     getAllNotification()
+    getAllDashboard()
   }, [refresh]);
 
+  const getAllDashboard = async () => {
+    const storedValue = localStorage.getItem("user");
+    const user1 = JSON.parse(storedValue);
+    try {
+    
+      const endPoint=user1?.user.role==="ADMIN"? "/dashboardDetails"
+      :user1?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user1?.user?._id}`
+      :user1?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user1?.user?._id}`
+      :user1?.user.role==="USER"?`/dashboardDetailsByUserId/${user1?.user?._id}`
+      :user1?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user1?.user?._id}`
+      :user1?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
+      :""
+      let response = await http_request.get(endPoint)
+      let { data } = response;
 
+      setData(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+// console.log(dashData);
 
   const getAllNotification = async () => {
     const storedValue = localStorage.getItem("user");
@@ -299,7 +323,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Asign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Asign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Asign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Asign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Asign', 'Close',] : ['Create', 'Pending', 'Asign', 'Close', 'All Service']
+  const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : []
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const drawer = (
@@ -540,9 +564,17 @@ function Sidenav(props) {
                                     ? '#007BFF' // text-sky-600
                                     : '#64748b', // text-slate-700
 
-                        }} />
+                        }} /> 
                       </ListItemIcon>
-                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} /> 
+                      {text==="Pending"?dashData?.complaints?.pending
+                      :text==="Assign"?dashData?.complaints?.assign
+                      :text==="In Progress"?dashData?.complaints?.inProgress
+                      :text==="Part Pending"?dashData?.complaints?.partPending
+                      :text==="Cancel"?dashData?.complaints?.cancel
+                      :text==="Close"?dashData?.complaints?.complete
+                      :text==="All Service"?dashData?.complaints?.allComplaints
+                      :""}
                     </ListItemButton>
                   </ListItem>
                 ))}

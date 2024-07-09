@@ -144,6 +144,30 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 0-1 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> 2-5 days service </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+              </div>
+              <div className='text-center mt-2'> More than Five Days  Service</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={averageCT} delay={1} /> {"%"}
               </div>
@@ -162,9 +186,7 @@ const BrandDashboard = (props) => {
       </div>
 
       <div className='grid grid-cols-2 gap-4 my-8'>
-        {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
-          <AreaChart />
-        </div> */}
+        
         <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <Chart
             chartType="PieChart"

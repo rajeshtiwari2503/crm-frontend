@@ -50,7 +50,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
     const AddBankDetails = async (data) => {
         try {
 
-            const reqData = { ...data, userId: value?.user?._id, userName: value?.user?.name }
+            const reqData = { ...data, userId: value?.user?._id, userName: value?.user?.serviceCenterName }
 
             setLoading(true);
             const endpoint = existingDetails?._id ? `/editBankDetails/${existingDetails._id}` : '/addBankDetails';
@@ -261,7 +261,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                             {errors.IFSC && <span className="text-red-400">{errors.IFSC.message}</span>}
                         </div>
 
-                        <div className="mb-4">
+                        {/* <div className="mb-4">
                             <label className="block text-gray-700">Commission</label>
                             <input
                                 type="number"
@@ -269,7 +269,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
                                 {...register('commission')}
                                 placeholder="Commission (optional)"
                             />
-                        </div>
+                        </div> */}
                         <div className='flex justify-between mt-8'>
                             <button
                                 onClick={() => setIsModalOpen(false)}

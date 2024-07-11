@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -980,8 +980,9 @@ function Sidenav(props) {
                   <div className='font-bold text-xl'  >
                     Dashboard
                   </div>
-                  {/* <div className='font-bold text-xl ms-8'  >
-                    <Payment fontSize='large' />1000.0 INR
+                  {/* <div className='font-bold text-xl ms-8 flex items-center'  >
+                    <Wallet fontSize='large' color='secondary' />
+                    <div className='text-sm'>1000.0 INR</div>
                   </div> */}
                 </div>
                 <div className='flex items-center'>

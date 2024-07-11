@@ -25,28 +25,31 @@ export default function SignIn() {
       let { data } = response;
       localStorage.setItem('user', JSON.stringify(data));
       setUserData(data?.user);
+      
       if (data?.user?.verification === "VERIFIED") {
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(data));
         } else {
           localStorage.setItem('user', JSON.stringify(data));
         }
-        ToastMessage(data);
+        
         setLoading(false);
         router.push("/dashboard");
+        // ToastMessage(data);
       } 
       else {
         // console.log(userData);
         // let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
         // const { data } = response;
         // if (data?.status === true) {
-        //   ToastMessage(data);
+          // ToastMessage(data);
         //   setLoading(false);
           // router.push("/verification");
         router.push("/dashboard");
 
         // }
       }
+      ToastMessage(data);
     } catch (err) {
       setLoading(false);
       ToastMessage(err?.response?.data);

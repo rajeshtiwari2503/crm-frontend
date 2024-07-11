@@ -242,8 +242,14 @@ import http_request from '../../../http-request'; // Assuming this is your API u
 import CountUp from 'react-countup'; // For counting animations
 import { Chart } from 'react-google-charts'; // For charts
 import RecentServicesList from '../complaint/RecentServices'; // Assuming this component displays recent services
+import { Wallet } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
+import { ToastMessage } from '../components/common/Toastify';
+import { Toaster } from 'react-hot-toast';
 
 const ServiceDashboard = (props) => {
+  const router = useRouter();
+
   const userData = props?.userData; // Technician's user data
   const dashData = props?.dashData; // Dashboard data for counts and summaries
   const [complaint, setComplaint] = useState([]); // State to hold complaint data
@@ -254,6 +260,7 @@ const ServiceDashboard = (props) => {
   const [tatPercentage, setTatPercentage] = useState(0); // State for TAT percentage
   const [ctPercentage, setCtPercentage] = useState(0); // State for CT percentage
   const [rtPercentage, setRtPercentage] = useState(0); // State for RT percentage
+  const [wallet, setWallet] = useState(null)
 
   const actualTAT = 12;
   const actualCT = 6;
@@ -264,7 +271,19 @@ const ServiceDashboard = (props) => {
   // Fetch data when component mounts or refresh state changes
   useEffect(() => {
     getAllComplaint();
+    getWalletById();
   }, [refresh]);
+
+  const getWalletById = async () => {
+    try {
+      let response = await http_request.get(`/getWalletByCenterId/${userData?._id}`);
+      let { data } = response;
+      setWallet(data)
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   // Function to calculate TAT in hours from created and updated timestamps
   const calculateTAT = (createdAt, updatedAt) => {
@@ -397,13 +416,41 @@ const ServiceDashboard = (props) => {
       ['PartPending', timeframeData?.partPending],
     ];
   };
-
+  const handleWallet = async()=> {
+    try {
+      const resData ={serviceCenterId:userData?._id,serviceCenterName:userData?.serviceCenterName}
+     
+        let response = await http_request.post("/addWallet", resData)
+      let { data } = response
+      ToastMessage(data)
+      setRefresh(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+  
   return (
     <>
+    <Toaster/>
       {/* Render additional content or sections as needed */}
 
       {/* Display summary statistics */}
+      <div className=' font-bold text-xl  flex items-center justify-end'  >
+        {wallet ?
+          <div onClick={() => router.push("/wallet/transactions")} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
+            <Wallet fontSize='large' color='secondary' />
+            <div className='text-sm  ms-3'>{wallet?.dueAmount} {"INR"}</div>
+          </div>
+
+          : <div onClick={()=>handleWallet()} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
+            <Wallet fontSize='large' color='secondary' />
+            <div className='text-sm  ms-3'>{wallet?.dueAmount ? wallet?.dueAmount : "Activate Wallet"}  </div>
+          </div>
+        }
+      </div>
       <div className='my-8'>
+
         <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           {/* Example count display with CountUp */}
           <div className='justify-center flex items-center'>

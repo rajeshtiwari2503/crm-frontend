@@ -40,7 +40,7 @@ const BankDetails = () => {
     }
     return (
         <Sidenav>
-            <BankDetailsList RefreshData={RefreshData} data={bankDetails} value={value} />
+            <BankDetailsList RefreshData={RefreshData} data={bankDetails}  value={value} />
         </Sidenav>
     )
 }

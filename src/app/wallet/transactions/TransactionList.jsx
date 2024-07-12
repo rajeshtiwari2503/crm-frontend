@@ -30,7 +30,13 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 
 const TransactionList = ({ data, RefreshData, wallet,bankDetails, loading, value }) => {
  
-const data1=data?.lenth>0 ? data:[];
+
+const adminBankDtl={
+    "name":"Lybley India Pvt Ltd",
+    "ifsc":"UTIB0CCH274",
+    "account_number": "984510633140631"
+}
+
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
     const [page, setPage] = useState(0);
@@ -57,101 +63,35 @@ const data1=data?.lenth>0 ? data:[];
         setSortBy(property);
     };
 
-    const sortedData = stableSort(data1, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
-
-    const onSubmit = async (data) => {
+    const handleDuePayment = async (data) => {
         try {
-            // console.log(bankDetails);
-           if (bankDetails){
+            let centerData = localStorage.getItem("user")
+            let centerInfo = JSON.parse(centerData)
            
-            alert("Your  bank details  are added")
-           
-           }else{
-            alert("Please add bank details")
-        }
-        } catch (err) {
-            console.error(err);
-        }
-    };
-    const userPayment = async () => {
-        try {
-          const userId = localStorage.getItem("userId");
-          if(saveAddress){
-          let { address, address2, state, city } = checkoutData;
-          
-          await httpCommon.patch(`/updateUserDetail/${userId}`,{address:address, address2:address2, state:state, city:city,pin:pin})
-          }
-          let techAmount = spData?.reduce((acc, curr) => acc + (+curr.technician), 0)
-          let amount = data1?.reduce((acc, curr) => acc + (+curr.totPrice), 0);
-          let response = await httpCommon.post("/payment", { amount: amount + techAmount });
-          let { data } = response;
-          const options = {
-            key: "rzp_live_yEWZ902y0STtSb", // Enter the Key ID generated from the Dashboard
-            amount: data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-            currency: "INR",
-            name: "SpareTrade", //your business name
-            description: "Payment for order",
-            image: "https://lybley-webapp-collection.s3.amazonaws.com/PNG-031.png-1684751868223-284237810",
-            order_id: data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-            handler: async function (orderDetails) {
-              try {
-                const userId = localStorage.getItem("userId");
-                let response = await axios.post("https://sparetradebackend-production.up.railway.app/paymentVerification", { response: orderDetails, customerData: { ...checkoutData, customerId: userId, items: spData, pin: pin } });
-                let { data } = response;
-                if (data?.status === true) {
-                  router.push("/confirmation");
-                }
-              } catch (err) {
-                console.log(err);
-              }
-            },
-            prefill: {
-              name: checkoutData.name, //your customer's name
-              email: checkoutData.email,
-              contact: checkoutData.contact
-            },
-            notes: {
-              "address": "Razorpay Corporate Office"
-            },
-            theme: {
-              color: "#3399cc"
-            }
-          };
-          const rzp1 = new window.Razorpay(options);
-          rzp1.open();
-        } catch (err) {
-          console.log(err);
-        }
-      }
-    const handleDuePayment = async (id) => {
-        try {
-            let userData = localStorage.getItem("user")
-            let centerInfo = JSON.parse(userData)
-            setDisable(true)
-            const payableAmmount=totalPay - (+brandBankDtl?.commission/100 )*totalPay
-            const commisionPay=(+brandBankDtl?.commission/100 )*totalPay;
+            
             
             const serviceCenterPayInfo=
             {
-                "account_number":adminBankDtl?.accountNumber,
-                "amount":(+payableAmmount) * 100,
+                "account_number":adminBankDtl?.account_number,
+                "amount":(data?.amount) * 100,
                 "currency":"INR",
                 "mode":"NEFT",
                 "purpose":"payout",
                 "fund_account":{
                     "account_type":"bank_account",
                     "bank_account":{
-                        "name":brandBankDtl?.accountHolderName,
-                        "ifsc":brandBankDtl?.IFSC,
-                        "account_number": brandBankDtl?.accountNumber
+                        "name":bankDetails?.accountHolderName,
+                        "ifsc":bankDetails?.IFSC,
+                        "account_number": bankDetails?.accountNumber
                     },
                     "contact":{
-                        "name":brand?.brandName,
-                        "email":brand?.email,
-                        "contact":brand?.contact,
+                        "name":centerInfo?.user?.serviceCenterName,
+                        "email":brand?.user?.email,
+                        "contact":brand?.user?.contact,
                         "type":"employee",
                         "reference_id":"12345",
                         "notes":{
@@ -169,7 +109,7 @@ const data1=data?.lenth>0 ? data:[];
                 }
             }
 
-            let response = await httpCommon.post(`/serviceCenterDuePayment`, serviceCenterPayInfo)
+            let response = await httpCommon.post(`/serviceCenterDuePayment`, {...serviceCenterPayInfo,centerInfo:centerInfo})
             let { data } = response
 
             // if (data?.entity === "payout") {
@@ -186,6 +126,149 @@ const data1=data?.lenth>0 ? data:[];
             console.log(err)
         }
     }
+    // const onSubmit = async (res) => {
+    //     try {
+    //         // console.log(bankDetails);
+    //        if (bankDetails){
+    //         try {
+    //             let centerData = localStorage.getItem("user")
+    //             let centerInfo = JSON.parse(centerData)
+    //             const serviceCenterPayInfo=
+    //             {
+    //                 "account_number":adminBankDtl?.account_number,
+    //                 "amount":res?.amount ,
+    //                 "currency":"INR",
+    //                 "mode":"NEFT",
+    //                 "purpose":"payout",
+    //                 "fund_account":{
+    //                     "account_type":"bank_account",
+    //                     "bank_account":{
+    //                         "name":bankDetails?.accountHolderName,
+    //                         "ifsc":bankDetails?.IFSC,
+    //                         "account_number": bankDetails?.accountNumber
+    //                     },
+    //                     "contact":{
+    //                         "name":centerInfo?.user?.serviceCenterName,
+    //                         "email":centerInfo?.user?.email,
+    //                         "contact":centerInfo?.user?.contact,
+    //                         "type":"employee",
+    //                         "reference_id":"12345",
+    //                         "notes":{
+    //                             "notes_key_1":"Tea, Earl Grey, Hot",
+    //                             "notes_key_2":"Tea, Earl Grey… decaf."
+    //                         }
+    //                     }
+    //                 },
+    //                 "queue_if_low_balance":true,
+    //                 "reference_id":"Acme Transaction ID 12345",
+    //                 "narration":"Acme Corp Fund Transfer",
+    //                 "notes":{
+    //                     "notes_key_1":"Beam me up Scotty",
+    //                     "notes_key_2":"Engage"
+    //                 }
+    //             }
+    
+    //             let response = await http_request.post(`/serviceCenterDuePayment`, serviceCenterPayInfo )
+    //             let { data } = response
+    
+    //             // if (data?.entity === "payout") {
+    //             //     let response = await httpCommon.patch(`/updateTotalPay/${id}`, { totalPay:+totalPay,paidAmount: +payableAmmount ,commission:commisionPay })
+    //             //     let { data } = response
+                   
+                  
+    //             // }
+    //             setIsModalOpen(false)
+    //             RefreshData(data)
+    //             ToastMessage(data);
+    //         }
+    //         catch (err) {
+    //             console.log(err)
+    //         }
+           
+    //        }else{
+    //         alert("Please add bank details")
+    //     }
+    //     } catch (err) {
+    //         console.error(err);
+    //     }
+    // };
+    const onSubmit = async (res) => {
+        try {
+          if (bankDetails) {
+            let centerData = localStorage.getItem("user");
+            let centerInfo = JSON.parse(centerData);
+      
+            const serviceCenterPayInfo = {
+              account_number: adminBankDtl?.account_number,
+              fund_account_id:  bankDetails?.accountNumber,
+              amount: res?.amount,
+              currency: "INR",
+              mode: "NEFT",
+              purpose: "payout",
+              fund_account: {
+                account_type: "bank_account",
+                bank_account: {
+                  name: bankDetails?.accountHolderName,
+                  ifsc: bankDetails?.IFSC,
+                  account_number: bankDetails?.accountNumber
+                // name: adminBankDtl?.name,
+                //   ifsc: adminBankDtl?.ifsc,
+                //    account_number: adminBankDtl?.account_number
+                },
+                contact: {
+                  name: centerInfo?.user?.serviceCenterName,
+                  email: centerInfo?.user?.email,
+                  contact: centerInfo?.user?.contact,
+                  type: "employee",
+                  reference_id: "12345",
+                  notes: {
+                    notes_key_1: "Tea, Earl Grey, Hot",
+                    notes_key_2: "Tea, Earl Grey… decaf."
+                  }
+                }
+              },
+              queue_if_low_balance: true,
+              reference_id: "Acme Transaction ID 12345",
+              narration: "Acme Corp Fund Transfer",
+              notes: {
+                notes_key_1: "Beam me up Scotty",
+                notes_key_2: "Engage"
+              }
+            };
+      
+            try {
+              const response = await http_request.post(
+                `/serviceCenterDuePayment`,
+                serviceCenterPayInfo
+              );
+              const { data } = response;
+      
+              // Handle response as needed
+              setIsModalOpen(false);
+              RefreshData(data);
+              ToastMessage(data);
+            } catch (err) {
+              // Log detailed error information
+              if (err.response) {
+                console.error('Error response data:', err.response.data);
+                console.error('Error response status:', err.response.status);
+                console.error('Error response headers:', err.response.headers);
+              } else if (err.request) {
+                console.error('Error request data:', err.request);
+              } else {
+                console.error('Error message:', err.message);
+              }
+              console.error('Error config:', err.config);
+            }
+          } else {
+            alert("Please add bank details");
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      
+  
 
     const handleWallet = async () => {
         try {
@@ -210,7 +293,9 @@ const data1=data?.lenth>0 ? data:[];
                         <ReactLoader />
                     </div>
                 ) :
-                    <div>
+                    <>
+                  {value?.user?.role==="ADMIN" ?""
+                   : <div>
                         {wallet ?
                             <div className="flex justify-between bg-blue-100 rounded-md p-5 items-center mb-5">
                                 <div className='font-bold text-xl  '>Wallet </div>
@@ -237,6 +322,8 @@ const data1=data?.lenth>0 ? data:[];
                             </div>
                         }
                     </div>
+                  }
+                  </>
                 }
                 <div className="flex justify-between mb-5">
                     <div className='font-bold text-xl'> Bank Transactions List</div>
@@ -255,6 +342,15 @@ const data1=data?.lenth>0 ? data:[];
                                 <Table>
                                     <TableHead>
                                         <TableRow>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                  Sr. No.
+                                                </TableSortLabel>
+                                            </TableCell>
                                             <TableCell>
                                                 <TableSortLabel
                                                     active={sortBy === 'brandName'}
@@ -282,16 +378,17 @@ const data1=data?.lenth>0 ? data:[];
                                                     Payment Release Date
                                                 </TableSortLabel>
                                             </TableCell>
-                                            <TableCell>Actions</TableCell>
+                                            {/* <TableCell>Actions</TableCell> */}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
                                             <TableRow key={index} hover>
-                                                <TableCell>{row.brandName}</TableCell>
-                                                <TableCell>{row.addedAmount} INR</TableCell>
+                                                <TableCell>{row.i}</TableCell>
+                                                <TableCell>{row.userName}</TableCell>
+                                                <TableCell>{row.paidAmount} INR</TableCell>
                                                 <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-                                                <TableCell>
+                                                {/* <TableCell>
                                                     <IconButton aria-label="view" onClick={() => handleView(row.id)}>
                                                         <Visibility color='primary' />
                                                     </IconButton>
@@ -301,7 +398,7 @@ const data1=data?.lenth>0 ? data:[];
                                                     <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
                                                         <DeleteIcon color='error' />
                                                     </IconButton>
-                                                </TableCell>
+                                                </TableCell> */}
                                             </TableRow>
                                         ))}
                                     </TableBody>

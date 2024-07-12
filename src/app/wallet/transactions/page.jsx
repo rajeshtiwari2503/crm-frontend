@@ -53,9 +53,13 @@ import http_request from '../../../../http-request'
     };
     const getTransactions = async () => {
         try {
+            const storedValue = localStorage.getItem("user");
+            const value1 = (JSON.parse(storedValue));
+            const endPoint=value1?.user?.role==="ADMIN"?`/getAllWalletTransaction`:`/bankDetailByUser/${value?.user?._id}`
             setLoading(true);
-            const response = await http_request.get(`/bankDetailByUser/${value?.user?._id}`);
-            let {data}=response
+            const response = await http_request.get(endPoint);
+            let {data}=response;
+            // console.log(data);
             setTransactions( data);
             setLoading(false);
         } catch (err) {
@@ -67,10 +71,10 @@ import http_request from '../../../../http-request'
         setRefresh(data)
       }
 
-     
+     const transData=transactions.length>0 ? transactions?.map((item,index)=>({...item,i:index+1})):[]
    return (
     <Sidenav>
-        <TransactionList RefreshData={RefreshData}wallet={wallet}bankDetails={bankDetails} data={transactions} loading={loading} value={value} />
+        <TransactionList RefreshData={RefreshData}wallet={wallet}bankDetails={bankDetails} data={transData} loading={loading} value={value} />
     </Sidenav>
    )
  }

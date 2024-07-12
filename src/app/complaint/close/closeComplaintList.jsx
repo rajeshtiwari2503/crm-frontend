@@ -12,6 +12,9 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
+ import logo from "../../../../public/Logo.png"
+import axios from 'axios';
+
 
 const CloseComplaintList = (props) => {
 
@@ -103,8 +106,59 @@ const CloseComplaintList = (props) => {
 
     setStatus(false)
   }
+const amount=1;
+
+  const userPayment = async (row) => {
+    try {
+      const userInfo = localStorage.getItem("user");
+     const userData=JSON.parse(userInfo)
+     
+      let response = await http_request.post("/payment", { amount: +amount   });
+      let { data } = response;
+      const options = {
+        key: "rzp_live_XyovAK0BmNvrWI", // Enter the Key ID generated from the Dashboard
+        amount: +amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        currency: "INR",
+        name: "Lybley", //your business name
+        description: "Payment for order",
+        image: "/Logo.png",
+        order_id: data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        handler: async function (orderDetails) {
+          try {
+           
+            let response = await axios.post("http://localhost:5000/paymentVerificationForUser", { response:orderDetails ,row,amount  });
+            let { data } = response;
+            if(data?.status===true){
+              ToastMessage(data)
+              props?.RefreshData(data)
+            }
+           
+          } catch (err) {
+            console.log(err);
+          }
+        },
+        prefill: {
+          name: userData?.user?.name, //your customer's name
+          email: userData?.user?.email,
+          contact: userData?.user?.contact
+        },
+        notes: {
+          "address": "Razorpay Corporate Office"
+        },
+        theme: {
+          color: "#3399cc"
+        }
+      };
+      const rzp1 = new window.Razorpay(options);
+      rzp1.open();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div>
+      
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Close Service Information</div>
@@ -301,6 +355,15 @@ const CloseComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
                     >
+                      Payment
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'status'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('status')}
+                    >
                       Status
                     </TableSortLabel>
                   </TableCell>
@@ -339,6 +402,7 @@ const CloseComplaintList = (props) => {
                     <TableCell>{row?.assignTechnician}</TableCell>
                     <TableCell>{row?.technicianContact}</TableCell>
                     <TableCell>{row?.comments}</TableCell>
+                    <TableCell>{row?.payment}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -351,12 +415,15 @@ const CloseComplaintList = (props) => {
                         >
                           Give Feedback
                         </div>
-                        <div
-                          onClick={() => handleUpdateStatus(row)}
+                       {row?.payment===0 ?
+                       <div
+                          onClick={() => userPayment(row)}
                           className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
                         >
                           Pay
                         </div>
+                        :""
+                        }
                         </>
                         :""}
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>

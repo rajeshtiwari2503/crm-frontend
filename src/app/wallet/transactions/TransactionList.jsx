@@ -195,25 +195,24 @@ const adminBankDtl={
     const onSubmit = async (res) => {
         try {
           if (bankDetails) {
+
             let centerData = localStorage.getItem("user");
             let centerInfo = JSON.parse(centerData);
       
             const serviceCenterPayInfo = {
               account_number: adminBankDtl?.account_number,
-              fund_account_id:  bankDetails?.accountNumber,
+            //   fund_account_id:  bankDetails?.fund_account_id,
               amount: res?.amount,
               currency: "INR",
               mode: "NEFT",
-              purpose: "payout",
+              purpose: "refund",
               fund_account: {
                 account_type: "bank_account",
                 bank_account: {
                   name: bankDetails?.accountHolderName,
                   ifsc: bankDetails?.IFSC,
                   account_number: bankDetails?.accountNumber
-                // name: adminBankDtl?.name,
-                //   ifsc: adminBankDtl?.ifsc,
-                //    account_number: adminBankDtl?.account_number
+            
                 },
                 contact: {
                   name: centerInfo?.user?.serviceCenterName,
@@ -272,7 +271,10 @@ const adminBankDtl={
 
     const handleWallet = async () => {
         try {
-            const resData = { serviceCenterId: userData?._id, serviceCenterName: userData?.serviceCenterName }
+            const resData = { serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName,
+                contact:+(value?.contact), email:value?.email,accountHolderName:bankDetails?.accountHolderName,
+                bankDetailId:bankDetails?._id,ifsc:bankDetails?.IFSC,accountNumber:bankDetails?.accountNumber
+             }
 
             let response = await http_request.post("/addWallet", resData)
             let { data } = response

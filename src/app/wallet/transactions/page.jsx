@@ -74,7 +74,7 @@ import http_request from '../../../../http-request'
      const transData=transactions.length>0 ? transactions?.map((item,index)=>({...item,i:index+1})):[]
    return (
     <Sidenav>
-        <TransactionList RefreshData={RefreshData}wallet={wallet}bankDetails={bankDetails} data={transData} loading={loading} value={value} />
+        <TransactionList RefreshData={RefreshData}wallet={wallet}bankDetails={bankDetails} data={transData} loading={loading} value={value?.user} />
     </Sidenav>
    )
  }

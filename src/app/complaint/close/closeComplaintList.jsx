@@ -410,7 +410,7 @@ const amount=1;
                         {userData?.role==="USER"?
                         <>
                         <div
-                          // onClick={() => handleUpdateStatus(row)}
+                          onClick={() => handleUpdateStatus(row)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                         >
                           Give Feedback
@@ -457,7 +457,7 @@ const amount=1;
           />
         </>}
         <Dialog open={status} onClose={handleUpdateClose}>
-        <DialogTitle>  Update Status</DialogTitle>
+        <DialogTitle>  ADD Feedback</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleUpdateClose}

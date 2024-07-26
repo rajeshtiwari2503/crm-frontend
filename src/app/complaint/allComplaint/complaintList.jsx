@@ -129,23 +129,25 @@ const ComplaintList = (props) => {
 
  
   const handleServiceChange = (event) => {
-    if (status === true) {
-      setValue("status", event.target.value)
-      // console.log(event.target.value);
-    }
-    if (status === false) {
+    // if (status === true) {
+    //   setValue("status", event.target.value)
+    //   // console.log(event.target.value);
+    // }
+    
       const selectedId = event.target.value;
       const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
       setSelectedService(selectedId);
+      
       setValue('status', "ASSIGN");
       setValue('assignServiceCenterId', selectedServiceCenter?._id);
       setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
       setValue('assignServiceCenterTime',  new Date());
-    }
+  
   };
   const onSubmit = async (data) => {
     try {
-      let response = await http_request.patch(`/editComplaint/${id}`, {status:data?.status});
+     const reqdata=assign===true?{status:data?.status,assignServiceCenterId:data?.assignServiceCenterId,assignServiceCenter:data?.assignServiceCenter,assignServiceCenterTime:data?.assignServiceCenterTime}:{status:data?.status}
+      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       setAssign(false)
       setStatus(false)

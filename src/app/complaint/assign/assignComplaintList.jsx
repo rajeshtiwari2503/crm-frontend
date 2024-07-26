@@ -77,6 +77,7 @@ const AssignComplaintList = (props) => {
   const handleTechnicianChange = (event) => {
 
     const selectedId = event.target.value;
+    
     const selectedTechnician = technician.find(center => center._id === selectedId);
     setSelectedTechnician(selectedTechnician);
     setValue('status', "ASSIGN");
@@ -89,7 +90,9 @@ const AssignComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      let response = await http_request.patch(`/editComplaint/${id}`, data);
+      const reqdata=assignTech===true?{status:data?.status,technicianId:data?.technicianId,assignTechnician:data?.assignTechnician,
+       assignTechnicianTime:data?.assignTechnicianTime,srerviceCenterResponseTime:data?.srerviceCenterResponseTime, technicianContact:data?.technicianContact}:{status:data?.status}
+      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       
       setStatus(false)
@@ -534,7 +537,7 @@ const AssignComplaintList = (props) => {
                 >
                   <option value="" disabled>Select Technician</option>
                   {technician?.map((tech) => (
-                    <option key={tech.id} value={tech._id}>
+                    <option key={tech._id} value={tech._id}>
                       {tech.name}
                     </option>
                   ))}

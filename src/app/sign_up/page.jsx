@@ -44,7 +44,7 @@ const SignUp = () => {
       localStorage.setItem('userInfo', JSON.stringify(reqdata));
       ToastMessage(data)
       setLoading(false)
-      router.push("/verification")
+      router.push("/sign_in")
     }
     catch (err) {
       setLoading(false)
@@ -220,12 +220,12 @@ const SignUp = () => {
                             <input
                               type="checkbox"
                               name="acceptTerms"
-                              {...register('acceptTerms', { required: 'You must accept the terms and conditions' })}
+                              {...register('acceptedTerms', { required: 'You must accept the terms and conditions' })}
                               className={`h-4 w-4 text-indigo-600 focus:ring-indigo-600 border-gray-300 rounded ${errors.acceptTerms ? 'border-red-500' : ''}`}
                             />
                             <span className="ml-2 text-sm text-gray-900">I accept the terms and conditions</span>
                           </label>
-                          {errors.acceptTerms && <p className="text-red-500 text-sm mt-1">{errors.acceptTerms.message}</p>}
+                          {errors.acceptedTerms && <p className="text-red-500 text-sm mt-1">{errors.acceptedTerms.message}</p>}
                         </div>
                         <div>
                           <label htmlFor="captcha" className="block text-sm font-medium leading-6 text-gray-900">

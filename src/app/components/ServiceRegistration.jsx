@@ -22,7 +22,7 @@ const ServiceCenterSignUpForm = () => {
             localStorage.setItem('userInfo', JSON.stringify(reqdata));
             ToastMessage(data)
             setLoading(false)
-            router.push("/verification")
+            router.push("/sign_in")
         }
         catch (err) {
             setLoading(false)

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 // const baseUrl= "http://localhost:5000"
- const baseUrl="https://crmserver-093c.onrender.com"
+ const baseUrl="https://lybleycrmserver-production.up.railway.app"
 
 
 const get=(url)=>{

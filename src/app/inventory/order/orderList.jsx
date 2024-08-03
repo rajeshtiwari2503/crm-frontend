@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, Close, Label, Print, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -74,12 +74,12 @@ const OrderList = (props) => {
     try {
       const storedValue = localStorage.getItem('user');
       const userInfo = storedValue ? JSON.parse(storedValue) : null;
-      let endPoint=
-      
-          userInfo?.user?.role === 'BRAND'? 
+      let endPoint =
+
+        userInfo?.user?.role === 'BRAND' ?
           `/addOrder`
           : `/addDefectiveOrder`
-      
+
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
       setOrder(false)
@@ -109,9 +109,42 @@ const OrderList = (props) => {
     router.push(`/inventory/order/details/${id}`)
   }
 
-  // const handleEdit = (id) => {
-  //   router.push(`/Inventory/edit/${id}`);
-  // };
+  const handleManifest = async(id) => {
+    try {
+      let response = await http_request.post(`/fetchManifest`,{awbs:id});
+      let { data } = response;
+     
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleLabel = async(id) => {
+    try {
+      let response = await http_request.post(`/fetchLabels`,{awbs:id});
+      let { data } = response;
+     
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleTracking = async(id) => {
+    try {
+      let response = await http_request.get(`/trackingShipment?trackingNo=${id}`);
+      let { data } = response;
+     
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleDeleteOrder = async(id) => {
+    try {
+      let response = await http_request.get(`/cancelShipment`,{awbs:id});
+      let { data } = response;
+     
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleSparepartChange = (event) => {
 
     const selectedId = event.target.value;
@@ -167,7 +200,7 @@ const OrderList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-8'>
         <div className='font-bold text-2xl'>Order Information</div>
-        {props?.userData?.user?.role === "SERVICE" ||props?.userData?.user?.role === "BRAND" ?
+        {props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 text-white '>Add Order</div>
@@ -305,15 +338,15 @@ const OrderList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                           <Visibility color='primary' />
                         </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row._id)}>
-                  <Print color='primary' />
-                </IconButton> */}
-                        {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
-                  <EditIcon color='success' />
-                </IconButton> */}
-                        {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                    <DeleteIcon color='error' />
-                  </IconButton> */}
+                        <IconButton aria-label="print" onClick={() => handleManifest(row._id)}>
+                          <Print color='primary' />
+                        </IconButton>
+                        <IconButton aria-label="edit" onClick={() => handleLabel(row._id)}>
+                        <Label color='error' />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleTracking(row._id)}>
+                          <Label color='error' />
+                        </IconButton>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -347,7 +380,7 @@ const OrderList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
 
             {/* <div>
               <label className="block text-gray-700  ">Ticket ID</label>
@@ -419,7 +452,7 @@ const OrderList = (props) => {
               </div>
             }
             <div>
-              <label className="block text-gray-700 ">Part Number/Model Number</label>
+              <label className="block text-gray-700 "> Model Number</label>
               <input {...register('partNumber')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
             </div>
@@ -440,28 +473,28 @@ const OrderList = (props) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Name</label>
+              <label className="block text-gray-700 ">Send to</label>
               <input {...register('supplierInformation.name')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Contact</label>
+              <label className="block text-gray-700 "> Service Center  Contact</label>
               <input {...register('supplierInformation.contact')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Address</label>
+              <label className="block text-gray-700 "> Service Center Address</label>
               <input {...register('supplierInformation.address')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
             </div>
             <div>
-              <label className="block text-gray-700 ">Pincode</label>
+              <label className="block text-gray-700 "> Service Center Pincode</label>
               <input {...register('supplierInformation.pinCode')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-gray-700 ">Order Date</label>
               <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
               {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
@@ -471,18 +504,18 @@ const OrderList = (props) => {
               <label className="block text-gray-700 ">Expected Delivery Date</label>
               <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="block text-gray-700 ">Shipping Method</label>
               <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <option value="Standard">Standard</option>
                 <option value="Express">Express</option>
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
-            </div>
+            </div> */}
 
-            <div className='col-span-2'>
+            <div className=''>
               <label className="block text-gray-700 ">Comments/Notes</label>
               <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}

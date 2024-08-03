@@ -34,7 +34,7 @@ const TransactionList = ({ data, RefreshData, wallet,bankDetails, loading, value
 const adminBankDtl={
     "name":"Lybley India Pvt Ltd",
     "ifsc":"UTIB0CCH274",
-    "account_number": "984510633140631"
+    "account_number": "4564568731430371"
 }
 
     const [sortBy, setSortBy] = useState('id');
@@ -202,7 +202,7 @@ const adminBankDtl={
             const serviceCenterPayInfo = {
               account_number: adminBankDtl?.account_number,
             //   fund_account_id:  bankDetails?.fund_account_id,
-              amount: res?.amount,
+              amount: (res?.amount)*100,
               currency: "INR",
               mode: "NEFT",
               purpose: "refund",

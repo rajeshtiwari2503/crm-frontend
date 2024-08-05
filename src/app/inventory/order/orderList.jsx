@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, Close, Delete, Label, LocationSearching, Print, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+
 
 const OrderList = (props) => {
 
@@ -74,12 +75,12 @@ const OrderList = (props) => {
     try {
       const storedValue = localStorage.getItem('user');
       const userInfo = storedValue ? JSON.parse(storedValue) : null;
-      let endPoint=
-      
-          userInfo?.user?.role === 'BRAND'? 
-          `/addOrder`
+      let endPoint =
+
+        userInfo?.user?.role === 'BRAND' ?
+          `/create-shipment`
           : `/addDefectiveOrder`
-      
+
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
       setOrder(false)
@@ -87,7 +88,7 @@ const OrderList = (props) => {
       ToastMessage(responseData);
     } catch (err) {
       console.log(err);
-      ToastMessage(responseData);
+      ToastMessage(  err.response.data);
     }
   };
 
@@ -109,23 +110,130 @@ const OrderList = (props) => {
     router.push(`/inventory/order/details/${id}`)
   }
 
-  // const handleEdit = (id) => {
-  //   router.push(`/Inventory/edit/${id}`);
+  const handleManifest = async (id) => {   
+    try {
+      let response = await http_request.post(`/fetchManifest`, { awbs: [id] });
+      let { data } = response;
+console.log(data);
+
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // const handleLabel = async (id) => {
+  //   try {
+  //     let response = await http_request.post(`/fetchLabels`, { awbs: [id] });
+  //     let { data } = response;
+  //     console.log(data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
   // };
+  const handleLabel = async (id) => {
+    try {
+        // Make the API request to fetch the PDF data
+        let response = await http_request.post(`/fetchLabels`, { awbs: [id] }, {
+            responseType: 'blob', // Set response type to 'blob'
+        });
+
+        // Check if response is OK and contains a PDF
+        if (response.status === 200 && response.data) {
+            // Create a Blob from the response data
+            let pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+
+            // Log the Blob size
+            console.log('Blob size:', pdfBlob.size);
+
+            // Create a URL for the Blob
+            let pdfURL = URL.createObjectURL(pdfBlob);
+
+            // Log the Blob URL
+            console.log('Blob URL:', pdfURL);
+
+            // Optionally open the Blob URL in a new window for debugging
+            // window.open(pdfURL);
+
+            // Create a link element
+            let link = document.createElement('a');
+            link.href = pdfURL;
+            link.download = 'label.pdf'; // Set the file name for the downloaded PDF
+
+            // Append the link to the document body
+            document.body.appendChild(link);
+
+            // Programmatically click the link to start the download
+            link.click();
+
+            // Clean up and revoke the object URL
+            document.body.removeChild(link);
+            URL.revokeObjectURL(pdfURL);
+        } else {
+            console.error('Invalid response or no PDF data');
+        }
+
+    } catch (err) {
+        console.error('Error fetching PDF:', err);
+    }
+};
+
+
+  const handleTracking = async (id) => {
+    try {
+      let response = await http_request.get(`/trackingShipment?trackingNo=${id}`);
+      let { data } = response;
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const handleDeleteOrder = async ( ) => {
+  
+    try {
+      let response1 = await http_request.patch(`/editOrder/${id?._id}`,{status:"OrderCanceled"});
+      let response2 = response1?.data;
+      props?.RefreshData(response2)
+      setConfirmBoxView(false);
+      let response = await http_request.post(`/cancelShipment`, { awbs: [id?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb] });
+      let { data } = response;
+    
+    
+     
+      ToastMessage({status:true,msg:"AWB Cancel Process Started"});
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const handleSparepartChange = (event) => {
 
     const selectedId = event.target.value;
     const selectedpart = props?.sparepart?.find(center => center._id === selectedId);
+
     setSelectedSparepart(selectedId);
     setValue('sparepartId', selectedpart?._id);
     setValue('partName', selectedpart?.partName);
+    setValue('partNumber', selectedpart?.partNo);
+    setValue('breadth', selectedpart?.breadth);
+    setValue('length', selectedpart?.length);
+    setValue('weight', selectedpart?.weight);
+    setValue('height', 1);
+    setValue('bestPrice', selectedpart?.bestPrice);
+  
+
     if (props?.userData?.user?.role === "BRAND") {
+      setValue("brandAddress", props?.userData?.user?.streetAddress);
+      setValue("brandPincode", props?.userData?.user?.postalCode);
+      setValue("brandContact", props?.userData?.user?.contactPersonPhoneNumber);
       setValue('brandId', props?.userData?.user?._id);
       setValue('brand', props?.userData?.user?.brandName);
+     
     }
     else {
+      setValue('serviceCenterAddress', props?.userData?.user?.streetAddress);
+    setValue('serviceCenterPincode', props?.userData?.user?.postalCode);
       setValue('serviceCenterId', props?.userData?.user?._id);
+      setValue("serviceContact", props?.userData?.user?.contact);
       setValue('serviceCenter', props?.userData?.user?.serviceCenterName);
+    
     }
 
 
@@ -135,7 +243,7 @@ const OrderList = (props) => {
     const selectedId = event.target.value;
     const selectedpart = props?.serviceCenter?.find(center => center._id === selectedId);
     setSelectedserviceCenter(selectedId);
-
+    
     setValue('serviceCenter', selectedpart?.serviceCenterName);
     setValue('serviceCenterId', selectedpart?._id);
     setValue('supplierInformation.name', selectedpart?.serviceCenterName);
@@ -150,24 +258,23 @@ const OrderList = (props) => {
     const selectedId = event.target.value;
     const selectedBrand = props?.brand?.find(center => center._id === selectedId);
     setSelectedBrand(selectedId);
-
     setValue('brand', selectedBrand?.brandName);
     setValue('brandId', selectedBrand?._id);
     setValue('supplierInformation.name', selectedBrand?.brandName);
     setValue('supplierInformation.address', selectedBrand?.streetAddress);
     setValue('supplierInformation.contact', selectedBrand?.contactPersonPhoneNumber);
     setValue('supplierInformation.pinCode', selectedBrand?.postalCode);
-
-
-
   };
+
+ 
+
 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-8'>
         <div className='font-bold text-2xl'>Order Information</div>
-        {props?.userData?.user?.role === "SERVICE" ||props?.userData?.user?.role === "BRAND" ?
+        {props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 text-white '>Add Order</div>
@@ -231,11 +338,11 @@ const OrderList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'priorityLevel'}
+                      active={sortBy === 'status'}
                       direction={sortDirection}
-                      onClick={() => handleSort('priorityLevel')}
+                      onClick={() => handleSort('status')}
                     >
-                      Priority Level
+                      Status
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -244,7 +351,7 @@ const OrderList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('supplierInformation.name')}
                     >
-                      Supplier_Name
+                      Send__To
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -256,7 +363,7 @@ const OrderList = (props) => {
                       Order_Date
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'expectedDeliveryDate'}
                       direction={sortDirection}
@@ -264,8 +371,8 @@ const OrderList = (props) => {
                     >
                       Expected_Delivery_Date
                     </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
+                  </TableCell> */}
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'shippingMethod'}
                       direction={sortDirection}
@@ -273,8 +380,8 @@ const OrderList = (props) => {
                     >
                       Shipping_Method
                     </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
+                  </TableCell> */}
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
                       direction={sortDirection}
@@ -282,7 +389,7 @@ const OrderList = (props) => {
                     >
                       Created_At
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -293,27 +400,40 @@ const OrderList = (props) => {
                     <TableCell>{row.partName}</TableCell>
                     <TableCell>{row.partNumber}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
-                    <TableCell>{row.priorityLevel}</TableCell>
+                    <TableCell>{row.status}</TableCell>
                     <TableCell>{row.supplierInformation?.name}</TableCell>
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
-                    <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell>
-                    <TableCell>{row.shippingMethod}</TableCell>
-                    <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
+                    {/* <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell> */}
+                    {/* <TableCell>{row.shippingMethod}</TableCell> */}
+                    {/* <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell> */}
                     <TableCell className='flex'>
                       <div className='flex'>
 
                         <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                           <Visibility color='primary' />
                         </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row._id)}>
-                  <Print color='primary' />
-                </IconButton> */}
-                        {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
-                  <EditIcon color='success' />
-                </IconButton> */}
-                        {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                    <DeleteIcon color='error' />
-                  </IconButton> */}
+
+                        <button
+                          aria-label="edit"
+                          onClick={() => handleManifest(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
+                          className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+                        >
+                          <Print className='me-1' /> Manifest
+                        </button>
+                        <button
+                          aria-label="edit"
+                          onClick={() => handleLabel(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
+                          className="px-2 ms-1 flex  justify-between items-center py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+                        >
+                          <Print className='me-1' /> <div>Label</div>
+                        </button>
+
+                        <IconButton aria-label="delete" onClick={() => handleTracking(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}>
+                          <LocationSearching color='success' />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleDelete(row)}>
+                          <DeleteIcon color='error' />
+                        </IconButton>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -347,7 +467,7 @@ const OrderList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
 
             {/* <div>
               <label className="block text-gray-700  ">Ticket ID</label>
@@ -419,14 +539,13 @@ const OrderList = (props) => {
               </div>
             }
             <div>
-              <label className="block text-gray-700 ">Part Number/Model Number</label>
-              <input {...register('partNumber')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-gray-700 "> Model Number</label>
+              <input {...register('partNumber', { required: 'Part Number is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
             </div>
-
             <div>
               <label className="block text-gray-700 ">Quantity</label>
-              <input {...register('quantity', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
             </div>
 
@@ -440,28 +559,28 @@ const OrderList = (props) => {
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Name</label>
-              <input {...register('supplierInformation.name')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-gray-700 ">Send to</label>
+              <input {...register('supplierInformation.name', { required: 'Send to is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Contact</label>
-              <input {...register('supplierInformation.contact')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-gray-700 "> Service Center  Contact</label>
+              <input {...register('supplierInformation.contact', { required: 'Service Center  Contactis required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
             </div>
 
             <div>
-              <label className="block text-gray-700 ">Supplier Address</label>
-              <input {...register('supplierInformation.address')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-gray-700 "> Service Center Address</label>
+              <input {...register('supplierInformation.address', { required: 'Service Center Address is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
             </div>
             <div>
-              <label className="block text-gray-700 ">Pincode</label>
-              <input {...register('supplierInformation.pinCode')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+              <label className="block text-gray-700 "> Service Center Pincode</label>
+              <input {...register('supplierInformation.pinCode', { required: 'Pincode is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
             </div>
-            <div>
+            {/* <div>
               <label className="block text-gray-700 ">Order Date</label>
               <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
               {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
@@ -471,18 +590,18 @@ const OrderList = (props) => {
               <label className="block text-gray-700 ">Expected Delivery Date</label>
               <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <label className="block text-gray-700 ">Shipping Method</label>
               <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <option value="Standard">Standard</option>
                 <option value="Express">Express</option>
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
-            </div>
+            </div> */}
 
-            <div className='col-span-2'>
+            <div className=''>
               <label className="block text-gray-700 ">Comments/Notes</label>
               <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
@@ -501,7 +620,7 @@ const OrderList = (props) => {
         </DialogContent>
 
       </Dialog>
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
+      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={handleDeleteOrder} />
     </div>
   );
 };

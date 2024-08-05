@@ -54,12 +54,14 @@ const OrderDetails = ({ params }) => {
             <div>{orders?.comments}</div>
             <div className='font-bold'>status  </div>
             <div>{orders?.status}</div>
-            <div className='font-bold'>supplier name  </div>
+            <div className='font-bold'>Send To  </div>
             <div>{orders?.supplierInformation?.name}</div>
             <div className='font-bold'>contact  </div>
             <div>{orders?.supplierInformation?.contact}</div>
             <div className='font-bold'>address  </div>
             <div>{orders?.supplierInformation?.address}</div>
+            <div className='font-bold'>AWS No.  </div>
+            <div>{orders?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb}</div>
             <div className='font-bold'>status  </div>
             <div>{orders?.status}</div>
             <div className='font-bold'>createdAt  </div>

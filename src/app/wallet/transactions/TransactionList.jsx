@@ -77,7 +77,7 @@ const adminBankDtl={
             const serviceCenterPayInfo=
             {
                 "account_number":adminBankDtl?.account_number,
-                "amount":(data?.amount) * 100,
+                "amount":(data?.amount) ,
                 "currency":"INR",
                 "mode":"NEFT",
                 "purpose":"payout",
@@ -219,7 +219,8 @@ const adminBankDtl={
                   email: centerInfo?.user?.email,
                   contact: centerInfo?.user?.contact,
                   type: "employee",
-                  reference_id: "12345",
+                  reference_id: centerInfo?.user?._id,
+                   
                   notes: {
                     notes_key_1: "Tea, Earl Grey, Hot",
                     notes_key_2: "Tea, Earl Grey… decaf."

@@ -19,9 +19,9 @@ const StockList = (props) => {
 
   const router = useRouter()
 
-  
+
   const [editModalOpen, setEditModalOpen] = useState(false);
- 
+
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
   const [editData, setEditData] = useState(null);
@@ -38,10 +38,11 @@ const StockList = (props) => {
       setUserData(JSON.parse(storedValue));
     }
   }, []);
+ 
 
   const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
-  
-  const data = userData?.user?.role==="ADMIN"|| "BRAND"?props?.data:filterData;
+
+  const data = userData?.user?.role === "ADMIN" || "BRAND" ? props?.data : filterData;
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -65,7 +66,7 @@ const StockList = (props) => {
   const handleEditModalClose = () => {
     setEditModalOpen(false);
   };
-  
+
   const handleAdd = (row) => {
     setEditData(row)
     setEditModalOpen(true);
@@ -89,7 +90,7 @@ const StockList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-  
+
 
   return (
     <div>
@@ -123,7 +124,7 @@ const StockList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('sparepartName')}
                     >
-                  Spare_Part Name
+                      Spare_Part Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -132,21 +133,40 @@ const StockList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('freshStock')}
                     >
-                     Quantity 
+                      Fresh Stock
                     </TableSortLabel>
                   </TableCell>
-
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'brandName'}
+                      active={sortBy === 'defectiveStock'}
                       direction={sortDirection}
-                      onClick={() => handleSort('brandName')}
+                      onClick={() => handleSort('defectiveStock')}
                     >
-                      Brand Name
+                      Defective Stock
                     </TableSortLabel>
                   </TableCell>
-                  
-                  
+                  {userData?.user?.role === "SERVICE" ?
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'serviceCenterName'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('serviceCenterName')}
+                      >
+                        Service Center Name
+                      </TableSortLabel>
+                    </TableCell>
+                    : <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'brandName'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('brandName')}
+                      >
+                        Brand Name
+                      </TableSortLabel>
+                    </TableCell>
+                  }
+
+
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -167,22 +187,25 @@ const StockList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
-                    <TableCell>{row?.brandName}</TableCell>
-                    
+                    <TableCell>{row?.defectiveStock}</TableCell>
+                    {userData?.user?.role === "SERVICE" ?
+                      <TableCell>{row?.serviceCenterName}</TableCell>
+                      : <TableCell>{row?.brandName}</TableCell>
+                    }
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                  <div className='flex'>
+                      <div className='flex'>
 
-                    
-                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+
+                        {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
                       </IconButton> */}
-                      <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
+                        <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
+                          <EditIcon color='success' />
+                        </IconButton>
+                        <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                          <DeleteIcon color='error' />
+                        </IconButton>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -217,7 +240,7 @@ const StockList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddStock   userData={userData} products={props?.products} data={props?.data}existingStock={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddStock userData={userData} products={props?.products} data={props?.data} existingStock={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -226,7 +249,7 @@ const StockList = (props) => {
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
 
 
-     
+
     </div>
   );
 };

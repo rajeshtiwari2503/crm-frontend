@@ -326,6 +326,7 @@ function Sidenav(props) {
   const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : []
   const productSide = value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature'] : ['Product']
+  const inventory=value?.user?.role === "ADMIN"?['Sparepart', "Stock", "Order"]:value?.user?.role === "BRAND"?['Sparepart', "Stock", "Order"]:["Stock", "Order"]
   const drawer = (
     <>
       {value ?
@@ -795,7 +796,7 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {['Sparepart', "Stock", "Order"].map((text, index) => (
+                {inventory?.map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
                       pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'

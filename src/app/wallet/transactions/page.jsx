@@ -71,7 +71,7 @@ import http_request from '../../../../http-request'
     const RefreshData = (data) => {
         setRefresh(data)
       }
-console.log(transactions);
+ 
 
      const transData=transactions?.length>0 ? transactions?.map((item,index)=>({...item,i:index+1})):[]
 

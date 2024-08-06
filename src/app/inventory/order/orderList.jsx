@@ -329,6 +329,15 @@ console.log(data);
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'brand'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brand')}
+                    >
+                      Brand_Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'quantity'}
                       direction={sortDirection}
                       onClick={() => handleSort('quantity')}
@@ -399,6 +408,7 @@ console.log(data);
                     <TableCell>{row.i}</TableCell>
                     <TableCell>{row.partName}</TableCell>
                     <TableCell>{row.partNumber}</TableCell>
+                    <TableCell>{row.brand}</TableCell>
                     <TableCell>{row.quantity}</TableCell>
                     <TableCell>{row.status}</TableCell>
                     <TableCell>{row.supplierInformation?.name}</TableCell>

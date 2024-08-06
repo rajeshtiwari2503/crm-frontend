@@ -20,6 +20,13 @@ const Feedback = () => {
 
   const getAllFeedback = async() => {
     try{
+      let user = localStorage.getItem("user");
+      let obj = JSON.parse(user);
+        const userDT=userDT?.user?.role==="ADMIN"?`/getAllFeedback`
+        :userDT?.user?.role==="BRAND"?`/getFeedbackByBrandId/${userDT?.user?._id}`
+       : userDT?.user?.role==="SERVICE"?`/getFeedbackByServiceCenterId/${userDT?.user?._id}`
+        :userDT?.user?.role==="TECHNICIAN"?`/getFeedbackByTechnicianId/${userDT?.user?._id}`
+        :`/getFeedbackByUserId/${userDT?.user?._id}`
       let response = await http_request.get("/getAllFeedback")
       let { data } = response;
   

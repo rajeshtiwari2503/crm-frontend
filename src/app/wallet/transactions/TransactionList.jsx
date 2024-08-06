@@ -306,8 +306,9 @@ const adminBankDtl={
                     </div>
                 ) :
                     <>
-                  {value?.user?.role==="ADMIN" ?""
-                   : <div>
+                  {value?.role==="ADMIN" ?""
+                   :
+                   <div>
                         {wallet ?
                             <div className="flex justify-between bg-blue-100 rounded-md p-5 items-center mb-5">
                                 <div className='font-bold text-xl  '>Wallet </div>

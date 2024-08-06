@@ -42,6 +42,7 @@ const adminBankDtl={
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [payLoading, setPayLoading] = useState(false);
 
 
     const { register, handleSubmit, formState: { errors }, reset,setValue } = useForm();
@@ -65,6 +66,7 @@ const adminBankDtl={
 
     const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+ 
 
 
     const handleDuePayment = async (data) => {
@@ -194,6 +196,7 @@ const adminBankDtl={
     // };
     const onSubmit = async (res) => {
         try {
+            setPayLoading(true)
           if (bankDetails) {
 
             let centerData = localStorage.getItem("user");
@@ -202,7 +205,7 @@ const adminBankDtl={
             const serviceCenterPayInfo = {
               account_number: adminBankDtl?.account_number,
             //   fund_account_id:  bankDetails?.fund_account_id,
-              amount: (res?.amount)*100,
+              amount: (res?.amount),
               currency: "INR",
               mode: "NEFT",
               purpose: "refund",
@@ -245,10 +248,13 @@ const adminBankDtl={
       
               // Handle response as needed
               setIsModalOpen(false);
+              setPayLoading(false)
               RefreshData(data);
               ToastMessage(data);
             } catch (err) {
               // Log detailed error information
+              setPayLoading(false)
+              setIsModalOpen(false);
               if (err.response) {
                 console.error('Error response data:', err.response.data);
                 console.error('Error response status:', err.response.status);
@@ -286,6 +292,9 @@ const adminBankDtl={
             console.log(err);
         }
     }
+
+    
+    
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">
@@ -385,10 +394,10 @@ const adminBankDtl={
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                                        {sortedData?.map((row, index) => (
                                             <TableRow key={index} hover>
                                                 <TableCell>{row.i}</TableCell>
-                                                <TableCell>{row.userName}</TableCell>
+                                                <TableCell>{row?.serviceCenterName||row?.userName}</TableCell>
                                                 <TableCell>{row.paidAmount} INR</TableCell>
                                                 <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
                                                 {/* <TableCell>
@@ -454,7 +463,7 @@ const adminBankDtl={
                             <button
                                 onClick={() => setIsModalOpen(false)}
                                 className={`border border-red-500 text-red-500 hover:bg-[#fe3f49] hover:text-black py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
-                                disabled={loading}
+                                disabled={payLoading}
                                 style={{ pointerEvents: loading ? 'none' : 'auto' }}
                             >
                                 Cancel
@@ -463,8 +472,8 @@ const adminBankDtl={
                             <button
                                 type="submit"
                                 className={`border border-green-500 text-green-500 hover:bg-[#2e7d32] hover:text-white py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
-                                disabled={loading}
-                                // style={{ pointerEvents: loading ? 'none' : 'auto' }}
+                                disabled={payLoading}
+                                style={{ pointerEvents: payLoading ? 'none' : 'auto' }}
                                 onClick={handleSubmit(onSubmit)}
                             >
                                Withdrawal Amount

@@ -40,7 +40,7 @@ import http_request from '../../../../http-request'
       const getWalletDetails = async () => {
         try {
             const storedValue = localStorage.getItem("user");
-            const value1 = (JSON.parse(storedValue));
+            const value1 = JSON.parse(storedValue);
             setLoading(true);
             const response = await http_request.get(`/bankDetailByUser/${value1?.user?._id}`);
             const { data } = response
@@ -54,8 +54,9 @@ import http_request from '../../../../http-request'
     const getTransactions = async () => {
         try {
             const storedValue = localStorage.getItem("user");
-            const value1 = (JSON.parse(storedValue));
-            const endPoint=value1?.user?.role==="ADMIN"?`/getAllWalletTransaction`:`/bankDetailByUser/${value?.user?._id}`
+            const value1 = JSON.parse(storedValue);
+            
+            const endPoint=value1?.user?.role==="ADMIN"?`/getAllTransaction`:value1?.user?.role==="BRAND"?`getTransactionByBrandId/${value1?.user?._id}`:`/getTransactionByCenterId/${value1?.user?._id}`
             setLoading(true);
             const response = await http_request.get(endPoint);
             let {data}=response;
@@ -71,7 +72,9 @@ import http_request from '../../../../http-request'
         setRefresh(data)
       }
 
-     const transData=transactions.length>0 ? transactions?.map((item,index)=>({...item,i:index+1})):[]
+     const transData=transactions?.length>0 ? transactions?.map((item,index)=>({...item,i:index+1})):[]
+
+     
    return (
     <Sidenav>
         <TransactionList RefreshData={RefreshData}wallet={wallet}bankDetails={bankDetails} data={transData} loading={loading} value={value?.user} />

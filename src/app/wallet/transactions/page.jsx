@@ -19,24 +19,24 @@ import http_request from '../../../../http-request'
             setValue(JSON.parse(storedValue));
         }
         getTransactions();
-        getWalletById()
+        // getWalletById()
         getWalletDetails()
     }, [refresh]);
 
-    const getWalletById = async () => {
-        try {
-            setLoading(true);
-            const storedValue = localStorage.getItem("user");
-           const userD=JSON.parse(storedValue)
-          let response = await http_request.get(`/getWalletByCenterId/${userD?.user?._id}`);
-          let { data } = response;
-          setWallet(data)
-          setLoading(false);
-        } catch (err) {
-            setLoading(false);
-          console.log(err);
-        }
-      };
+    // const getWalletById = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const storedValue = localStorage.getItem("user");
+    //        const userD=JSON.parse(storedValue)
+    //       let response = await http_request.get(`/getWalletByCenterId/${userD?.user?._id}`);
+    //       let { data } = response;
+    //       setWallet(data)
+    //       setLoading(false);
+    //     } catch (err) {
+    //         setLoading(false);
+    //       console.log(err);
+    //     }
+    //   };
       const getWalletDetails = async () => {
         try {
             const storedValue = localStorage.getItem("user");

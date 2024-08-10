@@ -116,7 +116,7 @@ const amount=1;
       let response = await http_request.post("/payment", { amount: +amount   });
       let { data } = response;
       const options = {
-        key: "rzp_live_XyovAK0BmNvrWI", // Enter the Key ID generated from the Dashboard
+        key: "rzp_live_4uXy7FSuag8Sap", // Enter the Key ID generated from the Dashboard
         amount: +amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
         name: "Lybley", //your business name

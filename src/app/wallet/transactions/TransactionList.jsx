@@ -307,22 +307,26 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
         if (e.target.files[0]) {
             reader.readAsDataURL(e.target.files[0])
 
-            setImage(e.target.files[0])   
+            setImage(e.target.files[0])
 
         }
     }
-    const UpdateStatus = async ( ) => {
+    const UpdateStatus = async () => {
         try {
-
+            if (image === "") {
+                ToastMessage({staus:true,msg:"Please select image"}); 
+            }
             setLoading(true);
-            // const formData = new FormData();
-            // formData.append('payScreenshot', image);
-            const response = await http_request.patch(`/updateTransaction/${isId}`, {status:"SUCCESS"})
+            const formData = new FormData();
+            formData.append('payScreenshot', image);
+            const response = await http_request.patch(`/updateTransaction/${isId}`, formData)
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);
             RefreshData(responseData);
             setIsUpdateModalOpen(false)
+            setImage("")
+           
         } catch (err) {
             setLoading(false);
 
@@ -485,7 +489,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                                 <TableCell>{row?.accountNo}</TableCell>
 
                                                 <TableCell>{row.paidAmount} INR</TableCell>
-                                                <TableCell style={{ textAlign:"center"}} >
+                                                <TableCell style={{ textAlign: "center" }} >
                                                     <div className={row?.status === "PROCESSING" ? 'bg-red-400   text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
                                                         <div>{row.status}</div>
                                                     </div>
@@ -543,25 +547,25 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                     <Close />
                 </IconButton>
                 <DialogContent>
-                    <form onSubmit={UpdateStatus}>
+                    <form onSubmit={ UpdateStatus}>
                         <div className="mb-1 w-[350px]">
-                            
+
                             <div>
-                            <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                            Payment Screenshot
-                            </label>
-                            <input
-                                id="images"
-                                name="images"
-                                type="file"
-                                onChange={(e) => handleFileChange(e)}
-                                multiple
-                                accept="image/*, video/*"
-                                // {...register('issueImages', { required: 'Images/Videos are required' })}
-                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueImages ? 'border-red-500' : ''}`}
-                            />
-                            {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""}
-                        </div>
+                                <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
+                                    Payment Screenshot
+                                </label>
+                                <input
+                                    id="images"
+                                    name="images"
+                                    type="file"
+                                    onChange={(e) => handleFileChange(e)}
+                                    multiple
+                                    accept="image/*, video/*"
+                                    // {...register('issueImages', { required: 'Images/Videos are required' })}
+                                    className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueImages ? 'border-red-500' : ''}`}
+                                />
+                                {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""}
+                            </div>
                         </div>
 
                         <div className='flex justify-between mt-8'>

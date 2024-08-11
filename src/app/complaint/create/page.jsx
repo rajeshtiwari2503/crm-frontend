@@ -7,6 +7,7 @@ import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import AddDealerComplaint from './dealerCreate';
+import axios from 'axios';
 
 
 const AddComplaint = () => {
@@ -21,6 +22,9 @@ const AddComplaint = () => {
   const [products, setProducts] = useState([])
   const [value, setLocalValue] = useState('');
 
+  const [pincode, setPincode] = useState('');
+  const [location, setLocation] = useState(null);
+  const [error, setError] = useState('');
 
   const getAllProducts = async () => {
     let response = await http_request.get("/getAllProduct")
@@ -31,24 +35,32 @@ const AddComplaint = () => {
   const RegiterComplaint = async (reqdata) => {
 
     try {
-      setLoading(true)
-      const formData = new FormData();
+      if (location) {
+       
+        setLoading(true)
+        const formData = new FormData();
 
-      for (const key in reqdata) {
-        if (reqdata.hasOwnProperty(key)) {
-          formData.append(key, reqdata[key]);
+        for (const key in reqdata) {
+          if (reqdata.hasOwnProperty(key)) {
+            formData.append(key, reqdata[key]);
+          }
         }
+        const issueImages = image;
+        // console.log("dhhh",issueImages);
+        if (issueImages) {
+          formData.append('issueImages', issueImages);
+        }
+        let response = await http_request.post('/createComplaint', formData)
+        const { data } = response
+        ToastMessage(data)
+        setLoading(false)
+        router.push("/complaint/allComplaint")
       }
-      const issueImages = image;
-      // console.log("dhhh",issueImages);
-      if (issueImages) {
-        formData.append('issueImages', issueImages);
+      else {
+        // setError('Please enter a valid pincode.');
+        return;
+
       }
-      let response = await http_request.post('/createComplaint', formData)
-      const { data } = response
-      ToastMessage(data)
-      setLoading(false)
-      router.push("/complaint/allComplaint")
     }
     catch (err) {
       setLoading(false)
@@ -59,10 +71,30 @@ const AddComplaint = () => {
 
   }
 
-  const onSubmit = (data) => {
-    // console.log(data);
-    RegiterComplaint(data)
-  };
+  
+const onSubmit = async (data) => {
+  try {
+     
+    if (pincode) {
+      const locationResponse = await fetchLocation();  
+
+      if (!locationResponse) {
+        setError('Failed to fetch location details.');
+        return;
+      }
+
+    
+      await RegiterComplaint(data);
+
+    } else {
+      setError('Please enter a pincode.');
+    }
+  } catch (error) {
+    // Handle unexpected errors
+    setError('An error occurred while submitting the complaint. Please try again.');
+    console.error(error);
+  }
+};
 
 
   const handleProductChange = (e) => {
@@ -121,14 +153,67 @@ const AddComplaint = () => {
     }
   }
 
+  const fetchLocation = async () => {
+    try {
+      const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+      if (response.data && response.data[0].Status === 'Success') {
+         
+          const [details] = response.data;
+          const { District, State } = details.PostOffice[0];
+          
+          setLocation({ District, State });
+          setValue('pincode', pincode);
+          setValue('state', State);
+          setValue('district', District);
+        return response.data[0].PostOffice[0]; // Return the location details
+      } else {
+        setError('No location found for the provided pincode.');
+        return null;
+      }
+    } catch (error) {
+      setError('Error fetching location details.');
+      console.error(error);
+      return null;
+    }
+  };
+
+  // const fetchLocation = async () => {
+  //   if (!pincode) {
+  //     setError('Please enter a pincode.');
+  //     return;
+  //   }
+
+  //   setError('');
+  //   try {
+  //     const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+
+  //     if (response.data && response.data[0].Status === 'Success') {
+  //       const [details] = response.data;
+  //       const { District, State } = details.PostOffice[0];
+        
+  //       setLocation({ District, State });
+  //       setValue('pincode', pincode);
+  //       setValue('state', State);
+  //       setValue('district', District);
+         
+  //     } else {
+  //       setError('No data found for this pincode.');
+  //       setLocation(null);
+  //     }
+  //   } catch (err) {
+  //     setError('Error fetching location details. Please try again.');
+  //     console.error(err);
+  //   }
+  // };
+  // console.log(location);
 
   return (
     <>
 
       <Sidenav >
         {value?.user?.role === "DEALER" ?
-        <AddDealerComplaint />
-        :  <div className=" ">
+          <AddDealerComplaint />
+          : <div className=" ">
             <div  >
               <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Create a new complaint
@@ -452,6 +537,21 @@ const AddComplaint = () => {
                   {errors.serviceLocation && <p className="text-red-500 text-sm mt-1">{errors.serviceLocation.message}</p>}
                 </div>
                 <div>
+                  <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
+                    Service Pincode
+                  </label>
+
+                  <input
+                    name="pincode"
+                    type="number"
+                    value={pincode}
+                    onChange={(e) => setPincode(e.target.value)}
+                    placeholder="Enter pincode"
+                    className="border p-2 mb-4 w-full"
+                  />
+                  {error && <p className="text-red-500 mt-1">{error}</p>}
+                </div>
+                <div>
                   <label htmlFor="alternateContactInfo" className="block text-sm font-medium leading-6 text-gray-900">
                     Alternate Contact Info
                   </label>
@@ -550,7 +650,7 @@ const AddComplaint = () => {
               </div>
             </div>
           </div>
-          
+
         }
       </Sidenav>
     </>

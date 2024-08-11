@@ -230,3 +230,73 @@ console.log(filteredComplaints,"gggggf");
 };
 
 export default Report;
+
+//  "use client"
+// import React, { useState } from 'react';
+// import axios from 'axios';
+
+// const Report = () => {
+//   const [city, setCity] = useState('');
+//   const [pinCodes, setPinCodes] = useState([]);
+//   const [error, setError] = useState('');
+
+//   const fetchPinCodes = async () => {
+//     if (!city) {
+//       setError('Please enter a city.');
+//       return;
+//     }
+
+//     setError('');
+//     try {
+//       // Replace with your actual API URL
+//       const response = await axios.get(`https://api.postalpincode.in/postoffice/${encodeURIComponent(city)}`);
+      
+//       if (response.data && response.data[0].Status === 'Success') {
+//         const pincodes = response.data[0].PostOffice;
+//         console.log(pincodes);
+//         setPinCodes(pincodes);
+//       } else {
+//         setError('No pin codes found for this city.');
+//       }
+//     } catch (err) {
+//       setError('Error fetching pin codes. Please try again.');
+//       console.error(err);
+//     }
+//   };
+
+//   // Assuming you want to filter by District, adjust if needed
+//   const getPincods = pinCodes?.filter((item) => item?.District?.toLowerCase() === city.toLowerCase());
+
+//   console.log(getPincods);
+  
+//   return (
+//     <div className="p-4">
+//       <h1 className="text-xl font-bold mb-4">Find Pin Codes</h1>
+//       <input
+//         type="text"
+//         value={city}
+//         onChange={(e) => setCity(e.target.value)}
+//         placeholder="Enter city"
+//         className="border p-2 mb-4 w-full"
+//       />
+//       <button
+//         onClick={fetchPinCodes}
+//         className="bg-blue-500 text-white py-2 px-4 rounded"
+//       >
+//         Get Pin Codes
+//       </button>
+//       {error && <p className="text-red-500 mt-2">{error}</p>}
+//       {getPincods?.length > 0 && (
+//         <ul className="mt-4">
+//           {getPincods.map((pinCode, index) => (
+//             <li key={index} className="border-b py-2">
+//               {pinCode.Pincode} {/* Display the Pincode property */}
+//             </li>
+//           ))}
+//         </ul>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Report;

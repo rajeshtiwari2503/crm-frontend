@@ -6,6 +6,7 @@ import http_request from '../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 
 const AddDealerComplaint = () => {
@@ -22,6 +23,9 @@ const AddDealerComplaint = () => {
     const [products, setProducts] = useState([])
     const [value, setLocalValue] = useState('');
 
+    const [pincode, setPincode] = useState('');
+    const [location, setLocation] = useState(null);
+    const [error, setError] = useState('');
 
     const getAllProducts = async () => {
         let response = await http_request.get("/getAllProduct")
@@ -32,6 +36,7 @@ const AddDealerComplaint = () => {
     const RegiterComplaint = async (reqdata) => {
 
         try {
+            if (location) {
             setLoading(true)
             const formData = new FormData();
 
@@ -58,6 +63,12 @@ const AddDealerComplaint = () => {
                 setLoading(false)
                 router.push("/complaint/allComplaint")
             }
+        }
+            else {
+                // setError('Please enter a valid pincode.');
+                return;
+        
+              }
 
         }
         catch (err) {
@@ -69,11 +80,54 @@ const AddDealerComplaint = () => {
 
     }
 
-    const onSubmit = (data) => {
-        // console.log(data);
-        RegiterComplaint(data)
+    const onSubmit = async (data) => {
+        try {
+
+            if (pincode) {
+                const locationResponse = await fetchLocation();
+
+                if (!locationResponse) {
+                    setError('Failed to fetch location details.');
+                    return;
+                }
+
+
+                await RegiterComplaint(data);
+
+            } else {
+                setError('Please enter a pincode.');
+            }
+        } catch (error) {
+            // Handle unexpected errors
+            setError('An error occurred while submitting the complaint. Please try again.');
+            console.error(error);
+        }
     };
 
+
+    const fetchLocation = async () => {
+        try {
+            const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+            if (response.data && response.data[0].Status === 'Success') {
+
+                const [details] = response.data;
+                const { District, State } = details.PostOffice[0];
+
+                setLocation({ District, State });
+                setValue('pincode', pincode);
+                setValue('state', State);
+                setValue('district', District);
+                return response.data[0].PostOffice[0]; // Return the location details
+            } else {
+                setError('No location found for the provided pincode.');
+                return null;
+            }
+        } catch (error) {
+            setError('Error fetching location details.');
+            console.error(error);
+            return null;
+        }
+    };
 
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
@@ -485,6 +539,21 @@ const AddDealerComplaint = () => {
                                 className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceLocation ? 'border-red-500' : ''}`}
                             />
                             {errors.serviceLocation && <p className="text-red-500 text-sm mt-1">{errors.serviceLocation.message}</p>}
+                        </div>
+                        <div>
+                            <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
+                                Service Pincode
+                            </label>
+
+                            <input
+                                name="pincode"
+                                type="number"
+                                value={pincode}
+                                onChange={(e) => setPincode(e.target.value)}
+                                placeholder="Enter pincode"
+                                className="border p-2 mb-4 w-full"
+                            />
+                            {error && <p className="text-red-500 mt-1">{error}</p>}
                         </div>
                         <div>
                             <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">

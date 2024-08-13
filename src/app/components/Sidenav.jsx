@@ -420,7 +420,7 @@ function Sidenav(props) {
         : "dfdfd"} */}
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "USER"
+            {value?.user?.role === "ADMIN"|| value?.user?.role === "BRAND" || value?.user?.role === "USER"
               ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>

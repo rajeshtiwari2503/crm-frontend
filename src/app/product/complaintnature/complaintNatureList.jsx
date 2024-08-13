@@ -18,6 +18,7 @@ const ComplaintNatureList = (props) => {
   const router = useRouter()
 
   const data = props?.data;
+  const product = props?.product;
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [natureId, setNatureId] = useState("");
@@ -70,6 +71,7 @@ const ComplaintNatureList = (props) => {
     setNatureId(id)
     setConfirmBoxView(true);
   }
+  
   return (
     <div>
       <Toaster />
@@ -143,12 +145,12 @@ const ComplaintNatureList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.productName}</TableCell>
                     <TableCell>{row?.nature}</TableCell>
-                    {/* <TableCell>{row?.status}</TableCell> */}
+                    <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <IconButton aria-label="view" onClick={() => handleDelete(row.id)}>
+                      {/* <IconButton aria-label="view" >
                         <Visibility color='primary' />
-                      </IconButton>
+                      </IconButton> */}
                       <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                         <EditIcon color='success' />
                       </IconButton>
@@ -189,7 +191,7 @@ const ComplaintNatureList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddNature existingNature={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddNature existingNature={editData}product={product} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

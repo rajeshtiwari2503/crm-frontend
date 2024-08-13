@@ -7,13 +7,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Add, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
-import http_request from '.././../../../http-request'
+import http_request from '.././../../../../http-request'
 import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
-import AddCategory from './addCategory';
+ 
 import { ReactLoader } from '@/app/components/common/Loading';
+import AddSubCategory from './addSubCategory';
 
-const CategoryList = (props) => {
+const SubCategoryList = (props) => {
 
 
   const router = useRouter()
@@ -81,17 +82,16 @@ const CategoryList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-  const handleSubCategory=(id)=>{
-    router.push(`/product/category/subCategory/${id}`)
-  }
+//  console.log(props);
+ 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Category Information</div>
+        <div className='font-bold text-2xl'>Sub Category Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Category</div>
+          <div className=' ml-2 '>Add Sub Category</div>
         </div>
       </div>
       {!data.length>0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -107,7 +107,16 @@ const CategoryList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                      ID
+                      Id
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'subCategoryName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('subCategoryName')}
+                    >
+                     Sub Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -145,11 +154,12 @@ const CategoryList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
+                    <TableCell>{row?.subCategoryName}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell>
-                      <IconButton aria-label="view" onClick={() => handleSubCategory(row._id)} >
+                      <IconButton aria-label="view"  >
                         <Visibility color='primary' />
                       </IconButton>
                       <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
@@ -177,7 +187,7 @@ const CategoryList = (props) => {
         </>}
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditModalClose}>
-        <DialogTitle>{editData?._id ? "Edit Category" : "Add Category"}</DialogTitle>
+        <DialogTitle>{editData?._id ? "Edit Sub Category" : "Add Sub Category"}</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleEditModalClose}
@@ -191,7 +201,7 @@ const CategoryList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddCategory userData={userData} existingCategory={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddSubCategory userData={userData} category={props?.category} existingCategory={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -203,7 +213,7 @@ const CategoryList = (props) => {
   );
 };
 
-export default CategoryList;
+export default SubCategoryList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

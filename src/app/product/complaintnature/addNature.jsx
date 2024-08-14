@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import http_request from '../../../../http-request';
 import { Button } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const AddNature = ({ existingNature, RefreshData, onClose }) => {
+const AddNature = ({ existingNature, product, RefreshData, onClose }) => {
     const [loading, setLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
@@ -30,37 +30,54 @@ const AddNature = ({ existingNature, RefreshData, onClose }) => {
         AddProductCategory(data);
     };
 
-    
-    React.useEffect(() => {
+    useEffect(() => {
         if (existingNature) {
             setValue('productName', existingNature.productName);
             setValue('nature', existingNature.nature);
         }
     }, [existingNature, setValue]);
 
+    const handleProductChange = (e) => {
+        const selectedProductId = e.target.value;
+        const selectedProduct = product?.find(product => product._id === selectedProductId);
+       
+        
+        if (selectedProduct) {
+            setValue('productId', selectedProduct._id);
+            setValue('productName', selectedProduct.productName);
+        }
+    };
+
     return (
         <div>
             <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
                 <div className='w-[400px]'>
-                    <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
-                      Product  Name
+                    <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
+                        Product
                     </label>
                     <div className="mt-2">
-                        <input
+                        <select
                             id="productName"
                             name="productName"
-                            type="text"
                             autoComplete="off"
                             required
-                            {...register('productName', { required: 'Product Name is required', minLength: { value: 3, message: 'Product Name must be at least 3 characters long' } })}
+                            onChange={handleProductChange}
+                            // {...register('productName', { required: 'Product selection is required' })}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productName ? 'border-red-500' : ''}`}
-                        />
+                        >
+                            <option value="">Select a product</option>
+                            {product?.map((product) => (
+                                <option key={product._id} value={product._id}>
+                                    {product.productName}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
                 </div>
-                <div className=' '>
+                <div className=''>
                     <label htmlFor="nature" className="block text-sm font-medium leading-6 text-gray-900">
-                       Complaint Nature
+                        Complaint Nature
                     </label>
                     <div className="mt-2">
                         <input
@@ -69,7 +86,7 @@ const AddNature = ({ existingNature, RefreshData, onClose }) => {
                             type="text"
                             autoComplete="off"
                             required
-                            {...register('nature', { required: 'nature is required', minLength: { value: 3, message: 'nature must be at least 3 characters long' } })}
+                            {...register('nature', { required: 'Nature is required', minLength: { value: 3, message: 'Nature must be at least 3 characters long' } })}
                             className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.nature ? 'border-red-500' : ''}`}
                         />
                     </div>

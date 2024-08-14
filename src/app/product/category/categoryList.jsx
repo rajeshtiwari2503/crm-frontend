@@ -121,6 +121,15 @@ const CategoryList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -146,6 +155,7 @@ const CategoryList = (props) => {
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
+                    <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell>

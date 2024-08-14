@@ -1,8 +1,8 @@
 "use client"
 import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
-import SubCategoryList from '../../subCategory/SubCategoryList'
 import http_request from '../../../../../../http-request'
+import SubCategoryList from '../subCategoryList'
 
 const SubCategory = ({params}) => {
   const [categories, setCategories] = useState(null)

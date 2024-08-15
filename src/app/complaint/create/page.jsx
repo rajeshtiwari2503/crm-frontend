@@ -20,6 +20,10 @@ const AddComplaint = () => {
 
   const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
   const [products, setProducts] = useState([])
+  const [subCategory, setSubCategory] = useState([])
+  const [subCat, setSubCat] = useState([])
+  const [nature, setNature] = useState([])
+  const [compNature, setComplaintNature] = useState([])
   const [value, setLocalValue] = useState('');
 
   const [pincode, setPincode] = useState('');
@@ -27,16 +31,46 @@ const AddComplaint = () => {
   const [error, setError] = useState('');
 
   const getAllProducts = async () => {
-    let response = await http_request.get("/getAllProduct")
-    let { data } = response;
+    try {
+      let response = await http_request.get("/getAllProduct")
+      let { data } = response;
 
-    setProducts(data)
+      setProducts(data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  const getAllSubCategory = async () => {
+    try {
+      let response = await http_request.get(`/getAllSubCategory`)
+      let { data } = response;
+
+      setSubCategory(data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  const getAllCompNature = async () => {
+    try {
+      let response = await http_request.get(`/getAllComplaintNature`)
+      let { data } = response;
+
+      setNature(data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
   }
   const RegiterComplaint = async (reqdata) => {
 
     try {
       if (location) {
-       
+
         setLoading(true)
         const formData = new FormData();
 
@@ -71,38 +105,43 @@ const AddComplaint = () => {
 
   }
 
-  
-const onSubmit = async (data) => {
-  try {
-     
-    if (pincode) {
-      const locationResponse = await fetchLocation();  
 
-      if (!locationResponse) {
-        setError('Failed to fetch location details.');
-        return;
+  const onSubmit = async (data) => {
+    try {
+
+      if (pincode) {
+        const locationResponse = await fetchLocation();
+
+        if (!locationResponse) {
+          setError('Failed to fetch location details.');
+          return;
+        }
+
+
+        await RegiterComplaint(data);
+
+      } else {
+        setError('Please enter a pincode.');
       }
-
-    
-      await RegiterComplaint(data);
-
-    } else {
-      setError('Please enter a pincode.');
+    } catch (error) {
+      // Handle unexpected errors
+      setError('An error occurred while submitting the complaint. Please try again.');
+      console.error(error);
     }
-  } catch (error) {
-    // Handle unexpected errors
-    setError('An error occurred while submitting the complaint. Please try again.');
-    console.error(error);
-  }
-};
+  };
 
 
   const handleProductChange = (e) => {
     const selectedProductId = e.target.value;
     setProductName(selectedProductId)
     const selectedProduct = products.find(product => product._id === selectedProductId);
-    // console.log(selectedProduct);
+ 
+  
     if (selectedProduct) {
+      const selectednature = nature?.filter(nature => nature?.productId  === selectedProduct?._id);
+      setComplaintNature(selectednature);
+      const selectesubCat = subCategory?.filter(cat => cat?.categoryId  === selectedProduct?.categoryId);   
+      setSubCat(selectesubCat);
       setValue('productName', selectedProduct.productName);
       setValue('categoryName', selectedProduct.categoryName);
       setValue('productBrand', selectedProduct.productBrand);
@@ -117,7 +156,15 @@ const onSubmit = async (data) => {
 
     }
   };
-
+  const handleSubCatChange = (e) => {
+    const selectedSubCatId = e.target.value;
+    
+    const selectedSub = subCat.find(cat => cat._id === selectedSubCatId);
+  
+    if (selectedSub) {
+      setValue('subCategoryName', selectedSub?.subCategoryName);
+    }
+  };
   useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
@@ -131,7 +178,8 @@ const onSubmit = async (data) => {
       setValue('serviceAddress', value.user.address);
     }
     getAllProducts()
-
+    getAllSubCategory()
+    getAllCompNature()
   }, [productName])
   const handleFileChange = (e) => {
     const reader = new FileReader();
@@ -157,14 +205,14 @@ const onSubmit = async (data) => {
     try {
       const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
       if (response.data && response.data[0].Status === 'Success') {
-         
-          const [details] = response.data;
-          const { District, State } = details.PostOffice[0];
-          
-          setLocation({ District, State });
-          setValue('pincode', pincode);
-          setValue('state', State);
-          setValue('district', District);
+
+        const [details] = response.data;
+        const { District, State } = details.PostOffice[0];
+
+        setLocation({ District, State });
+        setValue('pincode', pincode);
+        setValue('state', State);
+        setValue('district', District);
         return response.data[0].PostOffice[0]; // Return the location details
       } else {
         setError('No location found for the provided pincode.');
@@ -190,12 +238,12 @@ const onSubmit = async (data) => {
   //     if (response.data && response.data[0].Status === 'Success') {
   //       const [details] = response.data;
   //       const { District, State } = details.PostOffice[0];
-        
+
   //       setLocation({ District, State });
   //       setValue('pincode', pincode);
   //       setValue('state', State);
   //       setValue('district', District);
-         
+
   //     } else {
   //       setError('No data found for this pincode.');
   //       setLocation(null);
@@ -257,7 +305,7 @@ const onSubmit = async (data) => {
                 </div>
                 <div>
                   <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
-                    Product Category
+                    Product  Category
                   </label>
                   <input
                     id="categoryName"
@@ -272,22 +320,22 @@ const onSubmit = async (data) => {
                 </div>
                 <div>
                   <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
-                    Product Category
+                    Product Sub Category
                   </label>
                   <select
-                    id="categoryName"
-                    name="categoryName"
-                    // onChange={handleProductChange}
+                    id="subCategoryName"
+                    name="subCategoryName"
+                    onChange={handleSubCatChange}
                     className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
                   >
                     <option value="">Select a product</option>
-                    {products.map(product => (
-                      <option key={product.productId} value={product.productId}>
-                        {product.productName}
+                    {subCat?.map(sub => (
+                      <option key={sub._id} value={sub._id}>
+                        {sub.subCategoryName}
                       </option>
                     ))}
                   </select>
-                  {errors.categoryName && <p className="text-red-500 text-sm mt-1">{errors.categoryName.message}</p>}
+                  {errors.subCategoryName && <p className="text-red-500 text-sm mt-1">{errors.subCategoryName.message}</p>}
                 </div>
                 <div>
                   <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
@@ -437,10 +485,12 @@ const onSubmit = async (data) => {
                     className={` block mt-2 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueType ? 'border-red-500' : ''}`}
                   >
                     <option value="">Select an issue type</option>
-                    <option value="Hardware">Hardware</option>
-                    <option value="Software">Software</option>
-                    <option value="Performance">Performance</option>
-                    <option value="Physical Damage">Physical Damage</option>
+                    {compNature?.map((item,i)=>(
+                      <option key={i} value={item.nature}> 
+                      {item?.nature}
+                      </option>
+                   
+                  ))} 
                   </select>
                   {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
                 </div>

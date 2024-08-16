@@ -90,7 +90,7 @@ const WarrantyList = (props) => {
         <div className='font-bold text-2xl'>Warranty Information</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Sparepart</div>
+          <div className=' ml-2 '>Add Warranty </div>
         </div>
       </div>
       {!data.length>0 ?  <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>

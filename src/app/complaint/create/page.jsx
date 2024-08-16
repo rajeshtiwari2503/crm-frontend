@@ -22,8 +22,9 @@ const AddComplaint = () => {
   const [products, setProducts] = useState([])
   const [subCategory, setSubCategory] = useState([])
   const [subCat, setSubCat] = useState([])
-  const [nature, setNature] = useState([])
   const [compNature, setComplaintNature] = useState([])
+  const [nature, setNature] = useState([])
+  
   const [value, setLocalValue] = useState('');
 
   const [pincode, setPincode] = useState('');
@@ -259,8 +260,8 @@ const AddComplaint = () => {
     <>
 
       <Sidenav >
-        {value?.user?.role === "DEALER" ?
-          <AddDealerComplaint />
+        {value?.user?.role === "USER" ?
+          <AddDealerComplaint   nature= {nature}subCategory={subCategory} />
           : <div className=" ">
             <div  >
               <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">

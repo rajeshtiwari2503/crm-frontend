@@ -19,7 +19,7 @@ const ActivateWarrantyButton = () => {
   });
 
   useEffect(() => {
-    const qrCode = searchParams.get('qrCodeUrl');
+    const qrCode = searchParams.get('uniqueId');
     if (qrCode) {
       setQrCodeUrl(qrCode);
     }

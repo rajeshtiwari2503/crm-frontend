@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 
-const AddDealerComplaint = () => {
+const AddDealerComplaint = ({  nature,subCategory}) => {
 
     const router = useRouter()
 
@@ -18,7 +18,8 @@ const AddDealerComplaint = () => {
     const [image, setImage] = useState("")
     const [imageWaranty, setWarantyImage] = useState("")
     const [isWaranty, setIsWaranty] = useState(false)
-
+    const [subCat, setSubCat] = useState([])
+    const [compNature, setComplaintNature] = useState([])
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
     const [products, setProducts] = useState([])
     const [value, setLocalValue] = useState('');
@@ -37,38 +38,38 @@ const AddDealerComplaint = () => {
 
         try {
             if (location) {
-            setLoading(true)
-            const formData = new FormData();
+                setLoading(true)
+                const formData = new FormData();
 
-            for (const key in reqdata) {
-                if (reqdata.hasOwnProperty(key)) {
-                    formData.append(key, reqdata[key]);
+                for (const key in reqdata) {
+                    if (reqdata.hasOwnProperty(key)) {
+                        formData.append(key, reqdata[key]);
+                    }
+                }
+                const issueImages = image;
+                // console.log("dhhh",issueImages);
+                // if (issueImages) {
+                //     formData.append('issueImages', issueImages);
+                // }
+                if (imageWaranty) {
+                    formData.append('warrantyImage', imageWaranty);
+                }
+                if (isWaranty == true && imageWaranty === "") {
+                    alert("Please Select Warranty Image")
+                    setLoading(false)
+                } else {
+                    let response = await http_request.post('/createDealerComplaint', formData)
+                    const { data } = response
+                    ToastMessage(data)
+                    setLoading(false)
+                    router.push("/complaint/allComplaint")
                 }
             }
-            const issueImages = image;
-            // console.log("dhhh",issueImages);
-            // if (issueImages) {
-            //     formData.append('issueImages', issueImages);
-            // }
-            if (imageWaranty) {
-                formData.append('warrantyImage', imageWaranty);
-            }
-            if (isWaranty == true && imageWaranty === "") {
-                alert("Please Select Warranty Image")
-                setLoading(false)
-            } else {
-                let response = await http_request.post('/createDealerComplaint', formData)
-                const { data } = response
-                ToastMessage(data)
-                setLoading(false)
-                router.push("/complaint/allComplaint")
-            }
-        }
             else {
                 // setError('Please enter a valid pincode.');
                 return;
-        
-              }
+
+            }
 
         }
         catch (err) {
@@ -128,13 +129,17 @@ const AddDealerComplaint = () => {
             return null;
         }
     };
-
+  
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         setProductName(selectedProductId)
         const selectedProduct = products.find(product => product._id === selectedProductId);
 
         if (selectedProduct) {
+            const selectednature = nature?.filter(nature => nature?.productId  === selectedProduct?._id);
+            setComplaintNature(selectednature);
+            const selectesubCat = subCategory?.filter(cat => cat?.categoryId  === selectedProduct?.categoryId);   
+            setSubCat(selectesubCat);
             setValue('productName', selectedProduct.productName);
             setValue('categoryName', selectedProduct.categoryName);
             setValue('productBrand', selectedProduct.productBrand);
@@ -151,6 +156,16 @@ const AddDealerComplaint = () => {
 
         }
     };
+
+    const handleSubCatChange = (e) => {
+        const selectedSubCatId = e.target.value;
+        
+        const selectedSub = subCat.find(cat => cat._id === selectedSubCatId);
+      
+        if (selectedSub) {
+          setValue('subCategoryName', selectedSub?.subCategoryName);
+        }
+      };
 
     useEffect(() => {
         const storedValue = localStorage.getItem("user");
@@ -276,22 +291,22 @@ const AddDealerComplaint = () => {
                         </div>
                         <div>
                             <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
-                                Product Category
+                                Product Sub Category
                             </label>
                             <select
-                                id="categoryName"
-                                name="categoryName"
-                                // onChange={handleProductChange}
+                                id="subCategoryName"
+                                name="subCategoryName"
+                                onChange={handleSubCatChange}
                                 className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
                             >
                                 <option value="">Select a product</option>
-                                {products.map(product => (
-                                    <option key={product.productId} value={product.productId}>
-                                        {product.productName}
+                                {subCat?.map(sub => (
+                                    <option key={sub._id} value={sub._id}>
+                                        {sub.subCategoryName}
                                     </option>
                                 ))}
                             </select>
-                            {errors.categoryName && <p className="text-red-500 text-sm mt-1">{errors.categoryName.message}</p>}
+                            {errors.subCategoryName && <p className="text-red-500 text-sm mt-1">{errors.subCategoryName.message}</p>}
                         </div>
                         <div>
                             <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
@@ -429,25 +444,28 @@ const AddDealerComplaint = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">
-                                Issue Type
-                            </label>
-                            <select
-                                id="issueType"
-                                name="issueType"
-                                autoComplete="issueType"
-                                required
-                                {...register('issueType', { required: 'Issue Type is required' })}
-                                className={` block mt-2 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueType ? 'border-red-500' : ''}`}
-                            >
-                                <option value="">Select an issue type</option>
-                                <option value="Hardware">Hardware</option>
-                                <option value="Software">Software</option>
-                                <option value="Performance">Performance</option>
-                                <option value="Physical Damage">Physical Damage</option>
-                            </select>
-                            {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
-                        </div>
+                  <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">
+                    Issue Type
+                  </label>
+                  <select
+                    id="issueType"
+                    name="issueType"
+                    autoComplete="issueType"
+                    required
+                    {...register('issueType', { required: 'Issue Type is required' })}
+                    className={` block mt-2 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueType ? 'border-red-500' : ''}`}
+                  >
+                    <option value="">Select an issue type</option>
+                    {compNature?.map((item,i)=>(
+                      <option key={i} value={item.nature}> 
+                      {item?.nature}
+                      </option>
+                   
+                  ))} 
+                  </select>
+                  {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
+                </div>
+
                         <div>
                             <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
                                 Upload Images/Videos

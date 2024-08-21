@@ -38,9 +38,9 @@ const WarrantyDetails = ({ params }) => {
         printWindow.document.write('<style>');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
         printWindow.document.write('.record { margin-bottom: 20px; }');
-        printWindow.document.write('.record img { width: 200px; height: 200px; }');
-        printWindow.document.write('.container { display: flex; flex-wrap: wrap; gap: 20px; }');
-        printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 45px; }');
+        printWindow.document.write('.record img { width: 120px; height: 120px; }');
+        printWindow.document.write('.container { display: flex; flex-wrap: wrap;   }');
+        printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 20px; }');
         printWindow.document.write('@media print { .page-break { page-break-before: always; } }');
         printWindow.document.write('</style></head><body>');
     
@@ -54,7 +54,7 @@ const WarrantyDetails = ({ params }) => {
     
         printWindow.document.write('<h2>Generated QR Codes</h2>');
         let records = warranty?.records || [];
-        let rowsPerPage = 3;
+        let rowsPerPage = 2;
         let itemsPerRow = 3;
         
         for (let i = 0; i < records.length; i += rowsPerPage * itemsPerRow) {
@@ -62,12 +62,18 @@ const WarrantyDetails = ({ params }) => {
             for (let j = i; j < i + rowsPerPage * itemsPerRow && j < records.length; j++) {
                 let item = records[j];
                 printWindow.document.write('<div class="item">');
-                printWindow.document.write('<div class="record"><strong>QR Code ' + (j + 1) + ':</strong></div>');
-                printWindow.document.write('<div><strong>Brand Name:</strong> ' + warranty?.brandName + '</div>');
-                printWindow.document.write('<div><strong>Part Name:</strong> ' + warranty?.productName + '</div>');
-                printWindow.document.write('<img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" />');
-                printWindow.document.write('<div><strong>Warranty In Days:</strong> ' + warranty?.warrantyInDays + '</div>');
-                printWindow.document.write('<div><strong>Year:</strong> ' + warranty?.year + '</div>');
+                printWindow.document.write('<div class="record">');
+                printWindow.document.write('<div><img src="/Logo.png" alt="Company Logo"   /></div>');
+                printWindow.document.write('<div><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
+                printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
+                printWindow.document.write('<div class="font-bold text-12">+91 9649149196</div>');
+                printWindow.document.write('<div class="text-12">(10 AM - 6 PM)</div>');
+                printWindow.document.write('<div class="text-12">All Working Days</div>');
+                printWindow.document.write('<div class="text-12">Be ready with your  </div>');
+                printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
+                printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
+                printWindow.document.write('<div class="font-bold text-12">Unique Code: ' + item?.uniqueId + '</div>');
+                printWindow.document.write('</div>');
                 printWindow.document.write('</div>');
             }
             printWindow.document.write('</div>');
@@ -118,22 +124,30 @@ const WarrantyDetails = ({ params }) => {
                         Print Records
                     </button>
                     <div className='font-bold mt-5'>Generated QR codes</div>
-                    <div className=' grid md:grid-cols-3 sm:grid-cols-1 gap-4'>
+                    <div className=' grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
                         {warranty?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
-                                <div className=' mb-5 text-center'>
-                                    <div className='font-bold mt-5'>Brand Name</div>
-                                    <div>{warranty?.brandName}</div>
-                                    <div className='font-bold'>Part Name</div>
-                                    <div>{warranty?.productName}</div>
-                                    <div className='font-bold'>QR Code</div>
-                                    <div>
-                                        <img src={item?.qrCodes[0]?.qrCodeUrl} alt="image" width={200} height={200} />
+                                <div className=' mb-5 '>
+                                    {/* <div className='font-bold mt-5'>Brand Name</div>
+                                    <div>{warranty?.brandName}</div> */}
+                                     <div className='flex justify-center items-center'>
+                                        <img src="/Logo.png" alt="image" width={100} height={100} />
                                     </div>
-                                    <div className='font-bold'>Warranty In Days</div>
-                                    <div>{warranty?.warrantyInDays}</div>
-                                    <div className='font-bold'>Year</div>
-                                    <div>{warranty?.year}</div>
+                                    {/* <div className='font-bold'>Part Name</div>
+                                    <div>{warranty?.productName}</div> */}
+                                    <div className='font-bold'> </div>
+                                    <div className='flex justify-center items-center mt-3'>
+                                        <img src={item?.qrCodes[0]?.qrCodeUrl} alt="image" width={80} height={80} />
+                                    </div>
+                                    <div className='text-[12px]'> Talk or Whatsapp</div>
+                                    <div className='font-bold text-[12px]'> +91 9649149196</div>
+                                    <div className='text-[12px]'> (10 AM - 6 PM) </div>
+                                    <div className='text-[12px]'> All Working Days </div>
+                                    <div className='text-[12px]'> Be ready with your Product Unique code No. ,Address & Pincode</div>
+                                    <div className='font-bold text-[12px]'>Unique Code :{item?.uniqueId} </div>
+                                    {/* <div>{warranty?.warrantyInDays}</div> */}
+                                    {/* <div className='font-bold'>Year</div>
+                                    <div>{warranty?.year}</div> */}
                                 </div>
                             </div>
                         ))}

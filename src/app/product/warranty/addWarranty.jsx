@@ -8,6 +8,7 @@ const ProductWarrantyForm = ({ product, existingProduct, RefreshData, onClose })
     const [loadind, setLoading]=useState(false)
 
     const AddProductWarranty = async (data) => {
+        
         try {
             setLoading(true);
             const endpoint = existingProduct?._id ? `/editProductWarranty/${existingProduct._id}` : '/addProductWarranty';
@@ -35,12 +36,13 @@ const ProductWarrantyForm = ({ product, existingProduct, RefreshData, onClose })
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         const selectedProduct = product?.find(prod => prod._id === selectedProductId);
+console.log(selectedProduct);
 
         if (selectedProduct) {
             setValue('productId', selectedProduct._id);
             setValue('productName', selectedProduct.productName);
-            setValue('brandName', selectedProduct.userName);
-            setValue('brandId', selectedProduct.userId);
+            setValue('brandName', selectedProduct.productBrand);
+            setValue('brandId', selectedProduct.brandId);
             setValue('categoryId', selectedProduct.categoryId);
             setValue('categoryName', selectedProduct.categoryName);
             setValue('year', new Date());
@@ -70,7 +72,7 @@ const ProductWarrantyForm = ({ product, existingProduct, RefreshData, onClose })
                         </select>
                         {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
                     </div>
-                    <div>
+                    {/* <div>
                         <label htmlFor="productId" className="block text-sm font-medium text-gray-700">Product ID</label>
                         <input
                             id="productId"
@@ -79,7 +81,7 @@ const ProductWarrantyForm = ({ product, existingProduct, RefreshData, onClose })
                             className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productId ? 'border-red-500' : ''}`}
                         />
                         {errors.productId && <p className="text-red-500 text-sm">{errors.productId.message}</p>}
-                    </div>
+                    </div> */}
                     <div>
                         <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700">Category Code</label>
                         <input

@@ -52,7 +52,7 @@ const WarrantyDetails = ({ params }) => {
         // printWindow.document.write('<div><strong>Created At:</strong> ' + new Date(warranty?.createdAt).toLocaleString() + '</div>');
         // printWindow.document.write('<div><strong>Updated At:</strong> ' + new Date(warranty?.updatedAt).toLocaleString() + '</div>');
     
-        printWindow.document.write('<h2>Generated QR Codes</h2>');
+        // printWindow.document.write('<h2>Generated QR Codes</h2>');
         let records = warranty?.records || [];
         let rowsPerPage = 2;
         let itemsPerRow = 3;
@@ -63,6 +63,10 @@ const WarrantyDetails = ({ params }) => {
                 let item = records[j];
                 printWindow.document.write('<div class="item">');
                 printWindow.document.write('<div class="record">');
+                printWindow.document.write('<div class="record">');
+                printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
+                printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
+                printWindow.document.write('</div>');
                 printWindow.document.write('<div><img src="/Logo.png" alt="Company Logo"   /></div>');
                 printWindow.document.write('<div><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
                 printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
@@ -128,8 +132,8 @@ const WarrantyDetails = ({ params }) => {
                         {warranty?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
                                 <div className=' mb-5 '>
-                                    {/* <div className='font-bold mt-5'>Brand Name</div>
-                                    <div>{warranty?.brandName}</div> */}
+                                    <div className='  mt-3 mb-3 font-bold text-[12px]'>Generate QR Code warranty is powered by SERVICE GO</div>
+                                    {/* <div>{warranty?.brandLogo}</div> */}
                                      <div className='flex justify-center items-center'>
                                         <img src="/Logo.png" alt="image" width={100} height={100} />
                                     </div>

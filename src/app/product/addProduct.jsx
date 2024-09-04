@@ -200,7 +200,7 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                 </div>
                 <div className='w-[400px]'>
                     <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
-                        Serial No
+                      Product Identification No.
                     </label>
                     <div className="mt-2">
                         <input
@@ -266,7 +266,20 @@ const AddProduct = ({ existingProduct, RefreshData, onClose, userData, categorie
                             </div>
                         </div>
                     </>
-                    : ""}
+                    :   <div>
+                    <label htmlFor="warrantyInDays" className="block text-sm font-medium text-gray-700">Warranty In Days</label>
+                    <input
+                        id="warrantyInDays"
+                        type="number"
+                        {...register('warrantyInDays', {
+                            required: 'Warranty In Days is required',
+                            valueAsNumber: true,
+                            min: { value: 10, message: 'Warranty In Days must be greater than 0' }
+                        })}
+                        className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.warrantyInDays ? 'border-red-500' : ''}`}
+                    />
+                    {errors.warrantyInDays && <p className="text-red-500 text-sm">{errors.warrantyInDays.message}</p>}
+                </div>}
                 <div className='flex justify-between mt-8'>
                     <Button variant="outlined" onClick={() => onClose(true)} className='hover:bg-[#fe3f49] hover:text-white' color="error">
                         Cancel

@@ -45,7 +45,9 @@ const AddStock = ({ existingStock, RefreshData, onClose, products }) => {
     }, [existingStock, setValue]);
 
     const handleChangeBrand = (id) => {
-        const selectedBrand = products?.find(brand => brand.brandId === id);
+        
+        const selectedBrand = products?.find(brand => brand._id === id);
+        
         setSelectedPart(selectedBrand?.partName)
         if (selectedBrand) {
             setValue('brandName', selectedBrand?.brandName);
@@ -77,7 +79,7 @@ const AddStock = ({ existingStock, RefreshData, onClose, products }) => {
                         >
                             <option value="">Select a Sparepart</option>
                             {products?.map((spare) => (
-                                <option key={spare._id} value={spare.brandId}>
+                                <option key={spare._id} value={spare._id}>
                                     {spare.partName}
                                 </option>
                             ))}

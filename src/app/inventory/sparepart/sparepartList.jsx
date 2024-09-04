@@ -53,7 +53,7 @@ const SparepartList = (props) => {
     router.push("/inventory/sparepart/add")
   }
   const handleEdit = (id) => {
-    router.push(`/inventory/sparepart/edit/${id}`)
+    router.push(`/product/sparepart/edit/${id}`)
   }
   const handleDetails = (id) => {
     router.push(`/inventory/sparepart/details/${id}`)

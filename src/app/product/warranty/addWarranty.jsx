@@ -36,7 +36,7 @@ const ProductWarrantyForm = ({ product, existingProduct, RefreshData, onClose })
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         const selectedProduct = product?.find(prod => prod._id === selectedProductId);
-console.log(selectedProduct);
+// console.log(selectedProduct);
 
         if (selectedProduct) {
             setValue('productId', selectedProduct._id);

@@ -201,19 +201,25 @@ const AddComplaint = () => {
 
     }
   }
-
+  useEffect(() => {
+    if (pincode.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
+      fetchLocation();
+    }
+  }, [pincode]);
   const fetchLocation = async () => {
     try {
       const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
       if (response.data && response.data[0].Status === 'Success') {
 
         const [details] = response.data;
+        
         const { District, State } = details.PostOffice[0];
 
         setLocation({ District, State });
         setValue('pincode', pincode);
         setValue('state', State);
         setValue('district', District);
+        setError('')
         return response.data[0].PostOffice[0]; // Return the location details
       } else {
         setError('No location found for the provided pincode.');
@@ -497,7 +503,7 @@ const AddComplaint = () => {
                 </div>
                 <div>
                   <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                    Upload Images/Videos
+                    Upload Product / Warranty Images/Videos
                   </label>
                   <input
                     id="images"
@@ -514,7 +520,7 @@ const AddComplaint = () => {
                 <div className=' flex md:col-span-3 gap-4'>
                   <div className=' w-full'>
                     <label htmlFor="detailedDescription" className="block text-sm font-medium leading-6 text-gray-900">
-                      Detailed Description
+                      Details Problem Description
                     </label>
                     <textarea
                       id="detailedDescription"

@@ -8,6 +8,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
 import BrandProfile from '@/app/components/BrandProfile';
+import Recharge from '@/app/recharge/page';
 
 const BrandDetails = ({ params }) => {
     const router = useRouter();
@@ -60,7 +61,9 @@ const BrandDetails = ({ params }) => {
                     <hr />
                     <div  >
                       <BrandProfile userData={brand} />
+                      <Recharge sidebar={false} brandData={brand}/>
                     </div>
+                    
                 </div>
 
 

@@ -81,6 +81,9 @@ const Profile = ({ params }) => {
         editTechStatus(data)
     }
     const liveStatusOptions = ['Select Status','LEAVE', 'AVAILABLE', 'BUSY',  ];
+  const RefreshData=(ref)=>{
+    setRefresh(ref)
+  }
 
     return (
         <Sidenav>
@@ -103,7 +106,7 @@ const Profile = ({ params }) => {
                                 {userData?.role} Details
                             </div>
                         </div>
-                        <EditBrandProfile userData={userData} />
+                        <EditBrandProfile userData={userData} RefreshData={RefreshData}/>
                     </div>
 
                     : <>
@@ -185,7 +188,7 @@ const Profile = ({ params }) => {
                                             </div>
                                         </div>
                                         : userData?.role === "SERVICE" ? <ServiceProfile userData={userData} />
-                                            : userData?.role === "BRAND" ? <BrandProfile userData={userData} />
+                                            : userData?.role === "BRAND" ? <BrandProfile userData={userData}RefreshData={RefreshData} />
                                                 : userData?.role === "DEALER" ? <DealerProfile userData={userData} />
                                                     : ""
                                     }

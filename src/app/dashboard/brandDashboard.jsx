@@ -41,7 +41,7 @@ const BrandDashboard = (props) => {
       const totalCT = CtData.reduce((sum, tat) => sum + tat, 0);
       const avCT = CtData.length ? (totalCT / CtData.length).toFixed(2) : 0;
 
-      const ct = avCT <= 24 ? "99" : avCT <= 32 ? "80" : avCT <= 48 ? "60" : avCT <= 64 ? "40" : avCT <= 72 ? "30" : avCT <= 100 ? "10" : "5"
+      const ct = avCT <= 24 ? "100" : avCT <= 32 ? "80" : avCT <= 48 ? "60" : avCT <= 64 ? "40" : avCT <= 72 ? "30" : avCT <= 100 ? "10" : "5"
 
       setAverageCT(ct);
       setComplaint(data);
@@ -95,17 +95,17 @@ const BrandDashboard = (props) => {
       </div>
 
       <div className='my-8'>
-        <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
+        <div className='grid grid-cols-4 gap-8 items-center  rounded-xl shadow-lg p-5'>
+          <div className='flex justify-center  items-center '>
+            <div className='w-full'>
+              <div className='w-full bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
               <div className='text-center mt-2'>Total Service  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
@@ -113,7 +113,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-blue-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
@@ -121,7 +121,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
               </div>
@@ -129,7 +129,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
@@ -137,7 +137,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
               </div>
@@ -145,7 +145,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
               </div>
@@ -153,7 +153,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
               </div>
@@ -161,7 +161,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
               </div>
@@ -169,21 +169,21 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={averageCT} delay={1} /> {"%"}
               </div>
               <div className='text-center mt-2'> C T</div>
             </div>
           </div>
-          {/* <div className='justify-center flex items-center'>
-            <div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full' onClick={()=>router.push("/complaint/create")}>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={ 100} delay={1} />
               </div>
               <div className='text-center mt-2'>Wallet Amount</div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
 

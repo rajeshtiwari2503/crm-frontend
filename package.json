@@ -16,6 +16,7 @@
     "@mui/icons-material": "^5.15.0",
     "@mui/material": "^5.15.0",
     "axios": "^1.7.1",
+    "dayjs": "^1.11.13",
     "next": "14.0.3",
     "rc-progress": "^4.0.0",
     "react": "^18",

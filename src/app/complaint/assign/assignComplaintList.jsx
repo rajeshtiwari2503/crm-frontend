@@ -205,7 +205,7 @@ const AssignComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                      Ticket Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -388,7 +388,7 @@ const AssignComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.serviceAddress}</TableCell>

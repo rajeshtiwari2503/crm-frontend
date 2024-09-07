@@ -154,7 +154,7 @@ const RecentServicesList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                      Ticket Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
 
@@ -253,7 +253,7 @@ const RecentServicesList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
 
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.productBrand}</TableCell>

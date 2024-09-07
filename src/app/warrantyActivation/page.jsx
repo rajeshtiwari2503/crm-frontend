@@ -19,7 +19,7 @@ const ActivateWarrantyButton = () => {
   const [contactNo, setContactNo] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-
+  const [product, setProduct] = useState([])
   // Set up react-hook-form
   const { register, handleSubmit, formState: { errors }, setValue } = useForm({
     mode: 'onBlur', // or 'onChange' for real-time validation
@@ -28,7 +28,8 @@ const ActivateWarrantyButton = () => {
     const qrCode = searchParams.get('uniqueId');
     if (qrCode) {
       setQrCodeUrl(qrCode);
-      getwarrantyDetails(qrCode); // Call only once after setting the QR code
+      getwarrantyDetails(qrCode); 
+      getAllProduct()// Call only once after setting the QR code
     }
   }, [searchParams, refresh]);
 
@@ -75,6 +76,8 @@ const ActivateWarrantyButton = () => {
 
   const onSubmit = async (data) => {
     try {
+      // console.log(data);
+      
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
         ...data, // Spread form data
@@ -105,29 +108,36 @@ const ActivateWarrantyButton = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          // setLocation({
-          //   lat: latitude,
-          //   lng: longitude,
-          // });
-          setValue("lat", latitude)
-          setValue("long", longitude)
+          setValue("lat", latitude);
+          setValue("long", longitude);
+  
           // Fetch address and pincode using a reverse geocoding API
           fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg`
           )
             .then((response) => response.json())
             .then((data) => {
-              // console.log("Geocoding API Response:", data); // Check the full response here
-
               if (data.results && data.results.length > 0) {
-                const bestMatch = data.results[0]; // Start by checking the first result
+                const bestMatch = data.results[0]; // The first result is usually the best match
+  
+                // Extract postal code (pincode)
                 const postalCode = bestMatch.address_components.find((component) =>
                   component.types.includes("postal_code")
                 );
-                setValue("address", bestMatch.formatted_address)
-                setValue("pincode", postalCode.long_name)
-                // setAddress(bestMatch.formatted_address);
-                // setPincode(postalCode ? postalCode.long_name : "Pincode not found");
+                setValue("address", bestMatch.formatted_address);
+                setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
+  
+                // Extract district (administrative_area_level_2), fallback to locality or sublocality
+                const districtComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_2")
+                );
+                setValue("district", districtComponent ? districtComponent.long_name : "District not found");
+  
+                // Extract state (administrative_area_level_1)
+                const stateComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_1")
+                );
+                setValue("state", stateComponent ? stateComponent.long_name : "State not found");
               } else {
                 console.warn("No results found for the given coordinates.");
               }
@@ -144,29 +154,90 @@ const ActivateWarrantyButton = () => {
     } else {
       alert("Geolocation is not supported by this browser.");
     }
-  }
+  };
+  
 
+  // const handleSearch = async () => {
+  //   const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
+  //   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
+
+  //   try {
+  //     const response = await axios.get(url);
+  //     const result = response.data.results[0];
+  //     if (result) {
+  //       // Extract latitude and longitude
+  //       const { lat, lng } = result.geometry.location;
+  //       setValue("lat", lat)
+  //       setValue("long", lng)
+
+  //       // Extract formatted address
+  //       setValue("address", result.formatted_address);
+
+  //       // Extract postal code (pincode)
+  //       const postalCode = result.address_components.find(component =>
+  //         component.types.includes('postal_code')
+  //       );
+  //       setValue("pincode", postalCode.long_name);
+  //       const districtComponent = result.address_components.find(component =>
+  //         component.types.includes('administrative_area_level_2')
+  //       );
+  //       setValue( "district", districtComponent.long_name  );
+
+  //       // Extract state (Administrative Area Level 1)
+  //       const stateComponent = result.address_components.find(component =>
+  //         component.types.includes('administrative_area_level_1')
+  //       );
+  //       setValue("state" ,stateComponent?.long_name );
+  //       console.log(stateComponent?.long_name);
+        
+  //     } else {
+  //       alert('Location not found');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching location: ', error);
+  //   }
+  // };
+ 
   const handleSearch = async () => {
     const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
-
+  
     try {
       const response = await axios.get(url);
       const result = response.data.results[0];
+      
       if (result) {
         // Extract latitude and longitude
         const { lat, lng } = result.geometry.location;
-        setValue("lat", lat)
-        setValue("long", lng)
-
+        setValue("lat", lat);
+        setValue("long", lng);
+  
         // Extract formatted address
         setValue("address", result.formatted_address);
-
+  
         // Extract postal code (pincode)
         const postalCode = result.address_components.find(component =>
           component.types.includes('postal_code')
         );
-        setValue("pincode", postalCode.long_name);
+        setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
+  
+        // Extract district (administrative_area_level_2)
+        const districtComponent = result.address_components.find(component =>
+          component.types.includes('administrative_area_level_2') ||
+          component.types.includes('locality') ||
+          component.types.includes('sublocality')
+        );
+        setValue("district", districtComponent ? districtComponent.long_name : " ");
+  // console.log(districtComponent ? districtComponent.long_name : " ");
+  
+        // Extract state (administrative_area_level_1)
+        const stateComponent = result.address_components.find(component =>
+          component.types.includes('administrative_area_level_1')
+        );
+        setValue("state", stateComponent ? stateComponent.long_name : " ");
+        // console.log(stateComponent ? stateComponent.long_name : " ");
+       
+        
       } else {
         alert('Location not found');
       }
@@ -174,21 +245,41 @@ const ActivateWarrantyButton = () => {
       console.error('Error fetching location: ', error);
     }
   };
+  
+ 
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-  console.log(filterWarranty);
+  // console.log(filterWarranty);
+  const getAllProduct = async () => {
+    let response = await http_request.get("/getAllProduct")
+    let { data } = response;
 
+    setProduct (data)
+  }
+
+  const filterProduct=product?.find((f)=>f?._id===filterWarranty?.productId)
+  // console.log(filterProduct);
   const handleComplaint = async () => {
 
     try {
-
+    const reqdata={brandId:filterProduct?.brandId,productBrand:filterProduct?.productBrand,productId:filterProduct?._id,productName:filterProduct?.productName
+     ,categoryId:filterProduct?.categoryId,categoryName:filterProduct?.categoryName,modelNo:filterProduct?.modelNo
+     ,serialNo:filterProduct?.serialNo,warrantyStatus:filterProduct?.warrantyStatus,uniqueId:filterWarranty?.uniqueId
+     ,lat:filterWarranty?.lat,long:filterWarranty?.long,userId:filterWarranty?.userId
+     ,userName:filterWarranty?.userName,serviceLocation:filterWarranty?.address,fullName:filterWarranty?.userName,
+     phoneNumber:filterWarranty?.contact,emailAddress:filterWarranty?.email,pincode:filterWarranty?.pincode
+     ,state:filterWarranty?.state,district:filterWarranty?.district,serviceAddress:filterWarranty?.address
+     
+    }
+    console.log(reqdata);
+    
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)
         const formData = new FormData();
 
-        for (const key in filterWarranty) {
-          if (filterWarranty.hasOwnProperty(key)) {
-            formData.append(key, filterWarranty[key]);
+        for (const key in reqdata) {
+          if (reqdata.hasOwnProperty(key)) {
+            formData.append(key, reqdata[key]);
           }
         }
         const issueImages = "image";
@@ -196,7 +287,7 @@ const ActivateWarrantyButton = () => {
         if (issueImages) {
           formData.append('issueImages', issueImages);
         }
-        let response = await http_request.post('/createAppComplaint', filterWarranty)
+        let response = await http_request.post('/createAppComplaint', reqdata)
         const { data } = response
         ToastMessage(data)
         setLoading(false)

@@ -8,7 +8,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import AddDealerComplaint from './dealerCreate';
 import axios from 'axios';
-
+import dayjs from 'dayjs';
 
 const AddComplaint = () => {
 
@@ -18,18 +18,20 @@ const AddComplaint = () => {
   const [productName, setProductName] = useState("")
   const [image, setImage] = useState("")
 
-  const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues, watch, setValue } = useForm();
   const [products, setProducts] = useState([])
   const [subCategory, setSubCategory] = useState([])
   const [subCat, setSubCat] = useState([])
   const [compNature, setComplaintNature] = useState([])
   const [nature, setNature] = useState([])
-  
+
   const [value, setLocalValue] = useState('');
 
   const [pincode, setPincode] = useState('');
   const [location, setLocation] = useState(null);
   const [error, setError] = useState('');
+  const [warrantyStatus, setWarrantyStatus] = useState('');
+  const [warrantyInDays, setWarrantyInDays] = useState(null);
 
   const getAllProducts = async () => {
     try {
@@ -136,12 +138,12 @@ const AddComplaint = () => {
     const selectedProductId = e.target.value;
     setProductName(selectedProductId)
     const selectedProduct = products.find(product => product._id === selectedProductId);
- 
-  
+
+
     if (selectedProduct) {
-      const selectednature = nature?.filter(nature => nature?.productId  === selectedProduct?._id);
+      const selectednature = nature?.filter(nature => nature?.productId === selectedProduct?._id);
       setComplaintNature(selectednature);
-      const selectesubCat = subCategory?.filter(cat => cat?.categoryId  === selectedProduct?.categoryId);   
+      const selectesubCat = subCategory?.filter(cat => cat?.categoryId === selectedProduct?.categoryId);
       setSubCat(selectesubCat);
       setValue('productName', selectedProduct.productName);
       setValue('categoryName', selectedProduct.categoryName);
@@ -152,16 +154,17 @@ const AddComplaint = () => {
       setValue('modelNo', selectedProduct.modelNo);
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
-      setValue('warrantyStatus', selectedProduct.warrantyStatus);
-      setValue('warrantyYears', selectedProduct.warrantyYears);
+
+      setWarrantyInDays(selectedProduct.warrantyInDays)
+      setValue('warrantyYears', selectedProduct.warrantyInDays);
 
     }
   };
   const handleSubCatChange = (e) => {
     const selectedSubCatId = e.target.value;
-    
+
     const selectedSub = subCat.find(cat => cat._id === selectedSubCatId);
-  
+
     if (selectedSub) {
       setValue('subCategoryName', selectedSub?.subCategoryName);
     }
@@ -212,7 +215,7 @@ const AddComplaint = () => {
       if (response.data && response.data[0].Status === 'Success') {
 
         const [details] = response.data;
-        
+
         const { District, State } = details.PostOffice[0];
 
         setLocation({ District, State });
@@ -261,13 +264,44 @@ const AddComplaint = () => {
   //   }
   // };
   // console.log(location);
+  const purchaseDate = watch('purchaseDate');
+
+  // UseEffect to automatically calculate warranty when purchaseDate changes
+  useEffect(() => {
+    if (purchaseDate) {
+      calculateWarranty();
+    }
+  }, [purchaseDate]);
+
+  const calculateWarranty = () => {
+    const currentDate = dayjs();
+    const purchaseDateParsed = dayjs(purchaseDate);
+    const daysDifference = currentDate.diff(purchaseDateParsed, 'day');
+
+    // Calculate remaining warranty days
+    const remainingWarranty = warrantyInDays - daysDifference;
+
+    setWarrantyInDays(remainingWarranty);
+
+    // Check if the product is under warranty
+    if (remainingWarranty > 0) {
+      setValue('warrantyStatus', true);
+      setWarrantyStatus('Under Warranty');
+    } else {
+      setWarrantyStatus('Out of Warranty');
+      setValue('warrantyStatus', false);
+
+    }
+  };
+  // console.log(warrantyInDays);
+  // console.log(warrantyStatus);
 
   return (
     <>
 
       <Sidenav >
         {value?.user?.role === "USER" ?
-          <AddDealerComplaint   nature= {nature}subCategory={subCategory} />
+          <AddDealerComplaint nature={nature} subCategory={subCategory} />
           : <div className=" ">
             <div  >
               <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -359,7 +393,7 @@ const AddComplaint = () => {
                   />
                   {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
                 </div>
-                <div>
+                {/* <div>
                   <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
                     Brand
                   </label>
@@ -377,7 +411,7 @@ const AddComplaint = () => {
                     ))}
                   </select>
                   {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
-                </div>
+                </div> */}
                 {/* <div className=''>
                 <label htmlFor="productDescription" className="block text-sm font-medium leading-6 text-gray-900">
                   Product Description
@@ -452,7 +486,7 @@ const AddComplaint = () => {
               </div> */}
                 <div className=' '>
                   <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
-                    Warranty Years
+                    Warranty In days
                   </label>
                   <div className="mt-2">
                     <input
@@ -464,7 +498,7 @@ const AddComplaint = () => {
                     />
                   </div>
                 </div>
-                <div className=' '>
+                <div>
                   <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
                     Purchase Date
                   </label>
@@ -473,12 +507,14 @@ const AddComplaint = () => {
                       id="purchaseDate"
                       name="purchaseDate"
                       type="date"
-                      {...register('purchaseDate')}
+                      {...register('purchaseDate', { required: 'Purchase date is required' })}
                       className={`block p-3 w-full rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.purchaseDate ? 'border-red-500' : ''}`}
                     />
+                    {errors.purchaseDate && <p className="text-red-500">{errors.purchaseDate.message}</p>}
+                    {warrantyStatus &&(warrantyStatus==="Under Warranty"? <p className="text-green-500">Remaining Days {warrantyInDays},{warrantyStatus}</p>:<p className="text-red-500">"Remaining Days {warrantyInDays},{warrantyStatus}</p>)}
                   </div>
                 </div>
-
+                {/* warrantydays = purchageDate-currentDate find days and warrantyIndays  lessthan warrantyDays then under warranty  */}
                 <div>
                   <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">
                     Issue Type
@@ -492,12 +528,12 @@ const AddComplaint = () => {
                     className={` block mt-2 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueType ? 'border-red-500' : ''}`}
                   >
                     <option value="">Select an issue type</option>
-                    {compNature?.map((item,i)=>(
-                      <option key={i} value={item.nature}> 
-                      {item?.nature}
+                    {compNature?.map((item, i) => (
+                      <option key={i} value={item.nature}>
+                        {item?.nature}
                       </option>
-                   
-                  ))} 
+
+                    ))}
                   </select>
                   {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
                 </div>

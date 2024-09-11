@@ -290,9 +290,9 @@ const UserAllServicesList = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortedData.map((row) => (
+                {sortedData.map((row,item) => (
                   <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
+                    <TableCell>{item+1}</TableCell>
                     <TableCell>{row?._id}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>

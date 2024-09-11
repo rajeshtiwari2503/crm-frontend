@@ -121,6 +121,15 @@ const SubCategoryList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'payout'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('payout')}
+                    >
+                     Payout
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'categoryName'}
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
@@ -155,6 +164,7 @@ const SubCategoryList = (props) => {
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.subCategoryName}</TableCell>
+                    <TableCell>{row?.payout}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>

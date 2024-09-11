@@ -425,7 +425,7 @@ const AssignComplaintList = (props) => {
                         </div>
                         :""}
                        
-                        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        {userData?.role === "SERVICE"  ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"

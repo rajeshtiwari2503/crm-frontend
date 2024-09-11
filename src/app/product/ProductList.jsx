@@ -155,6 +155,15 @@ const ProductList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'categoryName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('categoryName')}
+                    >
+                     Sub Category Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'productBrand'}
                       direction={sortDirection}
                       onClick={() => handleSort('productBrand')}
@@ -187,7 +196,7 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('warrantyStatus')}
                     >
-                      In Warranty
+                        Warranty In Days
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -229,10 +238,12 @@ const ProductList = (props) => {
                     <TableCell>{row?.productName}</TableCell>
                     <TableCell>{row?.productDescription}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
+                    <TableCell>{row?.subCategory }</TableCell>
                     <TableCell>{row?.productBrand}</TableCell>
                     <TableCell>{row?.modelNo}</TableCell>
                     <TableCell>{row?.serialNo}</TableCell>
-                    <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell>
+                    {/* <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell> */}
+                    <TableCell>{row?.warrantyInDays}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{row?.purchaseDate}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
@@ -290,7 +301,7 @@ const ProductList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddProduct categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddProduct subCategories={props?.subCategories}categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

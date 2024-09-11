@@ -101,12 +101,12 @@ const ServiceCenterSignUpForm = () => {
                 {errors.serviceCenterType && <p className="text-red-500 text-sm mt-1">{errors.serviceCenterType.message}</p>}
             </div>
             <div>
-                <label className="text-sm">Registration Number</label>
+                <label className="text-sm">GST Number</label>
                 <input {...register('registrationNumber', { required: 'Registration Number is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.registrationNumber && <p className="text-red-500 text-sm mt-1">{errors.registrationNumber.message}</p>}
             </div>
             <div>
-                <label className="text-sm">Tax Identification Number  </label>
+                <label className="text-sm">AADHAR Number  </label>
                 <input {...register('tin', { required: 'Tax Identification Number is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.tin && <p className="text-red-500 text-sm mt-1">{errors.tin.message}</p>}
             </div>
@@ -195,11 +195,11 @@ const ServiceCenterSignUpForm = () => {
           ))}
         </ul> */}
             </div>
-            <div>
+            {/* <div>
                 <label className="text-sm">Technician Certifications</label>
                 <input {...register('technicianCertifications', { required: 'Technician Certifications are required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.technicianCertifications && <p className="text-red-500 text-sm mt-1">{errors.technicianCertifications.message}</p>}
-            </div>
+            </div> */}
             <div>
                 <label className="text-sm">Operating Hours</label>
                 <input {...register('operatingHours', { required: 'Operating Hours are required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
@@ -228,9 +228,9 @@ const ServiceCenterSignUpForm = () => {
             </div>
 
             <div>
-                <label className="text-sm">Username</label>
-                <input {...register('username', { required: 'Username is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
-                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
+                <label className="text-sm">Login Email Id</label>
+                <input {...register('email', { required: 'Username is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             </div>
             <div>
                 <label className="text-sm">Password</label>
@@ -243,18 +243,18 @@ const ServiceCenterSignUpForm = () => {
                 {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
             </div>
 
-            <div className='md:col-span-2'>
-                <label className="text-sm">Upload Business License</label>
+            {/* <div className='md:col-span-2'>
+                <label className="text-sm">Upload GST CERTIFICATE</label>
                 <input type="file" {...register('businessLicense')} />
             </div>
             <div className='md:col-span-2'>
-                <label className="text-sm">Upload Tax Document</label>
+                <label className="text-sm">Upload Identity Proof</label>
                 <input type="file" {...register('taxDocument')} />
             </div>
             <div className='md:col-span-2'>
                 <label className="text-sm">Upload Certification Documents</label>
                 <input type="file" {...register('certificationDocuments')} />
-            </div>
+            </div> */}
 
             <label className="flex items-center mb-2 md:col-span-2">
                 <input type="checkbox" {...register('agreement', { required: 'You must accept the terms and conditions' })} className="mr-2" />

@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -325,7 +325,7 @@ function Sidenav(props) {
 
   const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : []
-  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature',"Warranty"]:value?.user?.role === "BRAND" ? ['Category', 'Product', 'SparePart', 'Complaint Nature' ] : ['Product']
+  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature',"Warranty"]:value?.user?.role === "BRAND" ? [  'Product', 'SparePart', 'Complaint Nature' ] : ['Product']
   const inventory=value?.user?.role === "ADMIN"?['Sparepart', "Stock", "Order"]:value?.user?.role === "BRAND"?['Sparepart', "Stock", "Order"]:["Stock", "Order"]
   const drawer = (
     <>
@@ -507,7 +507,7 @@ function Sidenav(props) {
               ? <ListItem onClick={handleCollapseComplaint} disablePadding className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                    <Warning style={{ color: pathname.startsWith("/complaint") ? '#007BFF' : '#64748b' }} />
+                    <Assignment style={{ color: pathname.startsWith("/complaint") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Service  "} />
                   {isCollapseComplaint ? <ExpandLess /> : <ExpandMore />}
@@ -544,7 +544,7 @@ function Sidenav(props) {
                                   pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
-                        <Warning style={{
+                        <Assignment style={{
                           color: text === "All Service"
                             ? pathname === "/complaint/allComplaint"
                               ? '#007BFF' // text-sky-600

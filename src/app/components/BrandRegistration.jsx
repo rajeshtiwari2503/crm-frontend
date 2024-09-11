@@ -270,7 +270,7 @@ const BrandSignUpForm = () => {
         />
       </div>
 
-      <div >
+      {/* <div >
         <label className="text-sm">Service Categories</label>
         <Select
           isMulti
@@ -281,9 +281,9 @@ const BrandSignUpForm = () => {
         />
 
         {errors.industry && <p className="text-red-500">{errors.industry.message}</p>}
-      </div>
+      </div> */}
 
-      <div  >
+      {/* <div  >
         <label className="text-sm">Company Size</label>
         <select
           {...register('companySize', { required: true })}
@@ -292,11 +292,11 @@ const BrandSignUpForm = () => {
           <option value="">Select Company Size</option>
           <option value="1-10">1-10</option>
           <option value="11-50">11-50</option>
-          {/* Add more options as needed */}
+         
         </select>
         {errors.companySize && <p className="text-red-500">{errors.companySize.message}</p>}
 
-      </div>
+      </div> */}
       <label className="flex items-center mb-2 md:col-span-2">
         <input type="checkbox" {...register('termsAndConditions', { required: 'You must accept the terms and conditions' })} className="mr-2" />
         <span className="text-sm">I agree to the Terms and Conditions</span>

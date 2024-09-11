@@ -10,12 +10,14 @@ const Product = () => {
     const [brands, setBrands] = useState([])
     const [products, setProducts] = useState([])
     const [categories, setCategories] = useState([])
+    const [subCategories, setSubCategories] = useState([])
 
     const [refresh, setRefresh] = useState("")
 
     useEffect(() => {
       getAllProducts()
       getAllCategories()
+      getAllSubCategories()
       getAllBrands()
     }, [refresh])
   
@@ -31,6 +33,12 @@ const Product = () => {
       let { data } = response;
   
       setCategories(data)
+    }
+    const getAllSubCategories = async () => {
+      let response = await http_request.get("/getAllSubCategory")
+      let { data } = response;
+  
+      setSubCategories(data)
     }
     const getAllBrands = async () => {
       let response = await http_request.get("/getAllBrand")
@@ -51,7 +59,7 @@ const Product = () => {
         <>
             <Sidenav>
                
-                <ProductList categories={categories} brands={brands}  data={data}RefreshData={RefreshData}/>
+                <ProductList subCategories={subCategories}categories={categories} brands={brands}  data={data}RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

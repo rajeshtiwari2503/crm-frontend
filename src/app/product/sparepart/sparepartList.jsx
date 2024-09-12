@@ -175,7 +175,11 @@ const SparepartList = (props) => {
                 <TableCell>{row?.description}</TableCell>
                 <TableCell>{row?.skuNo}</TableCell>
                 <TableCell>{row?.category}</TableCell>
-                <TableCell>{row?.productModel}</TableCell>
+                <TableCell>
+                      {row?.products?.map((item, i) => (
+                        <div key={i}>{item?.productName},</div>
+                      ))}
+                    </TableCell>
                 <TableCell>{row?.status}</TableCell>
                 <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                 <TableCell className='flex'>

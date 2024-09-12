@@ -37,8 +37,8 @@ export function ConfirmBox(props) {
           <p className='text-center' >Are you sure to proceed?</p>
         </DialogContent>
         <DialogActions sx={{ display: "flex", justifyContent: "space-between",margin:"20px" }}>
-          <Button variant="outlined" className='hover:bg-[#2e7d32] hover:text-white'color="success" onClick={() => props?.setConfirmBoxView(false)}>Cancel</Button>
-          <Button variant="outlined"className='hover:bg-[#fe3f49] hover:text-white' color="error" onClick={() => props?.onSubmit()}>Delete</Button>
+          <Button variant="contained" className='hover:bg-[#2e7d32] hover:text-white'color="success" onClick={() => props?.setConfirmBoxView(false)}>Cancel</Button>
+          <Button variant="contained"className='hover:bg-[#fe3f49] hover:text-white' color="error" onClick={() => props?.onSubmit()}>Delete</Button>
         </DialogActions>
       </Dialog>
       </div>

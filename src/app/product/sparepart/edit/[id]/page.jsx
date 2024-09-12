@@ -20,6 +20,7 @@ function SparePartEdit({ params }) {
   const [spareParts, setSpareParts] = useState({})
   const [categories, setCategory] = useState([]);
   const [products, setProduct] = useState([]);
+  const [productData, setProductData] = useState([]);
   let obj = "user";
   let user = obj;
   useEffect(() => {
@@ -34,6 +35,7 @@ function SparePartEdit({ params }) {
       let response = await http_request.get(`/getSparepartById/${params?.id}`)
       let { data } = response
       setSpareParts(data);
+      setProductData(data?.products)
     }
     catch (err) {
       console.log(err)
@@ -72,12 +74,18 @@ function SparePartEdit({ params }) {
     sparePart1[input.name] = input.value;
     setSpareParts(sparePart1);
   }
+  
   const handleImage = (file) => {
     setImage(file);
     // setSpareParts({...sparePart,images:file});
   }
 
- 
+  const handleProductData = (data) => {
+      setProductData( data)
+   
+  };
+  
+  
   
 
   const changeRandom = () => {
@@ -92,9 +100,13 @@ function SparePartEdit({ params }) {
     //   productId: pdId?._id, partName: sparePart?.partName, category: sparePart?.category, description: sparePart?.description,
     //   MRP: sparePart?.MRP, bestPrice: sparePart?.bestPrice, productModel: sparePart?.productModel, faultType: sparePart?.faultType, partNo: sparePart?.partNo, skuNo: sparePart?.skuNo, length: sparePart?.length, breadth: sparePart?.breadth, height: sparePart?.height, weight: sparePart?.weight
     // };
+    console.log(spareParts);
+    const reqData={...spareParts, products:[...productData]}
+    console.log(reqData);
+
     try {
       setLoading(true);
-      let response = await http_request.patch(`/editSparepart/${params?.id}`, spareParts);
+      let response = await http_request.patch(`/editSparepart/${params?.id}`, reqData);
       let { data } = response;
       setLoading(false);
       ToastMessage(data);
@@ -113,7 +125,7 @@ function SparePartEdit({ params }) {
 
           <div className="col-xl-12 col-lg-12">
             <div className="card mb-3">
-              <EditBasicInformation user={user}   products={products} categories={categories} sparePart={spareParts} onChange={handleChange} />
+              <EditBasicInformation user={user}handleProductData={handleProductData}   products={products} categories={categories} sparePart={spareParts} onChange={handleChange} />
             </div>
 
             <div className="card mb-3">

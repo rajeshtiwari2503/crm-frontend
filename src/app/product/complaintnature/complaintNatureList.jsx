@@ -71,7 +71,7 @@ const ComplaintNatureList = (props) => {
     setNatureId(id)
     setConfirmBoxView(true);
   }
-  
+
   return (
     <div>
       <Toaster />
@@ -143,7 +143,12 @@ const ComplaintNatureList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.productName}</TableCell>
+                    <TableCell>
+                      {row?.products?.map((item, i) => (
+                        <div key={i}>{item?.productName},</div>
+                      ))}
+                    </TableCell>
+
                     <TableCell>{row?.nature}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
@@ -191,7 +196,7 @@ const ComplaintNatureList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddNature existingNature={editData}product={product} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddNature existingNature={editData} product={product} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

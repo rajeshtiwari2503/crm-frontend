@@ -8,6 +8,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
 import AllServicetList from './AllServiceList';
+import TechnicianDashboard from '@/app/dashboard/technicianDashboard';
 
 const CutomerDetails = ({ params }) => {
     const router = useRouter();
@@ -15,11 +16,14 @@ const CutomerDetails = ({ params }) => {
     const [user, setUser] = useState("")
     const [loading, setLoading] = useState(false)
     const [userComplaint, setUserComplaint] = useState([])
-
+    const [dashData, setData] = React.useState("");
+    const [value, setBrandValue] = React.useState(null);
 
     useEffect(() => {
         getUserById()
         getComplaintByTechId()
+        getAllDashboard()
+        setBrandValue({_id:params.id,role:"TECHNICIAN"})
     }, [id])
 
     const getComplaintByTechId = async () => {
@@ -50,6 +54,21 @@ const CutomerDetails = ({ params }) => {
         router.push(`/user/technician/edit/${user?._id}`);
     };
 
+    const getAllDashboard = async () => {
+      
+        try {
+        
+          const endPoint=  
+          `/dashboardDetailsByTechnicianId/${params.id}`
+          let response = await http_request.get(endPoint)
+          let { data } = response;
+    
+          setData(data)
+        }
+        catch (err) {
+          console.log(err);
+        }
+      }
 
 
     return (
@@ -80,10 +99,16 @@ const CutomerDetails = ({ params }) => {
                             <div className='text-lg font-medium'>{user?.password}</div>
                         </div>
                     </div>
+                    <div>
+                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                                Technician Information
+                            </h2>
+                    <TechnicianDashboard dashData={dashData} userData={value} />
+                    </div>
                 </div>
-              <div className='mt-8'>
+              {/* <div className='mt-8'>
                     <AllServicetList data={userComplaint} />
-                </div>
+                </div> */}
             </Sidenav>
         </>
 

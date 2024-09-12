@@ -9,18 +9,22 @@ import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
 import BrandProfile from '@/app/components/BrandProfile';
 import Recharge from '@/app/recharge/page';
+import BrandDashboard from '@/app/dashboard/brandDashboard';
 
 const BrandDetails = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [brand, setBrand] = useState("")
     const [loading, setLoading] = useState(false)
+    const [dashData, setData] = React.useState("");
+    const [value, setBrandValue] = React.useState(null);
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
 
     useEffect(() => {
         getBrandById()
-
+        getAllDashboard()
+        setBrandValue({_id:params.id,role:"BRAND"})
     }, [id,loading])
     const RefreshData=()=>{
         setLoading(true)
@@ -33,6 +37,7 @@ const BrandDetails = ({ params }) => {
             let { data } = response;
             setBrand(data)
             setId(data?._id)
+           
         }
         catch (err) {
             console.log(err);
@@ -41,9 +46,24 @@ const BrandDetails = ({ params }) => {
 
     const handleEdit = ( ) => {
         router.push(`/user/brand/edit/${brand?._id}`);
-      };
-
-
+      }
+    
+      const getAllDashboard = async () => {
+      
+        try {
+        
+          const endPoint=  
+          `/dashboardDetailsByBrandId/${params.id}`
+          let response = await http_request.get(endPoint)
+          let { data } = response;
+    
+          setData(data)
+        }
+        catch (err) {
+          console.log(err);
+        }
+      }
+ 
 
     return (
         <>
@@ -64,8 +84,14 @@ const BrandDetails = ({ params }) => {
                     <div  >
                       <BrandProfile RefreshData={RefreshData}userData={brand} />
                       <Recharge sidebar={false} brandData={brand}/>
+                     
                     </div>
-                    
+                    <div>
+                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                                BrandI Information
+                            </h2>
+                    <BrandDashboard dashData={dashData} userData={value} />
+                    </div>
                 </div>
 
 

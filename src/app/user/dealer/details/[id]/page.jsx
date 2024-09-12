@@ -7,18 +7,21 @@ import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
+import DealerDashboard from '@/app/dashboard/deallerDashboard';
 
 const DealerDetails = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [dealer, setDealer] = useState("")
     const [loading, setLoading] = useState(false)
-
+    const [dashData, setData] = React.useState("");
+    const [value, setBrandValue] = React.useState(null);
  
 
     useEffect(() => {
         getDealerById()
-
+        getAllDashboard()
+        setBrandValue({_id:params.id,role:"DEALER"})
     }, [id])
 
 
@@ -27,7 +30,7 @@ const DealerDetails = ({ params }) => {
         try {
             let response = await http_request.get(`/getDealerBy/${params.id}`)
             let { data } = response;
-            setdealer(data)
+            setDealer(data)
             setId(data?._id)
         }
         catch (err) {
@@ -39,6 +42,21 @@ const DealerDetails = ({ params }) => {
         router.push(`/user/dealer/edit/${dealer?._id}`);
       };
 
+      const getAllDashboard = async () => {
+      
+        try {
+        
+          const endPoint=  
+          `/dashboardDetailsByDealerId/${params.id}`
+          let response = await http_request.get(endPoint)
+          let { data } = response;
+    
+          setData(data)
+        }
+        catch (err) {
+          console.log(err);
+        }
+      }
 
 
     return (
@@ -69,6 +87,12 @@ const DealerDetails = ({ params }) => {
                             <div className='text-lg font-medium'>{dealer?.password}</div>
                         </div>
                     </div>
+                    <div>
+                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                                Dealer Information
+                            </h2>
+                    <DealerDashboard dashData={dashData} userData={value} />
+                    </div>
                 </div>
 
 
@@ -78,7 +102,7 @@ const DealerDetails = ({ params }) => {
     )
 }
 
-export default dealerDetails
+export default DealerDetails
 
 
 

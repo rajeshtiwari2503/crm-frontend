@@ -8,18 +8,21 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
 import ServiceProfile from '@/app/components/ServiceProfile';
+import ServiceDashboard from '@/app/dashboard/serviceDashboard';
 
 const serviceDetails = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [service, setService] = useState("")
     const [loading, setLoading] = useState(false)
-
+    const [dashData, setData] = React.useState("");
+    const [value, setBrandValue] = React.useState(null);
    
 
     useEffect(() => {
         getServiceById()
-
+        getAllDashboard()
+        setBrandValue({_id:params.id,role:"SERVICE"})
     }, [id,loading])
 
 
@@ -43,7 +46,21 @@ const serviceDetails = ({ params }) => {
 const RefreshData=()=>{
     setLoading(true)
 }
+const getAllDashboard = async () => {
+      
+    try {
+    
+      const endPoint=  
+      `/dashboardDetailsBySeviceCenterId/${params.id}`
+      let response = await http_request.get(endPoint)
+      let { data } = response;
 
+      setData(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
     return (
         <>
 
@@ -62,6 +79,12 @@ const RefreshData=()=>{
                     <hr />
                     <div  >
                        <ServiceProfile RefreshData={RefreshData} userData={service} />
+                    </div>
+                    <div>
+                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                                Service Information
+                            </h2>
+                    <ServiceDashboard dashData={dashData} userData={value} />
                     </div>
                 </div>
 

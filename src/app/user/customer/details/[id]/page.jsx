@@ -7,18 +7,21 @@ import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
+import UserDashboard from '@/app/dashboard/userDashboard';
 
 const CutomerDetails = ({ params }) => {
     const router = useRouter();
     const [id, setId] = useState("")
     const [user, setUser] = useState("")
     const [loading, setLoading] = useState(false)
-
+    const [dashData, setData] = React.useState("");
+    const [value, setBrandValue] = React.useState(null);
  
 
     useEffect(() => {
         getUserById()
-
+        getAllDashboard()
+        setBrandValue({_id:params.id,role:"USER"})
     }, [id])
 
 
@@ -38,7 +41,21 @@ const CutomerDetails = ({ params }) => {
     const handleEdit = ( ) => {
         router.push(`/user/customer/edit/${user?._id}`);
       };
-
+      const getAllDashboard = async () => {
+      
+        try {
+        
+          const endPoint=  
+          `/dashboardDetailsByUserId/${params.id}`
+          let response = await http_request.get(endPoint)
+          let { data } = response;
+    
+          setData(data)
+        }
+        catch (err) {
+          console.log(err);
+        }
+      }
 
 
     return (
@@ -68,6 +85,12 @@ const CutomerDetails = ({ params }) => {
                             <div className='text-1xl font-semibold'>Password : </div>
                             <div className='text-lg font-medium'>{user?.password}</div>
                         </div>
+                    </div>
+                    <div>
+                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                                Customer Information
+                            </h2>
+                    <UserDashboard dashData={dashData} userData={value} />
                     </div>
                 </div>
 

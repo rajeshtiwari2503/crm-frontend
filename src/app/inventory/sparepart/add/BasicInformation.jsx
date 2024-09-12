@@ -1,4 +1,6 @@
 "use client"
+import { Delete } from '@mui/icons-material';
+import { Chip } from '@mui/material';
 import React, { useState } from 'react';
 
 
@@ -6,7 +8,7 @@ function BasicInformation(props) {
     // const [category,setCategory]=useState();
     const [fault, setFault] = useState("");
     const [technicianPrice] = useState(["350", "600"]);
-   
+
     let { partName, description, partNo, skuNo, length, breadth, height, weight, faultType, MRP, bestPrice, technician, productModel, category, brandName } = props?.sparePart;
     let { categories } = props;
 
@@ -16,9 +18,29 @@ function BasicInformation(props) {
     // let unique1 = Array.from(new Set(merge?.map(JSON.stringify))).map(JSON.parse);
 
     // let categories1 = (props?.user?.role === "RESELLER" || props?.user?.role === "ADMIN") ? unique1 : categories;
-    let products1 = props?.products?.filter(p1 => p1?.categoryName === category )
+    let products1 = props?.products?.filter(p1 => p1?.categoryName === category)
 
-  
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const handleProductChange = (e) => {
+        const selectedProductId = e.target.value;
+        const selectedProduct = products1?.find(p => p._id === selectedProductId);
+
+        // Check if the product is already selected to avoid duplicates
+        if (selectedProduct && !selectedProducts.some(p => p.productId === selectedProduct._id)) {
+            // Add both productId and productName to selectedProducts array
+            setSelectedProducts([...selectedProducts, { productId: selectedProduct._id, productName: selectedProduct.productName }]);
+            props?.handleProductData([...selectedProducts, { productId: selectedProduct._id, productName: selectedProduct.productName }]);
+            
+        }
+    };
+
+    const handleRemoveProduct = (productId) => {
+        setSelectedProducts(selectedProducts.filter(p => p.productId !== productId)); // Remove product from list
+        props?. handleProductData(selectedProducts.filter(p => p.productId !== productId))
+    };
+
+
+
     return (
         <>
             <div className="card-header py-3 d-flex justify-content-between bg-transparent border-bottom-0">
@@ -169,7 +191,7 @@ function BasicInformation(props) {
                                 {props?.errors?.category ? <div className="text-red-600">{props?.errors?.category}</div> : ""}
                             </div>
                         </div>
-                        <div className="w-full px-3">
+                        {/* <div className="w-full px-3">
                             <div className="p-0 m-0">
                                 <label className="block text-sm font-medium text-gray-700">Product Model</label>
                                 <select
@@ -185,8 +207,48 @@ function BasicInformation(props) {
                                 </select>
                                 {props?.errors?.productModel ? <div className="text-red-600">{props?.errors?.productModel}</div> : ""}
                             </div>
+                        </div> */}
+                          <div className='w-[400px]'>
+                        <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
+                            Select Product
+                        </label>
+                        <div className="mt-2">
+                            <select
+                                id="productName"
+                                name="productName"
+                                autoComplete="off"
+                                onChange={handleProductChange}
+                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                            >
+                                <option value="">Select a product</option>
+                                {products1?.map((product) => (
+                                    <option key={product._id} value={product._id}>
+                                        {product.productName}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
-                        
+                    </div>
+
+                    {/* Display selected products */}
+                    <div className='mt-2'>
+                        <label className="block text-sm font-medium leading-6 text-gray-900">
+                            Selected Products
+                        </label>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                            {selectedProducts.map((p) => (
+                                <Chip
+                                    key={p.productId}
+                                    label={p.productName}
+                                    onDelete={() => handleRemoveProduct(p.productId)}
+                                    deleteIcon={<Delete />}
+                                    className="mb-2"
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+
                     </div>
 
                 </form>

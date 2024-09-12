@@ -18,7 +18,7 @@ const BrandProfile = (props) => {
             formData.append("brandLogo", uploadedImage);
             let response = await http_request.patch(`/uploadBrandLogo/${userData?._id}`, formData);
             let { data } = response;
-            RefreshData(data)
+            props?.RefreshData(data)
             ToastMessage(data);
             setUploadedImage(null)
             setLoading(false)
@@ -92,7 +92,7 @@ const BrandProfile = (props) => {
                                                                 type="submit"
                                                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                                             >
-                                                                Upload Lodo
+                                                                Upload Logo
                                                             </button>
                                                         </div>
                  

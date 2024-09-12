@@ -20,7 +20,7 @@ const serviceDetails = ({ params }) => {
     useEffect(() => {
         getServiceById()
 
-    }, [id])
+    }, [id,loading])
 
 
 
@@ -40,7 +40,9 @@ const serviceDetails = ({ params }) => {
         router.push(`/user/service/edit/${service?._id}`);
       };
 
-
+const RefreshData=()=>{
+    setLoading(true)
+}
 
     return (
         <>
@@ -59,7 +61,7 @@ const serviceDetails = ({ params }) => {
                     </div>
                     <hr />
                     <div  >
-                       <ServiceProfile userData={service} />
+                       <ServiceProfile RefreshData={RefreshData} userData={service} />
                     </div>
                 </div>
 

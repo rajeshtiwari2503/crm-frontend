@@ -21,8 +21,10 @@ const BrandDetails = ({ params }) => {
     useEffect(() => {
         getBrandById()
 
-    }, [id])
-
+    }, [id,loading])
+    const RefreshData=()=>{
+        setLoading(true)
+    }
 
 
     const getBrandById = async () => {
@@ -60,7 +62,7 @@ const BrandDetails = ({ params }) => {
                     </div>
                     <hr />
                     <div  >
-                      <BrandProfile userData={brand} />
+                      <BrandProfile RefreshData={RefreshData}userData={brand} />
                       <Recharge sidebar={false} brandData={brand}/>
                     </div>
                     

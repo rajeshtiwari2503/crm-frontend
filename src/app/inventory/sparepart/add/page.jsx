@@ -6,6 +6,7 @@ import Images from './Image';
 import BasicInformation from './BasicInformation';
 import Sidenav from '@/app/components/Sidenav';
 import { useRouter } from 'next/navigation';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -17,6 +18,7 @@ const router=useRouter()
     
     const [categories, setCategory] = useState([]);
     const [products, setProduct] = useState([]);
+    const [productData, setProductData] = useState([]);
     const [errors, setErrors] = useState({});
 
     useEffect(() => {
@@ -77,6 +79,14 @@ const router=useRouter()
         setErrors(updatedErrors);
         setSpareParts(sparePart1);
     }
+   
+    const handleProductData=(data)=>{
+        setProductData(data)
+      
+        
+    }
+    
+    
     const handleImage = (file) => {
         let sparePart1 = { ...sparePart };
         sparePart1?.images?.push(file);
@@ -89,6 +99,7 @@ const router=useRouter()
 
     const handleSubmit = (e) => {
         // e.preventDefault();
+       
         const errors1 = {};
         const { partName,
             description,
@@ -111,8 +122,7 @@ const router=useRouter()
                 : "";
         errors1.bestPrice = !bestPrice ? "Best Price is required" : isNaN(bestPrice) ? "Best Price should be number" : "";
         errors1.category = !category ? "Category is required" : "";
-        errors1.productModel = !productModel
-            ? "Product Model is required" : "";
+       
         errors1.skuNo = !skuNo ? "Sku number is required" : "";
         errors1.length = !length ? "Length is required" : +length <= 0.5 ? "Length should be greater than 0.5" : isNaN(length) ? "Length should be number" : "";
         errors1.breadth = !breadth ? "Breadth is required" : +breadth <= 0.5 ? "Length should be greater than 0.5" : isNaN(breadth) ? "Breadth should be number" : "";
@@ -125,8 +135,11 @@ const router=useRouter()
             console.log("ffgff");
             addSparePart();
         } else {
+            console.log("djhjhjh");
             setErrors(errors1);
         }
+     
+        
     };
 
     const addSparePart = async () => {
@@ -155,9 +168,13 @@ const router=useRouter()
             formData.append("seller", role);
             // sparePart?.faultType.forEach(fault => formData.append('faultType', fault))
             formData.append("category", sparePart?.category);
-            formData.append("productModel", sparePart?.productModel);
+            // formData.append("productModel", sparePart?.productModel);
             for (let x = 0; x < sparePart?.images?.length; x++) {
                 formData.append("images", sparePart?.images[x]);
+            }
+            for (let y = 0; y < productData?.length; y++) {
+                formData.append(`products[${y}][productId]`, productData[y].productId);
+                formData.append(`products[${y}][productName]`, productData[y].productName);
             }
             // formData.append("userId", "id");
             // formData.append("productId", "product?._id");
@@ -180,14 +197,15 @@ const router=useRouter()
     return (
         <Sidenav>
             <div className="container mx-auto px-4 xl:px-0">
-                <div className="flex flex-wrap -mx-3">
+               l{loading===true ? <ReactLoader/>
+               : <div className="flex flex-wrap -mx-3">
                     <div className="w-full px-3">
                         <div className="mb-3 p-4 bg-white shadow rounded-lg">
                             <BasicInformation
                                 errors={errors}
                                 user={user}
                              
-                               
+                               handleProductData={handleProductData}
                                 products={products}
                                 categories={categories}
                                 sparePart={sparePart}
@@ -210,6 +228,7 @@ const router=useRouter()
 
                     </div>
                 </div>
+}
             </div>
 
         </Sidenav>

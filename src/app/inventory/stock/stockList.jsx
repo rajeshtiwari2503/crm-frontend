@@ -240,7 +240,7 @@ const StockList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddStock userData={userData} products={props?.products} data={props?.data} existingStock={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddStock userData={userData}stockData={data} products={props?.products} data={props?.data} existingStock={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

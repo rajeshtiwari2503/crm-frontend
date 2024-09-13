@@ -121,11 +121,11 @@ const BrandProfile = (props) => {
                 <div className='text-1xl font-semibold'>companySize :</div>
                 <div className='text-lg font-medium'>{userData?.companySize}</div>
 
-                <div className='text-1xl font-semibold'>industry :</div>
-                <div className='text-lg font-medium'>
+                <div className='text-1xl font-semibold'>Service Category :</div>
+                <div className='text-1xl'>
                     {
-                        userData?.industry?.map((item, i) =>
-                            <div>{item} {" "} </div>
+                        userData?.serviceCategories?.map((item, i) =>
+                            <div className="font-bold"key={i}>{i+1} {item?.label} ,  </div>
                         )
                     }
                 </div>

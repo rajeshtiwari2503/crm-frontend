@@ -333,6 +333,9 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
             console.log(err);
         }
     };
+
+    // console.log(wallet);
+    
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">

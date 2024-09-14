@@ -44,6 +44,7 @@ const options = {
   return (
     <>
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>
+     
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>

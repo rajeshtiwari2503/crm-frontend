@@ -187,7 +187,7 @@ const Profile = ({ params }) => {
                                                 <div className='text-lg font-medium'>{userData?.address}</div>
                                             </div>
                                         </div>
-                                        : userData?.role === "SERVICE" ? <ServiceProfile userData={userData} />
+                                        : userData?.role === "SERVICE" ? <ServiceProfile userData={userData} RefreshData={RefreshData}/>
                                             : userData?.role === "BRAND" ? <BrandProfile userData={userData}RefreshData={RefreshData} />
                                                 : userData?.role === "DEALER" ? <DealerProfile userData={userData} />
                                                     : ""

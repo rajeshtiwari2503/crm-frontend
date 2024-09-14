@@ -109,6 +109,7 @@ const AddComplaint = () => {
 
   }
 
+console.log(nature);
 
   const onSubmit = async (data) => {
     try {
@@ -142,7 +143,8 @@ const AddComplaint = () => {
 
 
     if (selectedProduct) {
-      const selectednature = nature?.filter(nature => nature?.productId === selectedProduct?._id);
+      const selectednature = nature?.filter(nat => 
+        nat.products?.some(product => product.productId === selectedProduct?._id))
       setComplaintNature(selectednature);
       const selectesubCat = subCategory?.filter(cat => cat?.categoryId === selectedProduct?.categoryId);
       setSubCat(selectesubCat);

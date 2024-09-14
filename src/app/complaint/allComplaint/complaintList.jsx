@@ -14,23 +14,23 @@ import { useForm } from 'react-hook-form';
 
 
 const ComplaintList = (props) => {
-  
+
   const serviceCenter = props?.serviceCenter
   const complaint = props?.data;
   const userData = props?.userData
 
   const filteredData = userData?.role === "ADMIN" ? complaint
-  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+              : []
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
 
- 
+
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [assign, setAssign] = useState(false);
   const [status, setStatus] = useState(false);
@@ -99,7 +99,7 @@ const ComplaintList = (props) => {
     router.push(`/complaint/edit/${id}`);
   };
 
-  
+
   const handleAssignServiceCenter = async (id) => {
     setId(id)
     setAssign(true)
@@ -127,26 +127,26 @@ const ComplaintList = (props) => {
     setOrder(false)
   }
 
- 
+
   const handleServiceChange = (event) => {
     // if (status === true) {
     //   setValue("status", event.target.value)
     //   // console.log(event.target.value);
     // }
-    
-      const selectedId = event.target.value;
-      const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
-      setSelectedService(selectedId);
-      
-      setValue('status', "ASSIGN");
-      setValue('assignServiceCenterId', selectedServiceCenter?._id);
-      setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
-      setValue('assignServiceCenterTime',  new Date());
-  
+
+    const selectedId = event.target.value;
+    const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
+    setSelectedService(selectedId);
+
+    setValue('status', "ASSIGN");
+    setValue('assignServiceCenterId', selectedServiceCenter?._id);
+    setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
+    setValue('assignServiceCenterTime', new Date());
+
   };
   const onSubmit = async (data) => {
     try {
-     const reqdata=assign===true?{status:data?.status,assignServiceCenterId:data?.assignServiceCenterId,assignServiceCenter:data?.assignServiceCenter,assignServiceCenterTime:data?.assignServiceCenterTime}:{status:data?.status}
+      const reqdata = assign === true ? { status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       setAssign(false)
@@ -175,13 +175,13 @@ const ComplaintList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Service Information</div>
-       {userData?.role==="SERVICE" || userData?.role==="TECHNICIAN"?
-       ""
-       :
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Service Request</div>
-        </div>
+        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+          ""
+          :
+          <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '>Add Service Request</div>
+          </div>
         }
       </div>
       <div className="flex items-center mb-3">
@@ -217,7 +217,7 @@ const ComplaintList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                     Complaint Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -411,7 +411,10 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.modelNo}</TableCell>
                     <TableCell>{row?.serialNo}</TableCell>
 
-                    <TableCell>{row?.issueType}</TableCell>
+                    <TableCell>
+                      <div> {   row?.issueType?.map((item, i) =>    <div   key={i}>  {item} ,  </div>)  }
+                      </div>
+                    </TableCell>
                     <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
@@ -422,15 +425,15 @@ const ComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                      {userData?.role === "ADMIN" || userData?.role === "BRAND"|| userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                        <div
-                          onClick={() => handleUpdateStatus(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Update Status
-                        </div>
-                        :""}
-                       
+                        {userData?.role === "ADMIN" || userData?.role === "BRAND" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleUpdateStatus(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Update Status
+                          </div>
+                          : ""}
+
                         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
@@ -451,15 +454,15 @@ const ComplaintList = (props) => {
                           <Visibility color="primary" />
                         </IconButton>
                         {userData?.role === "ADMIN" ?
-                        <>
-                        <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                          <EditIcon color="success" />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                          <DeleteIcon color="error" />
-                        </IconButton>
-                        </>
-                        :""}
+                          <>
+                            <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                              <EditIcon color="success" />
+                            </IconButton>
+                            <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                              <DeleteIcon color="error" />
+                            </IconButton>
+                          </>
+                          : ""}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -604,26 +607,26 @@ const ComplaintList = (props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[350px] mb-5'>
               <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign  Service Center 
+                Assign  Service Center
               </label>
-              
+
               <select
-                  id="service-center-label"
-                  value={selectedService}
-                  onChange={handleServiceChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Service Center</option>
-                  {serviceCenter?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.serviceCenterName}
-                    </option>
-                  ))}
-                </select>
-            
+                id="service-center-label"
+                value={selectedService}
+                onChange={handleServiceChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Service Center</option>
+                {serviceCenter?.map((center) => (
+                  <option key={center.id} value={center._id}>
+                    {center.serviceCenterName}
+                  </option>
+                ))}
+              </select>
+
             </div>
             <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign   Service Center 
+              Assign   Service Center
             </Button>
           </form>
         </DialogContent>

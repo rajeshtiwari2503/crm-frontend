@@ -130,7 +130,7 @@ const ServiceProfile = (props) => {
                     <div className='text-lg font-medium'>
                         {
                             userData?.serviceCategories?.map((item, i) =>
-                                <div>{item} {" "} </div>
+                                <div className="font-bold"key={i}>{i+1} {item?.label} ,  </div>
                             )
                         }
                     </div>

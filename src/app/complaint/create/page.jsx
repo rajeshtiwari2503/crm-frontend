@@ -9,7 +9,8 @@ import { useRouter } from 'next/navigation';
 import AddDealerComplaint from './dealerCreate';
 import axios from 'axios';
 import dayjs from 'dayjs';
-
+import Select from 'react-select';
+import { ReactLoader } from '@/app/components/common/Loading';
 const AddComplaint = () => {
 
   const router = useRouter()
@@ -154,6 +155,7 @@ const AddComplaint = () => {
       setValue('modelNo', selectedProduct.modelNo);
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
+      setValue('subCategoryName', selectedProduct?.subCategory);
 
       setWarrantyInDays(selectedProduct.warrantyInDays)
       setValue('warrantyYears', selectedProduct.warrantyInDays);
@@ -295,7 +297,12 @@ const AddComplaint = () => {
   };
   // console.log(warrantyInDays);
   // console.log(warrantyStatus);
+  const handleIssueChange = (selectedOptions) => {
 
+    // console.log( selectedOptions.map(option => option.label));
+
+    setValue('issueType', selectedOptions.map(option => option.label));
+  };
   return (
     <>
 
@@ -303,27 +310,15 @@ const AddComplaint = () => {
         {value?.user?.role === "USER" ?
           <AddDealerComplaint nature={nature} subCategory={subCategory} />
           : <div className=" ">
-            <div  >
+          
+          
+          {loading===true? <ReactLoader />
+          : <div  >
               <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
                 Create a new complaint
               </h2>
 
               <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
-                <div>
-                  <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
-                    Product Name
-                  </label>
-                  <input
-                    id="productName"
-                    name="productName"
-                    type="text"
-                    autoComplete="off"
-                    // readOnly
-                    {...register('productName', { required: 'Product is required' })}
-                    className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
-                  />
-                  {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
-                </div>
                 <div>
                   <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
                     Product Name
@@ -345,6 +340,22 @@ const AddComplaint = () => {
                   {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
                 </div>
                 <div>
+                  <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
+                    Product Name
+                  </label>
+                  <input
+                    id="productName"
+                    name="productName"
+                    type="text"
+                    autoComplete="off"
+                    // readOnly
+                    {...register('productName', { required: 'Product is required' })}
+                    className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.categoryName ? 'border-red-500' : ''}`}
+                  />
+                  {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
+                </div>
+
+                <div>
                   <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
                     Product  Category
                   </label>
@@ -363,6 +374,21 @@ const AddComplaint = () => {
                   <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
                     Product Sub Category
                   </label>
+                  <input
+                    id="subCategoryName"
+                    name="subCategoryName"
+                    type="text"
+                    autoComplete="off"
+                    // readOnly
+                    {...register('subCategoryName', { required: 'Sub Category is required' })}
+                    className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.subCategoryName ? 'border-red-500' : ''}`}
+                  />
+                  {errors.subCategoryName && <p className="text-red-500 text-sm mt-1">{errors.subCategoryName.message}</p>}
+                </div>
+                {/* <div>
+                  <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
+                    Product Sub Category
+                  </label>
                   <select
                     id="subCategoryName"
                     name="subCategoryName"
@@ -377,7 +403,7 @@ const AddComplaint = () => {
                     ))}
                   </select>
                   {errors.subCategoryName && <p className="text-red-500 text-sm mt-1">{errors.subCategoryName.message}</p>}
-                </div>
+                </div> */}
                 <div>
                   <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
                     Brand
@@ -511,11 +537,11 @@ const AddComplaint = () => {
                       className={`block p-3 w-full rounded-md border-0 py-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.purchaseDate ? 'border-red-500' : ''}`}
                     />
                     {errors.purchaseDate && <p className="text-red-500">{errors.purchaseDate.message}</p>}
-                    {warrantyStatus &&(warrantyStatus==="Under Warranty"? <p className="text-green-500">Remaining Days {warrantyInDays},{warrantyStatus}</p>:<p className="text-red-500">"Remaining Days {warrantyInDays},{warrantyStatus}</p>)}
+                    {warrantyStatus && (warrantyStatus === "Under Warranty" ? <p className="text-green-500">Remaining Days {warrantyInDays},{warrantyStatus}</p> : <p className="text-red-500">"Remaining Days {warrantyInDays},{warrantyStatus}</p>)}
                   </div>
                 </div>
                 {/* warrantydays = purchageDate-currentDate find days and warrantyIndays  lessthan warrantyDays then under warranty  */}
-                <div>
+                {/* <div>
                   <label htmlFor="issueType" className="block text-sm font-medium leading-6 text-gray-900">
                     Issue Type
                   </label>
@@ -536,6 +562,23 @@ const AddComplaint = () => {
                     ))}
                   </select>
                   {errors.issueType && <p className="text-red-500 text-sm mt-1">{errors.issueType.message}</p>}
+                </div> */}
+                <div >
+                  <label className="text-sm">    Issue Type</label>
+                  <Select
+                    isMulti
+                    // options={compNature}
+                    options={compNature.map((nat) => ({
+                      value: nat._id,
+                      label: nat.nature
+                    }))}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    onChange={handleIssueChange}
+
+                  />
+
+                  {errors.issueType && <p className="text-red-500">{errors.issueType.message}</p>}
                 </div>
                 <div>
                   <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
@@ -742,6 +785,7 @@ const AddComplaint = () => {
                 </button>
               </div>
             </div>
+            }
           </div>
 
         }

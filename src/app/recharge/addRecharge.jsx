@@ -16,7 +16,8 @@ const RechargeForm = ({ userData,brandData, existingRecharge, RefreshData, onClo
             const reqData = {
                 amount: data?.amount,
                 brandName: brandData ? brandData?.brandName : userData?.brandName,
-                brandId: brandData ? brandData?._id : userData?._id
+                brandId: brandData ? brandData?._id : userData?._id,
+                description:"Recharge Added "
               };
               
             const response = existingRecharge?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, reqData);

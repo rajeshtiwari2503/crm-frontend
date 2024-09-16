@@ -17,6 +17,7 @@ import EditDealerProfile from './EditeDealerProfile';
 import DealerProfile from '@/app/components/DealerProfile';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useForm } from 'react-hook-form';
+import Recharge from '@/app/recharge/page';
 
 const Profile = ({ params }) => {
 
@@ -188,7 +189,11 @@ const Profile = ({ params }) => {
                                             </div>
                                         </div>
                                         : userData?.role === "SERVICE" ? <ServiceProfile userData={userData} RefreshData={RefreshData}/>
-                                            : userData?.role === "BRAND" ? <BrandProfile userData={userData}RefreshData={RefreshData} />
+                                            : userData?.role === "BRAND" ?
+                                             <div>
+                                                <BrandProfile userData={userData}RefreshData={RefreshData} />
+                                                 <Recharge sidebar={false} brandData={userData} />
+                                                </div>
                                                 : userData?.role === "DEALER" ? <DealerProfile userData={userData} />
                                                     : ""
                                     }

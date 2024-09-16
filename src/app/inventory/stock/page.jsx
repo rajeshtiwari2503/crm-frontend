@@ -8,8 +8,12 @@ const Stock = () => {
     const [products, setProducts] = useState([])
 
     const [refresh, setRefresh] = useState("")
+    const [value, setValue] = useState(null)
 
     useEffect(() => {
+      const storedValue = localStorage.getItem("user");
+      const userType = JSON.parse(storedValue)
+      setValue(userType?.user)
       getAllStocks()
       getAllProducts()
     }, [refresh])
@@ -27,8 +31,9 @@ const Stock = () => {
   
       setProducts (data)
     }
-  
-    const data = stocks?.map((item, index) => ({ ...item, i: index + 1}));
+  const filteData=value?.role==="ADMIN"?stocks:value?.role==="BRAND"?stocks?.filter((f)=>f?.brandId===value?._id):
+   value?.role==="SERVICE"?stocks?.filter((f)=>f?.serviceCenterId===value?._id):[]
+    const data = filteData?.map((item, index) => ({ ...item, i: index + 1}));
 
     const RefreshData = (data) => {
       setRefresh(data)
@@ -38,7 +43,7 @@ const Stock = () => {
         <>
             <Sidenav>
                
-                <StockList data={data} products={products} RefreshData={RefreshData}/>
+                <StockList data={data} products={products}  RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

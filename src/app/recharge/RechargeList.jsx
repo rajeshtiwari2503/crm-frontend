@@ -98,15 +98,18 @@ const RechargeList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-
+  const totalAmount = sortedData?.reduce((total, item) => total + Number(item.amount), 0);
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Recharge Information</div>
+        <div className='flex items-center'>
+          <div className='me-5 font-bold'>Wallet :{totalAmount} INR</div>
         <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Balance </div>
+        </div>
         </div>
       </div>
       {!data.length>0 ?  <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -143,7 +146,15 @@ const RechargeList = (props) => {
                  Amount
                 </TableSortLabel>
               </TableCell> 
-               
+              <TableCell>
+                <TableSortLabel
+                  active={sortBy === 'name'}
+                  direction={sortDirection}
+                  onClick={() => handleSort('name')}
+                >
+                 Description
+                </TableSortLabel>
+              </TableCell>
               <TableCell>
                 <TableSortLabel
                   active={sortBy === 'createdAt'}
@@ -163,6 +174,7 @@ const RechargeList = (props) => {
                 <TableCell>{row?.i}</TableCell>
                 <TableCell>{row?.brandName}</TableCell>
                 <TableCell>{row?.amount}</TableCell>
+                <TableCell>{row?.description}</TableCell>
                  
                 <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                 <TableCell className='flex'>

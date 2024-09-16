@@ -781,7 +781,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "TECHNICIAN" || value?.user?.role === "SERVICE"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ||    value?.user?.role === "SERVICE"
               ?
 
               <ListItem onClick={handleCollapseInventory} disablePadding className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>

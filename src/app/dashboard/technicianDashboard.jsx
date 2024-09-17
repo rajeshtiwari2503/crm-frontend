@@ -327,10 +327,11 @@ const TechnicianDashboard = (props) => {
       </div>
 
       {/* Display recent services list */}
-      <div className='mt-8'>
-        <RecentServicesList data={data} />
-      </div>
-
+      {props?.performance === true ? ""
+        : <div className='mt-8'>
+          <RecentServicesList data={data} />
+        </div>
+      }
       {/* Include other components or sections as required */}
     </>
   );

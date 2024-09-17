@@ -153,12 +153,17 @@ const TechnicianList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
+                    {props?.userData?.role==="ADMIN"?
+                    <div>
                       <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                         <EditIcon color='success' />
                       </IconButton>
                       <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                         <DeleteIcon color='error' />
                       </IconButton>
+                      </div>
+                      :""
+                    }
                     </TableCell>
                   </TableRow>
                 ))}

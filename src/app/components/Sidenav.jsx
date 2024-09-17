@@ -697,7 +697,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND"
+            {value?.user?.role === "USER" || value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" || value?.user?.role === "TECHNICIAN"
               ?
               <ListItem onClick={(event) => {
                 router.push(`/feedback`)
@@ -819,7 +819,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "SERVICE" || value?.user?.role === "TECHNICIAN"
+            {value?.user?.role === "SERVICE1" || value?.user?.role === "TECHNICIAN1"
               ? <ListItem onClick={handleCollapseCustomer} disablePadding className={`pl-2 ${pathname.startsWith("/user/customer")
                 ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
                 : pathname.startsWith("/feedback")

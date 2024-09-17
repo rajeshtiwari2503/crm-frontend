@@ -11,6 +11,7 @@ import BrandRegistration from '../components/registration/brandRegistration';
 import ServiceCenterSignUpForm from '../components/ServiceRegistration';
 import BrandSignUpForm from '../components/BrandRegistration';
 import DealerRegistrationForm from '../components/DealerRegistration';
+import { ReactLoader } from '../components/common/Loading';
 
 const SignUp = () => {
 
@@ -48,7 +49,7 @@ const SignUp = () => {
     }
     catch (err) {
       setLoading(false)
-      ToastMessage(err.response.data)
+      ToastMessage(err?.response?.data)
 
       console.log(err);
     }
@@ -110,7 +111,9 @@ const SignUp = () => {
                 : selectedItem === "BRAND" ? <BrandSignUpForm />
                   : selectedItem === "DEALER" ? <DealerRegistrationForm />
                     :
-                    <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
+                    <>
+                  {loading===true?<ReactLoader/>
+                  :  <div className="mt-3 sm:mx-auto sm:w-full sm:max-w-sm">
                       <form className="grid md:grid-cols-2 gap-3" onSubmit={handleSubmit(onSubmit)}>
                         <div className='md:col-span-2'>
                           <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
@@ -261,6 +264,8 @@ const SignUp = () => {
                         </Link>
                       </p>
                     </div>
+                  }
+                  </>
               }
             </div>
           </div>

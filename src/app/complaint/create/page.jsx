@@ -109,7 +109,7 @@ const AddComplaint = () => {
 
   }
 
-console.log(nature);
+// console.log(nature);
 
   const onSubmit = async (data) => {
     try {
@@ -305,11 +305,13 @@ console.log(nature);
 
     setValue('issueType', selectedOptions.map(option => option.label));
   };
+
+  const filterProducts=products?.filter((f)=>f?.userId===value?.user?._id)
   return (
     <>
 
       <Sidenav >
-        {value?.user?.role === "USER" ?
+        {value?.user?.role === "USER" || value?.user?.role === "DEALER"?
           <AddDealerComplaint nature={nature} subCategory={subCategory} />
           : <div className=" ">
           
@@ -333,7 +335,7 @@ console.log(nature);
                     className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productName ? 'border-red-500' : ''}`}
                   >
                     <option value="">Select a product</option>
-                    {products.map(product => (
+                    {filterProducts?.map(product => (
                       <option key={product.productId} value={product._id}>
                         {product.productName}
                       </option>

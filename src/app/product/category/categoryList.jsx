@@ -37,7 +37,7 @@ const CategoryList = (props) => {
   }, []);
  
   const filterData=props?.data?.filter((item)=>item?.userId===userData?.user?._id)
-  const data = userData?.user?.role==="ADMIN"|| "BRAND"?props?.data:filterData;
+  const data = userData?.user?.role==="ADMIN"?props?.data:filterData;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };

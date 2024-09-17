@@ -1,27 +1,57 @@
 "use client"
 import React from 'react'
 import Sidenav from '../components/Sidenav'
-import dynamic from 'next/dynamic';
+ 
+import http_request from "../../../http-request"
+import TechnicianDashboard from '../dashboard/technicianDashboard'
+ 
 
 
-const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
-    loading: () => <p>Chart loading.........</p>
-  });
-  const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
-    loading: () => <p>Chart loading.........</p>
-  });
 const Performance = () => {
+
+  const [value, setValue] = React.useState(null);
+  const [dashData, setData] = React.useState("");
+
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
+    getAllDashboard()
+  }, []);
+
+  const getAllDashboard = async () => {
+    const storedValue = localStorage.getItem("user");
+    const user1 = JSON.parse(storedValue);
+    try {
+    
+      const endPoint=user1?.user.role==="ADMIN"? "/dashboardDetails"
+      :user1?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user1?.user?._id}`
+      :user1?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user1?.user?._id}`
+      :user1?.user.role==="USER"?`/dashboardDetailsByUserId/${user1?.user?._id}`
+      :user1?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user1?.user?._id}`
+      :user1?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
+      :""
+      let response = await http_request.get(endPoint)
+      let { data } = response;
+
+      setData(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+
   return (
-    <Sidenav>
-    <div className='grid grid-cols-12 gap-4 my-8'>
-        <div className='col-span-5 rounded-lg shadow px-4 py-4 bg-white'>
-          <AreaChart />
-        </div>
-        <div className='col-span-7 rounded-lg shadow px-4 py-4 bg-white'>
-          <PieChart />
-        </div>
-        
-      </div>
+    <Sidenav  >
+      <>
+        { 
+                   value?.user?.role === "TECHNICIAN" ?
+                    <TechnicianDashboard performance={true} dashData={dashData} userData={value?.user} />
+                      : ""
+        }
+      </>
     </Sidenav>
   )
 }

@@ -3,10 +3,13 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from "../../../../../http-request"
 import CountUp from 'react-countup';
+import { useRouter } from 'next/navigation';
+ 
 
 const Workload = () => {
     const [technician, setTechnician] = useState([])
 
+    const router=useRouter()
 
     useEffect(() => {
         getAllTechnician()
@@ -28,7 +31,7 @@ const Workload = () => {
     }
 
     const data = technician?.map((item, index) => ({ ...item, i: index + 1 }));
-    console.log(data);
+    // console.log(data);
 
 
     return (
@@ -37,19 +40,19 @@ const Workload = () => {
                 <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
                     {technician?.map((item, i) => (
                         <div key={i} className='justify-center flex items-center'>
-                            <div>
+                            <div onClick={()=>router.push(`/user/technician/details/${item?._id}`)}>
 
 
                                 <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                                    <div className='  mt-2 text-xl'>Assign Service </div>
-                                    <CountUp start={0} end={100} delay={1} />
+                                    <div className='  mt-2 text-xl'>Name : {item?.name} </div>
+                                    {/* <CountUp start={0} end={100} delay={1} /> */}
                                     <div className='flex justify-between items-center'>
                                         <div className='text-xl   mt-2'>Status </div>
                                         <div className='text-xl p-2 ms-3 bg-green-500 rounded-md  mt-2'> {item?.liveStatus}</div>
 
                                     </div>
                                 </div>
-                                <div className='text-center mt-2'>Name : {item?.name}</div>
+                               
                             </div>
                         </div>
                     ))}

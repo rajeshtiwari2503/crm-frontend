@@ -283,7 +283,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
     const handleWallet = async () => {
         try {
             const resData = {
-                serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName,
+                serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName,serviceCenterName: value?.name ,
                 contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
                 bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
             }

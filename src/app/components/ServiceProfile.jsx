@@ -295,7 +295,7 @@ const ServiceProfile = (props) => {
         </div>
 
       }
-      <div  >
+      <div className='w-100' >
         <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
       </div>
     </div>

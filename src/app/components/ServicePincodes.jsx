@@ -15,24 +15,24 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
     const fetchPincodes = async (city) => {
         try {
             setLoading(true);
-            
+
             // Fetch pincodes from the Postal Pincode API
             const response = await fetch(`https://api.postalpincode.in/postoffice/${city}`);
             const data = await response.json();
-    
+
             if (data[0].Status === "Success") {
                 const districtData = data[0].PostOffice.map((office) => ({
                     name: office.Name,
                     district: office.District,
                     pincode: office.Pincode,
                 }));
-    
+
                 // Filter by exact city name or district
                 const filterData = districtData?.filter(
                     (f) =>
                         f?.district.toLowerCase() === city.toLowerCase() || f?.name.toLowerCase() === city.toLowerCase()
                 );
-    
+
                 if (filterData.length > 0) {
                     // Map the filtered data to get the list of pincodes
                     const pincodeString = filterData.map((entry) => entry.pincode);
@@ -44,28 +44,35 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                         const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
                             pincodes, // Sending the array of pincodes
                         });
-    console.log(responsePin);
-    
-                        if (responsePin.status ===true) {  // Check for HTTP status code 200 (success)
+                        // console.log(responsePin);
+
+                        if (responsePin.status === true) {  // Check for HTTP status code 200 (success)
                             ToastMessage('Pincodes updated successfully');
                             RefreshData(responsePin); // Refresh the data after successful update
+                            setLoading(false);
                         } else {
+                            setLoading(false);
+                            RefreshData(responsePin);
                             console.error('Failed to update pincodes');
                         }
+                        RefreshData(responsePin);
                     } catch (error) {
+                        setLoading(false);
                         console.error('Error updating pincodes:', error);
                     }
-    
+                    setLoading(false);
                     setError(null);
                 } else {
                     setError(`No data found for the provided city "${city}".`);
                     setPincodes([]);
+                    setLoading(false);
                 }
             } else {
                 setError("No data found for the provided city.");
                 setPincodes([]);
+                setLoading(false);
             }
-    
+
             setLoading(false);  // Stop loading after the process completes
         } catch (err) {
             setLoading(false);
@@ -73,7 +80,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
             setPincodes([]);
         }
     };
-    
+
 
 
     const handleSubmit = (e) => {
@@ -84,11 +91,11 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
     };
 
     return (
-        <div className="container   p-4">
+        <div className=" container   p-4">
             <Toaster />
-            {loading === true ? <ReactLoader />
+            {loading === true ? <div className='mt-[-200px]'> <ReactLoader /></div>
                 : <div>
-                    <h1 className="text-2xl mb-4">Add Area Pincodes</h1>
+                    <h1 className="text-xl font-bold mb-4">Add Area Pincodes</h1>
                     <div className='flex'>
                         <form onSubmit={handleSubmit} className="mb-4 flex gap-4">
                             <input
@@ -107,10 +114,15 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                         </form>
                     </div>
                     {error && <p className="text-red-500">{error}</p>}
-                    <div className='container mx-auto p-4 '>
-                        <div>Pincodes Supported</div>
-                        <div className='w-[500px]'>
-                            <div >{pincode}</div>
+                    <div className='   p-4 '>
+                        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
+                        <div className="w-100 overflow-x-auto whitespace-nowrap">
+                            {pincode?.map((item, i) =>
+
+                                <div key={i} className=' '>
+                                    <div >{item}</div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     {/* <div>

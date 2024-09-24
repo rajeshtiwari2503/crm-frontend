@@ -5,39 +5,51 @@ import http_request from '../../../../http-request'
 import ComplaintNatureList from './complaintNatureList'
 
 const ComplaintNature = () => {
-    const [complaintNature, setComplaintNature] = useState([])
-    const [product, setProduct] = useState([])
-    const [refresh, setRefresh] = useState("")
+  const [complaintNature, setComplaintNature] = useState([])
+  const [product, setProduct] = useState([])
+  const [refresh, setRefresh] = useState("")
+  const [userData, setUserData] = useState(null)
 
-    useEffect(() => {
-      getAllComplaintNature()
-      getAllProduct()
-    }, [refresh])
-  
-    const getAllComplaintNature = async () => {
-      let response = await http_request.get("/getAllProduct")
-      let { data } = response;
-  
-      setProduct(data)
+  useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setUserData(JSON.parse(storedValue));
     }
-    const getAllProduct = async () => {
-      let response = await http_request.get("/getAllComplaintNature")
-      let { data } = response;
+    getAllComplaintNature()
+    getAllProduct()
+  }, [refresh])
+
+  const getAllComplaintNature = async () => {
+    let response = await http_request.get("/getAllProduct")
+    let { data } = response;
+
+    setProduct(data)
+  }
+  const getAllProduct = async () => {
+    let response = await http_request.get("/getAllComplaintNature")
+    let { data } = response;
+
+    setComplaintNature(data)
+  }
+
+  const filterData = userData?.user.role === "ADMIN" ? complaintNature : userData?.user.role === "BRAND" ? complaintNature?.filter((f) =>
+    f?.brandId === userData?.user?._id) : complaintNature
+
+  const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
   
-      setComplaintNature(data)
-    }
-    const data = complaintNature?.map((item, index) => ({ ...item, i: index + 1}));
-    const RefreshData = (data) => {
-      setRefresh(data)
-    }
-    return (
-        <>
-            <Sidenav>
-               
-                <ComplaintNatureList product={product} data={data}RefreshData={RefreshData}/>
-            </Sidenav>
-        </>
-    )
+  const filterProduct=userData?.user.role==="ADMIN"?product :userData?.user.role==="BRAND"?product?.filter((f)=>
+    f?.brandId===userData?.user?._id):product
+  const RefreshData = (data) => {
+    setRefresh(data)
+  }
+  return (
+    <>
+      <Sidenav>
+
+        <ComplaintNatureList product={filterProduct} data={data} RefreshData={RefreshData} />
+      </Sidenav>
+    </>
+  )
 }
 
 export default ComplaintNature

@@ -32,7 +32,7 @@ const AddComplaint = () => {
   const [location, setLocation] = useState(null);
   const [error, setError] = useState('');
   const [warrantyStatus, setWarrantyStatus] = useState('');
-  const [warrantyInDays, setWarrantyInDays] = useState(null);
+  const [warrantyInDays, setWarrantyInDays] = useState(0);
 
   const getAllProducts = async () => {
     try {
@@ -278,15 +278,36 @@ const AddComplaint = () => {
   }, [purchaseDate]);
 
   const calculateWarranty = () => {
+    // const currentDate = dayjs();
+    // const purchaseDateParsed = dayjs(purchaseDate);
+    // const daysDifference = currentDate.diff(purchaseDateParsed, 'day');
+
+    // // Calculate remaining warranty days
+    // const remainingWarranty = warrantyInDays - daysDifference;
+
+    // setWarrantyInDays(remainingWarranty);
     const currentDate = dayjs();
     const purchaseDateParsed = dayjs(purchaseDate);
+  
+    if (!purchaseDateParsed.isValid()) {
+      console.error("Invalid purchase date:", purchaseDate);
+      return;
+    }
+  
+    // Debugging: log warrantyInDays before calculation
+    console.log("Warranty duration (in days):", warrantyInDays);
+  
+    // Fallback in case warrantyInDays is not set correctly
+    const validWarrantyInDays = typeof warrantyInDays === 'number' && warrantyInDays > 0
+      ? warrantyInDays
+      : 365;  // Fallback to default 365 days warranty
+  
+    console.log("Valid Warranty (in days):", validWarrantyInDays);
+  
     const daysDifference = currentDate.diff(purchaseDateParsed, 'day');
-
-    // Calculate remaining warranty days
-    const remainingWarranty = warrantyInDays - daysDifference;
-
+    const remainingWarranty = validWarrantyInDays - daysDifference;
+  
     setWarrantyInDays(remainingWarranty);
-
     // Check if the product is under warranty
     if (remainingWarranty > 0) {
       setValue('warrantyStatus', true);

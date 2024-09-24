@@ -13,9 +13,12 @@ const AddNature = ({ existingNature, product, RefreshData, onClose }) => {
 
     const AddProductCategory = async (data) => {
         try {
+            const storedValue = localStorage.getItem("user");
+              const userDa=JSON.parse(storedValue)
             setLoading(true);
+            const reqData=userDa?.user?.role==="BRAND"?{...data,brandName:userDa?.user?.brandName,brandId:userDa?.user?._id}:data
             const endpoint = existingNature?._id ? `/editComplaintNature/${existingNature._id}` : '/addComplaintNature';
-            const response = existingNature?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, data);
+            const response = existingNature?._id ? await http_request.patch(endpoint, reqData) : await http_request.post(endpoint, reqData);
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);

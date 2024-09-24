@@ -7,8 +7,13 @@ const Sparepart = () => {
     const [spareparts, setSpareparts] = useState([])
 
     const [refresh, setRefresh] = useState("")
+    const [userData, setUserData] = useState(null)
 
     useEffect(() => {
+      const storedValue = localStorage.getItem("user");
+      if (storedValue) {
+        setUserData(JSON.parse(storedValue));
+      }
       getAllSpareparts()
     }, [refresh])
   
@@ -19,8 +24,10 @@ const Sparepart = () => {
   
       setSpareparts (data)
     }
+    const filterData = userData?.user.role === "ADMIN" ? spareparts : userData?.user.role === "BRAND" ? spareparts?.filter((f) =>
+      f?.brandId === userData?.user?._id) : spareparts
   
-    const data = spareparts?.map((item, index) => ({ ...item, i: index + 1}));
+    const data = filterData?.map((item, index) => ({ ...item, i: index + 1}));
 
     const RefreshData = (data) => {
       setRefresh(data)

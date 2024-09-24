@@ -59,6 +59,9 @@ const Assign = () => {
       console.log(err);
     }
   }
+  const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id):technicians
+
+
   const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
@@ -72,7 +75,7 @@ const Assign = () => {
     <Sidenav>
       <Toaster />
       <>
-        <AssignComplaintList  sparepart={sparepart} data={data}technicians={technicians}userData={value?.user} RefreshData={RefreshData} />
+        <AssignComplaintList  sparepart={sparepart} data={data}technicians={techData}userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

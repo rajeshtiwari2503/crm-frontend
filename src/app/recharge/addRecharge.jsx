@@ -2,6 +2,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import React, { useState } from 'react';
 import http_request from '../../../http-request'
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 const RechargeForm = ({ userData,brandData, existingRecharge, RefreshData, onClose }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -34,13 +35,70 @@ const RechargeForm = ({ userData,brandData, existingRecharge, RefreshData, onClo
         }
     };
 
+
     const onSubmit = (data) => {
+       if( userData?.role==="BRAND" )
+       {
+        brandPayment(data)
+       }else{
         AddRecharge(data)
+       }
+     
         // console.log(data);
         
 
     };
 
+    const brandPayment = async (row) => {
+        try {
+          const userInfo = localStorage.getItem("user");
+         const userDataReq=JSON.parse(userInfo)
+         const userD= userDataReq?.user?._id
+          let response = await http_request.post("/payment", { amount: +(row?.amount)   });
+          let { data } = response;
+          const options = {
+            key: "rzp_live_4uXy7FSuag8Sap", // Enter the Key ID generated from the Dashboard
+            amount: +amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            currency: "INR",
+            name: "Servsy", //your business name
+            description: "Payment for order",
+            image: "/Logo.png",
+            order_id: data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            handler: async function (orderDetails) {
+              try {
+               const amount= +(row?.amount)
+     
+                let response = await axios.post("https://lybleycrmserver-production.up.railway.app/paymentVerificationForBrand", { response:orderDetails,userD,amount  });
+                let { data } = response;
+                if(data?.status===true){
+                  ToastMessage(data)
+                
+                  RefreshData(data);
+                  onClose(true);
+                }
+               
+              } catch (err) {
+                console.log(err);
+              }
+            },
+            prefill: {
+              name: userDataReq?.user?.brandName, //your customer's name
+              email: userDataReq?.user?.email,
+              contact: userDataReq?.user?.contactPersonPhoneNumber
+            },
+            notes: {
+              "address": "Razorpay Corporate Office"
+            },
+            theme: {
+              color: "#3399cc"
+            }
+          };
+          const rzp1 = new window.Razorpay(options);
+          rzp1.open();
+        } catch (err) {
+          console.log(err);
+        }
+      }
     
 
     return (

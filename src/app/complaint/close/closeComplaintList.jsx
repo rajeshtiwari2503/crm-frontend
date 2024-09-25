@@ -119,7 +119,7 @@ const amount=1;
         key: "rzp_live_4uXy7FSuag8Sap", // Enter the Key ID generated from the Dashboard
         amount: +amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
         currency: "INR",
-        name: "Lybley", //your business name
+        name: "Servsy", //your business name
         description: "Payment for order",
         image: "/Logo.png",
         order_id: data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1

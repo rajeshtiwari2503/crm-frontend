@@ -206,6 +206,8 @@ function BasicInformation(props) {
     const [technicianPrice] = useState(["350", "600"]);
 
     let { partName, description, partNo, skuNo, length, breadth, height, weight, faultType, MRP, bestPrice, technician, productModel, category, brandName } = props?.sparePart;
+   
+    
     let { categories } = props;
 
     // let product1 = props?.products?.filter(f1 => f1?.brandName === brandName)?.map(m1 => ({ status: "ACTIVE", categoryName: m1?.productCategory }));
@@ -214,8 +216,17 @@ function BasicInformation(props) {
     // let unique1 = Array.from(new Set(merge?.map(JSON.stringify))).map(JSON.parse);
 
     // let categories1 = (props?.user?.role === "RESELLER" || props?.user?.role === "ADMIN") ? unique1 : categories;
-    let products1 = props?.products?.filter(p1 => p1?.categoryName === category)
-
+    const [value, setValue] = React.useState(null);
+  React.useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+      setValue(JSON.parse(storedValue));
+    }
+    
+  }, [ ]);
+   
+    let products1 = props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId===value?.user?._id )
+    // console.log(products1 );
     const [selectedProducts, setSelectedProducts] = useState([]);
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
@@ -381,7 +392,7 @@ function BasicInformation(props) {
                                 >
                                     <option value="" selected>Choose Category</option>
                                     {categories?.filter(f1 => f1?.status === "ACTIVE")?.map(c1 => (
-                                        <option key={c1.categoryName} value={c1.categoryName}>{c1.categoryName}</option>
+                                        <option key={c1.categoryId} value={c1.categoryId}>{c1.categoryName}</option>
                                     ))}
                                 </select>
                                 {props?.errors?.category ? <div className="text-red-600">{props?.errors?.category}</div> : ""}

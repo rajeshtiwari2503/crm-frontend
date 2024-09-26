@@ -99,6 +99,8 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='text-lg font-medium'>{complaint?.phoneNumber}</div>
                                 <div className='text-md font-semibold'>Service Address : </div>
                                 <div className='text-lg font-medium'>{complaint?.serviceAddress}</div>
+                                <div className='text-md font-semibold'>Pincode : </div>
+                                <div className='text-lg font-medium'>{complaint?.pincode}</div>
                                 <div className='text-md font-semibold'>Image : </div>
                                 <div>
                                     <img

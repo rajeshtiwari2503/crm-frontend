@@ -425,7 +425,7 @@ const ComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {userData?.role === "ADMIN" || userData?.role === "BRAND" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        {userData?.role === "ADMIN" ||   userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -442,7 +442,7 @@ const ComplaintList = (props) => {
                             Order Part
                           </div>
                           : ""}
-                        {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
+                        {userData?.role === "ADMIN"  ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"

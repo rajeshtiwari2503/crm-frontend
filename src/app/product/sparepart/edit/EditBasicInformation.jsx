@@ -16,15 +16,29 @@ function EditBasicInformation(props) {
     // let unique1 = Array.from(new Set(merge?.map(JSON.stringify))).map(JSON.parse);
 
     // let categories1 = (props?.user?.role === "RESELLER" || props?.user?.role === "ADMIN") ? unique1 : categories;
-    let products1 = props?.products?.filter(p1 => p1?.categoryName === category)
 
-    useEffect(() => {
+    const [value, setValue] = React.useState(null);
+    React.useEffect(() => {
+        const storedValue = localStorage.getItem("user");
+        if (storedValue) {
+            setValue(JSON.parse(storedValue));
+        }
+
         if (props?.sparePart) {
-             
+
             setSelectedProducts(props?.sparePart.products || []); // Preload selected products (productId and productName)
         }
-    }, [props?.sparePart ]);
-  
+    }, [props?.sparePart]);
+
+    let products1 = props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId === value?.user?._id)
+
+    // useEffect(() => {
+    //     if (props?.sparePart) {
+
+    //         setSelectedProducts(props?.sparePart.products || []); // Preload selected products (productId and productName)
+    //     }
+    // }, [props?.sparePart ]);
+
     const handleProductChange = (e) => {
         const selectedProductId = e.target.value;
         const selectedProduct = products1?.find(p => p._id === selectedProductId);

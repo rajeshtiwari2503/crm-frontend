@@ -559,7 +559,7 @@ console.log(data);
               {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-gray-700 ">Priority Level</label>
               <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <option value="Standard">Standard</option>
@@ -589,7 +589,7 @@ console.log(data);
               <label className="block text-gray-700 "> Service Center Pincode</label>
               <input {...register('supplierInformation.pinCode', { required: 'Pincode is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
-            </div>
+            </div> */}
             {/* <div>
               <label className="block text-gray-700 ">Order Date</label>
               <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
@@ -611,7 +611,7 @@ console.log(data);
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
             </div> */}
 
-            <div className=''>
+            <div className='col-span-2'>
               <label className="block text-gray-700 ">Comments/Notes</label>
               <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}

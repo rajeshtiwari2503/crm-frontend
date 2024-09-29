@@ -90,7 +90,9 @@ const StockList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-
+const handleDetails=(id)=>{
+  router.push(`/inventory/stock/details/${id}`)
+}
 
   return (
     <div>
@@ -147,7 +149,10 @@ const StockList = (props) => {
                       Defective Stock
                     </TableSortLabel>
                   </TableCell>
-                  {userData?.user?.role === "SERVICE" ?
+                
+                
+                  {userData?.user?.role === "ADMIN" ?
+                    <>
                     <TableCell>
                       <TableSortLabel
                         active={sortBy === 'serviceCenterName'}
@@ -157,7 +162,7 @@ const StockList = (props) => {
                         Service Center Name
                       </TableSortLabel>
                     </TableCell>
-                    : <TableCell>
+                     <TableCell>
                       <TableSortLabel
                         active={sortBy === 'brandName'}
                         direction={sortDirection}
@@ -166,9 +171,12 @@ const StockList = (props) => {
                         Brand Name
                       </TableSortLabel>
                     </TableCell>
+                    </>
+                    :""
+                  
                   }
 
-
+                 
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -190,9 +198,13 @@ const StockList = (props) => {
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
                     <TableCell>{row?.defectiveStock}</TableCell>
-                    {userData?.user?.role === "SERVICE" ?
+                    {userData?.user?.role === "ADMIN" ?
+                    <>
                       <TableCell>{row?.serviceCenterName}</TableCell>
-                      : <TableCell>{row?.brandName}</TableCell>
+                     
+                        <TableCell>{row?.brandName}</TableCell>
+                        </>
+                       :""
                     }
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
@@ -200,12 +212,12 @@ const StockList = (props) => {
                         : <div className='flex'>
 
 
-                          {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                          <IconButton aria-label="view" onClick={() => handleDetails(row?._id)} >
                         <Visibility color='primary' />
-                      </IconButton> */}
-                          <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
+                      </IconButton>
+                          {/* <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
                             <EditIcon color='success' />
-                          </IconButton>
+                          </IconButton> */}
                           <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>

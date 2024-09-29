@@ -38,12 +38,13 @@ const Stock = () => {
     const RefreshData = (data) => {
       setRefresh(data)
     }
-
+    const filterProduct = value?.role === "ADMIN" ? products : value?.role === "BRAND" ? products?.filter((f) =>
+      f?.brandId === value?._id) : products
     return (
         <>
             <Sidenav>
                
-                <StockList data={data} products={products}  RefreshData={RefreshData}/>
+                <StockList data={data} products={filterProduct}  RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

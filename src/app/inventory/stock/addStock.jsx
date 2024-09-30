@@ -196,7 +196,7 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
 
     return (
         <div>
-         {loading===true ? <ReactLoader />
+         {loading===true ?  <div className='w-[400px]  '><ReactLoader /></div>
          :   <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
 
                 <div className='w-[400px]'>
@@ -244,11 +244,11 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
                     </Button>
                     {existingStock?._id ? (
                         <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                            Update
+                            Update Stock
                         </Button>
                     ) : (
                         <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                            Add Product
+                            Add Stock
                         </Button>
                     )}
                 </div>

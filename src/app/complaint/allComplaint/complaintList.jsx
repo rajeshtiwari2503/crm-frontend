@@ -113,9 +113,10 @@ const ComplaintList = (props) => {
     setStatus(false)
   }
   const handleOrderPart = async (id) => {
-    setId(id)
-    setValue("ticketID", id)
-    setOrder(true)
+    // setId(id)
+    // setValue("ticketID", id)
+    // setOrder(true)
+    router.push(`/inventory/order/request/${id}`);
   }
   const handleAssignClose = () => {
 

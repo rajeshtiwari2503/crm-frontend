@@ -48,8 +48,8 @@ const OrderDetails = ({ params }) => {
             <div>{orders?.partNumber}</div>
             <div className='font-bold'>quantity  </div>
             <div>{orders?.quantity}</div>
-            <div className='font-bold'>priorityLevel  </div>
-            <div>{orders?.priorityLevel}</div>
+            <div className='font-bold'>Service Center Name  </div>
+            <div>{orders?.serviceCenter}</div>
             <div className='font-bold'>comments  </div>
             <div>{orders?.comments}</div>
             <div className='font-bold'>status  </div>

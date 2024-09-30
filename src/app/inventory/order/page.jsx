@@ -90,11 +90,15 @@ const Order = () => {
     setRefresh(data)
   }
 
+  const filterSparepart= value?.user?.role === "ADMIN" ? sparepart : value?.user?.role === "BRAND" ? sparepart?.filter((f) =>
+    f?.brandId === value?.user?._id) : sparepart
+// console.log(filterSparepart);
+
   return (
     <Sidenav>
       <Toaster />
       <>
-        <OrderList data={data} userData={value} brand={brands} serviceCenter={serviceCenter} sparepart={sparepart} RefreshData={RefreshData} />
+        <OrderList data={data} userData={value} brand={brands} serviceCenter={serviceCenter} sparepart={filterSparepart} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

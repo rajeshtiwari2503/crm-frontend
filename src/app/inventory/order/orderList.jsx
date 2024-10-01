@@ -31,6 +31,9 @@ const OrderList = (props) => {
   const [selectedSparepart, setSelectedSparepart] = useState('');
   const [selectedserviceCenter, setSelectedserviceCenter] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
+  const [stockType, setStockType] = useState('Fresh Stock'); // Initialize stockType with "Fresh Stock"
+  const [selectedFile, setSelectedFile] = useState(null);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,7 +82,7 @@ const OrderList = (props) => {
 
         userInfo?.user?.role === 'BRAND' ?
           `/create-shipment`
-          : `/addDefectiveOrder`
+          : `/create-defective-shipment`
 
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
@@ -88,7 +91,7 @@ const OrderList = (props) => {
       ToastMessage(responseData);
     } catch (err) {
       console.log(err);
-      ToastMessage(  err.response.data);
+      ToastMessage(err.response.data);
     }
   };
 
@@ -110,11 +113,11 @@ const OrderList = (props) => {
     router.push(`/inventory/order/details/${id}`)
   }
 
-  const handleManifest = async (id) => {   
+  const handleManifest = async (id) => {
     try {
       let response = await http_request.post(`/fetchManifest`, { awbs: [id] });
       let { data } = response;
-console.log(data);
+      console.log(data);
 
     } catch (err) {
       console.log(err);
@@ -131,50 +134,50 @@ console.log(data);
   // };
   const handleLabel = async (id) => {
     try {
-        // Make the API request to fetch the PDF data
-        let response = await http_request.post(`/fetchLabels`, { awbs: [id] }, {
-            responseType: 'blob', // Set response type to 'blob'
-        });
+      // Make the API request to fetch the PDF data
+      let response = await http_request.post(`/fetchLabels`, { awbs: [id] }, {
+        responseType: 'blob', // Set response type to 'blob'
+      });
 
-        // Check if response is OK and contains a PDF
-        if (response.status === 200 && response.data) {
-            // Create a Blob from the response data
-            let pdfBlob = new Blob([response.data], { type: 'application/pdf' });
+      // Check if response is OK and contains a PDF
+      if (response.status === 200 && response.data) {
+        // Create a Blob from the response data
+        let pdfBlob = new Blob([response.data], { type: 'application/pdf' });
 
-            // Log the Blob size
-            console.log('Blob size:', pdfBlob.size);
+        // Log the Blob size
+        console.log('Blob size:', pdfBlob.size);
 
-            // Create a URL for the Blob
-            let pdfURL = URL.createObjectURL(pdfBlob);
+        // Create a URL for the Blob
+        let pdfURL = URL.createObjectURL(pdfBlob);
 
-            // Log the Blob URL
-            console.log('Blob URL:', pdfURL);
+        // Log the Blob URL
+        console.log('Blob URL:', pdfURL);
 
-            // Optionally open the Blob URL in a new window for debugging
-            // window.open(pdfURL);
+        // Optionally open the Blob URL in a new window for debugging
+        // window.open(pdfURL);
 
-            // Create a link element
-            let link = document.createElement('a');
-            link.href = pdfURL;
-            link.download = 'label.pdf'; // Set the file name for the downloaded PDF
+        // Create a link element
+        let link = document.createElement('a');
+        link.href = pdfURL;
+        link.download = 'label.pdf'; // Set the file name for the downloaded PDF
 
-            // Append the link to the document body
-            document.body.appendChild(link);
+        // Append the link to the document body
+        document.body.appendChild(link);
 
-            // Programmatically click the link to start the download
-            link.click();
+        // Programmatically click the link to start the download
+        link.click();
 
-            // Clean up and revoke the object URL
-            document.body.removeChild(link);
-            URL.revokeObjectURL(pdfURL);
-        } else {
-            console.error('Invalid response or no PDF data');
-        }
+        // Clean up and revoke the object URL
+        document.body.removeChild(link);
+        URL.revokeObjectURL(pdfURL);
+      } else {
+        console.error('Invalid response or no PDF data');
+      }
 
     } catch (err) {
-        console.error('Error fetching PDF:', err);
+      console.error('Error fetching PDF:', err);
     }
-};
+  };
 
 
   const handleTracking = async (id) => {
@@ -186,19 +189,19 @@ console.log(data);
       console.log(err);
     }
   };
-  const handleDeleteOrder = async ( ) => {
-  
+  const handleDeleteOrder = async () => {
+
     try {
-      let response1 = await http_request.patch(`/editOrder/${id?._id}`,{status:"OrderCanceled"});
+      let response1 = await http_request.patch(`/editOrder/${id?._id}`, { status: "OrderCanceled" });
       let response2 = response1?.data;
       props?.RefreshData(response2)
       setConfirmBoxView(false);
       let response = await http_request.post(`/cancelShipment`, { awbs: [id?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb] });
       let { data } = response;
-    
-    
-     
-      ToastMessage({status:true,msg:"AWB Cancel Process Started"});
+
+
+
+      ToastMessage({ status: true, msg: "AWB Cancel Process Started" });
     } catch (err) {
       console.log(err);
     }
@@ -217,7 +220,7 @@ console.log(data);
     setValue('weight', selectedpart?.weight);
     setValue('height', 1);
     setValue('bestPrice', selectedpart?.bestPrice);
-  
+
 
     if (props?.userData?.user?.role === "BRAND") {
       setValue("brandAddress", props?.userData?.user?.streetAddress);
@@ -225,15 +228,15 @@ console.log(data);
       setValue("brandContact", props?.userData?.user?.contactPersonPhoneNumber);
       setValue('brandId', props?.userData?.user?._id);
       setValue('brand', props?.userData?.user?.brandName);
-     
+
     }
     else {
       setValue('serviceCenterAddress', props?.userData?.user?.streetAddress);
-    setValue('serviceCenterPincode', props?.userData?.user?.postalCode);
+      setValue('serviceCenterPincode', props?.userData?.user?.postalCode);
       setValue('serviceCenterId', props?.userData?.user?._id);
       setValue("serviceContact", props?.userData?.user?.contact);
       setValue('serviceCenter', props?.userData?.user?.serviceCenterName);
-    
+
     }
 
 
@@ -243,7 +246,7 @@ console.log(data);
     const selectedId = event.target.value;
     const selectedpart = props?.serviceCenter?.find(center => center._id === selectedId);
     setSelectedserviceCenter(selectedId);
-    
+
     setValue('serviceCenter', selectedpart?.serviceCenterName);
     setValue('serviceCenterId', selectedpart?._id);
     setValue('supplierInformation.name', selectedpart?.serviceCenterName);
@@ -265,9 +268,12 @@ console.log(data);
     setValue('supplierInformation.contact', selectedBrand?.contactPersonPhoneNumber);
     setValue('supplierInformation.pinCode', selectedBrand?.postalCode);
   };
+  const handleStockTypeChange = (e) => setStockType(e.target.value);
+  const handleFileChange = (e) => setSelectedFile(e.target.files[0]);
 
- 
+  const handleApproval = () => {
 
+  }
 
   return (
     <div>
@@ -390,15 +396,15 @@ console.log(data);
                       Shipping_Method
                     </TableSortLabel>
                   </TableCell> */}
-                  {/* <TableCell>
+                  <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'createdAt'}
+                      active={sortBy === 'brandApproval'}
                       direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
+                      onClick={() => handleSort('brandApproval')}
                     >
-                      Created_At
+                      Approval
                     </TableSortLabel>
-                  </TableCell> */}
+                  </TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -414,7 +420,20 @@ console.log(data);
                     <TableCell>{row.supplierInformation?.name}</TableCell>
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
                     {/* <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell> */}
-                    {/* <TableCell>{row.shippingMethod}</TableCell> */}
+                    {row?.brandApproval === "APPROVED" ? <TableCell>{row?.brandApproval}</TableCell>
+                      : <TableCell>
+                        {props?.userData?.user?.role === "BRAND" ?
+                          <button
+                            aria-label="edit"
+                            onClick={() => handleApproval(row?._id)}
+                            className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
+                          >
+                            <Print className='me-1' /> Approve
+                          </button>
+                          : <div>{row?.brandApproval}</div>
+                        }
+                      </TableCell>
+                    }
                     {/* <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell> */}
                     <TableCell className='flex'>
                       <div className='flex'>
@@ -610,7 +629,30 @@ console.log(data);
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
             </div> */}
+            <div>
+              <label className="block text-gray-700">Stock Type</label>
+              <select
+                value={stockType}
+                onChange={(e) => setStockType(e.target.value)}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="fresh">Fresh Stock</option>
+                <option value="defective">Defective Stock</option>
+              </select>
+            </div>
 
+            {/* Conditionally Render the File Input for Defective Stock */}
+            {stockType === 'defective' && (
+              <div>
+                <label className="block text-gray-700">Attach Image</label>
+                <input
+                  type="file"
+                  {...register('defectiveImage', { required: stockType === 'defective' })}
+                  className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
+              </div>
+            )}
             <div className='col-span-2'>
               <label className="block text-gray-700 ">Comments/Notes</label>
               <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>

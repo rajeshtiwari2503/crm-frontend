@@ -4,6 +4,7 @@ import { ToastMessage } from './common/Toastify';
 import http_request from "../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import { ReactLoader } from './common/Loading';
+import { useForm } from 'react-hook-form';
 
 
 const ServicePincodes = ({ userId, RefreshData, pincode }) => {
@@ -11,6 +12,8 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
     const [pincodes, setPincodes] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const { register, handleSubmit, formState: { errors } } = useForm();
 
     const fetchPincodes = async (city) => {
         try {
@@ -83,13 +86,37 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 
 
 
-    const handleSubmit = (e) => {
+    const handleSubmitP = (e) => {
         e.preventDefault();
         if (city) {
             fetchPincodes(city);
         }
     };
+    const onSubmit = async(data) => {
+        const pincodes=data?.pincode;
+        try {
+            setLoading(true)
+            const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
+                pincodes, // Sending the array of pincodes
+            });
+            // console.log(responsePin);
 
+            if (responsePin.status === true) {  // Check for HTTP status code 200 (success)
+                ToastMessage('Pincodes updated successfully');
+                RefreshData(responsePin); // Refresh the data after successful update
+                setLoading(false);
+            } 
+            else {
+                setLoading(false);
+                RefreshData(responsePin);
+                console.error('Failed to update pincodes');
+            }
+            // RefreshData(responsePin);
+        } catch (error) {
+            setLoading(false);
+            console.error('Error updating pincodes:', error);
+        }
+      };
     return (
         <div className=" container   p-4">
             <Toaster />
@@ -97,7 +124,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                 : <div>
                     <h1 className="text-xl font-bold mb-4">Add Area Pincodes</h1>
                     <div className='flex'>
-                        <form onSubmit={handleSubmit} className="mb-4 flex gap-4">
+                        <form onSubmit={handleSubmitP} className="mb-4 flex gap-4">
                             <input
                                 type="text"
                                 value={city}
@@ -109,9 +136,45 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                                 type="submit"
                                 className="bg-blue-500 w-[120px] text-white p-2 rounded"
                             >
-                                Add Pincodes
+                                Add Area
                             </button>
                         </form>
+                    </div>
+                    <div>
+                        <div>
+                            <h1 className="text-xl font-bold mb-4">Add Pincode</h1>
+                            <form onSubmit={handleSubmit(onSubmit)} className="mb-4 flex gap-4">
+                                <input
+                                    type="text"
+                                    {...register("pincode", {
+                                        required: "Pincode is required",
+                                        minLength: {
+                                            value: 6,
+                                            message: "Pincode must be exactly 6 digits",
+                                        },
+                                        maxLength: {
+                                            value: 6,
+                                            message: "Pincode must be exactly 6 digits",
+                                        },
+                                        pattern: {
+                                            value: /^[0-9]{6}$/,
+                                            message: "Pincode must be 6 digits long and numeric",
+                                        },
+                                    })}
+                                    placeholder="Enter 6-digit Pincode"
+                                    className="border border-gray-400 p-2 rounded mr-2"
+                                />
+                                {errors.pincode && (
+                                    <p className="text-red-500">{errors.pincode.message}</p>
+                                )}
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 w-[120px] text-white p-2 rounded"
+                                >
+                                    Add Pincode
+                                </button>
+                            </form>
+                        </div>
                     </div>
                     {error && <p className="text-red-500">{error}</p>}
                     <div className='   p-4 '>

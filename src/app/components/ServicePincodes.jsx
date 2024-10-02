@@ -48,9 +48,9 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                             pincodes, // Sending the array of pincodes
                         });
                         // console.log(responsePin);
-
-                        if (responsePin.status === true) {  // Check for HTTP status code 200 (success)
-                            ToastMessage('Pincodes updated successfully');
+                        const { data } = responsePin
+                        if ( data?.status === true) {  // Check for HTTP status code 200 (success)
+                            ToastMessage(data);
                             RefreshData(responsePin); // Refresh the data after successful update
                             setLoading(false);
                         } else {
@@ -92,31 +92,26 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
             fetchPincodes(city);
         }
     };
-    const onSubmit = async(data) => {
-        const pincodes=data?.pincode;
+    const onSubmit = async (data1) => {
+        const pincodes = data1?.pincode;
         try {
             setLoading(true)
             const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
                 pincodes, // Sending the array of pincodes
             });
             // console.log(responsePin);
+            const { data } = responsePin
+            // Check for HTTP status code 200 (success)
+            ToastMessage(data);
+            RefreshData(responsePin); // Refresh the data after successful update
+            setLoading(false);
 
-            if (responsePin.status === true) {  // Check for HTTP status code 200 (success)
-                ToastMessage('Pincodes updated successfully');
-                RefreshData(responsePin); // Refresh the data after successful update
-                setLoading(false);
-            } 
-            else {
-                setLoading(false);
-                RefreshData(responsePin);
-                console.error('Failed to update pincodes');
-            }
             // RefreshData(responsePin);
         } catch (error) {
             setLoading(false);
             console.error('Error updating pincodes:', error);
         }
-      };
+    };
     return (
         <div className=" container   p-4">
             <Toaster />
@@ -145,7 +140,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                             <h1 className="text-xl font-bold mb-4">Add Pincode</h1>
                             <form onSubmit={handleSubmit(onSubmit)} className="mb-4 flex gap-4">
                                 <input
-                                    type="text"
+                                    type="number"
                                     {...register("pincode", {
                                         required: "Pincode is required",
                                         minLength: {
@@ -179,7 +174,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                     {error && <p className="text-red-500">{error}</p>}
                     <div className='   p-4 '>
                         <div className='text-md font-bold mb-4'>Pincodes Supported</div>
-                        <div className="w-100 overflow-x-auto whitespace-nowrap">
+                        <div className="w-100 grid grid-cols-3 md:grid-cols-10 overflow-x-auto whitespace-nowrap">
                             {pincode?.map((item, i) =>
 
                                 <div key={i} className=' '>

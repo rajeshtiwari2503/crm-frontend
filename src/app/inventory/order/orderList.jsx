@@ -21,6 +21,7 @@ const OrderList = (props) => {
 
   const filteredData = props?.data;
   const [confirmBoxView, setConfirmBoxView] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [id, setId] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -76,20 +77,25 @@ const OrderList = (props) => {
   }
   const partOrder = async (data) => {
     try {
+      setLoading(true)
       const storedValue = localStorage.getItem('user');
       const userInfo = storedValue ? JSON.parse(storedValue) : null;
       let endPoint =
 
         userInfo?.user?.role === 'BRAND' ?
           `/create-shipment`
-          : `/create-defective-shipment`
+          :stockType==="Fresh Stock"?`/create-center-shipment`: `/create-defective-shipment`
 
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
       setOrder(false)
+      setLoading(false)
       props?.RefreshData(responseData)
-      ToastMessage(responseData);
+
+      ToastMessage(responseData?.orderStatus);
     } catch (err) {
+      setLoading(false)
+
       console.log(err);
       ToastMessage(err.response.data);
     }
@@ -496,89 +502,90 @@ const OrderList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
+          {loading === true ? <div className='w-[400px]'><ReactLoader /> </div>
+            : <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
 
-            {/* <div>
+              {/* <div>
               <label className="block text-gray-700  ">Ticket ID</label>
               <input {...register('ticketID')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.ticketID && <p className="text-red-500 text-sm mt-1">{errors.ticketID.message}</p>}
             </div> */}
 
-            <div>
-              <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Sparepart Name
-              </label>
-
-              <select
-                id="service-center-label"
-                value={selectedSparepart}
-                onChange={handleSparepartChange}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled>Select Sparepart</option>
-                {props?.sparepart?.map((center) => (
-                  <option key={center.id} value={center._id}>
-                    {center.partName}
-                  </option>
-                ))}
-              </select>
-
-            </div>
-            {props?.userData?.user?.role === "BRAND" ?
               <div>
                 <label id="service-center-label" className="block text-sm font-medium text-black ">
-                  Service Center Name
+                  Sparepart Name
                 </label>
 
                 <select
                   id="service-center-label"
-                  value={selectedserviceCenter}
-                  onChange={handleServiceCenterChange}
+                  value={selectedSparepart}
+                  onChange={handleSparepartChange}
                   className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
-                  <option value="" disabled>Select Service Center</option>
-                  {props?.serviceCenter?.map((center) => (
+                  <option value="" disabled>Select Sparepart</option>
+                  {props?.sparepart?.map((center) => (
                     <option key={center.id} value={center._id}>
-                      {center.serviceCenterName}
+                      {center.partName}
                     </option>
                   ))}
                 </select>
 
               </div>
-              :
+              {props?.userData?.user?.role === "BRAND" ?
+                <div>
+                  <label id="service-center-label" className="block text-sm font-medium text-black ">
+                    Service Center Name
+                  </label>
+
+                  <select
+                    id="service-center-label"
+                    value={selectedserviceCenter}
+                    onChange={handleServiceCenterChange}
+                    className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  >
+                    <option value="" disabled>Select Service Center</option>
+                    {props?.serviceCenter?.map((center) => (
+                      <option key={center.id} value={center._id}>
+                        {center.serviceCenterName}
+                      </option>
+                    ))}
+                  </select>
+
+                </div>
+                :
+                <div>
+                  <label id="service-center-label" className="block text-sm font-medium text-black ">
+                    Brand Name
+                  </label>
+
+                  <select
+                    id="service-center-label"
+                    value={selectedBrand}
+                    onChange={handleBrandChange}
+                    className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  >
+                    <option value="" disabled>Select Brand</option>
+                    {props?.brand?.map((center) => (
+                      <option key={center.id} value={center._id}>
+                        {center.brandName}
+                      </option>
+                    ))}
+                  </select>
+
+                </div>
+              }
               <div>
-                <label id="service-center-label" className="block text-sm font-medium text-black ">
-                  Brand Name
-                </label>
-
-                <select
-                  id="service-center-label"
-                  value={selectedBrand}
-                  onChange={handleBrandChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Brand</option>
-                  {props?.brand?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.brandName}
-                    </option>
-                  ))}
-                </select>
-
+                <label className="block text-gray-700 "> Model Number</label>
+                <input {...register('partNumber', { required: 'Part Number is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
               </div>
-            }
-            <div>
-              <label className="block text-gray-700 "> Model Number</label>
-              <input {...register('partNumber', { required: 'Part Number is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
-            </div>
-            <div>
-              <label className="block text-gray-700 ">Quantity</label>
-              <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
-            </div>
+              <div>
+                <label className="block text-gray-700 ">Quantity</label>
+                <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
+              </div>
 
-            {/* <div>
+              {/* <div>
               <label className="block text-gray-700 ">Priority Level</label>
               <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <option value="Standard">Standard</option>
@@ -609,7 +616,7 @@ const OrderList = (props) => {
               <input {...register('supplierInformation.pinCode', { required: 'Pincode is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
               {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
             </div> */}
-            {/* <div>
+              {/* <div>
               <label className="block text-gray-700 ">Order Date</label>
               <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
               {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
@@ -621,7 +628,7 @@ const OrderList = (props) => {
               {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
             </div> */}
 
-            {/* <div>
+              {/* <div>
               <label className="block text-gray-700 ">Shipping Method</label>
               <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                 <option value="Standard">Standard</option>
@@ -629,46 +636,46 @@ const OrderList = (props) => {
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
             </div> */}
-            <div>
-              <label className="block text-gray-700">Stock Type</label>
-              <select
-                value={stockType}
-                onChange={(e) => setStockType(e.target.value)}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="fresh">Fresh Stock</option>
-                <option value="defective">Defective Stock</option>
-              </select>
-            </div>
-
-            {/* Conditionally Render the File Input for Defective Stock */}
-            {stockType === 'defective' && (
               <div>
-                <label className="block text-gray-700">Attach Image</label>
-                <input
-                  type="file"
-                  {...register('defectiveImage', { required: stockType === 'defective' })}
-                  className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-                {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
+                <label className="block text-gray-700">Stock Type</label>
+                <select
+                  value={stockType}
+                  onChange={(e) => setStockType(e.target.value)}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="fresh">Fresh Stock</option>
+                  <option value="defective">Defective Stock</option>
+                </select>
               </div>
-            )}
-            <div className='col-span-2'>
-              <label className="block text-gray-700 ">Comments/Notes</label>
-              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-            </div>
 
-            {/* <div>
+              {/* Conditionally Render the File Input for Defective Stock */}
+              {stockType === 'defective' && (
+                <div>
+                  <label className="block text-gray-700">Attach Image</label>
+                  <input
+                    type="file"
+                    {...register('defectiveImage', { required: stockType === 'defective' })}
+                    className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  />
+                  {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
+                </div>
+              )}
+              <div className='col-span-2'>
+                <label className="block text-gray-700 ">Comments/Notes</label>
+                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+              </div>
+
+              {/* <div>
               <label className="block text-gray-700 ">Attachments</label>
               <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+              <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
-          </form>
-
+            </form>
+          }
         </DialogContent>
 
       </Dialog>

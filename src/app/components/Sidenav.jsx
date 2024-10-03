@@ -324,7 +324,7 @@ function Sidenav(props) {
   const secondaryText = "#007BFF"
 
   const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Customer'] : []
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Technician','Customer'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature',"Warranty"]:value?.user?.role === "BRAND" ? [  'Product', 'SparePart', 'Complaint Nature' ] : ['Product']
   const inventory=value?.user?.role === "ADMIN"?['Sparepart', "Stock", "Order"]:value?.user?.role === "BRAND"?[  "Stock", "Order"]:["Stock", "Order"]
   const drawer = (
@@ -472,7 +472,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "SAASBRAND"
+            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND"&&value?.user?.brandSaas==="YES")
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>

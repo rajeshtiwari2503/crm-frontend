@@ -14,7 +14,13 @@ const Service = () => {
   const [service, setService] = useState([])
   const [refresh, setRefresh] = useState("")
 
+  const [value, setValue] = React.useState(null);
+
   useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+        setValue(JSON.parse(storedValue));
+    }
     getAllService()
 
   }, [refresh])
@@ -30,8 +36,8 @@ const Service = () => {
       console.log(err);
     }
   }
-
-  const data = service?.map((item, index) => ({ ...item, i: index + 1 }));
+const filData=value?.user?.role==="BRAND"?service?.filter((f)=>f?.brandId===value?.user?._id):service
+  const data = filData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
     setRefresh(data)
@@ -41,7 +47,7 @@ const Service = () => {
     <Sidenav>
       <Toaster />
       <>
-        <ServiceList data={data} RefreshData={RefreshData} />
+        <ServiceList data={data}   RefreshData={RefreshData} />
      
       </>
     </Sidenav>

@@ -23,7 +23,7 @@ const AddTechnician = () => {
         const userType = JSON.parse(storedValue)
         try {
             setLoading(true)
-            const req = userType?.user?.role === "SERVICE" ? { ...reqdata, serviceCenterId: userType?.user?._id, serviceCenterName: userType?.user?.serviceCenterName } : reqdata
+            const req = userType?.user?.role === "SERVICE" ? { ...reqdata, serviceCenterId: userType?.user?._id, serviceCenterName: userType?.user?.serviceCenterName } : { ...reqdata, brandId: userType?.user?._id, brandName: userType?.user?.brandName }
             let response = await http_request.post('/addTechnician', req)
             const { data } = response
             ToastMessage(data)

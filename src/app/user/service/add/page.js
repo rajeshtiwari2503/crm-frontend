@@ -6,6 +6,7 @@ import http_request from '../../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 const AddService = () => {
@@ -18,9 +19,13 @@ const AddService = () => {
 
     const RegiterService = async (reqdata) => {
         try {
-            setLoading(true)
 
-            let response = await http_request.post('/serviceRegistration', reqdata)
+            const storedValue = localStorage.getItem("user");     
+             const brand=(JSON.parse(storedValue))
+             const regist={...reqdata,serviceCenterName:reqdata?.name,brandId:brand?.user?._id,brandName:brand?.user?.brandName}
+            setLoading(true)
+                  
+            let response = await http_request.post('/serviceRegistration',regist )
             const { data } = response
             ToastMessage(data)
             setLoading(false)
@@ -45,7 +50,8 @@ const AddService = () => {
         <>
          
             <Sidenav >
-                <div className=" ">
+               {loading===true?<ReactLoader />
+               :<div className=" ">
                     <div  >
                         <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
                             Create a new Service
@@ -158,7 +164,7 @@ const AddService = () => {
                         </div>
                     </div>
                 </div>
-
+}
 
             </Sidenav>
         </>

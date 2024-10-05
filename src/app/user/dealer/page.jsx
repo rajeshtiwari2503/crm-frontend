@@ -13,9 +13,14 @@ const Dealer = () => {
   const [dealers, setDealers] = useState([])
   const [refresh, setRefresh] = useState("")
 
-  useEffect(() => {
-    getAllDealers()
+  const [value, setValue] = React.useState(null);
 
+  useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+        setValue(JSON.parse(storedValue));
+    }
+    getAllDealers()
   }, [refresh])
 
   const getAllDealers = async () => {
@@ -30,8 +35,9 @@ const Dealer = () => {
     }
   }
 
-  const data = dealers?.map((item, index) => ({ ...item, i: index + 1 }));
-
+  // const data = dealers?.map((item, index) => ({ ...item, i: index + 1 }));
+  const filData=value?.user?.role==="BRAND"?dealers?.filter((f)=>f?.brandId===value?.user?._id):dealers
+  const data = filData?.map((item, index) => ({ ...item, i: index + 1 }));
   const RefreshData = (data) => {
     setRefresh(data)
   }

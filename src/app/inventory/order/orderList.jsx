@@ -584,7 +584,40 @@ const OrderList = (props) => {
                 <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
                 {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
               </div>
+              {props?.userData?.user?.role === "SERVICE" ? 
+               <div>
+               <div>
+                <label className="block text-gray-700">Stock Type</label>
+                <select
+                  value={stockType}
+                  onChange={(e) => setStockType(e.target.value)}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="fresh">Fresh Stock</option>
+                  <option value="defective">Defective Stock</option>
+                </select>
+              </div>
 
+             
+              {stockType === 'defective' && (
+                <div>
+                  <label className="block text-gray-700">Attach Image</label>
+                  <input
+                    type="file"
+                    {...register('defectiveImage', { required: stockType === 'defective' })}
+                    className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  />
+                  {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
+                </div>
+              )}
+                </div>
+
+              :""}
+              <div className='col-span-2'>
+                <label className="block text-gray-700 ">Comments/Notes</label>
+                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+              </div>
               {/* <div>
               <label className="block text-gray-700 ">Priority Level</label>
               <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
@@ -636,35 +669,7 @@ const OrderList = (props) => {
               </select>
               {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
             </div> */}
-              <div>
-                <label className="block text-gray-700">Stock Type</label>
-                <select
-                  value={stockType}
-                  onChange={(e) => setStockType(e.target.value)}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="fresh">Fresh Stock</option>
-                  <option value="defective">Defective Stock</option>
-                </select>
-              </div>
-
-              {/* Conditionally Render the File Input for Defective Stock */}
-              {stockType === 'defective' && (
-                <div>
-                  <label className="block text-gray-700">Attach Image</label>
-                  <input
-                    type="file"
-                    {...register('defectiveImage', { required: stockType === 'defective' })}
-                    className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
-                  {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
-                </div>
-              )}
-              <div className='col-span-2'>
-                <label className="block text-gray-700 ">Comments/Notes</label>
-                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-              </div>
+             
 
               {/* <div>
               <label className="block text-gray-700 ">Attachments</label>

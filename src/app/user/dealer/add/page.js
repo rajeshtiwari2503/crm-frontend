@@ -19,8 +19,10 @@ const AddDealer = () => {
     const RegiterDealer = async (reqdata) => {
         try {
             setLoading(true)
-
-            let response = await http_request.post('/dealerRegistration', reqdata)
+            const storedValue = localStorage.getItem("user");     
+            const brand=(JSON.parse(storedValue))
+            const regist={...reqdata,name:reqdata?.name,brandId:brand?.user?._id,brandName:brand?.user?.brandName}
+            let response = await http_request.post('/dealerRegistration', regist)
             const { data } = response
             ToastMessage(data)
             setLoading(false)

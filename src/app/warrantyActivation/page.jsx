@@ -355,6 +355,7 @@ const ActivateWarrantyButton = () => {
                   type="text"
                   value={contactNo}
                   onChange={(e) => setContactNo(e.target.value)}
+                  placeholder='Please enter your register number'
                   className="w-full p-2 border border-gray-300 rounded-md"
                 />
                 {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}

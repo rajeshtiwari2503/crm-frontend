@@ -73,7 +73,7 @@ const WarrantyDetails = ({ params }) => {
 
         // printWindow.document.write('<h2>Generated QR Codes</h2>');
         let records = warranty?.records || [];
-        let rowsPerPage = 2;
+        let rowsPerPage = 5;
         let itemsPerRow = 3;
 
         for (let i = 0; i < records.length; i += rowsPerPage * itemsPerRow) {

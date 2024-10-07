@@ -85,7 +85,7 @@ const WarrantyDetails = ({ params }) => {
                 printWindow.document.write('<div class="record">');
                 // printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
                 // printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
-                // printWindow.document.write('<div class="text-12">  item?.uniqueId productName</div>');
+                // printWindow.document.write('<div class="text-12">  ' + warranty?.productName + '</div>');
                 
                 printWindow.document.write('</div>');
                 // printWindow.document.write('<div><img src="' + (brand?.brandLogo ? brand?.brandLogo : '/Logo.png') + '" alt="Company Logo" /></div>');

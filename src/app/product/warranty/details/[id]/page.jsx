@@ -83,19 +83,21 @@ const WarrantyDetails = ({ params }) => {
                 printWindow.document.write('<div class="item">');
                 printWindow.document.write('<div class="record">');
                 printWindow.document.write('<div class="record">');
-                printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
-                printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
+                // printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
+                // printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
+                // printWindow.document.write('<div class="text-12">  item?.uniqueId productName</div>');
+                
                 printWindow.document.write('</div>');
-                printWindow.document.write('<div><img src="' + (brand?.brandLogo ? brand?.brandLogo : '/Logo.png') + '" alt="Company Logo" /></div>');
+                // printWindow.document.write('<div><img src="' + (brand?.brandLogo ? brand?.brandLogo : '/Logo.png') + '" alt="Company Logo" /></div>');
 
                 printWindow.document.write('<div><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
-                printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
-                printWindow.document.write('<div class="font-bold text-12">+91 9649149196</div>');
-                printWindow.document.write('<div class="text-12">(10 AM - 6 PM)</div>');
-                printWindow.document.write('<div class="text-12">All Working Days</div>');
-                printWindow.document.write('<div class="text-12">Be ready with your  </div>');
-                printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
-                printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
+                // printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
+                // printWindow.document.write('<div class="font-bold text-12">+91 9649149196</div>');
+                // printWindow.document.write('<div class="text-12">(10 AM - 6 PM)</div>');
+                // printWindow.document.write('<div class="text-12">All Working Days</div>');
+                // printWindow.document.write('<div class="text-12">Be ready with your  </div>');
+                // printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
+                // printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
                 printWindow.document.write('<div class="font-bold text-12">Unique Code: ' + item?.uniqueId + '</div>');
                 printWindow.document.write('</div>');
                 printWindow.document.write('</div>');

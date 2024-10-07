@@ -56,7 +56,7 @@ const WarrantyDetails = ({ params }) => {
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-        printWindow.document.write('.record { margin-bottom: 25px; }');
+        printWindow.document.write('.record { margin-bottom: 35px; }');
         printWindow.document.write('.record img { width: 120px; height: 120px; }');
         printWindow.document.write('.container { display: flex; flex-wrap: wrap;   }');
         printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 20px; }');

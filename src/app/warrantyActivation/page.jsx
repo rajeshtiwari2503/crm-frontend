@@ -76,8 +76,9 @@ const ActivateWarrantyButton = () => {
   };
 
   const onSubmit = async (data) => {
+    // console.log(data);
     try {
-      // console.log(data);
+     
 
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
@@ -372,7 +373,7 @@ const ActivateWarrantyButton = () => {
             :
             <div>
               {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
-              <form className="space-y-4">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <div className='mt-5'>
                   <label htmlFor="name" className="block text-gray-700">Full Name:</label>
                   <input
@@ -439,7 +440,7 @@ const ActivateWarrantyButton = () => {
                    
 
                     <button
-                      onClick={getLocation}
+                      onClick={  getLocation}
                       className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >
                        <MyLocation /> Location

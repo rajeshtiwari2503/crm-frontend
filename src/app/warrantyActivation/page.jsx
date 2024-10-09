@@ -49,10 +49,14 @@ const ActivateWarrantyButton = () => {
       setLoading(false);
     }
   };
+  const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
+
+// console.log(filterWarranty);
+
 
   const calculateWarrantyExpiration = () => {
     if (warrantyDetails) {
-      const purchaseDate = new Date(warrantyDetails.year);
+      const purchaseDate = new Date(filterWarranty?.activationDate);
       const expirationDate = new Date(purchaseDate);
       expirationDate.setDate(purchaseDate.getDate() + warrantyDetails.warrantyInDays);
       return expirationDate.toLocaleDateString();
@@ -249,7 +253,7 @@ const ActivateWarrantyButton = () => {
   };
 
 
-  const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
+ 
 
   // console.log(filterWarranty);
   const getAllProduct = async () => {

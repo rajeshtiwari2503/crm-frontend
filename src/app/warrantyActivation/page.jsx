@@ -316,34 +316,34 @@ const ActivateWarrantyButton = () => {
           <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
           <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
 
-            <div >
+            <div className='mt-2'>
               <label className="font-bold text-sm text-gray-700">Brand Name </label>
               <p className="text-gray-600" text-sm>{warrantyDetails.brandName}</p>
             </div>
 
-            <div>
+            <div className='mt-2'>
               <label className="font-bold text-gray-700 text-sm">Product Name </label>
               <p className="text-gray-600 text-sm">{warrantyDetails.productName}</p>
             </div>
 
-            <div>
+            <div className='mt-2'>
               <label className="font-bold text-gray-700 text-sm">Unique Code </label>
               <p className="text-gray-600 text-sm">{qrCodeUrl}</p>
             </div>
-            <div>
+            <div className='mt-2'>
               <label className="font-bold text-gray-700 text-sm">Year </label>
-              <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleString()}</p>
+              <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleDateString()}</p>
             </div>
             {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
           <p className="text-gray-600">{calculateWarrantyExpiration()}</p>
         </div> */}
 
-            <div>
+            <div className='mt-2'>
               <label className="font-bold text-gray-700 text-sm">Warranty Exp  </label>
-              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ?calculateWarrantyExpiration():"Warranty not activated"}</p>
+              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ?calculateWarrantyExpiration():" Not activated"}</p>
             </div>
-            <div>
+            <div className='mt-2'>
               <label className="font-bold text-gray-700 text-sm">Activated </label>
               <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
             </div>

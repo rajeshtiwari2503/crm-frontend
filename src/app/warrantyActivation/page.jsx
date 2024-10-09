@@ -8,6 +8,7 @@ import { ToastMessage } from '../components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 
 import axios from 'axios';
+import { LocationCity, MyLocation } from '@mui/icons-material';
 
 const ActivateWarrantyButton = () => {
   const [activationStatus, setActivationStatus] = useState(null);
@@ -28,7 +29,7 @@ const ActivateWarrantyButton = () => {
     const qrCode = searchParams.get('uniqueId');
     if (qrCode) {
       setQrCodeUrl(qrCode);
-      getwarrantyDetails(qrCode); 
+      getwarrantyDetails(qrCode);
       getAllProduct()// Call only once after setting the QR code
     }
   }, [searchParams, refresh]);
@@ -77,7 +78,7 @@ const ActivateWarrantyButton = () => {
   const onSubmit = async (data) => {
     try {
       // console.log(data);
-      
+
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
         ...data, // Spread form data
@@ -110,7 +111,7 @@ const ActivateWarrantyButton = () => {
           const { latitude, longitude } = position.coords;
           setValue("lat", latitude);
           setValue("long", longitude);
-  
+
           // Fetch address and pincode using a reverse geocoding API
           fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg`
@@ -119,20 +120,20 @@ const ActivateWarrantyButton = () => {
             .then((data) => {
               if (data.results && data.results.length > 0) {
                 const bestMatch = data.results[0]; // The first result is usually the best match
-  
+
                 // Extract postal code (pincode)
                 const postalCode = bestMatch.address_components.find((component) =>
                   component.types.includes("postal_code")
                 );
                 setValue("address", bestMatch.formatted_address);
                 setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
-  
+
                 // Extract district (administrative_area_level_2), fallback to locality or sublocality
                 const districtComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_2")
                 );
                 setValue("district", districtComponent ? districtComponent.long_name : "District not found");
-  
+
                 // Extract state (administrative_area_level_1)
                 const stateComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_1")
@@ -155,7 +156,7 @@ const ActivateWarrantyButton = () => {
       alert("Geolocation is not supported by this browser.");
     }
   };
-  
+
 
   // const handleSearch = async () => {
   //   const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
@@ -189,7 +190,7 @@ const ActivateWarrantyButton = () => {
   //       );
   //       setValue("state" ,stateComponent?.long_name );
   //       console.log(stateComponent?.long_name);
-        
+
   //     } else {
   //       alert('Location not found');
   //     }
@@ -197,30 +198,30 @@ const ActivateWarrantyButton = () => {
   //     console.error('Error fetching location: ', error);
   //   }
   // };
- 
+
   const handleSearch = async () => {
     const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
-  
+
     try {
       const response = await axios.get(url);
       const result = response.data.results[0];
-      
+
       if (result) {
         // Extract latitude and longitude
         const { lat, lng } = result.geometry.location;
         setValue("lat", lat);
         setValue("long", lng);
-  
+
         // Extract formatted address
         setValue("address", result.formatted_address);
-  
+
         // Extract postal code (pincode)
         const postalCode = result.address_components.find(component =>
           component.types.includes('postal_code')
         );
         setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
-  
+
         // Extract district (administrative_area_level_2)
         const districtComponent = result.address_components.find(component =>
           component.types.includes('administrative_area_level_2') ||
@@ -228,16 +229,16 @@ const ActivateWarrantyButton = () => {
           component.types.includes('sublocality')
         );
         setValue("district", districtComponent ? districtComponent.long_name : " ");
-  // console.log(districtComponent ? districtComponent.long_name : " ");
-  
+        // console.log(districtComponent ? districtComponent.long_name : " ");
+
         // Extract state (administrative_area_level_1)
         const stateComponent = result.address_components.find(component =>
           component.types.includes('administrative_area_level_1')
         );
         setValue("state", stateComponent ? stateComponent.long_name : " ");
         // console.log(stateComponent ? stateComponent.long_name : " ");
-       
-        
+
+
       } else {
         alert('Location not found');
       }
@@ -245,8 +246,8 @@ const ActivateWarrantyButton = () => {
       console.error('Error fetching location: ', error);
     }
   };
-  
- 
+
+
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
   // console.log(filterWarranty);
@@ -254,25 +255,26 @@ const ActivateWarrantyButton = () => {
     let response = await http_request.get("/getAllProduct")
     let { data } = response;
 
-    setProduct (data)
+    setProduct(data)
   }
 
-  const filterProduct=product?.find((f)=>f?._id===filterWarranty?.productId)
+  const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
   // console.log(filterProduct);
   const handleComplaint = async () => {
 
     try {
-    const reqdata={brandId:filterProduct?.brandId,productBrand:filterProduct?.productBrand,productId:filterProduct?._id,productName:filterProduct?.productName
-     ,categoryId:filterProduct?.categoryId,categoryName:filterProduct?.categoryName,modelNo:filterProduct?.modelNo
-     ,serialNo:filterProduct?.serialNo,warrantyStatus:filterProduct?.warrantyStatus,uniqueId:filterWarranty?.uniqueId
-     ,lat:filterWarranty?.lat,long:filterWarranty?.long,userId:filterWarranty?.userId
-     ,userName:filterWarranty?.userName,serviceLocation:filterWarranty?.address,fullName:filterWarranty?.userName,
-     phoneNumber:filterWarranty?.contact,emailAddress:filterWarranty?.email,pincode:filterWarranty?.pincode
-     ,state:filterWarranty?.state,district:filterWarranty?.district,serviceAddress:filterWarranty?.address
-     
-    }
-    console.log(reqdata);
-    
+      const reqdata = {
+        brandId: filterProduct?.brandId, productBrand: filterProduct?.productBrand, productId: filterProduct?._id, productName: filterProduct?.productName
+        , categoryId: filterProduct?.categoryId, categoryName: filterProduct?.categoryName, modelNo: filterProduct?.modelNo
+        , serialNo: filterProduct?.serialNo, warrantyStatus: filterProduct?.warrantyStatus, uniqueId: filterWarranty?.uniqueId
+        , lat: filterWarranty?.lat, long: filterWarranty?.long, userId: filterWarranty?.userId
+        , userName: filterWarranty?.userName, serviceLocation: filterWarranty?.address, fullName: filterWarranty?.userName,
+        phoneNumber: filterWarranty?.contact, emailAddress: filterWarranty?.email, pincode: filterWarranty?.pincode
+        , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
+
+      }
+      console.log(reqdata);
+
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)
         const formData = new FormData();
@@ -308,29 +310,29 @@ const ActivateWarrantyButton = () => {
 
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen bg-gray-100 p-6">
+      <div className="flex justify-center items-center min-h-screen bg-white p-6">
         <Toaster />
-        <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h2 className="text-2xl font-semibold text-gray-800  ">Product Warranty Details</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 py-4 gap-2">
+        <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
+          <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
+          <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
 
-            <div>
-              <label className="font-bold text-gray-700">Brand Name:</label>
-              <p className="text-gray-600">{warrantyDetails.brandName}</p>
+            <div >
+              <label className="font-bold text-sm text-gray-700">Brand Name </label>
+              <p className="text-gray-600" text-sm>{warrantyDetails.brandName}</p>
             </div>
 
             <div>
-              <label className="font-bold text-gray-700">Product Name:</label>
-              <p className="text-gray-600">{warrantyDetails.productName}</p>
+              <label className="font-bold text-gray-700 text-sm">Product Name </label>
+              <p className="text-gray-600 text-sm">{warrantyDetails.productName}</p>
             </div>
 
             <div>
-              <label className="font-bold text-gray-700">Unique Code:</label>
-              <p className="text-gray-600">{qrCodeUrl}</p>
+              <label className="font-bold text-gray-700 text-sm">Unique Code </label>
+              <p className="text-gray-600 text-sm">{qrCodeUrl}</p>
             </div>
             <div>
-              <label className="font-bold text-gray-700">Year:</label>
-              <p className="text-gray-600">{new Date(warrantyDetails.year).toLocaleString()}</p>
+              <label className="font-bold text-gray-700 text-sm">Year </label>
+              <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleString()}</p>
             </div>
             {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
@@ -338,25 +340,25 @@ const ActivateWarrantyButton = () => {
         </div> */}
 
             <div>
-              <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
-              <p className="text-gray-600">{calculateWarrantyExpiration()}</p>
+              <label className="font-bold text-gray-700 text-sm">Warranty Exp  </label>
+              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ?calculateWarrantyExpiration():"Warranty not activated"}</p>
             </div>
             <div>
-              <label className="font-bold text-gray-700">Activated:</label>
-              <p className="text-gray-600">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
+              <label className="font-bold text-gray-700 text-sm">Activated </label>
+              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
             </div>
           </div>
           {filterWarranty?.isActivated === true ?
             <div>
-              <div className='mb-5'>
-                <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+              <div className='mb-5 mt-5'>
+                <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
                 <input
                   id="contact"
                   type="text"
                   value={contactNo}
                   onChange={(e) => setContactNo(e.target.value)}
                   placeholder='Please enter your register number'
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full  p-0.5 border border-gray-300 rounded-md"
                 />
                 {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
               </div>
@@ -369,15 +371,15 @@ const ActivateWarrantyButton = () => {
             </div>
             :
             <div>
-              <h2 className="text-2xl font-semibold mb-4 text-gray-800">Activate Warranty</h2>
+              {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
               <form className="space-y-4">
-                <div>
-                  <label htmlFor="name" className="block text-gray-700">Name:</label>
+                <div className='mt-5'>
+                  <label htmlFor="name" className="block text-gray-700">Full Name:</label>
                   <input
                     id="name"
                     type="text"
                     {...register('name', { required: 'Name is required' })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full p-0.5 border border-gray-300 rounded-md"
                   />
                   {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                 </div>
@@ -387,11 +389,11 @@ const ActivateWarrantyButton = () => {
                     id="contact"
                     type="text"
                     {...register('contact', { required: 'Contact is required' })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full  p-0.5 border border-gray-300 rounded-md"
                   />
                   {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                 </div>
-                <div>
+                {/* <div>
                   <label htmlFor="email" className="block text-gray-700">Email:</label>
                   <input
                     id="email"
@@ -403,11 +405,11 @@ const ActivateWarrantyButton = () => {
                         message: 'Invalid email address',
                       },
                     })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full  p-0.5 border border-gray-300 rounded-md"
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-                </div>
-                <div>
+                </div> */}
+                {/* <div>
                   <label htmlFor="password" className="block text-gray-700">Password:</label>
                   <input
                     id="password"
@@ -419,41 +421,46 @@ const ActivateWarrantyButton = () => {
                         message: 'Password must be at least 6 characters long',
                       },
                     })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
+                    className="w-full  p-0.5 border border-gray-300 rounded-md"
                   />
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-                </div>
-                <div>
-                  <label htmlFor="address" className="block text-gray-700">Address:</label>
-                  <input
-                    id="address"
-                    type="text"
-                    {...register('address', { required: 'Address is required' })}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  />
+                </div> */}
+
+                <div className=''>
+                  <label htmlFor="address" className="block text-gray-700">Full Address:</label>
+                  <div className="flex w-full justify-between max-w-md space-x-3 ">
+
+                    <input
+                      id="address"
+                      type="text"
+                      {...register('address', { required: 'Address is required' })}
+                      className=" w-full  p-0.5 border border-gray-300 rounded-md"
+                    />
+                   
+
+                    <button
+                      onClick={getLocation}
+                      className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                       <MyLocation /> Location
+                    </button>
+
+                  </div>
                   {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
                 </div>
               </form>
-              <div className='mt-5 mb-5'>
-                <button
-                  onClick={getLocation}
-                  className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                  Use Current Location
-                </button>
 
-              </div>
-              <div className="flex w-full max-w-md space-x-3">
+              <div className="flex w-full max-w-md mt-6 space-x-3">
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Enter location"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                 />
                 <button
                   onClick={handleSearch}
-                  className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  className="bg-blue-500 text-sm text-white px-6 py-1 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   Search
                 </button>

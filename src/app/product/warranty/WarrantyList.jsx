@@ -1,33 +1,27 @@
-"use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import CloseIcon from '@mui/icons-material/Close';
-import { Add, Visibility } from '@mui/icons-material';
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogTitle
+} from '@mui/material';
+import { Add, Delete, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
-import { ConfirmBox } from '@/app/components/common/ConfirmBox';
-import http_request from '.././../../../http-request'
 import { Toaster } from 'react-hot-toast';
-import { ToastMessage } from '@/app/components/common/Toastify';
- 
 import { ReactLoader } from '@/app/components/common/Loading';
 import ProductWarrantyForm from './addWarranty';
+import { ConfirmBox } from '@/app/components/common/ConfirmBox';
+import http_request from '.././../../../http-request';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
 const WarrantyList = (props) => {
-
-
-  const router = useRouter()
-
+  const router = useRouter();
   const data = props?.data;
- 
+
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
-  
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [sortDirection, setSortDirection] = useState('asc');
-  const [sortBy, setSortBy] = useState('id');
+  const [sortDirection, setSortDirection] = useState('desc'); // Set default to 'desc'
+  const [sortBy, setSortBy] = useState('createdAt'); // Set the default sort by createdAt
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
@@ -46,42 +40,38 @@ const WarrantyList = (props) => {
     setSortBy(property);
   };
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
- 
+  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))
+    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   const handleEditModalClose = () => {
     setEditModalOpen(false);
   };
-  const handleWarrantyClose = () => {
-    setIsWarranty(false);
-  };
 
   const handleAdd = (row) => {
-    setEditData(row)
+    setEditData(row);
     setEditModalOpen(true);
-  }
-  const handleEdit = (id) => {
-    router.push(`/product/sparepart/edit/${id}`)
-  }
+  };
+
   const handleDetails = (id) => {
-    router.push(`/product/warranty/details/${id}`)
-  }
+    router.push(`/product/warranty/details/${id}`);
+  };
+
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteSparepart/${cateId}`);
+      let response = await http_request.deleteData(`/deleteProductWarranty/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
-      props?.RefreshData(data)
-      ToastMessage(data);
+      ToastMessage(data)
+      props?.RefreshData(data);
     } catch (err) {
       console.log(err);
     }
-  }
+  };
+
   const handleDelete = (id) => {
-    setCateId(id)
+    setCateId(id);
     setConfirmBoxView(true);
-  }
+  };
 
   return (
     <div>
@@ -93,151 +83,134 @@ const WarrantyList = (props) => {
           <div className=' ml-2 '>Add Warranty </div>
         </div>
       </div>
-      {!data.length>0 ?  <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
-   : 
-   <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'id'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('id')}
-                >
-                  ID
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                  Brand Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                  Product Name
-                </TableSortLabel>
-              </TableCell> 
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                  Number of QR 
-                </TableSortLabel>
-              </TableCell> 
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'category'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('category')}
-                >
-                  Warranty Days 
-                </TableSortLabel>
-              </TableCell> 
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'productModel'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('productModel')}
-                >
-                 Year 
-                </TableSortLabel>
-              </TableCell> 
-              {/* <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'email'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('email')}
-                >
-                  Status
-                </TableSortLabel>
-              </TableCell> */}
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'createdAt'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('createdAt')}
-                >
-                  CreatedAt
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>Actions</TableCell>
 
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedData?.map((row) => (
-              <TableRow key={row?.i} hover>
-                <TableCell>{row?.i}</TableCell>
-                <TableCell>{row?.brandName}</TableCell>
-                <TableCell>{row?.productName}</TableCell>
-                <TableCell>{row?.numberOfGenerate}</TableCell>
-                <TableCell>{row?.warrantyInDays}</TableCell>
-                <TableCell>{row?.year}</TableCell>
-                {/* <TableCell>{row?.status}</TableCell> */}
-                <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
-                <TableCell className='flex'>
-                  <IconButton aria-label="view" onClick={() => handleDetails(row._id)} >
-                    <Visibility color='primary' />
-                  </IconButton>
-                  {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
-                    <EditIcon color='success' />
-                  </IconButton>
-                  <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                    <DeleteIcon color='error' />
-                  </IconButton> */}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {!data.length > 0 ? (
+        <div className='h-[400px] flex justify-center items-center'>
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === '_id'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('_id')}
+                    >
+                      ID
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'productName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('productName')}
+                    >
+                      Product Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'numberOfGenerate'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('numberOfGenerate')}
+                    >
+                      Number of QR
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'warrantyInDays'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('warrantyInDays')}
+                    >
+                      Warranty Days
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'year'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('year')}
+                    >
+                      Year
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      Created At
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedData?.map((row) => (
+                  <TableRow key={row.i} hover>
+                    <TableCell>{row.i}</TableCell>
+                    <TableCell>{row.brandName}</TableCell>
+                    <TableCell>{row.productName}</TableCell>
+                    <TableCell>{row.numberOfGenerate}</TableCell>
+                    <TableCell>{row.warrantyInDays}</TableCell>
+                    <TableCell>{row.year}</TableCell>
+                    <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className='flex'>
+                      <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                        <Visibility color='primary' />
+                      </IconButton>
+                      {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                        <Delete color='error' />
+                      </IconButton> */}
 
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={data?.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-</>}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-<Dialog open={editModalOpen} onClose={handleEditModalClose}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
+      )}
+
+      <Dialog open={editModalOpen} onClose={handleEditModalClose}>
         <DialogTitle>{editData?._id ? "Edit Product Warranty" : "Add Product Warranty"}</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleEditModalClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
         <DialogContent>
-          <ProductWarrantyForm    product={props?.product} existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <ProductWarrantyForm
+            brand={props?.brand}
+            product={props?.product}
+            existingProduct={editData}
+            RefreshData={props?.RefreshData}
+            onClose={handleEditModalClose}
+          />
         </DialogContent>
-
       </Dialog>
 
-
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
-
     </div>
   );
 };

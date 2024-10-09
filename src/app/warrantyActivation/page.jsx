@@ -80,7 +80,7 @@ const ActivateWarrantyButton = () => {
     try {
      
 
-      const response = await http_request.post('/activateWarrantywww', {
+      const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
         ...data, // Spread form data
       });

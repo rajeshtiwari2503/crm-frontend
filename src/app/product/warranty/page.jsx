@@ -7,12 +7,14 @@ import WarrantyList from './WarrantyList'
 const Warranty = () => {
     const [warranty, setWarranty] = useState([])
     const [product, setProduct] = useState([])
+    const [brand, setBrand] = useState([])
 
     const [refresh, setRefresh] = useState("")
 
     useEffect(() => {
       getAllwarranty()
       getAllProduct()
+      getAllBrand()
     }, [refresh])
   
   
@@ -28,8 +30,15 @@ const Warranty = () => {
     
         setProduct (data)
       }
-    const data = warranty?.map((item, index) => ({ ...item, i: index + 1}));
 
+      const getAllBrand = async () => {
+        let response = await http_request.get("/getAllBrand")
+        let { data } = response;
+    
+        setBrand (data)
+      }
+    const data = warranty?.map((item, index) => ({ ...item, i: index + 1}));
+ 
     const RefreshData = (data) => {
       setRefresh(data)
     }
@@ -38,7 +47,7 @@ const Warranty = () => {
         <>
             <Sidenav>
                
-                <WarrantyList data={data} product={product} RefreshData={RefreshData}/>
+                <WarrantyList data={data}brand={brand}product={product} RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

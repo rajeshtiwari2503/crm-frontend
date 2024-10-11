@@ -13,7 +13,13 @@ const Brand = () => {
   const [brands, setBrands] = useState([])
   const [refresh, setRefresh] = useState("")
 
+  const [value, setValue] = React.useState(null);
+
   useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if (storedValue) {
+        setValue(JSON.parse(storedValue));
+    }
     getAllBrand()
 
   }, [refresh])
@@ -40,7 +46,7 @@ const Brand = () => {
     <Sidenav>
       <Toaster />
       <>
-         <BrandList data={data} RefreshData={RefreshData} />
+         <BrandList userData={value?.user} data={data} RefreshData={RefreshData} />
         
       </>
     </Sidenav>

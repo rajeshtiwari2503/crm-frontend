@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Visibility } from '@mui/icons-material';
+import { Add, Verified, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -70,6 +70,21 @@ const BrandList = (props) => {
   const handleEdit = (id) => {
     router.push(`/user/brand/edit/${id}`);
   };
+
+const handleSaas=async(id)=>{
+try{
+  let response = await http_request.patch(`/editBrand/${id}`,{brandSaas:"YES"});
+  let { data } = response;
+ 
+  props?.RefreshData(data)
+  ToastMessage(data);
+}
+catch(err){
+  console.log(err);
+  
+}
+}
+
   return (
     <div>
       <Toaster />
@@ -135,6 +150,7 @@ const BrandList = (props) => {
                       CreatedAt
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>isSAAS</TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -148,12 +164,38 @@ const BrandList = (props) => {
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
+                      {props?.userData?.role === "ADMIN" ?
+                        <>
+                          {row?.brandSaas === "YES" ? <IconButton aria-label="edit"  >
+                            <div className=''> <Verified color='success'/> SAAS</div>
+                          </IconButton>
+                            : <button
+                              onClick={() => handleSaas(row?._id)}
+                              className="flex items-center justify-center px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50"
+                              aria-label="edit"
+                            >
+                              <div className="">   Add SAAS</div>
+                            </button>
+                          }
+                        </>
+                        : ""
+                      }
+
+
+
+
+                    </TableCell>
+                    <TableCell>
+
+
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
+
                       {props?.report === true ? ""
                         :
                         <>
+
                           <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                             <EditIcon color='success' />
                           </IconButton>

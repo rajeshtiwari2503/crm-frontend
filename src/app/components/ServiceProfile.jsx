@@ -127,7 +127,7 @@ const ServiceProfile = (props) => {
           <div className='text-lg font-medium'>{userData?.operatingHours}</div>
           <div className='text-1xl font-semibold'>serviceCenterType :</div>
           <div className='text-lg font-medium'>{userData?.serviceCenterType}</div>
-          <div className='text-1xl font-semibold'>serviceCenterType :</div>
+          <div className='text-1xl font-semibold'>serviceCategories :</div>
           <div className='text-lg font-medium'>
             {
               userData?.serviceCategories?.map((item, i) =>
@@ -138,9 +138,7 @@ const ServiceProfile = (props) => {
           <div className='text-1xl font-semibold'>brandsSupported :</div>
           <div className='text-lg font-medium'>
             {
-              userData?.brandsSupported?.map((item, i) =>
-                <div>{item} {" "} </div>
-              )
+              userData?.brandName
             }
           </div>
           <div className='text-1xl font-semibold'>Status :</div>

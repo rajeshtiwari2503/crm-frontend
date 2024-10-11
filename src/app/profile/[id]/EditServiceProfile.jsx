@@ -1,4 +1,4 @@
-
+"use client"
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
@@ -75,16 +75,16 @@ const EditServiceCenter = (props) => {
         setValue('username', userData.username);
         setValue('insuranceCoverage', userData.insuranceCoverage);
         setValue('privacyPolicy', userData.privacyPolicy);
-        setValue('serviceCategories', userData.serviceCategories);
+        // setValue('serviceCategories', userData.serviceCategories);
         setValue('brandsSupported', userData?.brandsSupported?.map(option => option?.value));
         // Object.keys(userData).forEach(key => {
         //     setValue(key, userData[key]);
         // });
         const mappedBrands = userData?.brandsSupported?.map(brand => ({ value: brand, label: brand })) || [];
-        const mappedCategories = userData?.serviceCategories?.map(category => ({ value: category, label: category })) || [];
+        // const mappedCategories = userData?.serviceCategories?.map(category => ({ value: category, label: category })) || [];
 
         setSelectedBrands(mappedBrands);
-        setSelectedCategories(mappedCategories);
+        // setSelectedCategories(mappedCategories);
     }, []);
 
     const generateCaptcha = () => {
@@ -201,7 +201,7 @@ const EditServiceCenter = (props) => {
                 {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country.message}</p>}
             </div>
 
-            <div >
+            {/* <div >
                 <label className="text-sm">Service Categories</label>
                 <Select
                     isMulti
@@ -212,15 +212,11 @@ const EditServiceCenter = (props) => {
                     classNamePrefix="select"
                     onChange={handleCategoryChange}
                 />
-                {/* <ul>
-          {selectedCategories.map((category, index) => (
-            <li key={index}>{category.label}</li>
-          ))}
-        </ul> */}
+          
                 {errors.serviceCategories && <p className="text-red-500">{errors.serviceCategories.message}</p>}
-            </div>
+            </div> */}
 
-            <div  >
+            {/* <div  >
                 <label className="text-sm">Brands Supported</label>
                 <Select
                     isMulti
@@ -231,12 +227,12 @@ const EditServiceCenter = (props) => {
                     onChange={handleBrandChange}
                 />
                 {errors.brandsSupported && <p className="text-red-500">{errors.brandsSupported.message}</p>}
-                {/* <ul>
+               <ul>
           {selectedBrands.map((brand, index) => (
             <li key={index}>{brand.label}</li>
           ))}
-        </ul> */}
-            </div>
+        </ul> 
+            </div> */}
             <div>
                 <label className="text-sm">Technician Certifications</label>
                 <input {...register('technicianCertifications', { required: 'Technician Certifications are required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
@@ -263,16 +259,12 @@ const EditServiceCenter = (props) => {
                 <input {...register('averageTurnaroundTime', { required: 'Average Turnaround Time is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
                 {errors.averageTurnaroundTime && <p className="text-red-500 text-sm mt-1">{errors.averageTurnaroundTime.message}</p>}
             </div>
-            <div className='flex justify-between items-center me-5'>
-                <input type="checkbox" {...register('insuranceCoverage')} />
-
-                <label className="text-sm">Insurance Coverage</label>
-            </div>
+           
 
             <div>
                 <label className="text-sm">Username</label>
-                <input {...register('username', { required: 'Username is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
-                {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
+                <input {...register('email', { required: 'Username is required' })} className="w-full border border-gray-300 rounded px-3 py-1 focus:outline-none focus:border-blue-500" />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
             </div>
             <div>
                 <label className="text-sm">Password</label>
@@ -285,30 +277,37 @@ const EditServiceCenter = (props) => {
                 {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
             </div> */}
 
-            <div className='md:col-span-2'>
-                <label className="text-sm">Upload Business License</label>
+            <div className='  '>
+              <div >  <label className="text-sm">Upload Business License</label></div>
                 <input type="file" {...register('businessLicense')} />
             </div>
-            <div className='md:col-span-2'>
-                <label className="text-sm">Upload Tax Document</label>
+            <div className=' '>
+            <div >  <label className="text-sm">Upload Tax Document</label></div>
                 <input type="file" {...register('taxDocument')} />
             </div>
             <div className='md:col-span-2'>
-                <label className="text-sm">Upload Certification Documents</label>
+            <div >   <label className="text-sm">Upload Certification Documents</label></div>
                 <input type="file" {...register('certificationDocuments')} />
             </div>
+            <div className='flex   items-center '>
+                <input type="checkbox" {...register('insuranceCoverage')} />
 
-            <label className="flex items-center mb-2 md:col-span-2">
+                <label className="text-sm ms-2">Insurance Coverage</label>
+            </div>
+            <div >
+            <label className="flex items-center mt-5  md:col-span-2">
                 <input type="checkbox" {...register('agreement', { required: 'You must accept the terms and conditions' })} className="mr-2" />
                 <span className="text-sm">I agree to the Terms and Conditions</span>
             </label>
             {errors.agreement && <p className="text-red-500 text-sm mt-1">{errors.agreement.message}</p>}
-            <label className="flex items-center md:col-span-2">
+            </div>
+            <div>
+            <label className="flex items-center mt-5 md:col-span-2">
                 <input type="checkbox" {...register('privacyPolicy', { required: 'You must accept the privacy policy' })} className="mr-2" />
                 <span className="text-sm">I agree to the Privacy Policy</span>
             </label>
             {errors.privacyPolicy && <p className="text-red-500 text-sm mt-1">{errors.privacyPolicy.message}</p>}
-
+            </div>
             <div>
                 <label htmlFor="captcha" className="block text-sm font-medium leading-6 text-gray-900">
                     {captchaQuestion}

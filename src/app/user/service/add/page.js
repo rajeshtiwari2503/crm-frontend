@@ -22,8 +22,9 @@ const AddService = () => {
 
             const storedValue = localStorage.getItem("user");     
              const brand=(JSON.parse(storedValue))
-             const regist={...reqdata,serviceCenterName:reqdata?.name,brandId:brand?.user?._id,brandName:brand?.user?.brandName}
+             const regist={...reqdata,serviceCenterName:reqdata?.name,brandId:brand?.user?._id,brandName:brand?.user?.brandName,serviceCenterType:"Authorized",serviceCategories:brand?.user?.serviceCategories}
             setLoading(true)
+            
                   
             let response = await http_request.post('/serviceRegistration',regist )
             const { data } = response

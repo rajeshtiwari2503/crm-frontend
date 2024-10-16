@@ -31,7 +31,7 @@ const Stock = () => {
   
       setProducts (data)
     }
-  const filteData=value?.role==="ADMIN"?stocks:value?.role==="BRAND"?stocks?.filter((f)=>f?.brandId===value?._id):
+  const filteData=value?.role==="ADMIN"?stocks: value?.role==="EMPLOYEE"?stocks:value?.role==="BRAND"?stocks?.filter((f)=>f?.brandId===value?._id):
    value?.role==="SERVICE"?stocks?.filter((f)=>f?.serviceCenterId===value?._id):[]
     const data = filteData?.map((item, index) => ({ ...item, i: index + 1}));
 

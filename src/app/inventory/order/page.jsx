@@ -35,7 +35,7 @@ const Order = () => {
   
     try {
       let endPoint=
-     userInfo?.user?.role === 'ADMIN'? 
+     userInfo?.user?.role === 'ADMIN'|| userInfo?.user?.role === 'EMPLOYEE'? 
          '/getAllOrder'
         : userInfo?.user?.role === 'BRAND'? 
          `/getAllOrderById?brandId=${userInfo?.user?._id}`

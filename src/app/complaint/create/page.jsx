@@ -327,12 +327,12 @@ const AddComplaint = () => {
     setValue('issueType', selectedOptions.map(option => option.label));
   };
 
-  const filterProducts=products?.filter((f)=>f?.userId===value?.user?._id)
+  const filterProducts=value?.user?.role === "ADMIN"|| value?.user?.role === "EMPLOYEE"?products:products?.filter((f)=>f?.userId===value?.user?._id)
   return (
     <>
 
       <Sidenav >
-        {value?.user?.role === "USER" || value?.user?.role === "DEALER"?
+        {value?.user?.role === "USER" || value?.user?.role === "DEALER" ?
           <AddDealerComplaint nature={nature} subCategory={subCategory} />
           : <div className=" ">
           

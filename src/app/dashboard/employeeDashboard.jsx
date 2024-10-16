@@ -15,7 +15,7 @@ const AreaChart=dynamic(()=>import("../analytics/charts/areaChart"),{
 const  EmployeeDashboard = () => {
   return (
     <>
-    <div className='grid grid-cols-4 gap-4'>
+    {/* <div className='grid grid-cols-4 gap-4'>
       <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
         <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
           <div className='flex justify-between'>
@@ -23,7 +23,7 @@ const  EmployeeDashboard = () => {
               <PeopleAlt fontSize='large' />
             </div>
             <div className='mr-7 mt-5 roundProgress'>
-              {/* <h2>Progress</h2> */}
+             
               <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
             </div>
           </div>
@@ -42,7 +42,7 @@ const  EmployeeDashboard = () => {
               <PeopleAlt fontSize='large' />
             </div>
             <div className='mr-7 mt-5 roundProgress'>
-              {/* <h2>Progress</h2> */}
+              
               <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
             </div>
           </div>
@@ -61,7 +61,7 @@ const  EmployeeDashboard = () => {
               <PeopleAlt fontSize='large' />
             </div>
             <div className='mr-7 mt-5 roundProgress'>
-              {/* <h2>Progress</h2> */}
+              
               <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
             </div>
           </div>
@@ -80,7 +80,7 @@ const  EmployeeDashboard = () => {
               <PeopleAlt fontSize='large' />
             </div>
             <div className='mr-7 mt-5 roundProgress'>
-              {/* <h2>Progress</h2> */}
+           
               <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
             </div>
           </div>
@@ -101,7 +101,8 @@ const  EmployeeDashboard = () => {
         <PieChart />
 
       </div>
-    </div>
+    </div> */}
+    <div>Start your Work</div>
   </>
   )
 }

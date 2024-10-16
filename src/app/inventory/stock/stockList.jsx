@@ -151,7 +151,7 @@ const handleDetails=(id)=>{
                   </TableCell>
                 
                 
-                  {userData?.user?.role === "ADMIN" ?
+                  {userData?.user?.role === "ADMIN"  ||userData?.user?.role === "EMPLOYEE" ? 
                     <>
                     <TableCell>
                       <TableSortLabel
@@ -198,7 +198,7 @@ const handleDetails=(id)=>{
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
                     <TableCell>{row?.defectiveStock}</TableCell>
-                    {userData?.user?.role === "ADMIN" ?
+                    {userData?.user?.role === "ADMIN" ||userData?.user?.role === "EMPLOYEE" ? 
                     <>
                       <TableCell>{row?.serviceCenterName}</TableCell>
                      

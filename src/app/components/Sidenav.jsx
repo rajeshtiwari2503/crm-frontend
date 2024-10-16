@@ -74,14 +74,14 @@ function Sidenav(props) {
     const storedValue = localStorage.getItem("user");
     const user1 = JSON.parse(storedValue);
     try {
-    
-      const endPoint=user1?.user.role==="ADMIN"? "/dashboardDetails"
-      :user1?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user1?.user?._id}`
-      :user1?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user1?.user?._id}`
-      :user1?.user.role==="USER"?`/dashboardDetailsByUserId/${user1?.user?._id}`
-      :user1?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user1?.user?._id}`
-      :user1?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
-      :""
+
+      const endPoint = user1?.user.role === "ADMIN" ? "/dashboardDetails"
+        : user1?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user1?.user?._id}`
+          : user1?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user1?.user?._id}`
+            : user1?.user.role === "USER" ? `/dashboardDetailsByUserId/${user1?.user?._id}`
+              : user1?.user.role === "TECHNICIAN" ? `/dashboardDetailsByTechnicianId/${user1?.user?._id}`
+                : user1?.user.role === "SERVICE" ? `/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
+                  : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
 
@@ -91,7 +91,7 @@ function Sidenav(props) {
       console.log(err);
     }
   }
-// console.log(dashData);
+  // console.log(dashData);
 
   const getAllNotification = async () => {
     const storedValue = localStorage.getItem("user");
@@ -324,9 +324,9 @@ function Sidenav(props) {
   const secondaryText = "#007BFF"
 
   const complaints = value?.user?.role === "ADMIN" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer','Customer'] : []
-  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature',"Warranty"]:value?.user?.role === "BRAND" ? [  'Product', 'SparePart', 'Complaint Nature' ] : ['Product']
-  const inventory=value?.user?.role === "ADMIN"?['Sparepart', "Stock", "Order"]:value?.user?.role === "BRAND"?[  "Stock", "Order"]:["Stock", "Order"]
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer'] : []
+  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" ? ['Product', 'SparePart', 'Complaint Nature'] : ['Product']
+  const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
     <>
       {value ?
@@ -342,15 +342,17 @@ function Sidenav(props) {
             </Toolbar>
             <Divider />
 
-            <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-              <ListItemButton>
-                <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
-                  <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
-                </ListItemIcon  >
-                <ListItemText primary={"Dashboard"} />
+            {value?.user?.role === "EMPLOYEE" ? ""
+              : <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
+                    <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon  >
+                  <ListItemText primary={"Dashboard"} />
 
-              </ListItemButton>
-            </ListItem>
+                </ListItemButton>
+              </ListItem>
+            }
             {/* {value?.user?.role === "ADMIN" || value?.user?.role === "USER"
               ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
@@ -420,7 +422,7 @@ function Sidenav(props) {
         : "dfdfd"} */}
 
 
-            {value?.user?.role === "ADMIN"|| value?.user?.role === "BRAND" || value?.user?.role === "USER"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "USER"
               ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -472,7 +474,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND"&&value?.user?.brandSaas==="YES")
+            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -565,17 +567,17 @@ function Sidenav(props) {
                                     ? '#007BFF' // text-sky-600
                                     : '#64748b', // text-slate-700
 
-                        }} /> 
+                        }} />
                       </ListItemIcon>
-                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} /> 
-                      {text==="Pending"?dashData?.complaints?.pending
-                      :text==="Assign"?dashData?.complaints?.assign
-                      :text==="In Progress"?dashData?.complaints?.inProgress
-                      :text==="Part Pending"?dashData?.complaints?.partPending
-                      :text==="Cancel"?dashData?.complaints?.cancel
-                      :text==="Close"?dashData?.complaints?.complete
-                      :text==="All Service"?dashData?.complaints?.allComplaints
-                      :""}
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                      {text === "Pending" ? dashData?.complaints?.pending
+                        : text === "Assign" ? dashData?.complaints?.assign
+                          : text === "In Progress" ? dashData?.complaints?.inProgress
+                            : text === "Part Pending" ? dashData?.complaints?.partPending
+                              : text === "Cancel" ? dashData?.complaints?.cancel
+                                : text === "Close" ? dashData?.complaints?.complete
+                                  : text === "All Service" ? dashData?.complaints?.allComplaints
+                                    : ""}
                     </ListItemButton>
                   </ListItem>
                 ))}
@@ -781,7 +783,7 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ||    value?.user?.role === "SERVICE"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE"
               ?
 
               <ListItem onClick={handleCollapseInventory} disablePadding className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
@@ -910,22 +912,22 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {/* {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" */}
-            <ListItem disablePadding
-              onClick={(event) => {
-                router.push(`/notification`)
-              }}
-              className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-              <ListItemButton>
-                <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <NotificationsNone style={{ color: pathname.startsWith("/notification") ? '#007BFF' : '#64748b' }} />
-                </ListItemIcon>
-                <ListItemText primary={"Notification"} />
-                {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
-              </ListItemButton>
-            </ListItem>
-            {/* : ""} */}
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "DEALER"
+            {value?.user?.role === "EMPLOYEE" ? ""
+              : <ListItem disablePadding
+                onClick={(event) => {
+                  router.push(`/notification`)
+                }}
+                className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <NotificationsNone style={{ color: pathname.startsWith("/notification") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Notification"} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+            }
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
               ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
               }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>

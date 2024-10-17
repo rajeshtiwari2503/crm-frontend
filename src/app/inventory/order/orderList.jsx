@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle,MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Add, Close, Delete, Label, LocationSearching, Print, Search, Visibility } from '@mui/icons-material';
@@ -34,7 +34,7 @@ const OrderList = (props) => {
   const [selectedBrand, setSelectedBrand] = useState('');
   const [stockType, setStockType] = useState('Fresh Stock'); // Initialize stockType with "Fresh Stock"
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const [selectedBrandFiltr, setSelectedBrandFiltr] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -59,7 +59,13 @@ const OrderList = (props) => {
   //     (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase()) || item?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
 
   //   );
-  const data = props?.data
+  const data1 = props?.data
+  
+  
+  const brandData=props?.data?.filter((f)=>f?.brand===selectedBrandFiltr)
+  
+  
+  const data=selectedBrandFiltr===""?data1:brandData
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
@@ -304,6 +310,26 @@ const OrderList = (props) => {
         className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
     </div> */}
+     {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
+        <FormControl fullWidth style={{ marginBottom: '20px' }}>
+          <InputLabel id="brand-select-label">Select Brand</InputLabel>
+          <Select
+            labelId="brand-select-label"
+            value={selectedBrandFiltr}
+            onChange={(e) => setSelectedBrandFiltr(e.target.value)}
+            label="Select Brand"
+          >
+            <MenuItem value="">
+              <em>All Brands</em>
+            </MenuItem>
+            {Array.from(new Set(data1?.map(item => item.brand))).map(brand1 => (
+            <MenuItem key={brand1} value={brand1}>
+              {brand1}
+            </MenuItem>
+          ))}
+          </Select>
+        </FormControl>
+      )}
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>

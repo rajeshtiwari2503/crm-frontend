@@ -1,7 +1,7 @@
 
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle,MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -31,6 +31,7 @@ const StockList = (props) => {
   const [sortBy, setSortBy] = useState('id');
 
   const [userData, setUserData] = React.useState(null);
+  const [selectedBrand, setSelectedBrand] = useState("");
 
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
@@ -39,10 +40,14 @@ const StockList = (props) => {
     }
   }, []);
 
-
+ 
+ 
+  
   const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
 
-  const data = userData?.user?.role === "ADMIN" || "BRAND" ? props?.data : filterData;
+  const data1 = userData?.user?.role === "ADMIN" || "BRAND" ? props?.data : filterData;
+  const brandData=props?.data?.filter((f)=>f?.brandName===selectedBrand)
+const data=selectedBrand===""?data1:brandData
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -93,6 +98,7 @@ const StockList = (props) => {
 const handleDetails=(id)=>{
   router.push(`/inventory/stock/details/${id}`)
 }
+ 
 
   return (
     <div>
@@ -106,6 +112,26 @@ const handleDetails=(id)=>{
           </div>
         }
       </div>
+      {(userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE") && (
+        <FormControl fullWidth style={{ marginBottom: '20px' }}>
+          <InputLabel id="brand-select-label">Select Brand</InputLabel>
+          <Select
+            labelId="brand-select-label"
+            value={selectedBrand}
+            onChange={(e) => setSelectedBrand(e.target.value)}
+            label="Select Brand"
+          >
+            <MenuItem value="">
+              <em>All Brands</em>
+            </MenuItem>
+            {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
+            <MenuItem key={brand} value={brand}>
+              {brand}
+            </MenuItem>
+          ))}
+          </Select>
+        </FormControl>
+      )}
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>

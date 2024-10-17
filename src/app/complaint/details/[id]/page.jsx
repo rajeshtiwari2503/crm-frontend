@@ -14,12 +14,16 @@ const ComplaintDetails = ({ params }) => {
     const [complaint, setComplaint] = useState("")
     const [userComplaint, setUserComplaint] = useState([])
     const [loading, setLoading] = useState(false)
-
+    const [value, setLocalValue] = useState('');
 
 
     useEffect(() => {
+        const storedValue = localStorage.getItem("user");
+        if (storedValue) {
+          setLocalValue(JSON.parse(storedValue));
+        }
         getComplaintById()
-
+        getComplaintByUserId()
     }, [id])
 
     const getComplaintById = async () => {
@@ -27,8 +31,8 @@ const ComplaintDetails = ({ params }) => {
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
-            setId(data?._id)
-            getComplaintByUserId()
+            setId(data?.userId)
+          
         }
         catch (err) {
             console.log(err);
@@ -36,7 +40,7 @@ const ComplaintDetails = ({ params }) => {
     }
     const getComplaintByUserId = async () => {
         try {
-            let response = await http_request.get(`/getComplaintByUserId/${id}`)
+            let response = await http_request.get(`/getAllComplaint`)
             let { data } = response;
             setUserComplaint(data)
            
@@ -48,7 +52,11 @@ const ComplaintDetails = ({ params }) => {
     const handleEdit = () => {
         router.push(`/complaint/edit/${complaint?._id}`);
     };
- 
+     
+    
+    const userComp=userComplaint?.filter((f)=>f?.userId===complaint?.userId)
+   
+    
     return (
         <>
 
@@ -123,7 +131,7 @@ const ComplaintDetails = ({ params }) => {
                         </div>
                     </div>
                 }
-                <UserAllServicesList  data={userComplaint}  />
+                <UserAllServicesList  data={userComp}  />
 
             </Sidenav>
         </>

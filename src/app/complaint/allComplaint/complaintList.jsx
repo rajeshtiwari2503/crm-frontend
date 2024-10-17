@@ -15,9 +15,17 @@ import { useForm } from 'react-hook-form';
 
 const ComplaintList = (props) => {
 
-  const serviceCenter = props?.serviceCenter
+  
+  
+   const [filterSer,setFilterSer]=useState("")
+  
+
+  const serviceCenter = filterSer===""?props?.serviceCenter:filterSer
+   
+  
   const complaint = props?.data;
   const userData = props?.userData
+ 
 
   const filteredData = userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
@@ -101,9 +109,44 @@ const ComplaintList = (props) => {
 
 
   const handleAssignServiceCenter = async (id) => {
-    setId(id)
-    setAssign(true)
-  }
+    setId(id);
+
+    const filterCom = complaint?.find((f) => f?._id === id);
+  
+    if (!filterCom?.pincode) {
+      console.log("Pincode not found in the complaint");
+      return;
+    }
+  
+    const targetPincode = filterCom?.pincode.trim(); // Trim the complaint pincode
+  
+    const serviceCenter1 = props?.serviceCenter?.filter((f) => {
+      if (Array.isArray(f?.pincodeSupported)) {
+      
+        return f.pincodeSupported.some((pincodeString) => {
+        
+          const supportedPincodes = pincodeString.split(',').map(p => p.trim());
+       
+          return supportedPincodes.includes(targetPincode);
+        });
+      }
+      return false;
+    });
+  
+    setFilterSer(serviceCenter1)
+    // console.log(serviceCenter1, "Filtered service centers with matching pincode");
+  
+    if (serviceCenter1.length === 0) {
+      console.log("No service centers found for the given pincode.");
+    }
+  
+    setAssign(true);
+  };
+  
+  
+
+  
+  
   const handleUpdateStatus = async (id) => {
     setId(id)
     setStatus(true)

@@ -71,9 +71,9 @@ const getAllOrder = async () => {
 // console.log(orderData?.length);
 const order=orderData?.filter((f)=>f?.status==="ORDER")
 // console.log(order);
-const approveOrder=orderData?.filter((f)=>f?.brandApproval==="APPROVED")
+const approveOrder=order?.filter((f)=>f?.brandApproval==="APPROVED")
 // console.log(approveOrder);
-const notApproveOrder=orderData?.filter((f)=>f?.brandApproval==="NOT_APPROVE")
+const notApproveOrder=order?.filter((f)=>f?.brandApproval==="NOT_APPROVE")
 // console.log(notApproveOrder);
 const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
 // console.log(cancelOrder);

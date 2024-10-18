@@ -192,7 +192,9 @@ const ComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata = assign === true ? { status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
+      const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
+    // console.log(reqdata);
+    
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       setAssign(false)
@@ -496,6 +498,7 @@ const ComplaintList = (props) => {
                             Assign Service
                           </div>
                           : ""}
+                        
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>

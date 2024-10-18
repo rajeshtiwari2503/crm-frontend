@@ -13,17 +13,29 @@ const Pending = () => {
 
   const [complaint, setComplaint] = useState([])
   const [refresh, setRefresh] = useState("")
+  const [technicians, setTechnicians] = useState([])
 
   const [value, setValue] = React.useState(null);
 
   useEffect(() => {
     getAllComplaint()
+    getAllTechnician()
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
       setValue(JSON.parse(storedValue));
     }
   }, [refresh])
+  const getAllTechnician = async () => {
+    try {
+      let response = await http_request.get("/getAllTechnician")
+      let { data } = response;
 
+      setTechnicians(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint")
@@ -38,7 +50,8 @@ const Pending = () => {
   const sortData = complaint?.filter((f1) => f1?.status ==="PENDING")
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
-
+  const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id)
+                :technicians 
 
   const RefreshData = (data) => {
     setRefresh(data)
@@ -48,7 +61,7 @@ const Pending = () => {
     <Sidenav>
       <Toaster />
       <>
-        <PendingComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
+        <PendingComplaintList data={data}technicians={techData} userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

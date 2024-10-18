@@ -68,10 +68,12 @@ const ComplaintList = (props) => {
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
+    console.log(event.target.value);
+    
   };
 
   const data = filteredData?.filter(
-    (item) => item?._id.toLowerCase().includes(searchTerm.toLowerCase()) || item?.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
+    (item) => item?.complaintId.toLowerCase().includes(searchTerm.toLowerCase()) || item?._id.toLowerCase().includes(searchTerm.toLowerCase())|| item?.phoneNumber?.includes(searchTerm)
 
   );
 

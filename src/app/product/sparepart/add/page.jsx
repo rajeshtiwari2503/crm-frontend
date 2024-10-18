@@ -399,7 +399,7 @@ const router=useRouter()
             let { data } = response;
             setLoading(false);
             ToastMessage(data);
-            router.push("/inventory/sparepart")
+            router.push("/product/sparepart")
             // setSpareParts({ partName: "", brandName: "", description: "", MRP: "", bestPrice: "", faultType: [], images: [], technician: "", partNo: "", length: "", weight: "", height: "", breadth: "", skuNo: "" });
         } catch (err) {
             console.log(err);

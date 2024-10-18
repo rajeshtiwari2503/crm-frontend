@@ -488,7 +488,7 @@ const ComplaintList = (props) => {
                             Order Part
                           </div>
                           : ""}
-                        {userData?.role === "ADMIN"  || userData?.role === "BRAND" &&userData?.brandSaas==="YES" ?
+                        {userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE" || userData?.role === "BRAND" &&userData?.brandSaas==="YES" ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"

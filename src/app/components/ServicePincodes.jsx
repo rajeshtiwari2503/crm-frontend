@@ -33,7 +33,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                 // Filter by exact city name or district
                 const filterData = districtData?.filter(
                     (f) =>
-                        f?.district.toLowerCase() === city.toLowerCase() || f?.name.toLowerCase() === city.toLowerCase()
+                        f?.district.toLowerCase() === city.toLowerCase() 
                 );
 
                 if (filterData.length > 0) {
@@ -42,27 +42,29 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 
                     // Join the pincodes into a comma-separated string
                     const pincodes = pincodeString.join(',');
+                    console.log(pincodes);
+                    
                     // Sending pincodes to the backend
-                    try {
-                        const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
-                            pincodes, // Sending the array of pincodes
-                        });
-                        // console.log(responsePin);
-                        const { data } = responsePin
-                        if ( data?.status === true) {  // Check for HTTP status code 200 (success)
-                            ToastMessage(data);
-                            RefreshData(responsePin); // Refresh the data after successful update
-                            setLoading(false);
-                        } else {
-                            setLoading(false);
-                            RefreshData(responsePin);
-                            console.error('Failed to update pincodes');
-                        }
-                        RefreshData(responsePin);
-                    } catch (error) {
-                        setLoading(false);
-                        console.error('Error updating pincodes:', error);
-                    }
+                    // try {
+                    //     const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
+                    //         pincodes,  
+                    //     });
+                       
+                    //     const { data } = responsePin
+                    //     if ( data?.status === true) {  
+                    //         ToastMessage(data);
+                    //         RefreshData(responsePin);  
+                    //         setLoading(false);
+                    //     } else {
+                    //         setLoading(false);
+                    //         RefreshData(responsePin);
+                    //         console.error('Failed to update pincodes');
+                    //     }
+                    //     RefreshData(responsePin);
+                    // } catch (error) {
+                    //     setLoading(false);
+                    //     console.error('Error updating pincodes:', error);
+                    // }
                     setLoading(false);
                     setError(null);
                 } else {

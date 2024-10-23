@@ -72,10 +72,16 @@ const ComplaintList = (props) => {
     
   };
 
-  const data = filteredData?.filter(
-    (item) => item?.complaintId.toLowerCase().includes(searchTerm.toLowerCase()) || item?._id.toLowerCase().includes(searchTerm.toLowerCase())|| item?.phoneNumber?.includes(searchTerm)
-
-  );
+  const data = filteredData?.filter((item) => {
+    const complaintId = item?.complaintId?.toLowerCase();
+    const search = searchTerm.toLowerCase();
+    
+    // Handle the complaint ID format and general search terms
+    return complaintId?.includes(search) || 
+           item?._id.toLowerCase().includes(search) || 
+           item?.phoneNumber?.includes(searchTerm);
+  });
+  
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

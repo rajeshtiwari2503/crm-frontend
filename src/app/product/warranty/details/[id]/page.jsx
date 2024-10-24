@@ -56,7 +56,7 @@ const WarrantyDetails = ({ params }) => {
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-        printWindow.document.write('.record { margin-bottom: 20px; }');
+        printWindow.document.write('.record { margin-bottom: 30px; }');
         printWindow.document.write('.record img { width: 120px; height: 120px; }');
         printWindow.document.write('.container { display: flex; flex-wrap: wrap;   }');
         printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 20px; }');
@@ -83,13 +83,16 @@ const WarrantyDetails = ({ params }) => {
                 printWindow.document.write('<div class="item">');
                 printWindow.document.write('<div class="record">');
                 printWindow.document.write('<div class="record">');
-                printWindow.document.write('<div class="text-12">'+ item?.productName + ' </div>');
-                // printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
-                printWindow.document.write('</div>');
  
+                // printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
+                // printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
+                printWindow.document.write('<div class="text-12">  ' + warranty?.productName + '</div>');
+                
+                printWindow.document.write('</div>');
                 // printWindow.document.write('<div><img src="' + (brand?.brandLogo ? brand?.brandLogo : '/Logo.png') + '" alt="Company Logo" /></div>');
 
-                printWindow.document.write('<div class="record"><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
+                printWindow.document.write('<div><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
+ 
                 // printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
                 // printWindow.document.write('<div class="font-bold text-12">+91 9649149196</div>');
                 // printWindow.document.write('<div class="text-12">(10 AM - 6 PM)</div>');
@@ -97,7 +100,9 @@ const WarrantyDetails = ({ params }) => {
                 // printWindow.document.write('<div class="text-12">Be ready with your  </div>');
                 // printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
                 // printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
-                printWindow.document.write('<div class="font-bold text-12 record">Unique Code: ' + item?.uniqueId + '</div>');
+ 
+                printWindow.document.write('<div class="font-bold text-12">Unique Code: ' + item?.uniqueId + '</div>');
+ 
                 printWindow.document.write('</div>');
                 printWindow.document.write('</div>');
             }

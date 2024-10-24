@@ -1,4 +1,4 @@
-"use client"
+ "use client"
 import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from "../../../../../../http-request";
@@ -57,6 +57,7 @@ const WarrantyDetails = ({ params }) => {
         printWindow.document.write('<style>');
         printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
         printWindow.document.write('.record { margin-bottom: 30px; }');
+        printWindow.document.write('.recordCenter { margin-left: 36px; }');
         printWindow.document.write('.record img { width: 120px; height: 120px; }');
         printWindow.document.write('.container { display: flex; flex-wrap: wrap;   }');
         printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 20px; }');
@@ -101,7 +102,7 @@ const WarrantyDetails = ({ params }) => {
                 // printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
                 // printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
  
-                printWindow.document.write('<div class="font-bold text-12">Unique Code: ' + item?.uniqueId + '</div>');
+                printWindow.document.write('<div class="font-bold text-12 recordCenter record">  ' + item?.uniqueId + '</div>');
  
                 printWindow.document.write('</div>');
                 printWindow.document.write('</div>');

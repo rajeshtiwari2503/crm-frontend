@@ -174,9 +174,9 @@ const WarrantyList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color='primary' />
                       </IconButton>
-                      {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <Delete color='error' />
-                      </IconButton> */}
+                      </IconButton>
 
                     </TableCell>
                   </TableRow>

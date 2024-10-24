@@ -7,6 +7,7 @@ import CountUp from 'react-countup';
 import dynamic from 'next/dynamic'
 import Chart from 'react-google-charts';
 import http_request from "../../../http-request"
+import RecentServicesList from '../complaint/RecentServices';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -47,11 +48,21 @@ const options = {
 };
 
 const [orderData,setOrderData]=useState([])
+const [complaints,setComplaints]=useState([])
 
 React.useEffect(() => {
-  
+  getAllComplaint()
   getAllOrder()
 }, []);
+const getAllComplaint = async () => {
+  try {
+    let response = await http_request.get("/getAllComplaint");
+    let { data } = response; 
+    setComplaints(data);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const getAllOrder = async () => {
  
@@ -455,6 +466,9 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             height={"400px"}
           />
         </div>
+      </div>
+      <div>
+      <RecentServicesList data={complaints}   />
       </div>
     </>
 

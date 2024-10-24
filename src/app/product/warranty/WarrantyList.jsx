@@ -145,7 +145,7 @@ const WarrantyList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('year')}
                     >
-                      Year
+                      Batch No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -168,7 +168,7 @@ const WarrantyList = (props) => {
                     <TableCell>{row.productName}</TableCell>
                     <TableCell>{row.numberOfGenerate}</TableCell>
                     <TableCell>{row.warrantyInDays}</TableCell>
-                    <TableCell>{row.year}</TableCell>
+                    <TableCell>{row?.records[0]?.batchNo}</TableCell>
                     <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell className='flex'>
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>

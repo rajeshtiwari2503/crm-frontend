@@ -35,6 +35,7 @@ const PendingComplaintList = (props) => {
   const [status, setStatus] = useState(false);
   const [order, setOrder] = useState(false);
   const [assignTech, setAssignTech] = useState(false);
+  const [techData, setAssignData] = useState( []);
   const [selectedTechnician, setSelectedTechnician] = useState('');
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
@@ -124,11 +125,10 @@ const PendingComplaintList = (props) => {
 
   const handleAssignTechnician = async (id) => {
     const comp=data?.find((f)=>f?._id===id)
-    console.log(comp);
-    const technician=props?.technicians?.filter((f)=>f?.pincode===comp?.pincode)
-    console.log(technician);
+    const technician=props?.technicians?.filter((f)=>f?.serviceCenterId===comp?.assignServiceCenterId)
+    // console.log(technician);
     setId(id)
-
+setAssignData(technician)
     setAssignTech(true)
   }
   const handleTechnicianClose = () => {
@@ -541,7 +541,7 @@ const PendingComplaintList = (props) => {
                   className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 >
                   <option value="" disabled>Select Technician</option>
-                  {technician?.map((tech) => (
+                  {techData?.map((tech) => (
                     <option key={tech._id} value={tech._id}>
                       {tech.name}
                     </option>

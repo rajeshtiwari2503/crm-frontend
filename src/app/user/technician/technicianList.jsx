@@ -139,6 +139,17 @@ const TechnicianList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  {props?.userData?.role === "ADMIN" || props?.userData?.role === "EMPLOYEE" ? 
+                    <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'email'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('email')}
+                    >
+                      Service Center Name
+                    </TableSortLabel>
+                  </TableCell>
+                  :""}
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -149,21 +160,25 @@ const TechnicianList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.name}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+                    {props?.userData?.role === "ADMIN" || props?.userData?.role === "EMPLOYEE" ? 
+                      <TableCell>{row?.serviceCenterName}</TableCell>
+                      :""
+                    }
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
-                    {props?.userData?.role==="ADMIN"?
-                    <div>
-                      <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
-                      </div>
-                      :""
-                    }
+                      {props?.userData?.role === "ADMIN" ?
+                        <div>
+                          <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                            <EditIcon color='success' />
+                          </IconButton>
+                          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                            <DeleteIcon color='error' />
+                          </IconButton>
+                        </div>
+                        : ""
+                      }
                     </TableCell>
                   </TableRow>
                 ))}

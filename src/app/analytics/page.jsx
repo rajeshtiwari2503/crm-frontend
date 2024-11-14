@@ -30,8 +30,6 @@ const Analytics = () => {
         return <NoServiceableAreaComplaints />;
       case "brandStats":
         return <BrandComplaintInsights />;
-    //   case "outOfTat":
-    //     return <OutOfTatComplaints />;
       default:
         return <StatewisePendingComplaints />;
     }
@@ -40,60 +38,41 @@ const Analytics = () => {
   return (
     <>
       <Sidenav>
-        <>
-          {/* <h2 className="text-lg mb-2 ">Analytics</h2>
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-5 rounded-lg shadow px-4 py-4 bg-white">
-              <AreaChart />
-            </div>
-            <div className="col-span-7 rounded-lg shadow px-4 py-4 bg-white">
-              <PieChart />
-            </div>
-          </div> */}
-
-          <div className="p-4 text-center">
-            {/* <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1> */}
-            <div className="flex space-x-4 mb-6">
-              <button
-                onClick={() => setActiveSection("state")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Statewide Pending Complaints
-              </button>
-              <button
-                onClick={() => setActiveSection("district")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                District Wise Pending Complaints
-              </button>
-              <button
-                onClick={() => setActiveSection("serviceCenter")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Service-Center Wise Pending Complaints
-              </button>
-              <button
-                onClick={() => setActiveSection("noServiceArea")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                No Serviceable Area Complaints
-              </button>
-              <button
-                onClick={() => setActiveSection("brandStats")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Brand Complaint Stats
-              </button>
-              <button
-                onClick={() => setActiveSection("outOfTat")}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
-              >
-                Out Of Tat Complaints
-              </button>
-            </div>
-            <div>{renderSection()}</div>
+        <div className="p-4 text-center">
+          <div className="flex space-x-4 mb-6">
+            <button
+              onClick={() => setActiveSection("state")}
+              className={`px-4 py-2 rounded ${activeSection === "state" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+            >
+              Statewide Pending Complaints
+            </button>
+            <button
+              onClick={() => setActiveSection("district")}
+              className={`px-4 py-2 rounded ${activeSection === "district" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+            >
+              District Wise Pending Complaints
+            </button>
+            <button
+              onClick={() => setActiveSection("serviceCenter")}
+              className={`px-4 py-2 rounded ${activeSection === "serviceCenter" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+            >
+              Service-Center Wise Pending Complaints
+            </button>
+            <button
+              onClick={() => setActiveSection("noServiceArea")}
+              className={`px-4 py-2 rounded ${activeSection === "noServiceArea" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+            >
+              No Serviceable Area Complaints
+            </button>
+            <button
+              onClick={() => setActiveSection("brandStats")}
+              className={`px-4 py-2 rounded ${activeSection === "brandStats" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+            >
+              Brand Complaint Stats
+            </button>
           </div>
-        </>
+          <div>{renderSection()}</div>
+        </div>
       </Sidenav>
     </>
   );

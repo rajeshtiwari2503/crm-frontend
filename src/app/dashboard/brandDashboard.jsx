@@ -146,6 +146,14 @@ const BrandDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Cancel </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
               </div>

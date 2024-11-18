@@ -496,6 +496,14 @@ const ServiceDashboard = (props) => {
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Cancel </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
               <div className='text-center mt-2'>Pending  </div>

@@ -47,7 +47,7 @@ const ServiceCenterWisePendingComplaints = () => {
         {/* Pie Chart Section */}
         <div className="grid grid-cols-12 gap-4 mb-8">
           <div className="col-span-12 rounded-lg shadow px-4 py-4 bg-white">
-            <h3 className="text-xl mb-4">Statewise Pending Complaints</h3>
+            <h3 className="text-xl mb-4">Service Center Pending Complaints</h3>
             {statewiseData.length > 0 ? (
               <Chart
                 chartType="PieChart"
@@ -70,7 +70,7 @@ const ServiceCenterWisePendingComplaints = () => {
               <table className="min-w-full table-auto">
                 <thead>
                   <tr>
-                    <th className="px-4 py-2">State</th>
+                    <th className="px-4 py-2">Service Center</th>
                     <th className="px-4 py-2">Pending Complaints</th>
                   </tr>
                 </thead>

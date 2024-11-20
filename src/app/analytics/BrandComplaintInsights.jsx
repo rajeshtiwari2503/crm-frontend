@@ -161,7 +161,7 @@ const BrandComplaintInsights = () => {
               <thead>
                 <tr>
                   <th className="px-4 py-2">Brand</th>
-                  <th className="px-4 py-2">Pending Complaints</th>
+                  <th className="px-4 py-2">  Complaints</th>
                 </tr>
               </thead>
               <tbody>
@@ -186,7 +186,7 @@ const BrandComplaintInsights = () => {
               <thead>
                 <tr>
                   <th className="px-4 py-2">Product</th>
-                  <th className="px-4 py-2">Pending Complaints</th>
+                  <th className="px-4 py-2">  Complaints</th>
                 </tr>
               </thead>
               <tbody>

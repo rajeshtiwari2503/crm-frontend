@@ -1,9 +1,9 @@
-"use client"
-import React, { useState } from 'react';
+ "use client"
+import React, { useMemo, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Visibility } from '@mui/icons-material';
+import { Add, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -23,7 +23,7 @@ const ServiceList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
-
+  const [searchTerm, setSearchTerm] = useState("");
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -39,7 +39,21 @@ const ServiceList = (props) => {
     setSortBy(property);
   };
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Filtered and Sorted Data
+  const filteredData = useMemo(() => {
+    return data.filter(
+      (item) =>
+        item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [data, searchTerm]);
+
+  const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -82,7 +96,17 @@ const ServiceList = (props) => {
           </div>
         }
       </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+       <div className="flex items-center mb-3">
+        <Search className="text-gray-500" />
+        <input
+          type="text"
+          placeholder="Search by Name,Contact ,District"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="ml-2 border  border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+      </div>
+      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
           <TableContainer component={Paper}>
@@ -127,6 +151,15 @@ const ServiceList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'city'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('city')}
+                    >
+                      City
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'contact'}
                       direction={sortDirection}
                       onClick={() => handleSort('contact')}
@@ -145,6 +178,7 @@ const ServiceList = (props) => {
                     <TableCell>{row?.serviceCenterName}</TableCell>
                     <TableCell>{row?.email}</TableCell>
                     <TableCell>{row?.serviceCenterType}</TableCell>
+                    <TableCell>{row?.city}</TableCell>
                     <TableCell>{row?.contact}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>

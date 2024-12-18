@@ -84,7 +84,7 @@ function Sidenav(props) {
                   : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
-console.log(data);
+// console.log(data);
 
       setData(data)
     }

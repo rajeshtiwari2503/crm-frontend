@@ -90,8 +90,8 @@ const VerificationComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata={status:data?.status }
-      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+ 
+      let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
       
       setStatus(false)
@@ -475,12 +475,12 @@ const VerificationComplaintList = (props) => {
             {...register('status')}
             className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           >
-            {/* <option value="NEW">New</option> */}
-            <option value="IN PROGRESS">In Progress</option>
-            <option value="PART PENDING">Awaiting Parts</option>
-            {/* <option value="ONHOLD">On Hold</option> */}
+        
+            {/* <option value="IN PROGRESS">In Progress</option>
+            <option value="PART PENDING">Awaiting Parts</option> */}
+           
             <option value="COMPLETED">Final Close</option>
-            <option value="CANCELED">Canceled</option>
+            {/* <option value="CANCELED">Canceled</option> */}
           </select>
         </div>
           {/* Kilometer Field */}
@@ -495,14 +495,43 @@ const VerificationComplaintList = (props) => {
       </div>
 
       {/* Payment Field */}
+      
       <div className="w-[350px] mb-5">
         <label className="block text-sm font-medium text-gray-700">Payment</label>
         <input
           type="number"
-          {...register('payment')}
+          {...register('paymentBrand', {
+            required: 'Payment is required',
+            min: {
+              value: 1,
+              message: 'Payment must be at least 1',
+            },
+          })}
           className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           placeholder="Enter payment amount"
         />
+        {errors.paymentBrand && (
+          <p className="text-red-500 text-sm mt-1">{errors.paymentBrand.message}</p>
+        )}
+      </div>
+       {/* Final Comments Field */}
+       <div className="w-[350px] mb-5">
+        <label className="block text-sm font-medium text-gray-700">Final Comments</label>
+        <textarea
+          {...register('finalComments', {
+            required: 'Final comments are required',
+            minLength: {
+              value: 10,
+              message: 'Comments must be at least 10 characters long',
+            },
+          })}
+          className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          placeholder="Enter your comments"
+          rows={4}
+        ></textarea>
+        {errors.finalComments && (
+          <p className="text-red-500 text-sm mt-1">{errors.finalComments.message}</p>
+        )}
       </div>
         <div>
           <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
@@ -513,59 +542,7 @@ const VerificationComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
-      <Dialog open={assignTech} onClose={handleTechnicianClose}>
-        <DialogTitle>  Assign Technician</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleTechnicianClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <Close />
-        </IconButton>
-        <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign Technician 
-              </label>
-            
-                <select
-                  id="service-center-label"
-                  value={selectedTechnician}
-                  onChange={handleTechnicianChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Technician</option>
-                  {technician?.map((tech) => (
-                    <option key={tech._id} value={tech._id}>
-                      {tech.name}
-                    </option>
-                  ))}
-                </select>
-                <div>
-                <div>
-              <label className="block text-gray-700 ">Contact</label>
-              <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
-            </div>
-              <label className="block text-gray-700 mt-3">Comments/Notes</label>
-              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-            </div>
-                
-            </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign  Technician 
-            </Button>
-          </form>
-        </DialogContent>
-
-      </Dialog>
+    
       
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>

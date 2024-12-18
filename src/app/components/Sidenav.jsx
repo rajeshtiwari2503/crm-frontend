@@ -84,6 +84,7 @@ function Sidenav(props) {
                   : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
+// console.log(data);
 
       setData(data)
     }
@@ -323,7 +324,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
+  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'Final Verification','In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" ? ['Product', 'SparePart', 'Complaint Nature'] : ['Product']
   const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND" ? ["Stock", "Order"] : ["Stock", "Order"]
@@ -529,12 +530,13 @@ function Sidenav(props) {
             <Collapse in={isCollapseComplaint} timeout={"auto"} unmountOnExit >
               <List className=' '>
                 {complaints.map((text, index) => (
-                  <ListItem key={index} disablePadding
+                  <ListItem key={index} disablePadding  
                     className={
                       text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                             text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                            text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                               pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
@@ -543,6 +545,7 @@ function Sidenav(props) {
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
                           text === "In Progress" ? router.push(`/complaint/inprogress`) :
                             text === "Part Pending" ? router.push(`/complaint/partpending`) :
+                            text === "Final Verification" ? router.push(`/complaint/finalVerification`) :
                               router.push(`/complaint/${text.toLowerCase()}`)
                     }}
                   >
@@ -553,6 +556,7 @@ function Sidenav(props) {
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
                               text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
                                 text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600  ' : 'text-slate-700 ') :
                                   pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
@@ -569,6 +573,10 @@ function Sidenav(props) {
                                 ? pathname === "/complaint/inprogress"
                                   ? '#007BFF' // text-sky-600
                                   : '#64748b' // text-slate-700
+                                  : text === "Final Verification"
+                                ? pathname === "/complaint/finalVerification"
+                                  ? '#007BFF' // text-sky-600
+                                  : '#64748b' // text-slate-700
                                 : text === "Part Pending"
                                   ? pathname === "/complaint/partpending"
                                     ? '#007BFF' // text-sky-600
@@ -583,6 +591,7 @@ function Sidenav(props) {
                       {text === "Pending" ? dashData?.complaints?.pending
                         : text === "Assign" ? dashData?.complaints?.assign
                           : text === "In Progress" ? dashData?.complaints?.inProgress
+                          : text === "Final Verification" ? dashData?.complaints?.finalVerification
                             : text === "Part Pending" ? dashData?.complaints?.partPending
                               : text === "Cancel" ? dashData?.complaints?.cancel
                                 : text === "Close" ? dashData?.complaints?.complete

@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react'
 import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
-import VerificationComplaintList from './VerificationComplaintList';
+import VerificationComplaintList from './verificationComplaintList';
+ 
 
 
 

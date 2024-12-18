@@ -500,7 +500,7 @@ setAssignData(technician)
             <option value="IN PROGRESS">In Progress</option>
             <option value="PART PENDING">Awaiting Parts</option>
             {/* <option value="ONHOLD">On Hold</option> */}
-            <option value="COMPLETED">Completed</option>
+            <option value="FINAL VERIFICATION">Completed</option>
             <option value="CANCELED">Canceled</option>
           </select>
         </div>

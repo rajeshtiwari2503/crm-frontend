@@ -63,7 +63,7 @@ const Verification = () => {
   const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id):technicians
 
   // Final Verification
-  const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
+  const sortData = complaint?.filter((f1) => f1?.status ==="FINAL VERIFICATION")
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
 

@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import VerificationComplaintList from './verificationComplaintList';
+import PincodeDistanceCalculator from './Distance';
  
 
 
@@ -77,6 +78,7 @@ const Verification = () => {
       <Toaster />
       <>
         <VerificationComplaintList  sparepart={sparepart} data={data}technicians={techData}userData={value?.user} RefreshData={RefreshData} />
+        {/* <PincodeDistanceCalculator /> */}
       </>
     </Sidenav>
   )

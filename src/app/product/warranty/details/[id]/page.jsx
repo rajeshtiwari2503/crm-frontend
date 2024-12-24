@@ -50,76 +50,98 @@ const WarrantyDetails = ({ params }) => {
     const handleEdit = (id) => {
         router.push(`/product/sparepart/edit/${id}`)
     }
-
     const printRecords = () => {
+        const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
+    
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
-        printWindow.document.write('body { font-family: Arial, sans-serif; margin: 20px; }');
-        printWindow.document.write('.record { margin-bottom: 30px; }');
-        printWindow.document.write('.recordCenter { margin-left: 36px; }');
-        printWindow.document.write('.record img { width: 120px; height: 120px; }');
-        printWindow.document.write('.container { display: flex; flex-wrap: wrap;   }');
-        printWindow.document.write('.item { flex: 1 1 calc(33.333% - 20px); box-sizing: border-box;margin-top: 20px; }');
-        printWindow.document.write('@media print { .page-break { page-break-before: always; } }');
+        printWindow.document.write(`
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .container {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr); /* Three columns */
+                gap: 30px;
+            }
+            .item {
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+            }
+            .record img {
+                width: 120px;
+                height: 120px;
+                object-fit: contain;
+            }
+            .text-12 {
+                font-size: 10px;
+                margin: 4px 0;
+            }
+            .font-bold {
+                font-weight: bold;
+            }
+            .recordCenter {
+                margin-left: 36px;
+            }
+            @media print {
+                .page-break {
+                    page-break-before: always;
+                }
+            }
+        `);
         printWindow.document.write('</style></head><body>');
-
-        // printWindow.document.write('<h1>Warranty Information</h1>');
-        // printWindow.document.write('<div><strong>Brand Name:</strong> ' + warranty?.brandName + '</div>');
-        // printWindow.document.write('<div><strong>Part Name:</strong> ' + warranty?.productName + '</div>');
-        // printWindow.document.write('<div><strong>Warranty In Days:</strong> ' + warranty?.warrantyInDays + '</div>');
-        // printWindow.document.write('<div><strong>Year:</strong> ' + warranty?.year + '</div>');
-        // printWindow.document.write('<div><strong>Created At:</strong> ' + new Date(warranty?.createdAt).toLocaleString() + '</div>');
-        // printWindow.document.write('<div><strong>Updated At:</strong> ' + new Date(warranty?.updatedAt).toLocaleString() + '</div>');
-
-        // printWindow.document.write('<h2>Generated QR Codes</h2>');
-        let records = warranty?.records || [];
-        let rowsPerPage = 4;
-        let itemsPerRow = 3;
-
-        for (let i = 0; i < records.length; i += rowsPerPage * itemsPerRow) {
+    
+        const records = warranty?.records || [];
+        const itemsPerPage = 9; // Three rows * three columns
+    
+        for (let i = 0; i < records.length; i += itemsPerPage) {
             printWindow.document.write('<div class="container">');
-            for (let j = i; j < i + rowsPerPage * itemsPerRow && j < records.length; j++) {
-                let item = records[j];
-                printWindow.document.write('<div class="item">');
-                printWindow.document.write('<div class="record">');
-                printWindow.document.write('<div class="record">');
- 
-                // printWindow.document.write('<div class="text-12">Generate QR Code warranty </div>');
-                // printWindow.document.write('<div class="text-12">  is powered by SERVICE GO</div>');
-                printWindow.document.write('<div class="text-12">  ' + warranty?.productName + '</div>');
-                
-                printWindow.document.write('</div>');
-                // printWindow.document.write('<div><img src="' + (brand?.brandLogo ? brand?.brandLogo : '/Logo.png') + '" alt="Company Logo" /></div>');
-
-                printWindow.document.write('<div><img src="' + item?.qrCodes[0]?.qrCodeUrl + '" alt="QR Code" width="70" height="70"/></div>');
- 
-                // printWindow.document.write('<div class="text-12">Talk or Whatsapp</div>');
-                // printWindow.document.write('<div class="font-bold text-12">+91 9649149196</div>');
-                // printWindow.document.write('<div class="text-12">(10 AM - 6 PM)</div>');
-                // printWindow.document.write('<div class="text-12">All Working Days</div>');
-                // printWindow.document.write('<div class="text-12">Be ready with your  </div>');
-                // printWindow.document.write('<div class="text-12">  Product Unique code No.,</div>');
-                // printWindow.document.write('<div class="text-12">  Address & Pincode</div>');
- 
-                printWindow.document.write('<div class="font-bold text-12 recordCenter record">  ' + item?.uniqueId + '</div>');
- 
-                printWindow.document.write('</div>');
-                printWindow.document.write('</div>');
+            for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
+                const item = records[j];
+                printWindow.document.write(`
+                    <div class="item">
+                        <div class="record">
+                            <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+                            <div class="text-12">${warranty?.productName || 'Product Name'}</div>
+                        </div>
+                        <div>
+                            <img src="${logoUrl}" alt="Company Logo" width="50" height="50" />
+                        </div>
+                        <div>
+                            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="50" height="50" />
+                        </div>
+                        <div class="text-12">Call or WhatsApp</div>
+                        <div class="font-bold text-12">+91 9649149196</div>
+                        <div class="text-12">(10 AM - 6 PM)</div>
+                        <div class="text-12">Monday to Saturday</div>
+                        <div class="text-12">Be ready with your</div>
+                        <div class="text-12">Product Bill & Unique Code No.,</div>
+                        <div class="text-12">Address & Pincode</div>
+                        <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                `);
             }
             printWindow.document.write('</div>');
-
-            if (i + rowsPerPage * itemsPerRow < records.length) {
+    
+            if (i + itemsPerPage < records.length) {
                 printWindow.document.write('<div class="page-break"></div>');
             }
         }
-
+    
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
-    }
-
+    };
+    
+    
+    
 
     return (
         <Sidenav>
@@ -159,7 +181,7 @@ const WarrantyDetails = ({ params }) => {
                         {warranty?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
                                 <div className=' mb-5 '>
-                                    <div className='  mt-3 mb-3 font-bold text-[12px]'>Generate QR Code warranty is powered by SERVICE GO</div>
+                                    <div className='  mt-3 mb-3 font-bold text-[12px]'>  QR Code warranty is powered by Servsy.in</div>
                                     {/* <div>{warranty?.brandLogo}</div> */}
                                     <div className='flex justify-center items-center'>
                                         <img src={brand?.brandLogo?brand?.brandLogo:"/Logo.png"} alt="image" width={100} height={100} />
@@ -170,11 +192,11 @@ const WarrantyDetails = ({ params }) => {
                                     <div className='flex justify-center items-center mt-3'>
                                         <img src={item?.qrCodes[0]?.qrCodeUrl} alt="image" width={80} height={80} />
                                     </div>
-                                    <div className='text-[12px]'> Talk or Whatsapp</div>
+                                    <div className='text-[12px]'> Call or Whatsapp</div>
                                     <div className='font-bold text-[12px]'> +91 9649149196</div>
                                     <div className='text-[12px]'> (10 AM - 6 PM) </div>
-                                    <div className='text-[12px]'> All Working Days </div>
-                                    <div className='text-[12px]'> Be ready with your Product Unique code No. ,Address & Pincode</div>
+                                    <div className='text-[12px]'> Monday to Saturday </div>
+                                    <div className='text-[12px]'> Be ready with your Product Bill & Unique code No. ,Address & Pincode</div>
                                     <div className='font-bold text-[12px]'>Unique Code :{item?.uniqueId} </div>
                                     {/* <div>{warranty?.warrantyInDays}</div> */}
                                     {/* <div className='font-bold'>Year</div>

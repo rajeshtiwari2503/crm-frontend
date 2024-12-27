@@ -119,7 +119,7 @@ const ActivateWarrantyButton = () => {
 
           // Fetch address and pincode using a reverse geocoding API
           fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg`
+            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
           )
             .then((response) => response.json())
             .then((data) => {
@@ -205,7 +205,7 @@ const ActivateWarrantyButton = () => {
   // };
 
   const handleSearch = async () => {
-    const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
+    const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
 
     try {
@@ -294,7 +294,7 @@ const ActivateWarrantyButton = () => {
         if (issueImages) {
           formData.append('issueImages', issueImages);
         }
-        let response = await http_request.post('/createAppComplaint', reqdata)
+        let response = await http_request.post('/createComplaint', reqdata)
         const { data } = response
         ToastMessage(data)
         setLoading(false)
@@ -313,6 +313,7 @@ const ActivateWarrantyButton = () => {
     }
   }
 
+ 
   return (
     <>
       <div className="flex justify-center items-center min-h-screen bg-white p-6">

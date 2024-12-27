@@ -68,6 +68,7 @@ const EditBrandProfile = (props) => {
     setValue('brandDescription', userData.brandDescription);
     setValue('websiteURL', userData.websiteURL);
     setValue('state', userData.state);
+    setValue('tollfree', userData.tollfree);
     setValue('streetAddress', userData.streetAddress);
     setValue('technicianCertifications', userData.technicianCertifications);
     setValue('termsAndConditions', userData.termsAndConditions);
@@ -166,7 +167,15 @@ const EditBrandProfile = (props) => {
             />
             {errors.contactPersonPhoneNumber && <span className="text-red-500">Contact Person Phone Number is required</span>}
           </div>
-
+          <div className="mb-1">
+            <label className=" text-sm block mb-1">  Tollfree</label>
+            <input
+              type="tel"
+              {...register('tollfree', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.tollfree && <span className="text-red-500">Tollfree Number is required</span>}
+          </div>
 
           <div className="mb-1">
             <label className=" text-sm block mb-1">Street Address</label>

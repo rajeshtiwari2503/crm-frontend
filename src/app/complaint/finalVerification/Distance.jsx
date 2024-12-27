@@ -15,7 +15,7 @@ const PincodeDistanceCalculator = () => {
           params: {
             address: pincode,
             region: "in", // Adding region bias for India
-            key: "AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg", // Replace with your API key
+            key: "AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k", // Replace with your API key
           },
         }
       );

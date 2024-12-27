@@ -197,7 +197,15 @@ const BrandSignUpForm = () => {
             />
             {errors.contactPersonPhoneNumber && <span className="text-red-500">Contact Person Phone Number is required</span>}
           </div>
-
+          <div className="mb-1">
+            <label className=" text-sm block mb-1">  Tollfree</label>
+            <input
+              type="tel"
+              {...register('tollfree', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.tollfree && <span className="text-red-500">Tollfree Number is required</span>}
+          </div>
 
           <div className="mb-1">
             <label className=" text-sm block mb-1">Street Address</label>

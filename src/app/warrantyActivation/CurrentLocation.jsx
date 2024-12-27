@@ -17,7 +17,7 @@ const CurrentLocation = () => {
           });
   
           // Fetch address and pincode using a reverse geocoding API
-          fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg`)
+          fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`)
             .then((response) => response.json())
             .then((data) => {
               console.log('Geocoding API Response:', data); // Check the full response here

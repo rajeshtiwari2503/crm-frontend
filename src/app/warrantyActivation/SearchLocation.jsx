@@ -8,7 +8,7 @@ const SearchLocation = () => {
   const [pincode, setPincode] = useState('');
 
   const handleSearch = async () => {
-    const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
+    const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
     const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
 
     try {

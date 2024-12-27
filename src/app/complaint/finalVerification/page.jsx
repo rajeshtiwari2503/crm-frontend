@@ -41,7 +41,7 @@ const Verification = () => {
   }
   const getAllTechnician = async () => {
     try {
-      let response = await http_request.get("/getAllTechnician")
+      let response = await http_request.get("/getAllService")
       let { data } = response;
 
       setTechnicians(data)

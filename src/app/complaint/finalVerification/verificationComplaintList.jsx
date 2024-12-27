@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import axios from 'axios';
 
 const VerificationComplaintList = (props) => {
 
@@ -22,16 +23,16 @@ const VerificationComplaintList = (props) => {
 
   const userData = props?.userData
 
-  const data = userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE"? complaint
-  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+              : []
 
 
-  const technician = props?.technicians
+  const serviceCenter = props?.technicians
   const [status, setStatus] = useState(false);
   const [order, setOrder] = useState(false);
   const [assignTech, setAssignTech] = useState(false);
@@ -42,7 +43,7 @@ const VerificationComplaintList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
-  const [selectedSparepart, setSelectedSparepart] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -74,26 +75,13 @@ const VerificationComplaintList = (props) => {
       console.log(err);
     }
   }
-  const handleTechnicianChange = (event) => {
 
-    const selectedId = event.target.value;
-    
-    const selectedTechnician = technician.find(center => center._id === selectedId);
-    setSelectedTechnician(selectedTechnician);
-    setValue('status', "ASSIGN");
-    setValue('technicianId', selectedTechnician?._id);
-    setValue('assignTechnician', selectedTechnician?.name);
-    setValue('technicianContact', selectedTechnician?.contact);
-    setValue('assignTechnicianTime', new Date());
-    setValue('srerviceCenterResponseTime', new Date());
-
-  };
   const onSubmit = async (data) => {
     try {
- 
+
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
-      
+
       setStatus(false)
       setAssignTech(false)
       props?.RefreshData(responseData)
@@ -103,57 +91,109 @@ const VerificationComplaintList = (props) => {
     }
   };
 
-  
 
-  const handleAssignTechnician = async (id) => {
-    setId(id)
 
-    setAssignTech(true)
-  }
-  const handleTechnicianClose = () => {
-
-    setAssignTech(false)
-  }
   const handleDetails = (id) => {
     router.push(`/complaint/details/${id}`)
   }
 
-  const handleEdit = (id) => {
-    router.push(`/complaint/edit/${id}`);
-  };
-  const handleUpdateStatus = async (id) => {
-    setId(id)
+
+  const handleUpdateStatus = async (row) => {
+    setId(row?._id)
+
+    const servicePincode = serviceCenter?.find((f1) => f1?._id === row?.assignServiceCenterId)
+    handleCalculate(row?.pincode, servicePincode?.postalCode)
     setStatus(true)
   }
-  const handleOrderPart = async (id) => {
-    // setId(id)
-    // setValue("ticketID", id)
-    // setOrder(true)
-    router.push(`/inventory/order`);
-  }
-  const handleOrderClose = () => {
 
-    setOrder(false)
-  }
   const handleUpdateClose = () => {
 
     setStatus(false)
   }
 
-  const handleServiceChange = (event) => {
-    if (status === true) {
-      setValue("status", event.target.value)
-      // console.log(event.target.value);
-    }
-    if (status === false) {
-      const selectedId = event.target.value;
-      const selectedpart = props?.sparepart?.find(center => center._id === selectedId);
-      setSelectedSparepart(selectedId);
-      setValue('sparepartId', selectedpart?._id);
-      setValue('partName', selectedpart?.partName);
-     
+  const [distance, setDistance] = useState(null);
+  const [error, setError] = useState("");
+
+  const getCoordinates = async (pincode) => {
+    try {
+      const response = await axios.get(
+        "https://maps.googleapis.com/maps/api/geocode/json",
+        {
+          params: {
+            address: pincode,
+            region: "in", // Adding region bias for India
+            key: "AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k", // Replace with your API key
+          },
+        }
+      );
+
+      console.log(response.data); // Debugging: log the full response
+
+      if (response.data.results.length > 0) {
+        const location = response.data.results[0].geometry.location;
+        return { lat: location.lat, lng: location.lng };
+      } else {
+        throw new Error(`No results found for pincode: ${pincode}`);
+      }
+    } catch (err) {
+      console.error(`Error fetching coordinates for ${pincode}:`, err.message);
+      throw new Error(`Unable to fetch coordinates for pincode: ${pincode}`);
     }
   };
+
+  const calculateDistance = (coord1, coord2) => {
+    const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+    const earthRadiusKm = 6371; // Radius of Earth in kilometers
+    const dLat = toRadians(coord2.lat - coord1.lat);
+    const dLng = toRadians(coord2.lng - coord1.lng);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(coord1.lat)) *
+      Math.cos(toRadians(coord2.lat)) *
+      Math.sin(dLng / 2) *
+      Math.sin(dLng / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return earthRadiusKm * c; // Distance in kilometers
+  };
+  const handleCalculate = async (pincode1, pincode2) => {
+    
+
+    setError("");
+    setDistance(null);
+
+    if (!pincode1 || !pincode2) {
+      setError("Please enter both pincodes.");
+      return;
+    }
+    // console.log(pincode1,pincode2);
+
+    try {
+      setLoading(true)
+      const coord1 = await getCoordinates(pincode1);
+      const coord2 = await getCoordinates(pincode2);
+
+      if (coord1 && coord2) {
+        const calculatedDistance = calculateDistance(coord1, coord2);
+        setDistance(calculatedDistance.toFixed(2)); // Round to 2 decimal places
+        setLoading(false)
+
+      } else {
+        setLoading(false)
+
+        setError("Unable to fetch coordinates for one or both pincodes.");
+      }
+    } catch (err) {
+      setLoading(false)
+
+      setError(err.message);
+    }
+  };
+
+
+
   return (
     <div>
       <Toaster />
@@ -170,9 +210,9 @@ const VerificationComplaintList = (props) => {
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-             <TableContainer component={Paper}>
+          <TableContainer component={Paper}>
             <Table>
-            <TableHead>
+              <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
@@ -400,15 +440,15 @@ const VerificationComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" ||   userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                        <div
-                          onClick={() => handleUpdateStatus(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Update Status
-                        </div>
-                        :""}
-                       
+                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleUpdateStatus(row)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Update Status
+                          </div>
+                          : ""}
+
                         {/* {userData?.role === "SERVICE"  ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
@@ -428,7 +468,7 @@ const VerificationComplaintList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        
+
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -453,7 +493,7 @@ const VerificationComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
+      <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton
           aria-label="close"
@@ -468,82 +508,93 @@ const VerificationComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='w-[350px] mb-5'>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-        
-            {/* <option value="IN PROGRESS">In Progress</option>
-            <option value="PART PENDING">Awaiting Parts</option> */}
-           
-            <option value="COMPLETED">Final Close</option>
-            {/* <option value="CANCELED">Canceled</option> */}
-          </select>
-        </div>
-          {/* Kilometer Field */}
-      <div className="w-[350px] mb-5">
-        <label className="block text-sm font-medium text-gray-700">Kilometer</label>
-        <input
-          type="number"
-          {...register('kilometer')}
-          className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Enter kilometers"
-        />
-      </div>
+          {loading === true ?
+            <div className='w-[400px] h-[400px] flex justify-center items-center'>
+              <ReactLoader />
+            </div>
+            : <form onSubmit={handleSubmit(onSubmit)}>
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <select
+                  {...register('status')}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                >
 
-      {/* Payment Field */}
-      
-      <div className="w-[350px] mb-5">
-        <label className="block text-sm font-medium text-gray-700">Payment</label>
-        <input
-          type="number"
-          {...register('paymentBrand', {
-            required: 'Payment is required',
-            min: {
-              value: 1,
-              message: 'Payment must be at least 1',
-            },
-          })}
-          className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Enter payment amount"
-        />
-        {errors.paymentBrand && (
-          <p className="text-red-500 text-sm mt-1">{errors.paymentBrand.message}</p>
-        )}
-      </div>
-       {/* Final Comments Field */}
-       <div className="w-[350px] mb-5">
-        <label className="block text-sm font-medium text-gray-700">Final Comments</label>
-        <textarea
-          {...register('finalComments', {
-            required: 'Final comments are required',
-            minLength: {
-              value: 10,
-              message: 'Comments must be at least 10 characters long',
-            },
-          })}
-          className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          placeholder="Enter your comments"
-          rows={4}
-        ></textarea>
-        {errors.finalComments && (
-          <p className="text-red-500 text-sm mt-1">{errors.finalComments.message}</p>
-        )}
-      </div>
-        <div>
-          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-            Submit
-          </button>
-        </div>
-          </form>
+                  {/* <option value="IN PROGRESS">In Progress</option>
+            <option value="PART PENDING">Awaiting Parts</option> */}
+
+                  <option value="COMPLETED">Final Close</option>
+                  {/* <option value="CANCELED">Canceled</option> */}
+                </select>
+              </div>
+              {/* Kilometer Field */}
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Kilometer</label>
+                <input
+                  type="number"
+                  {...register('kilometer')}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter kilometers"
+                />
+                {error && <p className="text-red-500 mt-4">{error}</p>}
+                {distance && (
+                  <p className="text-green-500 mt-4">
+                    Distance: {distance} km
+                  </p>
+                )}
+              </div>
+
+              {/* Payment Field */}
+
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Payment</label>
+                <input
+                  type="number"
+                  {...register('paymentBrand', {
+                    required: 'Payment is required',
+                    min: {
+                      value: 1,
+                      message: 'Payment must be at least 1',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter payment amount"
+                />
+                {errors.paymentBrand && (
+                  <p className="text-red-500 text-sm mt-1">{errors.paymentBrand.message}</p>
+                )}
+              </div>
+              {/* Final Comments Field */}
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Final Comments</label>
+                <textarea
+                  {...register('finalComments', {
+                    required: 'Final comments are required',
+                    minLength: {
+                      value: 10,
+                      message: 'Comments must be at least 10 characters long',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter your comments"
+                  rows={4}
+                ></textarea>
+                {errors.finalComments && (
+                  <p className="text-red-500 text-sm mt-1">{errors.finalComments.message}</p>
+                )}
+              </div>
+              <div>
+                <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                  Submit
+                </button>
+              </div>
+            </form>
+          }
         </DialogContent>
 
       </Dialog>
-    
-      
+
+
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );

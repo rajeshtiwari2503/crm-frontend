@@ -117,7 +117,7 @@ const WarrantyDetails = ({ params }) => {
                             <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="50" height="50" />
                         </div>
                         <div class="text-12">Call or WhatsApp</div>
-                        <div class="font-bold text-12">+91 9649149196</div>
+                        <div class="font-bold text-12">+91 ${brand?.tollfree}</div>
                         <div class="text-12">(10 AM - 6 PM)</div>
                         <div class="text-12">Monday to Saturday</div>
                         <div class="text-12">Be ready with your</div>
@@ -141,6 +141,7 @@ const WarrantyDetails = ({ params }) => {
     };
     
     
+    // console.log(brand);
     
 
     return (
@@ -193,7 +194,7 @@ const WarrantyDetails = ({ params }) => {
                                         <img src={item?.qrCodes[0]?.qrCodeUrl} alt="image" width={80} height={80} />
                                     </div>
                                     <div className='text-[12px]'> Call or Whatsapp</div>
-                                    <div className='font-bold text-[12px]'> +91 9649149196</div>
+                                    <div className='font-bold text-[12px]'> +91 {brand.tollfree}</div>
                                     <div className='text-[12px]'> (10 AM - 6 PM) </div>
                                     <div className='text-[12px]'> Monday to Saturday </div>
                                     <div className='text-[12px]'> Be ready with your Product Bill & Unique code No. ,Address & Pincode</div>

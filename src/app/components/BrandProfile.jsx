@@ -131,6 +131,8 @@ const BrandProfile = (props) => {
                         }
                     </div>
 
+                    <div className='text-1xl font-semibold'>Tollfree :</div>
+                    <div className='text-lg font-medium'>{userData?.tollfree}</div>
                     <div className='text-1xl font-semibold'>Status :</div>
                     <div className='text-lg font-medium'>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
                     <div className='text-1xl font-semibold'>termsAndConditions :</div>

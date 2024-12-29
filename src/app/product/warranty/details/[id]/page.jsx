@@ -1,4 +1,4 @@
- "use client"
+"use client"
 import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from "../../../../../../http-request";
@@ -15,10 +15,10 @@ const WarrantyDetails = ({ params }) => {
 
     useEffect(() => {
         getWarranty()
-        
-    }, [ ]);
+
+    }, []);
     useEffect(() => {
-        
+
         if (warranty) {
             getBrandById(warranty?.brandId)
         }
@@ -53,7 +53,7 @@ const WarrantyDetails = ({ params }) => {
     const printRecords = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
-    
+
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
@@ -74,11 +74,21 @@ const WarrantyDetails = ({ params }) => {
                 background-color: #f9f9f9;
                 border-radius: 5px;
             }
+                 .item2 {
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+                margin-top:20px;
+            }
             .record img {
                 width: 120px;
                 height: 120px;
                 object-fit: contain;
             }
+                
             .text-12 {
                 font-size: 10px;
                 margin: 4px 0;
@@ -86,8 +96,12 @@ const WarrantyDetails = ({ params }) => {
             .font-bold {
                 font-weight: bold;
             }
-            .recordCenter {
-                margin-left: 36px;
+            .recordCenter2 {
+                 text-align: center;
+                  margin-top:40px;
+            }
+                  .recordCenter {
+                 text-align: center;
             }
             @media print {
                 .page-break {
@@ -96,15 +110,16 @@ const WarrantyDetails = ({ params }) => {
             }
         `);
         printWindow.document.write('</style></head><body>');
-    
+
         const records = warranty?.records || [];
-        const itemsPerPage = 9; // Three rows * three columns
-    
+        const itemsPerPage = 6; // Three rows * three columns
+
         for (let i = 0; i < records.length; i += itemsPerPage) {
             printWindow.document.write('<div class="container">');
             for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
                 const item = records[j];
                 printWindow.document.write(`
+                    <div>
                     <div class="item">
                         <div class="record">
                             <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
@@ -125,24 +140,34 @@ const WarrantyDetails = ({ params }) => {
                         <div class="text-12">Address & Pincode</div>
                         <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
                     </div>
+                    <div class="item2">
+                        
+                        
+                        <div>
+                            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="120" height="120" />
+                        </div>
+                        
+                        <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                    </div>
                 `);
             }
             printWindow.document.write('</div>');
-    
+
             if (i + itemsPerPage < records.length) {
                 printWindow.document.write('<div class="page-break"></div>');
             }
         }
-    
+
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
     };
-    
-    
+
+
     // console.log(brand);
-    
+
 
     return (
         <Sidenav>
@@ -185,7 +210,7 @@ const WarrantyDetails = ({ params }) => {
                                     <div className='  mt-3 mb-3 font-bold text-[12px]'>  QR Code warranty is powered by Servsy.in</div>
                                     {/* <div>{warranty?.brandLogo}</div> */}
                                     <div className='flex justify-center items-center'>
-                                        <img src={brand?.brandLogo?brand?.brandLogo:"/Logo.png"} alt="image" width={100} height={100} />
+                                        <img src={brand?.brandLogo ? brand?.brandLogo : "/Logo.png"} alt="image" width={100} height={100} />
                                     </div>
                                     {/* <div className='font-bold'>Part Name</div>
                                     <div>{warranty?.productName}</div> */}

@@ -45,12 +45,15 @@ const RecentServicesList = (props) => {
 
  
   const userData = props?.userData;
+  // console.log("userData",userData);
+  
   const data11 = props?.data;
   const sortedData1 = data11.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   const sortData = sortedData1?.map((item, index) => ({ ...item, i: index + 1 }));
   const data1 = sortData;
  
-  const data = userData?.role === "USER" ? data1?.filter((item) => item?.status === "ASSIGN" || item?.status === "PENDING") : data1;
+  const data = userData?.role === "USER" ? data1?.filter((item) => item?.userId ===userData?._id  ) : data1;
+  // const data =   data1 
  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -132,7 +135,7 @@ const RecentServicesList = (props) => {
         } */}
       </div>
 
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data?.length > 0 || userData?._id===undefined ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
           <TableContainer component={Paper}>

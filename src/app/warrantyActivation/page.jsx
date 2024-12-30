@@ -109,72 +109,84 @@ const ActivateWarrantyButton = () => {
   };
 
 
-  const getLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setValue("lat", latitude);
-          setValue("long", longitude);
+  // const getLocation = () => {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         setValue("lat", latitude);
+  //         setValue("long", longitude);
+  //         if(latitude && longitude){
+  //         handleSearchByLatLng(latitude,longitude)
+          
+  //         // Fetch address and pincode using a reverse geocoding API
+  //         fetch(
+  //           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
+  //         )
+  //           .then((response) => response.json())
+  //           .then((data) => {
+  //             if (data.results && data.results.length > 0) {
+  //               const bestMatch = data.results[0]; // The first result is usually the best match
 
-          // Fetch address and pincode using a reverse geocoding API
-          fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.results && data.results.length > 0) {
-                const bestMatch = data.results[0]; // The first result is usually the best match
+  //               // Extract postal code (pincode)
+  //               const postalCode = bestMatch.address_components.find((component) =>
+  //                 component.types.includes("postal_code")
+  //               );
+  //               setValue("address", bestMatch.formatted_address);
+  //               console.log("postalCode",postalCode?.long_name);
+  //               setValue("pincode", postalCode ? postalCode?.long_name : "Pincode not found");
 
-                // Extract postal code (pincode)
-                const postalCode = bestMatch.address_components.find((component) =>
-                  component.types.includes("postal_code")
-                );
-                setValue("address", bestMatch.formatted_address);
-                setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
+  //               // Extract district (administrative_area_level_2), fallback to locality or sublocality
+  //               const districtComponent = bestMatch.address_components.find((component) =>
+  //                 component.types.includes("administrative_area_level_2")
+  //               );
+  //               setValue("district", districtComponent ? districtComponent.long_name : "District not found");
 
-                // Extract district (administrative_area_level_2), fallback to locality or sublocality
-                const districtComponent = bestMatch.address_components.find((component) =>
-                  component.types.includes("administrative_area_level_2")
-                );
-                setValue("district", districtComponent ? districtComponent.long_name : "District not found");
+  //               // Extract state (administrative_area_level_1)
+  //               const stateComponent = bestMatch.address_components.find((component) =>
+  //                 component.types.includes("administrative_area_level_1")
+  //               );
+  //               setValue("state", stateComponent ? stateComponent.long_name : "State not found");
+  //             } else {
+  //               console.warn("No results found for the given coordinates.");
+  //             }
+            
+  //           })
+          
+  //           .catch((error) => {
+  //             console.error("Error fetching address: ", error);
+  //           });
+  //         }
+  //       },
+      
+  //       (error) => {
+  //         console.error("Error getting location: ", error);
+  //       },
+  //       { enableHighAccuracy: true }
+      
+  //     );
+    
+  //   } else {
+  //     alert("Geolocation is not supported by this browser.");
+  //   }
+  // };
 
-                // Extract state (administrative_area_level_1)
-                const stateComponent = bestMatch.address_components.find((component) =>
-                  component.types.includes("administrative_area_level_1")
-                );
-                setValue("state", stateComponent ? stateComponent.long_name : "State not found");
-              } else {
-                console.warn("No results found for the given coordinates.");
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching address: ", error);
-            });
-        },
-        (error) => {
-          console.error("Error getting location: ", error);
-        },
-        { enableHighAccuracy: true }
-      );
-    } else {
-      alert("Geolocation is not supported by this browser.");
-    }
-  };
 
+   
 
   // const handleSearch = async () => {
-  //   const apiKey = 'AIzaSyBvWULhEJHD7GpeeY3UC2C5N9dJZOIuyEg';
+  //   const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
   //   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
 
   //   try {
   //     const response = await axios.get(url);
   //     const result = response.data.results[0];
+
   //     if (result) {
   //       // Extract latitude and longitude
   //       const { lat, lng } = result.geometry.location;
-  //       setValue("lat", lat)
-  //       setValue("long", lng)
+  //       setValue("lat", lat);
+  //       setValue("long", lng);
 
   //       // Extract formatted address
   //       setValue("address", result.formatted_address);
@@ -183,18 +195,26 @@ const ActivateWarrantyButton = () => {
   //       const postalCode = result.address_components.find(component =>
   //         component.types.includes('postal_code')
   //       );
-  //       setValue("pincode", postalCode.long_name);
-  //       const districtComponent = result.address_components.find(component =>
-  //         component.types.includes('administrative_area_level_2')
-  //       );
-  //       setValue( "district", districtComponent.long_name  );
+  //       console.log("postalCode",postalCode,result);
+        
+  //       setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
 
-  //       // Extract state (Administrative Area Level 1)
+  //       // Extract district (administrative_area_level_2)
+  //       const districtComponent = result.address_components.find(component =>
+  //         component.types.includes('administrative_area_level_2') ||
+  //         component.types.includes('locality') ||
+  //         component.types.includes('sublocality')
+  //       );
+  //       setValue("district", districtComponent ? districtComponent.long_name : " ");
+  //       // console.log(districtComponent ? districtComponent.long_name : " ");
+
+  //       // Extract state (administrative_area_level_1)
   //       const stateComponent = result.address_components.find(component =>
   //         component.types.includes('administrative_area_level_1')
   //       );
-  //       setValue("state" ,stateComponent?.long_name );
-  //       console.log(stateComponent?.long_name);
+  //       setValue("state", stateComponent ? stateComponent.long_name : " ");
+  //       // console.log(stateComponent ? stateComponent.long_name : " ");
+
 
   //     } else {
   //       alert('Location not found');
@@ -204,58 +224,198 @@ const ActivateWarrantyButton = () => {
   //   }
   // };
 
-  const handleSearch = async () => {
-    const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
-
-    try {
-      const response = await axios.get(url);
-      const result = response.data.results[0];
-
-      if (result) {
-        // Extract latitude and longitude
-        const { lat, lng } = result.geometry.location;
-        setValue("lat", lat);
-        setValue("long", lng);
-
-        // Extract formatted address
-        setValue("address", result.formatted_address);
-
-        // Extract postal code (pincode)
-        const postalCode = result.address_components.find(component =>
-          component.types.includes('postal_code')
-        );
-        setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
-
-        // Extract district (administrative_area_level_2)
-        const districtComponent = result.address_components.find(component =>
-          component.types.includes('administrative_area_level_2') ||
-          component.types.includes('locality') ||
-          component.types.includes('sublocality')
-        );
-        setValue("district", districtComponent ? districtComponent.long_name : " ");
-        // console.log(districtComponent ? districtComponent.long_name : " ");
-
-        // Extract state (administrative_area_level_1)
-        const stateComponent = result.address_components.find(component =>
-          component.types.includes('administrative_area_level_1')
-        );
-        setValue("state", stateComponent ? stateComponent.long_name : " ");
-        // console.log(stateComponent ? stateComponent.long_name : " ");
-
-
-      } else {
-        alert('Location not found');
-      }
-    } catch (error) {
-      console.error('Error fetching location: ', error);
-    }
-  };
-
 
  
 
   // console.log(filterWarranty);
+ 
+  const getLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+  
+          if (latitude && longitude) {
+            console.log("Latitude:", latitude, "Longitude:", longitude);
+            handleSearchByLatLng(latitude,longitude)
+            // Set latitude and longitude values
+            setValue("lat", latitude);
+            setValue("long", longitude);
+  
+            try {
+              // Fetch address and pincode using Google Geocoding API
+              const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
+              );
+              const data = await response.json();
+  
+              if (data.results && data.results.length > 0) {
+                const bestMatch = data.results[0]; // The first result is the most accurate
+  
+                // Set formatted address
+                setValue("address", bestMatch.formatted_address);
+  
+                // Extract postal code (pincode)
+                const postalCodeComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("postal_code")
+                );
+  
+                if (postalCodeComponent) {
+                  const postalCode = postalCodeComponent.long_name;
+                  // setValue("pincode", postalCode);
+                  // console.log("Pincode:", postalCode);
+                } else {
+                  console.warn("Pincode not found in address components.", bestMatch.address_components);
+                  // setValue("pincode", "");
+                }
+  
+                // Extract district
+                const districtComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_2")
+                );
+                setValue("district", districtComponent ? districtComponent.long_name : "District not found");
+  
+                // Extract state
+                const stateComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_1")
+                );
+                setValue("state", stateComponent ? stateComponent.long_name : "State not found");
+              } else {
+                console.warn("No results found for the given coordinates.");
+                setValue("address", "Address not found");
+                setValue("pincode", "");
+                setValue("district", "District not found");
+                setValue("state", "State not found");
+              }
+            } catch (error) {
+              console.error("Error fetching address: ", error);
+              alert("Failed to fetch location details. Please try again.");
+            }
+          } else {
+            console.warn("Latitude and longitude are not available.");
+            alert("Unable to retrieve location details. Please try again.");
+          }
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              alert("Location access denied by the user.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              alert("Location information is unavailable.");
+              break;
+            case error.TIMEOUT:
+              alert("The request to get user location timed out.");
+              break;
+            default:
+              alert("An unknown error occurred while fetching location.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Optional configurations
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+  
+  
+
+ const handleSearch = async () => {
+  const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+    const result = response.data.results[0];
+
+    if (result) {
+      // Log the full response for debugging
+      console.log("Geocode Result:", result);
+
+      // Extract latitude and longitude
+      const { lat, lng } = result.geometry.location;
+      setValue("lat", lat);
+      setValue("long", lng);
+      handleSearchByLatLng(lat,lng)
+      // Extract formatted address
+      console.log(result.formatted_address);
+
+      setValue("address", result.formatted_address);
+
+      // Extract postal code (pincode)
+      // const postalCodeComponent = result.address_components.find(component =>
+      //   component.types.includes('postal_code')
+      // );
+      // if (postalCodeComponent) {
+      //   setValue("pincode", postalCodeComponent.long_name);
+      //   console.log("Pincode:", postalCodeComponent.long_name);
+      // } else {
+      //   setValue("pincode", "Pincode not found");
+      //   console.warn("Pincode not found in the address components.");
+      // }
+
+      // Extract district
+      const districtComponent = result.address_components.find(component =>
+        component.types.includes('administrative_area_level_2') ||
+        component.types.includes('locality') ||
+        component.types.includes('sublocality')
+      );
+      console.log(districtComponent.long_name);
+
+      setValue("district", districtComponent ? districtComponent.long_name : "District not found");
+
+      // Extract state
+      const stateComponent = result.address_components.find(component =>
+        component.types.includes('administrative_area_level_1')
+      );
+      console.log(stateComponent.long_name);
+      
+      setValue("state", stateComponent ? stateComponent.long_name : "State not found");
+    } else {
+      alert('Location not found');
+    }
+  } catch (error) {
+    console.error('Error fetching location:', error);
+  }
+};
+
+const handleSearchByLatLng = async (lat, lng) => {
+  const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+    const result = response.data.results[0];
+
+    if (result) {
+      console.log("Geocode Response:", response.data);
+
+      // Extract postal code (pincode)
+      const postalCodeComponent = result.address_components.find(component =>
+        component.types.includes('postal_code')
+      );
+
+      if (postalCodeComponent) {
+        setValue("pincode", postalCodeComponent.long_name);
+        console.log("Pincode:", postalCodeComponent.long_name);
+      } else {
+        console.warn("Pincode not found in the address components.");
+        setValue("pincode", "");
+      }
+
+      // Set other address details if needed
+      // setValue("address", result.formatted_address);
+    } else {
+      alert('Location details not found');
+    }
+  } catch (error) {
+    console.error('Error fetching location details:', error);
+  }
+};
+ 
+ 
+ 
   const getAllProduct = async () => {
     let response = await http_request.get("/getAllProduct")
     let { data } = response;
@@ -445,7 +605,7 @@ const ActivateWarrantyButton = () => {
                    
 
                     <button
-                      onClick={  getLocation}
+                      onClick={ ()=> getLocation()}
                       className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >
                        <MyLocation /> Location
@@ -453,6 +613,16 @@ const ActivateWarrantyButton = () => {
 
                   </div>
                   {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+                </div>
+                <div>
+                  <label htmlFor="contact" className="block text-gray-700">Pincode:</label>
+                  <input
+                    id="pincode"
+                    type="text"
+                    {...register('pincode', { required: 'Pincode is required' })}
+                    className="w-full  p-0.5 border border-gray-300 rounded-md"
+                  />
+                  {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
                 </div>
               </form>
 
@@ -465,7 +635,7 @@ const ActivateWarrantyButton = () => {
                   className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                 />
                 <button
-                  onClick={handleSearch}
+                  onClick={()=>handleSearch()}
                   className="bg-blue-500 text-sm text-white px-6 py-1 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                   Search

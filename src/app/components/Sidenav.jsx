@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, GppGood, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -602,6 +602,20 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
+
+            {value?.user?.role === "ADMIN" ||  value?.user?.role === "EMPLOYEE"
+              ? <ListItem onClick={(event) => {
+                router.push(`/warrantyActivations`)
+              }} disablePadding className={pathname.startsWith("/warrantyActivations") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton>
+                  <ListItemIcon className={pathname.startsWith("/warrantyActivations") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                    <GppGood style={{ color: pathname.startsWith("/warrantyActivations") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Active Warranty "} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+              : ""}
             {/* {value?.user?.role === "ADMIN"
               ? <ListItem onClick={handleCollapseSettings} disablePadding className={pathname.startsWith("/settings") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>

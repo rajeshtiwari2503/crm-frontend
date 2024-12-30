@@ -278,7 +278,7 @@ const ActivateWarrantyButton = () => {
         , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
 
       }
-      console.log(reqdata);
+      // console.log(reqdata);
 
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)

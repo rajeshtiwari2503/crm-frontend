@@ -170,7 +170,7 @@ const WarrantyActivationList = (props) => {
                     {/* <TableCell>{row.numberOfGenerate}</TableCell> */}
                     <TableCell>{row.warrantyInDays}</TableCell>
                     <TableCell>{row?.batchNo}</TableCell>
-                    <TableCell>{new Date(row.activationDate).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
                     <TableCell className='flex'>
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color='primary' />

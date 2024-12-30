@@ -11,73 +11,73 @@ const WarrantyActivationDetails = ({ params }) => {
     const router = useRouter()
 
     const [data, setWarranty] = useState({})
+    const [loading, setLoading] = useState(false)
 
     const [dashData, setData] = React.useState("");
     const [value, setBrandValue] = React.useState(null);
 
-    
 
-  useEffect(() => {
-    
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await http_request.get(`/getActivationWarrantyById/${params?.id}`)
-                setWarranty(response.data);
+                setLoading(true)
+                const warrantyResponse = await http_request.get(`/getActivationWarrantyById/${params?.id}`);
+                setWarranty(warrantyResponse.data);
+
+                // Fetch user data and dashboard details after fetching the warranty
+                if (warrantyResponse.data) {
+                    getUserById(warrantyResponse.data.userId);
+                    setBrandValue({ _id: warrantyResponse.data.userId, role: "USER" })
+                    getAllDashboard(warrantyResponse.data.userId);
+                    setLoading(false)
+
+                }
+                setLoading(false)
+
             } catch (err) {
-                console.log('Error fetching details');
-            } finally {
-                console.log('Error fetching details');
+                console.log('Error fetching details', err);
+                setLoading(false)
 
             }
         };
-        if(data){
-            getAllDashboard()
-            getUserById()
+
+        if (params?.id) {
+            fetchData(); // Trigger fetch when params.id changes
         }
-       
-        fetchData();
-    }, [params?.id]);
+    }, [params?.id]); // Re-run the effect when params.id changes
 
-
-
-    const getUserById = async () => {
+    // Fetch user data by userId
+    const getUserById = async (userId) => {
         try {
-            
-            let response = await http_request.get(`/getUserBy/${data?.userId}`)
-            let { data } = response;
-            setUser(data)
-            setId(data?._id)
+            const response = await http_request.get(`/getUserBy/${userId}`);
+            const userData = response.data;
+            setUser(userData);
+            setId(userData?._id);
+        } catch (err) {
+            console.log('Error fetching user details', err);
         }
-        catch (err) {
-            console.log(err);
-        }
-    }
+    };
 
-    
-      const getAllDashboard = async () => {
-      
+    // Fetch dashboard details by userId
+    const getAllDashboard = async (userId) => {
         try {
-        
-          const endPoint=  
-          `/dashboardDetailsByUserId/${data?.userId}`
-          let response = await http_request.get(endPoint)
-          let { data } = response;
-    
-          setData(data)
+            const endPoint = `/dashboardDetailsByUserId/${userId}`;
+            const response = await http_request.get(endPoint);
+            const dashboardData = response.data;
+            setData(dashboardData);
+        } catch (err) {
+            console.log('Error fetching dashboard details', err);
         }
-        catch (err) {
-          console.log(err);
-        }
-      }
+    };
 
-   
-    console.log(data);
+    // console.log(data);
 
 
     return (
         <Sidenav>
 
-            {!data ?
+            {loading === true ?
                 <div className='h-[400px] flex justify-center items-center'>
                     <ReactLoader />
                 </div>
@@ -87,6 +87,19 @@ const WarrantyActivationDetails = ({ params }) => {
                         <h1 className="text-3xl font-bold mb-4">Product Warranty Details</h1>
 
                         <div className="grid grid-cols-2 gap-4">
+                            <div><strong>QR Codes:</strong></div>
+                        <div>
+                                
+                                {data?.qrCodes?.map((qr, index) => (
+                                    <div key={index}>
+                                        {/* <span>{qr.qrCodeUrl}</span> */}
+                                        <div>
+                                            {/* Display image if qrCodeUrl exists */}
+                                            {qr.qrCodeUrl && <img src={qr.qrCodeUrl} alt={`QR Code ${index}`} width={100} height={100} />}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                             <div>
                                 <strong>Brand Name:</strong> {data.brandName}
                             </div>
@@ -99,6 +112,9 @@ const WarrantyActivationDetails = ({ params }) => {
                             <div>
                                 <strong>Product ID:</strong> {data.productId}
                             </div>
+                            {/* <div>
+                                <strong>Category Name:</strong> {data.categoryName}
+                            </div> */}
                             <div>
                                 <strong>Category ID:</strong> {data.categoryId}
                             </div>
@@ -106,7 +122,7 @@ const WarrantyActivationDetails = ({ params }) => {
                                 <strong>Unique ID:</strong> {data.uniqueId}
                             </div>
                             <div>
-                                <strong>Year:</strong> {new Date(data.year).toLocaleDateString()}
+                                <strong>Year:</strong> {new Date(data.year).toLocaleString()}
                             </div>
                             <div>
                                 <strong>Batch No:</strong> {data.batchNo}
@@ -115,17 +131,20 @@ const WarrantyActivationDetails = ({ params }) => {
                                 <strong>Warranty Days:</strong> {data.warrantyInDays}
                             </div>
                             <div>
-                                <strong>QR Codes:</strong>
-                                {data?.qrCodes?.map((qr, index) => (
-                                    <div key={index}>
-                                        {/* <span>{qr.qrCodeUrl}</span> */}
-                                        <div>
-                                            {/* Display image if qrCodeUrl exists */}
-                                            {qr.qrCodeUrl && <img src={qr.qrCodeUrl} alt={`QR Code ${index}`} width={100} height={100} />}
-                                        </div>
-                                    </div>
-                                ))}
+                                <strong>Remaining Warranty Days:</strong> {
+                                    (() => {
+                                        const activationDate = new Date(data.activationDate);
+                                        const expirationDate = new Date(activationDate);
+                                        expirationDate.setDate(activationDate.getDate() + data.warrantyInDays);
+
+                                        const currentDate = new Date();
+                                        const remainingTime = expirationDate - currentDate;
+                                        const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+
+                                        return remainingDays > 0 ? remainingDays : 0; // If remaining days is negative, set it to 0
+                                    })()}
                             </div>
+                           
 
                             <div>
                                 <strong>User Name:</strong> {data.userName}
@@ -151,19 +170,19 @@ const WarrantyActivationDetails = ({ params }) => {
                             <div>
                                 <strong>State:</strong> {data.state}
                             </div>
-                            <div>
+                            {/* <div>
                                 <strong>Complaint ID:</strong> {data.complaintId}
-                            </div>
+                            </div> */}
                             <div>
-                                <strong>CreatedAt:</strong> {new Date(data.activationDate).toLocaleDateString()}
+                                <strong>CreatedAt:</strong> {new Date(data.activationDate).toLocaleString()}
                             </div>
                         </div>
                     </div>
                     <div>
-                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
-                                Customer Information
-                            </h2>
-                    <UserDashboard dashData={dashData} userData={value} />
+                        <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                            Customer Information
+                        </h2>
+                        <UserDashboard dashData={dashData} userData={value} />
                     </div>
                 </>
             }

@@ -91,7 +91,7 @@ const UserDashboard = (props) => {
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
-              <div className='text-center mt-2'>Completed  </div>
+              <div className='text-center mt-2'>Close  </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>

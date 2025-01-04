@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast';
 
 import axios from 'axios';
 import { LocationCity, MyLocation } from '@mui/icons-material';
+import { ReactLoader } from '../components/common/Loading';
 
 const ActivateWarrantyButton = () => {
   const [activationStatus, setActivationStatus] = useState(null);
@@ -51,7 +52,7 @@ const ActivateWarrantyButton = () => {
   };
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-// console.log(filterWarranty);
+  // console.log(filterWarranty);
 
 
   const calculateWarrantyExpiration = () => {
@@ -82,7 +83,7 @@ const ActivateWarrantyButton = () => {
   const onSubmit = async (data) => {
     // console.log(data);
     try {
-     
+
 
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
@@ -118,7 +119,7 @@ const ActivateWarrantyButton = () => {
   //         setValue("long", longitude);
   //         if(latitude && longitude){
   //         handleSearchByLatLng(latitude,longitude)
-          
+
   //         // Fetch address and pincode using a reverse geocoding API
   //         fetch(
   //           `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
@@ -150,29 +151,29 @@ const ActivateWarrantyButton = () => {
   //             } else {
   //               console.warn("No results found for the given coordinates.");
   //             }
-            
+
   //           })
-          
+
   //           .catch((error) => {
   //             console.error("Error fetching address: ", error);
   //           });
   //         }
   //       },
-      
+
   //       (error) => {
   //         console.error("Error getting location: ", error);
   //       },
   //       { enableHighAccuracy: true }
-      
+
   //     );
-    
+
   //   } else {
   //     alert("Geolocation is not supported by this browser.");
   //   }
   // };
 
 
-   
+
 
   // const handleSearch = async () => {
   //   const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
@@ -196,7 +197,7 @@ const ActivateWarrantyButton = () => {
   //         component.types.includes('postal_code')
   //       );
   //       console.log("postalCode",postalCode,result);
-        
+
   //       setValue("pincode", postalCode ? postalCode.long_name : "Pincode not found");
 
   //       // Extract district (administrative_area_level_2)
@@ -225,41 +226,41 @@ const ActivateWarrantyButton = () => {
   // };
 
 
- 
+
 
   // console.log(filterWarranty);
- 
+
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-  
+
           if (latitude && longitude) {
             console.log("Latitude:", latitude, "Longitude:", longitude);
-            handleSearchByLatLng(latitude,longitude)
+            handleSearchByLatLng(latitude, longitude)
             // Set latitude and longitude values
             setValue("lat", latitude);
             setValue("long", longitude);
-  
+
             try {
               // Fetch address and pincode using Google Geocoding API
               const response = await fetch(
                 `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
               );
               const data = await response.json();
-  
+
               if (data.results && data.results.length > 0) {
                 const bestMatch = data.results[0]; // The first result is the most accurate
-  
+
                 // Set formatted address
                 setValue("address", bestMatch.formatted_address);
-  
+
                 // Extract postal code (pincode)
                 const postalCodeComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("postal_code")
                 );
-  
+
                 if (postalCodeComponent) {
                   const postalCode = postalCodeComponent.long_name;
                   // setValue("pincode", postalCode);
@@ -268,13 +269,13 @@ const ActivateWarrantyButton = () => {
                   console.warn("Pincode not found in address components.", bestMatch.address_components);
                   // setValue("pincode", "");
                 }
-  
+
                 // Extract district
                 const districtComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_2")
                 );
                 setValue("district", districtComponent ? districtComponent.long_name : "District not found");
-  
+
                 // Extract state
                 const stateComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_1")
@@ -318,104 +319,104 @@ const ActivateWarrantyButton = () => {
       alert("Geolocation is not supported by this browser.");
     }
   };
-  
-  
 
- const handleSearch = async () => {
-  const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
 
-  try {
-    const response = await axios.get(url);
-    const result = response.data.results[0];
 
-    if (result) {
-      // Log the full response for debugging
-      console.log("Geocode Result:", result);
+  const handleSearch = async () => {
+    const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(query)}&key=${apiKey}`;
 
-      // Extract latitude and longitude
-      const { lat, lng } = result.geometry.location;
-      setValue("lat", lat);
-      setValue("long", lng);
-      handleSearchByLatLng(lat,lng)
-      // Extract formatted address
-      console.log(result.formatted_address);
+    try {
+      const response = await axios.get(url);
+      const result = response.data.results[0];
 
-      setValue("address", result.formatted_address);
+      if (result) {
+        // Log the full response for debugging
+        console.log("Geocode Result:", result);
 
-      // Extract postal code (pincode)
-      // const postalCodeComponent = result.address_components.find(component =>
-      //   component.types.includes('postal_code')
-      // );
-      // if (postalCodeComponent) {
-      //   setValue("pincode", postalCodeComponent.long_name);
-      //   console.log("Pincode:", postalCodeComponent.long_name);
-      // } else {
-      //   setValue("pincode", "Pincode not found");
-      //   console.warn("Pincode not found in the address components.");
-      // }
+        // Extract latitude and longitude
+        const { lat, lng } = result.geometry.location;
+        setValue("lat", lat);
+        setValue("long", lng);
+        handleSearchByLatLng(lat, lng)
+        // Extract formatted address
+        console.log(result.formatted_address);
 
-      // Extract district
-      const districtComponent = result.address_components.find(component =>
-        component.types.includes('administrative_area_level_2') ||
-        component.types.includes('locality') ||
-        component.types.includes('sublocality')
-      );
-      console.log(districtComponent.long_name);
+        setValue("address", result.formatted_address);
 
-      setValue("district", districtComponent ? districtComponent.long_name : "District not found");
+        // Extract postal code (pincode)
+        // const postalCodeComponent = result.address_components.find(component =>
+        //   component.types.includes('postal_code')
+        // );
+        // if (postalCodeComponent) {
+        //   setValue("pincode", postalCodeComponent.long_name);
+        //   console.log("Pincode:", postalCodeComponent.long_name);
+        // } else {
+        //   setValue("pincode", "Pincode not found");
+        //   console.warn("Pincode not found in the address components.");
+        // }
 
-      // Extract state
-      const stateComponent = result.address_components.find(component =>
-        component.types.includes('administrative_area_level_1')
-      );
-      console.log(stateComponent.long_name);
-      
-      setValue("state", stateComponent ? stateComponent.long_name : "State not found");
-    } else {
-      alert('Location not found');
-    }
-  } catch (error) {
-    console.error('Error fetching location:', error);
-  }
-};
+        // Extract district
+        const districtComponent = result.address_components.find(component =>
+          component.types.includes('administrative_area_level_2') ||
+          component.types.includes('locality') ||
+          component.types.includes('sublocality')
+        );
+        console.log(districtComponent.long_name);
 
-const handleSearchByLatLng = async (lat, lng) => {
-  const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+        setValue("district", districtComponent ? districtComponent.long_name : "District not found");
 
-  try {
-    const response = await axios.get(url);
-    const result = response.data.results[0];
+        // Extract state
+        const stateComponent = result.address_components.find(component =>
+          component.types.includes('administrative_area_level_1')
+        );
+        console.log(stateComponent.long_name);
 
-    if (result) {
-      console.log("Geocode Response:", response.data);
-
-      // Extract postal code (pincode)
-      const postalCodeComponent = result.address_components.find(component =>
-        component.types.includes('postal_code')
-      );
-
-      if (postalCodeComponent) {
-        setValue("pincode", postalCodeComponent.long_name);
-        console.log("Pincode:", postalCodeComponent.long_name);
+        setValue("state", stateComponent ? stateComponent.long_name : "State not found");
       } else {
-        console.warn("Pincode not found in the address components.");
-        setValue("pincode", "");
+        alert('Location not found');
       }
-
-      // Set other address details if needed
-      // setValue("address", result.formatted_address);
-    } else {
-      alert('Location details not found');
+    } catch (error) {
+      console.error('Error fetching location:', error);
     }
-  } catch (error) {
-    console.error('Error fetching location details:', error);
-  }
-};
- 
- 
- 
+  };
+
+  const handleSearchByLatLng = async (lat, lng) => {
+    const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+    try {
+      const response = await axios.get(url);
+      const result = response.data.results[0];
+
+      if (result) {
+        console.log("Geocode Response:", response.data);
+
+        // Extract postal code (pincode)
+        const postalCodeComponent = result.address_components.find(component =>
+          component.types.includes('postal_code')
+        );
+
+        if (postalCodeComponent) {
+          setValue("pincode", postalCodeComponent.long_name);
+          console.log("Pincode:", postalCodeComponent.long_name);
+        } else {
+          console.warn("Pincode not found in the address components.");
+          setValue("pincode", "");
+        }
+
+        // Set other address details if needed
+        // setValue("address", result.formatted_address);
+      } else {
+        alert('Location details not found');
+      }
+    } catch (error) {
+      console.error('Error fetching location details:', error);
+    }
+  };
+
+
+
   const getAllProduct = async () => {
     let response = await http_request.get("/getAllProduct")
     let { data } = response;
@@ -434,7 +435,7 @@ const handleSearchByLatLng = async (lat, lng) => {
         , serialNo: filterProduct?.serialNo, warrantyStatus: filterProduct?.warrantyStatus, uniqueId: filterWarranty?.uniqueId
         , lat: filterWarranty?.lat, long: filterWarranty?.long, userId: filterWarranty?.userId
         , userName: filterWarranty?.userName, serviceLocation: filterWarranty?.address, fullName: filterWarranty?.userName,
-        phoneNumber: filterWarranty?.contact, emailAddress: filterWarranty?.email, pincode: filterWarranty?.pincode
+        phoneNumber: filterWarranty?.contact, emailAddress: `${filterWarranty?.contact}@gmail.com`, pincode: filterWarranty?.pincode
         , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
 
       }
@@ -456,9 +457,15 @@ const handleSearchByLatLng = async (lat, lng) => {
         }
         let response = await http_request.post('/createComplaint', reqdata)
         const { data } = response
+        console.log(data);
+        const userData={user:data?.user}
+        localStorage.setItem('user', JSON.stringify(userData));
         ToastMessage(data)
         setLoading(false)
-        // router.push("/complaint/allComplaint")
+
+        // router.push("/dashboard")
+        // window.location.reload()
+         window.location.href = "/dashboard"
       }
       else {
         alert("You are activated this QR code")
@@ -473,93 +480,96 @@ const handleSearchByLatLng = async (lat, lng) => {
     }
   }
 
- 
+
   return (
     <>
-      <div className="flex justify-center items-center min-h-screen bg-white p-6">
-        <Toaster />
-        <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
-          <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
-          <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
+      {loading === true ? <div>
+        <ReactLoader />
+      </div>
+        : <div className="flex justify-center items-center min-h-screen bg-white p-6">
+          <Toaster />
+          <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
+            <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
+            <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
 
-            <div className='mt-2'>
-              <label className="font-bold text-sm text-gray-700">Brand Name </label>
-              <p className="text-gray-600" text-sm>{warrantyDetails.brandName}</p>
-            </div>
+              <div className='mt-2'>
+                <label className="font-bold text-sm text-gray-700">Brand Name </label>
+                <p className="text-gray-600" text-sm>{warrantyDetails.brandName}</p>
+              </div>
 
-            <div className='mt-2'>
-              <label className="font-bold text-gray-700 text-sm">Product Name </label>
-              <p className="text-gray-600 text-sm">{warrantyDetails.productName}</p>
-            </div>
+              <div className='mt-2'>
+                <label className="font-bold text-gray-700 text-sm">Product Name </label>
+                <p className="text-gray-600 text-sm">{warrantyDetails.productName}</p>
+              </div>
 
-            <div className='mt-2'>
-              <label className="font-bold text-gray-700 text-sm">Unique Code </label>
-              <p className="text-gray-600 text-sm">{qrCodeUrl}</p>
-            </div>
-            <div className='mt-2'>
-              <label className="font-bold text-gray-700 text-sm">Year </label>
-              <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleDateString()}</p>
-            </div>
-            {/* <div>
+              <div className='mt-2'>
+                <label className="font-bold text-gray-700 text-sm">Unique Code </label>
+                <p className="text-gray-600 text-sm">{qrCodeUrl}</p>
+              </div>
+              <div className='mt-2'>
+                <label className="font-bold text-gray-700 text-sm">Year </label>
+                <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleDateString()}</p>
+              </div>
+              {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
           <p className="text-gray-600">{calculateWarrantyExpiration()}</p>
         </div> */}
 
-            <div className='mt-2'>
-              <label className="font-bold text-gray-700 text-sm">Warranty Exp  </label>
-              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ?calculateWarrantyExpiration():" Not activated"}</p>
-            </div>
-            <div className='mt-2'>
-              <label className="font-bold text-gray-700 text-sm">Activated </label>
-              <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
-            </div>
-          </div>
-          {filterWarranty?.isActivated === true ?
-            <div>
-              <div className='mb-5 mt-5'>
-                <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
-                <input
-                  id="contact"
-                  type="text"
-                  value={contactNo}
-                  onChange={(e) => setContactNo(e.target.value)}
-                  placeholder='Please enter your register number'
-                  className="w-full  p-0.5 border border-gray-300 rounded-md"
-                />
-                {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
+              <div className='mt-2'>
+                <label className="font-bold text-gray-700 text-sm">Warranty Exp  </label>
+                <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? calculateWarrantyExpiration() : " Not activated"}</p>
               </div>
-              <button
-                onClick={handleComplaint}
-                className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                Create Complaint
-              </button>
+              <div className='mt-2'>
+                <label className="font-bold text-gray-700 text-sm">Activated </label>
+                <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
+              </div>
             </div>
-            :
-            <div>
-              {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className='mt-5'>
-                  <label htmlFor="name" className="block text-gray-700">Full Name:</label>
-                  <input
-                    id="name"
-                    type="text"
-                    {...register('name', { required: 'Name is required' })}
-                    className="w-full p-0.5 border border-gray-300 rounded-md"
-                  />
-                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
-                </div>
-                <div>
-                  <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+            {filterWarranty?.isActivated === true ?
+              <div>
+                <div className='mb-5 mt-5'>
+                  <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
                   <input
                     id="contact"
                     type="text"
-                    {...register('contact', { required: 'Contact is required' })}
+                    value={contactNo}
+                    onChange={(e) => setContactNo(e.target.value)}
+                    placeholder='Please enter your register number'
                     className="w-full  p-0.5 border border-gray-300 rounded-md"
                   />
                   {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                 </div>
-                {/* <div>
+                <button
+                  onClick={handleComplaint}
+                  className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                >
+                  Create Complaint
+                </button>
+              </div>
+              :
+              <div>
+                {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <div className='mt-5'>
+                    <label htmlFor="name" className="block text-gray-700">Full Name:</label>
+                    <input
+                      id="name"
+                      type="text"
+                      {...register('name', { required: 'Name is required' })}
+                      className="w-full p-0.5 border border-gray-300 rounded-md"
+                    />
+                    {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+                    <input
+                      id="contact"
+                      type="text"
+                      {...register('contact', { required: 'Contact is required' })}
+                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    />
+                    {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
+                  </div>
+                  {/* <div>
                   <label htmlFor="email" className="block text-gray-700">Email:</label>
                   <input
                     id="email"
@@ -575,7 +585,7 @@ const handleSearchByLatLng = async (lat, lng) => {
                   />
                   {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                 </div> */}
-                {/* <div>
+                  {/* <div>
                   <label htmlFor="password" className="block text-gray-700">Password:</label>
                   <input
                     id="password"
@@ -592,72 +602,73 @@ const handleSearchByLatLng = async (lat, lng) => {
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                 </div> */}
 
-                <div className=''>
-                  <label htmlFor="address" className="block text-gray-700">Full Address:</label>
-                  <div className="flex w-full justify-between max-w-md space-x-3 ">
+                  <div className=''>
+                    <label htmlFor="address" className="block text-gray-700">Full Address:</label>
+                    <div className="flex w-full justify-between max-w-md space-x-3 ">
 
-                    <input
-                      id="address"
-                      type="text"
-                      {...register('address', { required: 'Address is required' })}
-                      className=" w-full  p-0.5 border border-gray-300 rounded-md"
-                    />
-                   
+                      <input
+                        id="address"
+                        type="text"
+                        {...register('address', { required: 'Address is required' })}
+                        className=" w-full  p-0.5 border border-gray-300 rounded-md"
+                      />
 
-                    <button
-                      onClick={ ()=> getLocation()}
-                      className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    >
-                       <MyLocation /> Location
-                    </button>
 
+                      <button
+                        onClick={() => getLocation()}
+                        className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                      >
+                        <MyLocation /> Location
+                      </button>
+
+                    </div>
+                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
                   </div>
-                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
-                </div>
-                <div>
-                  <label htmlFor="contact" className="block text-gray-700">Pincode:</label>
+                  <div>
+                    <label htmlFor="contact" className="block text-gray-700">Pincode:</label>
+                    <input
+                      id="pincode"
+                      type="text"
+                      {...register('pincode', { required: 'Pincode is required' })}
+                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    />
+                    {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
+                  </div>
+                </form>
+
+                <div className="flex w-full max-w-md mt-6 space-x-3">
                   <input
-                    id="pincode"
                     type="text"
-                    {...register('pincode', { required: 'Pincode is required' })}
-                    className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Enter location"
+                    className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                   />
-                  {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
+                  <button
+                    onClick={() => handleSearch()}
+                    className="bg-blue-500 text-sm text-white px-6 py-1 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  >
+                    Search
+                  </button>
                 </div>
-              </form>
 
-              <div className="flex w-full max-w-md mt-6 space-x-3">
-                <input
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Enter location"
-                  className="w-full px-4 py-1 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                />
                 <button
-                  onClick={()=>handleSearch()}
-                  className="bg-blue-500 text-sm text-white px-6 py-1 rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  type="button"
+                  onClick={handleSubmit(onSubmit)}
+                  disabled={!qrCodeUrl}
+                  className="w-full mt-5 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
-                  Search
+                  Activate Warranty
                 </button>
+
+                {activationStatus && <p className="mt-4 text-center text-green-500">{activationStatus}</p>}
               </div>
+            }
+          </div>
 
-              <button
-                type="button"
-                onClick={handleSubmit(onSubmit)}
-                disabled={!qrCodeUrl}
-                className="w-full mt-5 bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              >
-                Activate Warranty
-              </button>
 
-              {activationStatus && <p className="mt-4 text-center text-green-500">{activationStatus}</p>}
-            </div>
-          }
         </div>
-
-
-      </div>
+      }
       {/* <Hero /> */}
     </>
   );

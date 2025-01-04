@@ -240,7 +240,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
               <div className='flex items-center'>
                 <PeopleAlt fontSize='large' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Completed</div>
+                  <div className='text-blue-600 font-semibold'>Close</div>
                   <div className='text-3xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.complete} delay={1} />
                   </div>

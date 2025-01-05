@@ -2,8 +2,8 @@
 import Sidenav from "@/app/components/Sidenav";
 import React, { useEffect, useState } from "react";
 import http_request from ".././../../../../http-request";
-import StickersList from "./StickersList";
 import { ReactLoader } from "@/app/components/common/Loading";
+import StickersList from "./stickersList";
 
 const Stickers = () => {
   const [stickers, setStickers] = useState([]);
@@ -32,7 +32,7 @@ const Stickers = () => {
   
 
    
-console.log("stickers",stickers);
+// console.log("stickers",stickers);
 
   const data = stickers?.map((item, index) => ({ ...item, i: index + 1 }));
 

@@ -11,7 +11,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import http_request from '.././../../../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
-const Stickers = (props) => {
+const StickersList = (props) => {
   const router = useRouter();
   const data = props?.data;
 
@@ -201,7 +201,7 @@ const Stickers = (props) => {
   );
 };
 
-export default Stickers;
+export default StickersList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

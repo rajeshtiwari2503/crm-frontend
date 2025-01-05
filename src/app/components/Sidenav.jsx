@@ -354,7 +354,7 @@ function Sidenav(props) {
                 </ListItemButton>
               </ListItem>
             }
-            { value?.user?.role === "ADMIN" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+            { value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton>
                 <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
                   <Analytics style={{ color: pathname.startsWith('/analytics') ? '#007BFF' : '#64748b' }}/>

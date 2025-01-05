@@ -1,5 +1,5 @@
  "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidenav from "../components/Sidenav";
 import dynamic from "next/dynamic";
 import StatewisePendingComplaints from "./StatewisePendingComplaints";
@@ -7,6 +7,7 @@ import DistrictWisePendingComplaints from "./DistrictWisePendingComplaints";
 import ServiceCenterWisePendingComplaints from "./ServiceCenterWisePendingComplaints";
 import NoServiceableAreaComplaints from "./NoServiceableAreaComplaints";
 import BrandComplaintInsights from "./BrandComplaintInsights";
+import PerticularBrandights from "./PerticularBrandInsights";
 
 const AreaChart = dynamic(() => import("./charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>,
@@ -34,11 +35,20 @@ const Analytics = () => {
         return <StatewisePendingComplaints />;
     }
   };
+  const [user,setUser]=useState(null)
+ useEffect(() => {
+    const storedValue = localStorage.getItem("user");
+    if(storedValue){
+      setUser(JSON.parse(storedValue));
+
+    }
+      
+ },[])
 
   return (
     <>
       <Sidenav>
-        <div className="p-4 text-center">
+      {user?.user.role==="ADMIN"?  <div className="p-4 text-center">
           <div className="flex space-x-4 mb-6">
             <button
               onClick={() => setActiveSection("state")}
@@ -73,6 +83,9 @@ const Analytics = () => {
           </div>
           <div>{renderSection()}</div>
         </div>
+        :
+        <PerticularBrandights user={user?.user} />
+      }
       </Sidenav>
     </>
   );

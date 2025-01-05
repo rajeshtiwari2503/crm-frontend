@@ -1,7 +1,7 @@
 "use client";
 import Sidenav from "@/app/components/Sidenav";
 import React, { useEffect, useState } from "react";
-import http_request from ".././../../../http-request";
+import http_request from ".././../../../../http-request";
 import StickersList from "./StickersList";
 import { ReactLoader } from "@/app/components/common/Loading";
 
@@ -12,7 +12,7 @@ const Stickers = () => {
   
 
   useEffect(() => {
-    getAllStickers
+    getAllStickers()
   }, [ ]);
 
    
@@ -21,7 +21,7 @@ const Stickers = () => {
     try {
         const storedValue = localStorage.getItem("user");
         const user1 = JSON.parse(storedValue);
-      const response = await http_request.get(`/getAllProductWarrantyById/${user1?._id}`);
+      const response = await http_request.get(`/getAllProductWarrantyById/${user1?.user?._id}`);
       const { data } = response;
       setStickers(data);
     } catch (error) {
@@ -32,6 +32,7 @@ const Stickers = () => {
   
 
    
+console.log("stickers",stickers);
 
   const data = stickers?.map((item, index) => ({ ...item, i: index + 1 }));
 

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { ReactLoader } from '@/app/components/common/Loading';
  
-import http_request from '.././../../../http-request';
+import http_request from '.././../../../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 
 const Stickers = (props) => {
@@ -77,10 +77,10 @@ const Stickers = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Warranty Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+        {/* <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Warranty </div>
-        </div>
+        </div> */}
       </div>
 
       {!data.length > 0 ? (
@@ -167,7 +167,7 @@ const Stickers = (props) => {
                     <TableCell>{row.productName}</TableCell>
                     <TableCell>{row.numberOfGenerate}</TableCell>
                     <TableCell>{row.warrantyInDays}</TableCell>
-                    <TableCell>{row?.records[0]?.batchNo}</TableCell>
+                    {/* <TableCell>{row?.records[0]?.batchNo}</TableCell> */}
                     <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell className='flex'>
                       {/* <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>

@@ -138,7 +138,7 @@ const Stickers = (props) => {
                       Warranty Days
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'year'}
                       direction={sortDirection}
@@ -146,7 +146,7 @@ const Stickers = (props) => {
                     >
                       Batch No.
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}

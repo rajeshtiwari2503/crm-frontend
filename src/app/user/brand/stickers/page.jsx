@@ -15,7 +15,7 @@ const Stickers = () => {
     getAllStickers()
   }, [ ]);
 
-   
+   // commo n
 
   const getAllStickers = async () => {
     try {

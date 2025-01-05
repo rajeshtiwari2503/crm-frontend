@@ -603,7 +603,7 @@ function Sidenav(props) {
               </List>
             </Collapse>
 
-            {value?.user?.role === "ADMIN" ||  value?.user?.role === "EMPLOYEE"
+            {value?.user?.role === "ADMIN" ||  value?.user?.role === "EMPLOYEE" ||  value?.user?.role === "BRAND"
               ? <ListItem onClick={(event) => {
                 router.push(`/warrantyActivations`)
               }} disablePadding className={pathname.startsWith("/warrantyActivations") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>

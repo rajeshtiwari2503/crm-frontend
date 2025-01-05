@@ -23,11 +23,18 @@ const WarrantyActivation = (props) => {
 
 
   const getAllWarrantyActivation = async () => {
-    let response = await http_request.get("/getAllActivationWarranty")
-    let { data } = response;
-    // console.log(data);
-
-    setWarrantyActivation(data)
+    try{
+      let response = await http_request.get("/getAllActivationWarranty")
+      let { data } = response;
+      // console.log(data);
+  
+      setWarrantyActivation(data)
+    }
+   
+    catch(err){
+      console.log(err);
+      
+    }
   }
   const getAllProduct = async () => {
     let response = await http_request.get("/getAllProduct")

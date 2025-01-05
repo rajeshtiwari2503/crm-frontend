@@ -1,26 +1,45 @@
- 
+
 import React, { useEffect, useState } from 'react';
- 
+
 import http_request from '../../../http-request';
- 
+
 import CountUp from 'react-countup';
- 
- 
+
+
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
+import { useRouter } from 'next/navigation';
 
 
 const BrandDashboard = (props) => {
+
+const router=useRouter()
+
   const userData = props?.userData;
   const dashData = props?.dashData;
   const [complaint, setComplaint] = useState([]);
+  const [warranty, setWarranty] = useState(0);
   const [refresh, setRefresh] = useState("");
   const [averageCT, setAverageCT] = useState(0);
 
   useEffect(() => {
     getAllComplaint();
+    getWarrantyById()
   }, [refresh]);
+  const getWarrantyById = async () => {
+    try {
+      let response = await http_request.get(`/getAllProductWarrantyByBrandIdTotal/${userData?._id}`)
+      let { data } = response
+      // console.log(data);
+      
+      setWarranty(data);
 
+    }
+    catch (err) {
+      console.log(err)
+    }
+  }
+  // console.log("jgjgjjg",warranty);
 
   const calculateTAT = (createdAt, updatedAt) => {
     const created = new Date(createdAt);
@@ -59,7 +78,7 @@ const BrandDashboard = (props) => {
               : complaint;
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
- 
+
   const RefreshData = (data) => {
     setRefresh(data);
   };
@@ -185,9 +204,17 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div className='w-full' onClick={()=>router.push("/complaint/create")}>
+            <div className='w-full' onClick={() => router.push("/user/brand/stickers")}>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={warranty?.totalNumberOfGenerate} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Product Stickers  </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full' onClick={() => router.push("/complaint/create")}>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={ 100} delay={1} />
+                <CountUp start={0} end={100} delay={1} />
               </div>
               <div className='text-center mt-2'>Wallet Amount</div>
             </div>
@@ -196,7 +223,7 @@ const BrandDashboard = (props) => {
       </div>
 
       <div className='grid grid-cols-2 gap-4 my-8'>
-        
+
         <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <Chart
             chartType="PieChart"
@@ -218,7 +245,7 @@ const BrandDashboard = (props) => {
       </div>
 
       <div>
-      <RecentServicesList data={filterData} userData={userData} />
+        <RecentServicesList data={filterData} userData={userData} />
       </div>
     </>
   );

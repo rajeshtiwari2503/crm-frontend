@@ -167,7 +167,7 @@ const WarrantyDetails = ({ params }) => {
     const print5_11CmRecords1 = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
-    
+
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
@@ -216,9 +216,9 @@ const WarrantyDetails = ({ params }) => {
             }
         `);
         printWindow.document.write('</style></head><body>');
-    
+
         const records = warranty?.records || [];
-    
+
         records.forEach((item, index) => {
             if (index > 0) {
                 printWindow.document.write('<div class="page-break"></div>');
@@ -246,28 +246,28 @@ const WarrantyDetails = ({ params }) => {
                 </div>
             `);
         });
-    
+
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
     };
-    const print5_11CmRecords = () => {
+    const print5_11CmRecords2 = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
-        const printWindow = window.open('', '', 'height=600,width=800');
-    
+        const printWindow = window.open('', '', 'height=700,width=1100');
+
         printWindow.document.write('<html><head><title>Print Warranty Records</title>');
         printWindow.document.write('<style>');
         printWindow.document.write(`
             @page {
-                size: 5cm 11cm; /* Set page size */
+                size: 7cm 11cm; /* Set exact page size */
                 margin: 0; /* Remove default margins */
             }
             body {
                 font-family: Arial, sans-serif;
                 margin: 0; /* Ensure no margins */
                 padding: 0; /* Ensure no padding */
-                width: 5cm;
+                width: 7cm;
                 height: 11cm;
                 box-sizing: border-box;
             }
@@ -276,11 +276,9 @@ const WarrantyDetails = ({ params }) => {
                 height: 100%;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between;
+                justify-content: center;
                 align-items: center;
                 padding: 10px;
-                border: 1px solid #ddd; /* Optional for preview, remove for cleaner output */
-                background-color: #f9f9f9;
                 box-sizing: border-box;
             }
             .logo-and-qr {
@@ -288,7 +286,6 @@ const WarrantyDetails = ({ params }) => {
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                flex-grow: 1;
             }
             .logo-and-qr img {
                 margin: 10px 0; /* Add spacing between logo and QR code */
@@ -314,9 +311,9 @@ const WarrantyDetails = ({ params }) => {
             }
         `);
         printWindow.document.write('</style></head><body>');
-    
+
         const records = warranty?.records || [];
-    
+
         records.forEach((item, index) => {
             if (index > 0) {
                 printWindow.document.write('<div class="page-break"></div>');
@@ -340,13 +337,137 @@ const WarrantyDetails = ({ params }) => {
                 </div>
             `);
         });
-    
+
         printWindow.document.write('</body></html>');
         printWindow.document.close();
         printWindow.focus();
         printWindow.print();
     };
+
+    const print5_11CmRecords = () => {
+        const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
+        const printWindow = window.open('', '', 'height=700,width=1100');
+
+        printWindow.document.write('<html><head><title>Print Warranty Records</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+      @page {
+    size: 4cm 9cm; /* Exact page size */
+    margin: 0; /* Remove all margins */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0; /* Remove body margin */
+    padding: 3px; /* Remove body padding */
     
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out content */
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.record-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Adjust content spacing */
+    align-items: center;
+    padding: 3px; /* Ensure no padding */
+    margin: 0; /* Ensure no margin */
+    box-sizing: border-box;
+}
+.item1 {
+ box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;}
+.logo-and-qr img {
+    width: 1cm; /* Scaled to fit the space */
+    height: 1cm;
+    object-fit: contain;
+    margin-top:3px;
+    margin-bottom:3px;
+}
+
+.text-12 {
+    font-size: 9px; /* Adjusted font size */
+      font-weight: bold;
+    text-align: center;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+.item2 {
+ box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+                margin:5px;
+    text-align: center;
+    align-items: center;
+     
+}
+
+.page-break {
+    page-break-before: always;
+}
+
+
+        `);
+        printWindow.document.write('</style></head><body>');
+
+        const records = warranty?.records || [];
+
+        records.forEach((item, index) => {
+            if (index > 0) {
+                printWindow.document.write('<div class="page-break"></div>');
+            }
+            printWindow.document.write(`
+                <div class="record-container">
+                <div class="item1">
+                    <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+                    <div class="text-12">${warranty?.productName || 'Product Name'}</div>
+                    <div class="logo-and-qr">
+                        <img src="${logoUrl}" alt="Company Logo" width="40" height="40" />
+                        <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="40" height="40" />
+                        
+                    </div>
+                     
+                    <div class="text-12">Call or WhatsApp</div>
+                    <div class="font-bold text-12">+91 ${brand?.tollfree}</div>
+                    <div class="text-12">(10 AM - 6 PM)</div>
+                    <div class="text-12">Monday to Saturday</div>
+                    <div class="text-12">Be ready with your</div>
+                    <div class="text-12">Product Bill & Unique Code No.,</div>
+                    <div class="text-12">Address & Pincode</div>
+                    <div class="font-bold text-12 recordCenter">  ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                    <!-- Add item2 section at the bottom -->
+                    <div class="item2">
+                        <div  >
+                            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="80" height="80" />
+                        </div>
+                        <div class="font-bold text-12 recordCenter">  ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                </div>
+            `);
+        });
+
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
+
 
     // console.log(brand);
 

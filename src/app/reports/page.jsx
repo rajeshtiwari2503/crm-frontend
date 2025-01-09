@@ -53,7 +53,7 @@ const Report = () => {
   const [includeCharts, setIncludeCharts] = useState(false);
   const [reportData, setReportData] = useState({ summary: '', details: {}, labels: [], data: [] });
 
-  const handleGenerateReport = async () => {
+  const handleGenerateReportold = async () => {
     try {
       setLoading(true)
       const response = await http_request.post('/filterData', {
@@ -63,7 +63,7 @@ const Report = () => {
         filters,
         includeCharts,
       });
-
+      console.log(response.data);
       setReportData(response.data);
       setLoading(false)
 
@@ -73,6 +73,65 @@ const Report = () => {
       console.error('Error generating report:', error);
     }
   };
+  const handleGenerateReport = async () => {
+    try {
+      setLoading(true);
+  
+      // Example: Assuming userRole and brandId are available in the component's state or context
+   
+      const storedValue = localStorage.getItem("user");
+         const brand=JSON.parse(storedValue)
+         const userRole =brand?.user?.role;  
+         const brandId =brand?.user?._id;   
+  
+      const payload = {
+        reportType,
+        startDate,
+        endDate,
+        filters,
+        includeCharts,
+      };
+  
+      // Add brandId to filters if user role is "brand"
+      if (userRole === "BRAND") {
+        payload.filters = {
+          ...filters,
+          brandId,userRole, // Add brandId filter
+        };
+      }
+  // console.log("ajjhj",payload);
+  
+      const response = await http_request.post('/filterData', payload);
+      // console.log(response.data);
+      setReportData(response.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error generating report:', error);
+    }
+  };
+  
+  // const handleGenerateReport = async () => {
+  //   try{
+  //     setLoading(true)
+      
+  //     const storedValue = localStorage.getItem("user");
+  //    const brand=JSON.parse(storedValue)
+  //     let response = await http_request.get(`/getCustomers/${brand?.user?._id}`)
+  //     let { data } = response;
+  // console.log(data);
+  
+  //     setReportData({data:data});
+  //     setLoading(false)
+  //   }
+  
+  //   catch(err){
+  //     console.log(err);
+  //     setLoading(false)
+
+      
+  //   }
+  // }
   const [userData, setUserData] = useState([])
   const [complaints, setComplaints] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
@@ -89,7 +148,7 @@ const Report = () => {
   }, [ ])
 // }, [filters,  startDate, endDate])
 
-console.log(filteredComplaints,"gggggf");
+// console.log(filteredComplaints,"gggggf");
   const fetchComplaints = async () => {
     setLoading(true);
     try {
@@ -160,7 +219,7 @@ console.log(filteredComplaints,"gggggf");
   // console.log(reportData);
   return (
     <Sidenav>
-     {value?.user?.role==="DEALER"?
+     {value?.user?.role==="DEALER" ? 
      <DealerReport  userData={value?.user}/>
      : <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>

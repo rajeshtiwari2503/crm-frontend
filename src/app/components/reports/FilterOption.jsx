@@ -18,13 +18,17 @@ const FilterOptions = ({ filters, setFilters,userData }) => {
       [category]: selectedOptions.map(option => option.value),
     }));
   };
-
-  const userTypeOptions = [
+ 
+  const userTypeOptions = userData?.user?.role==="ADMIN" ?[
     { value: 'customer', label: 'Customer' },
     { value: 'serviceCenter', label: 'Service Center' },
     { value: 'technician', label: 'Technician' },
     { value: 'brand', label: 'Brand' },
-  ];
+  ]
+  :[
+    { value: 'customer', label: 'Customer' },
+    
+  ]
 
   const statusOptions = [
     { value: 'PENDING', label: 'PENDING' },

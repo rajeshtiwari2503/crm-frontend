@@ -135,7 +135,7 @@ const RecentServicesList = (props) => {
         } */}
       </div>
 
-      {!data?.length > 0 || userData?._id===undefined ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data?.length > 0   ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
           <TableContainer component={Paper}>

@@ -115,7 +115,7 @@ const router=useRouter()
 
       <div className='my-8'>
         <div className='grid grid-cols-4 gap-8 items-center  rounded-xl shadow-lg p-5'>
-          <div className='flex justify-center  items-center '>
+          <div onClick={()=>router.push("/complaint/allComplaint")} className='flex justify-center  items-center '>
             <div className='w-full'>
               <div className='w-full bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
@@ -125,7 +125,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/close")}className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
               <div className='text-center mt-2'>Close  </div>
@@ -133,7 +133,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-blue-400 rounded-md mt-3 cursor-pointer p-4'>
+              <div  onClick={()=>router.push("/complaint/assign")}className='bg-blue-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
               <div className='text-center mt-2'>Assigned  </div>
@@ -141,7 +141,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div  onClick={()=>router.push("/complaint/inprogress")}className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
               </div>
               <div className='text-center mt-2'>In Progress</div>
@@ -149,7 +149,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/pending")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
               <div className='text-center mt-2'>Pending  </div>
@@ -157,7 +157,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/partpending")}className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
               </div>
               <div className='text-center mt-2'>Part Pending </div>
@@ -165,7 +165,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/cancel")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
               </div>
               <div className='text-center mt-2'>Cancel </div>
@@ -173,7 +173,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/allComplaint")}className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
               </div>
               <div className='text-center mt-2'> 0-1 days service </div>
@@ -181,7 +181,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/allComplaint")}className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
               </div>
               <div className='text-center mt-2'> 2-5 days service </div>
@@ -189,7 +189,7 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={()=>router.push("/complaint/allComplaint")}className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
               </div>
               <div className='text-center mt-2'> More than Five Days  Service</div>

@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 import Chart from 'react-google-charts';
 import http_request from "../../../http-request"
 import RecentServicesList from '../complaint/RecentServices';
+import { useRouter } from 'next/navigation';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -18,8 +19,8 @@ const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
 const AdminDashboard = (props) => {
 
 const data=props?.dashData;
-console.log(data);
-
+// console.log(data);
+const router=useRouter();
 const pieChartData = [
   ["Task", "Hours per Day"],
   ["AllComplaints", data?.complaints?.allComplaints],
@@ -93,7 +94,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
       <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>
      
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
+          <div onClick={()=>router.push("/user/customer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>

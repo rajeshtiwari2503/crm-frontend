@@ -382,7 +382,7 @@ body {
 .item1 {
  box-sizing: border-box;
                 border: 1px solid #ddd;
-                padding: 10px;
+                padding: 5px;
                 text-align: center;
                 background-color: #f9f9f9;
                 border-radius: 5px;}
@@ -395,7 +395,7 @@ body {
 }
 
 .text-12 {
-    font-size: 10px; /* Adjusted font size */
+    font-size: 9px; /* Adjusted font size */
       font-weight: bold;
     text-align: center;
 }

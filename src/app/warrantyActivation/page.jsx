@@ -458,14 +458,14 @@ const ActivateWarrantyButton = () => {
         let response = await http_request.post('/createComplaint', reqdata)
         const { data } = response
         console.log(data);
-        const userData={user:data?.user}
+        const userData = { user: data?.user }
         localStorage.setItem('user', JSON.stringify(userData));
         ToastMessage(data)
         setLoading(false)
 
         // router.push("/dashboard")
         // window.location.reload()
-         window.location.href = "/dashboard"
+        window.location.href = "/dashboard"
       }
       else {
         alert("You are activated this QR code")
@@ -480,9 +480,24 @@ const ActivateWarrantyButton = () => {
     }
   }
 
+  const handleDashboard = async (id) => {
+    try {
+      const response = await http_request.post("/dashboardLogin", { userId: id });
+      let { data } = response;
+      // console.log(data);
+      ToastMessage(data)
+      localStorage.setItem('user', JSON.stringify(data));
+      window.location.href = "/complaint/pending"
+    } catch (error) {
+      ToastMessage(error?.response?.data)
+      console.log(error);
+
+    }
+  }
 
   return (
     <>
+    <Toaster />
       {loading === true ? <div>
         <ReactLoader />
       </div>
@@ -525,8 +540,9 @@ const ActivateWarrantyButton = () => {
               </div>
             </div>
             {filterWarranty?.isActivated === true ?
+
               <div>
-                <div className='mb-5 mt-5'>
+                <div className='mb-5 mt-5 '>
                   <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
                   <input
                     id="contact"
@@ -538,12 +554,26 @@ const ActivateWarrantyButton = () => {
                   />
                   {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                 </div>
-                <button
-                  onClick={handleComplaint}
-                  className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                >
-                  Create Complaint
-                </button>
+                <div className='flex justify-between '>
+
+                  <div>
+                    <button
+                      onClick={() => handleDashboard(filterWarranty?.userId)}
+                      className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                    >
+                      Go Dashboard
+                    </button>
+                  </div>
+
+                  <div>
+                    <button
+                      onClick={handleComplaint}
+                      className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                    >
+                      Create Complaint
+                    </button>
+                  </div>
+                </div>
               </div>
               :
               <div>

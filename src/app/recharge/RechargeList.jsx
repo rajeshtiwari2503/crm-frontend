@@ -98,7 +98,7 @@ const RechargeList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-  const totalAmount = sortedData?.reduce((total, item) => total + Number(item.amount), 0);
+  const totalAmount = data?.reduce((total, item) => total + Number(item.amount), 0);
   return (
     <div>
       <Toaster />

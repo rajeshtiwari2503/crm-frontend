@@ -249,7 +249,31 @@ const Report = () => {
                 <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /> : ""}
               </>
               : <>
-                {reportData?.complaints?.length > 0 ? <DownloadExcel data={reportData?.complaints} fileName="ComplaintsList" /> : ""}
+                {reportData?.complaints?.length > 0 ? <DownloadExcel   data={reportData?.complaints} fileName="ComplaintsList" 
+                fieldsToInclude={[ 
+                  "complaintId",
+                  "productName",
+                  "categoryName",
+                  "subCategoryName",
+                  "productBrand",
+                  "modelNo",
+                  "serialNo",
+                  "purchaseDate",
+                  "warrantyStatus",
+                  "userName",
+                  "phoneNumber",
+                  "emailAddress",
+                  "serviceAddress",
+                  "assignServiceCenter",
+                  "assignServiceCenterTime",
+                  "detailedDescription",
+                  "detailedDescription",
+                  "status",
+                  "updatedAt",
+                  "createdAt",
+                  ]}
+                /> : ""
+                }
               </>
             }
 

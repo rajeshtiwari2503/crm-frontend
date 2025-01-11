@@ -1,21 +1,33 @@
 import React from 'react';
 import { utils, writeFile } from 'xlsx';
 
-const DownloadExcel  = (props) => {
-  const {data,fileName}=props
-   const exportToExcel = (data, fileName) => {
-    // Convert the data to a worksheet
-    const worksheet = utils.json_to_sheet(data);
-    
+const DownloadExcel = ({ data, fileName, fieldsToInclude }) => {
+  // Helper function to filter data
+  const filterFields = (data, fields) => {
+    return data.map(item => {
+      const filteredItem = {};
+      fields.forEach(field => {
+        filteredItem[field] = item[field];
+      });
+      return filteredItem;
+    });
+  };
+
+  const exportToExcel = (filteredData, fileName) => {
+    // Convert the filtered data to a worksheet
+    const worksheet = utils.json_to_sheet(filteredData);
+
     // Create a new workbook and append the worksheet
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    
+
     // Write the workbook to a binary string
     writeFile(workbook, `${fileName}.xlsx`);
   };
+
   const handleDownload = () => {
-    exportToExcel(data, fileName);
+    const filteredData = filterFields(data, fieldsToInclude);
+    exportToExcel(filteredData, fileName);
   };
 
   return (

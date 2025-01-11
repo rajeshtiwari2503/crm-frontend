@@ -232,7 +232,7 @@ const Report = () => {
             setStartDate={setStartDate}
             setEndDate={setEndDate}
           />
-          <FilterOptions userData={userData} filters={filters} setFilters={setFilters} />
+          <FilterOptions userData={userData} userValue={value}filters={filters} setFilters={setFilters} />
           <VisualizationOptions includeCharts={includeCharts} setIncludeCharts={setIncludeCharts} />
 
           <div className='flex mt-2'>

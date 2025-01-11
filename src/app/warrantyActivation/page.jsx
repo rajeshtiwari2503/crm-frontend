@@ -459,7 +459,7 @@ const ActivateWarrantyButton = () => {
         , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
 
       }
-      // console.log(reqdata);
+      console.log(reqdata);
 
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)
@@ -494,7 +494,7 @@ const ActivateWarrantyButton = () => {
 
     catch (error) {
       console.log(error);
-
+      ToastMessage(error?.response?.data)
       setLoading(false)
       //   setActivationStatus('Error activating warranty');
     }
@@ -600,7 +600,7 @@ const ActivateWarrantyButton = () => {
                 {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                   
-                 { filterWarranty?.isActivated === false  && filterWarranty?.productId  ?
+                 { filterWarranty?.isActivated === false  && !filterWarranty?.productId  ?
                   <div className='mt-5'>
                   <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
                       Product Name

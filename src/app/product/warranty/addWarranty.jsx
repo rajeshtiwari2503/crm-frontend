@@ -4,7 +4,7 @@ import http_request from '../../../../http-request'
 import { useForm } from 'react-hook-form';
 import { ReactLoader } from '@/app/components/common/Loading';
 
-const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onClose }) => {
+const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshData, onClose }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [loadind, setLoading] = useState(false)
     const [productBrand, setProductBrand] = useState([])
@@ -66,6 +66,8 @@ const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onC
         }
     };
 
+
+    const brandData = user?.role === "ADMIN" ? brand : brand?.filter((f) => f?._id === user?._id)
     return (
         <div className="max-w-4xl mx-auto">
             {loadind === true ? <div className='w-[400px]'><ReactLoader /></div>
@@ -82,7 +84,7 @@ const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onC
                                 className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
                             >
                                 <option value="">Select a Brand</option>
-                                {brand?.map((prod) => (
+                                {brandData?.map((prod) => (
                                     <option key={prod._id} value={prod._id}>
                                         {prod.brandName}
                                     </option>

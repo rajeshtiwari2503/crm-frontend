@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 
-const FilterOptions = ({ filters, setFilters,userData }) => {
+const FilterOptions = ({ filters,userValue, setFilters,userData }) => {
   const handleCheckboxChange = (category, value) => {
     setFilters(prevFilters => ({
       ...prevFilters,
@@ -18,8 +18,9 @@ const FilterOptions = ({ filters, setFilters,userData }) => {
       [category]: selectedOptions.map(option => option.value),
     }));
   };
+//  console.log(userValue);
  
-  const userTypeOptions = userData?.user?.role==="ADMIN" ?[
+  const userTypeOptions = userValue?.user?.role==="ADMIN" ?[
     { value: 'customer', label: 'Customer' },
     { value: 'serviceCenter', label: 'Service Center' },
     { value: 'technician', label: 'Technician' },
@@ -36,6 +37,7 @@ const FilterOptions = ({ filters, setFilters,userData }) => {
     { value: 'IN PROGRESS', label: 'IN PROGRESS' },
     { value: 'COMPLETED', label: 'COMPLETED' },
     { value: 'CANCELED', label: 'CANCELED' },
+    { value: 'FINAL VERIFICATION', label: 'FINAL VERIFICATION' },
   ];
 
   const productOptions = userData?.product?.map(product => ({

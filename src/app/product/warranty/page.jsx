@@ -10,6 +10,7 @@ const Warranty = () => {
     const [brand, setBrand] = useState([])
 
     const [refresh, setRefresh] = useState("")
+    const [user, setUser] = useState(null)
 
     useEffect(() => {
       getAllwarranty()
@@ -19,7 +20,11 @@ const Warranty = () => {
   
   
     const getAllwarranty = async () => {
-      let response = await http_request.get("/getAllProductWarranty")
+      const storedValue = localStorage.getItem("user");
+      const user=JSON.parse(storedValue)
+      setUser(user?.user)
+      const reqData=user?.user?.role==="ADMIN"?"/getAllProductWarranty" :`/getAllProductWarrantyById/${user?.user?._id}`
+      let response = await http_request.get(reqData)
       let { data } = response;
   
       setWarranty (data)
@@ -47,7 +52,7 @@ const Warranty = () => {
         <>
             <Sidenav>
                
-                <WarrantyList data={data}brand={brand}product={product} RefreshData={RefreshData}/>
+                <WarrantyList data={data}brand={brand}product={product}user={user} RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

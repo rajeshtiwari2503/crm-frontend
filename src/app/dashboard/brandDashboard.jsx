@@ -21,11 +21,58 @@ const router=useRouter()
   const [warranty, setWarranty] = useState(0);
   const [refresh, setRefresh] = useState("");
   const [averageCT, setAverageCT] = useState(0);
+  const [walletAmnt, setWalletAmnt] = useState(0);
 
   useEffect(() => {
     getAllComplaint();
     getWarrantyById()
+    getWalletAmountById()
   }, [refresh]);
+   
+    const getWalletAmountById = async () => {
+      try {
+          let response = await http_request.get(`/getAllRecharge`);
+          let { data } = response;
+  
+          // Debugging the response structure
+          console.log("API response data:", data);
+  
+          if (!Array.isArray(data)) {
+              console.error("Expected an array but got:", data);
+              return;
+          }
+  
+          // Filtering data by userData._id
+          const userId = userData?._id;
+          if (!userId) {
+              console.error("userData._id is not available");
+              return;
+          }
+  
+          const filterBrandData = data.filter((item) => item?.brandId === userId);
+  
+          // Debugging filtered data
+          console.log("Filtered data for brandId:", userId, filterBrandData);
+  
+          // Calculating total amount
+          const totalAmount = filterBrandData.reduce((total, item) => {
+              const amount = Number(item?.amount);
+              if (isNaN(amount)) {
+                  console.warn(`Invalid amount found: ${item?.amount}`);
+                  return total;
+              }
+              return total + amount;
+          }, 0);
+  
+          // Debugging total amount
+          console.log("Total wallet amount:", totalAmount);
+  
+          setWalletAmnt(totalAmount);
+      } catch (err) {
+          console.error("Error fetching wallet amount:", err);
+      }
+  };
+  
   const getWarrantyById = async () => {
     try {
       let response = await http_request.get(`/getAllProductWarrantyByBrandIdTotal/${userData?._id}`)
@@ -213,9 +260,9 @@ const router=useRouter()
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div className='w-full' onClick={() => router.push("/complaint/create")}>
+            <div className='w-full' onClick={() => router.push(`/profile/${userData?._id}`)}>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={walletAmnt} delay={1} />
               </div>
               <div className='text-center mt-2'>Wallet Amount</div>
             </div>

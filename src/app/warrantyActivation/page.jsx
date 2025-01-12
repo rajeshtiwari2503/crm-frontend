@@ -502,9 +502,10 @@ const ActivateWarrantyButton = () => {
 
   const handleDashboard = async (id) => {
     try {
+      // console.log(id);
       const response = await http_request.post("/dashboardLogin", { userId: id });
       let { data } = response;
-      // console.log(data);
+      
       ToastMessage(data)
       localStorage.setItem('user', JSON.stringify(data));
       window.location.href = "/complaint/pending"
@@ -514,6 +515,8 @@ const ActivateWarrantyButton = () => {
 
     }
   }
+
+  // console.log(filterWarranty)
 
   return (
     <>

@@ -81,7 +81,7 @@ const ActivateWarrantyButton = () => {
   };
 
   const onSubmit = async (data) => {
-    // console.log(data);
+    console.log(data);
     try {
 
 
@@ -105,7 +105,7 @@ const ActivateWarrantyButton = () => {
       console.log(error);
 
       ToastMessage(error?.response?.data)
-      //   setActivationStatus('Error activating warranty');
+      
     }
   };
 
@@ -423,9 +423,29 @@ const ActivateWarrantyButton = () => {
 
     setProduct(data)
   }
+  // console.log(filterWarranty);
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
   // console.log(filterProduct);
+  const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  // console.log(filterProductByBrand);
+  
+  const handleProductChange = (e) => {
+  const selectedProductId = e.target.value;
+  const selectedProduct = product?.find(prod => prod._id === selectedProductId);
+  console.log(selectedProduct);
+
+  if (selectedProduct) {
+      setValue('productId', selectedProduct._id);
+      setValue('productName', selectedProduct.productName);
+      // setValue('brandName', selectedProduct.productBrand);
+      // setValue('brandId', selectedProduct.brandId);
+      setValue('categoryId', selectedProduct.categoryId);
+      setValue('categoryName', selectedProduct.categoryName);
+      setValue('year', new Date());
+  }
+};
+
   const handleComplaint = async () => {
 
     try {
@@ -439,7 +459,7 @@ const ActivateWarrantyButton = () => {
         , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
 
       }
-      // console.log(reqdata);
+      console.log(reqdata);
 
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)
@@ -457,7 +477,7 @@ const ActivateWarrantyButton = () => {
         }
         let response = await http_request.post('/createComplaint', reqdata)
         const { data } = response
-        console.log(data);
+        // console.log(data);
         const userData = { user: data?.user }
         localStorage.setItem('user', JSON.stringify(userData));
         ToastMessage(data)
@@ -468,13 +488,13 @@ const ActivateWarrantyButton = () => {
         window.location.href = "/dashboard"
       }
       else {
-        alert("You are activated this QR code")
+        alert("Fill proper contact number  and try  this QR code")
       }
     }
 
     catch (error) {
       console.log(error);
-
+      ToastMessage(error?.response?.data)
       setLoading(false)
       //   setActivationStatus('Error activating warranty');
     }
@@ -514,7 +534,7 @@ const ActivateWarrantyButton = () => {
 
               <div className='mt-2'>
                 <label className="font-bold text-gray-700 text-sm">Product Name </label>
-                <p className="text-gray-600 text-sm">{warrantyDetails.productName}</p>
+                <p className="text-gray-600 text-sm">{filterWarranty?.productName}</p>
               </div>
 
               <div className='mt-2'>
@@ -523,7 +543,7 @@ const ActivateWarrantyButton = () => {
               </div>
               <div className='mt-2'>
                 <label className="font-bold text-gray-700 text-sm">Year </label>
-                <p className="text-gray-600 text-sm">{new Date(warrantyDetails.year).toLocaleDateString()}</p>
+               {filterWarranty && <p className="text-gray-600 text-sm">{new Date(filterWarranty?.year).toLocaleDateString()}</p>}
               </div>
               {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
@@ -579,8 +599,31 @@ const ActivateWarrantyButton = () => {
               <div>
                 {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  
+                 { filterWarranty?.isActivated === false  && !filterWarranty?.productId  ?
                   <div className='mt-5'>
-                    <label htmlFor="name" className="block text-gray-700">Full Name:</label>
+                  <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+                      Product Name
+                  </label>
+                  <select
+                      id="productName"
+                      name="productName"
+                      onChange={handleProductChange}
+                      className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
+                  >
+                      <option value="">Select a product</option>
+                      {filterProductByBrand?.map((prod) => (
+                          <option key={prod._id} value={prod._id}>
+                              {prod.productName}
+                          </option>
+                      ))}
+                  </select>
+                  {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
+              </div>
+                :""
+                 }
+                 <div className='mt-5'>
+                   <label htmlFor="name" className="block text-gray-700">Full Name:</label>
                     <input
                       id="name"
                       type="text"

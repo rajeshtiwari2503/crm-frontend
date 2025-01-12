@@ -9,25 +9,67 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
     const [loadind, setLoading] = useState(false)
     const [productBrand, setProductBrand] = useState([])
 
-    const AddProductWarranty = async (data) => {
+    // const AddProductWarranty = async (data) => {
 
+    //     try {
+    //         setLoading(true);
+    //         if (!data.brandId) {
+    //             alert("Please select Brand")
+    //         } else {
+
+    //             const endpoint = existingProduct?._id ? `/editProductWarranty/${existingProduct._id}` : '/addProductWarranty';
+    //             const response = existingProduct?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, data);
+    //             const { data: responseData } = response;
+    //             ToastMessage(responseData);
+    //             setLoading(false);
+    //             RefreshData(responseData);
+    //             onClose(true);
+
+    //         }
+    //     } catch (err) {
+    //         setLoading(false);
+    //         ToastMessage(err?._message);
+    //         // onClose(true);
+    //         console.log(err);
+    //     }
+    // };
+    const AddProductWarranty = async (data) => {
         try {
             setLoading(true);
-            const endpoint = existingProduct?._id ? `/editProductWarranty/${existingProduct._id}` : '/addProductWarranty';
-            const response = existingProduct?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, data);
+    console.log(data);
+    
+            // Validate the brandId
+            if (!data.brandId) {
+                alert("Please select Brand");
+                setLoading(false);
+                return; // Stop further execution
+            }
+    
+            // Determine endpoint and method
+            const endpoint = existingProduct?._id
+                ? `/editProductWarranty/${existingProduct._id}`
+                : '/addProductWarranty';
+            const method = existingProduct?._id ? 'patch' : 'post';
+    
+            // Make API request
+            const response = await http_request[method](endpoint, data);
             const { data: responseData } = response;
+    
+            // Handle success
             ToastMessage(responseData);
-            setLoading(false);
             RefreshData(responseData);
             onClose(true);
         } catch (err) {
+            // Handle error
+            const errorMessage = err?.response?.data?.message || "An error occurred"; // Fallback error message
+            ToastMessage(errorMessage);
+            console.error(err);
+        } finally {
+            // Always stop loading
             setLoading(false);
-            ToastMessage(err?._message);
-            // onClose(true);
-            console.log(err);
         }
     };
-
+    
     const onSubmit = (data) => {
         AddProductWarranty(data)
         // console.log(data);
@@ -53,15 +95,17 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
     const handleBrandChange = (e) => {
         const selectedBrandId = e.target.value;
         const selectedBrand = brand?.find(prod => prod._id === selectedBrandId);
+ 
 
         const selectedProduct = product?.filter(prod => prod?.brandId === selectedBrand?._id);
         if (selectedProduct) {
             setProductBrand(selectedProduct)
         }
         if (selectedBrand) {
-
-            setValue('brandName', selectedProduct.productBrand);
-            setValue('brandId', selectedProduct.brandId);
+            setValue('brandName', selectedBrand.brandName);
+            setValue('brandId', selectedBrand._id);
+            // setValue('brandName', selectedProduct.productBrand);
+            // setValue('brandId', selectedProduct.brandId);
 
         }
     };

@@ -54,13 +54,21 @@ const AddComplaint = () => {
         // setWarrantyDetails(data);
         const filterWarranty = data?.records?.find((f) => f?.uniqueId === value)
         // console.log("data",data);
-        // console.log(filterWarranty);
+        console.log(filterWarranty);
         const selectedProductId = filterWarranty?.productId;
 
         setProductName(selectedProductId)
         const selectedProduct = products?.find(product => product._id === selectedProductId);
         // console.log(selectedProduct, "djhj");
+        const activationDate = new Date(filterWarranty.activationDate);
+        const expirationDate = new Date(activationDate);
+        expirationDate.setDate(activationDate.getDate() + filterWarranty.warrantyInDays);
 
+        const currentDate = new Date();
+        const remainingTime = expirationDate - currentDate;
+        const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+        const remDay=remainingDays > 0 ? remainingDays : 0;
+        console.log("remDay",remDay);
         if (selectedProduct) {
           const selectednature = nature?.filter(nat =>
             nat.products?.some(product => product.productId === selectedProduct?._id))
@@ -75,11 +83,28 @@ const AddComplaint = () => {
           setValue('brandId', selectedProduct.brandId);
           setValue('modelNo', selectedProduct.modelNo);
           setValue('serialNo', selectedProduct.serialNo);
-          setValue('purchaseDate', selectedProduct.purchaseDate);
+          // setValue('purchaseDate', filterWarranty.activationDate);
+          setValue("purchaseDate", filterWarranty.activationDate.split("T")[0]);
           setValue('subCategoryName', selectedProduct?.subCategory);
           setValue("uniqueId",value)
-          setWarrantyInDays(selectedProduct.warrantyInDays)
+          // setWarrantyInDays(selectedProduct.warrantyInDays)
           setValue('warrantyYears', selectedProduct.warrantyInDays);
+          setValue('fullName', filterWarranty.userName);
+          setValue('phoneNumber', filterWarranty.contact);
+          setValue('emailAddress', filterWarranty.email);
+          setValue('pincode', filterWarranty.pincode);
+          setPincode(filterWarranty.pincode)
+          setValue('serviceAddress', filterWarranty.address);
+          setValue('serviceLocation', filterWarranty.address);
+          setWarrantyInDaysRem(remDay);
+          if (remDay > 0) {
+            setValue('warrantyStatus', true);   // Assuming setValue is used for setting form values
+            setWarrantyStatus('Under Warranty');
+          } else {
+            setWarrantyStatus('Out of Warranty');
+            setValue('warrantyStatus', false);  // Set form status to 'Out of Warranty'
+          }
+                                        
 
         }
         setLoading(false);
@@ -290,7 +315,7 @@ const AddComplaint = () => {
     }
   }
   useEffect(() => {
-    if (pincode.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
+    if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
       fetchLocation();
     }
   }, [pincode]);
@@ -331,7 +356,8 @@ const AddComplaint = () => {
   }, [purchaseDate]); // Add dependencies to re-calculate when these values change
 
   const calculateWarranty = () => {
-    const currentDate = dayjs(); // Get the current date
+    if (searchValue==="") {
+       const currentDate = dayjs(); // Get the current date
     const purchaseDateParsed = dayjs(purchaseDate); // Parse the purchase date
 
     // Check if the purchaseDate is valid
@@ -362,7 +388,7 @@ const AddComplaint = () => {
     // Calculate the remaining warranty
     const remainingWarranty = Number(validWarrantyInDays) + Number(validDaysDifference);
 
-    // console.log("Remaining Warranty (in days):", remainingWarranty);
+    console.log("Remaining Warranty (in days):", remainingWarranty);
 
     // Set the remaining warranty in state
     setWarrantyInDaysRem(remainingWarranty);
@@ -375,6 +401,10 @@ const AddComplaint = () => {
       setWarrantyStatus('Out of Warranty');
       setValue('warrantyStatus', false);  // Set form status to 'Out of Warranty'
     }
+  }else{
+    console.log("UniqueId is available");
+    return;
+  }
   };
 
 
@@ -618,7 +648,7 @@ const AddComplaint = () => {
               </div> */}
                   <div className=' '>
                     <label htmlFor="purchaseDate" className="block text-sm font-medium leading-6 text-gray-900">
-                      Warranty In days
+                      Warranty on Product
                     </label>
                     <div className="mt-2">
                       <input

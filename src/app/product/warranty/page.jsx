@@ -3,6 +3,7 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from '.././../../../http-request'
 import WarrantyList from './WarrantyList'
+import ProductWarrantyPage from './paginationWithWarrantyList'
 
 const Warranty = () => {
     const [warranty, setWarranty] = useState([])
@@ -27,9 +28,12 @@ const Warranty = () => {
       let response = await http_request.get(reqData)
       let { data } = response;
   
-      setWarranty (data)
+      setWarranty (data?.data)
     }
     const getAllProduct = async () => {
+      const storedValue = localStorage.getItem("user");
+      const user=JSON.parse(storedValue)
+      setUser(user?.user)
         let response = await http_request.get("/getAllProduct")
         let { data } = response;
     
@@ -52,7 +56,8 @@ const Warranty = () => {
         <>
             <Sidenav>
                
-                <WarrantyList data={data}brand={brand}product={product}user={user} RefreshData={RefreshData}/>
+                {/* <WarrantyList data={data}brand={brand}product={product}user={user} RefreshData={RefreshData}/> */}
+                <ProductWarrantyPage brand={brand}product={product}user={user} RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

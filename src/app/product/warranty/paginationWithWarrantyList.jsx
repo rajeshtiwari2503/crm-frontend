@@ -121,13 +121,69 @@ const ProductWarrantyPage = (props) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {/* Add headers and table sort */}
-                    <TableCell>
-                      <TableSortLabel active={sortBy === '_id'} direction={sortDirection} onClick={() => handleSort('_id')}>
-                        ID
-                      </TableSortLabel>
-                    </TableCell>
-                    {/* Repeat for other columns... */}
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === '_id'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('_id')}
+                    >
+                      ID
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'productName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('productName')}
+                    >
+                      Product Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'numberOfGenerate'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('numberOfGenerate')}
+                    >
+                      Number of QR
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'warrantyInDays'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('warrantyInDays')}
+                    >
+                      Warranty Days
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'year'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('year')}
+                    >
+                      Batch No.
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      Created At
+                    </TableSortLabel>
+                  </TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>

@@ -176,16 +176,16 @@ export default function SignIn() {
                     Sign Up
                   </Link>
                 </p>
-                <div className="signin-page flex flex-col items-center justify-center p-2 rounded-md bg-gray-100">
+                {/* <div className="signin-page flex flex-col items-center justify-center p-2 rounded-md bg-gray-100">
                   <div className="text-md text-gray-700 mb-2">Please download our app directly ---</div>
 
-                  {/* Download Button */}
+                
                   <a href={apkDownloadUrl} download>
                     <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded">
                       Download APK
                     </button>
                   </a>
-                </div>
+                </div> */}
 
               </div>
             </div>

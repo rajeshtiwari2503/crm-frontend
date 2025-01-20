@@ -15,19 +15,19 @@ import { useForm } from 'react-hook-form';
 
 const ComplaintList = (props) => {
 
-  
-  
-   const [filterSer,setFilterSer]=useState("")
-  
 
-  const serviceCenter = filterSer===""?props?.serviceCenter:filterSer
-   
-  
+
+  const [filterSer, setFilterSer] = useState("")
+
+
+  const serviceCenter = filterSer === "" ? props?.serviceCenter : filterSer
+
+
   const complaint = props?.data;
   const userData = props?.userData
- 
 
-  const filteredData = userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE" ? complaint
+
+  const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
       : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
@@ -43,6 +43,7 @@ const ComplaintList = (props) => {
   const [assign, setAssign] = useState(false);
   const [status, setStatus] = useState(false);
   const [order, setOrder] = useState(false);
+  const [updateCommm, setUpdateCommm] = useState(false);
   const [id, setId] = useState("");
   const [selectedService, setSelectedService] = useState('');
   const [page, setPage] = useState(0);
@@ -69,19 +70,19 @@ const ComplaintList = (props) => {
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
     console.log(event.target.value);
-    
+
   };
 
   const data = filteredData?.filter((item) => {
     const complaintId = item?.complaintId?.toLowerCase();
     const search = searchTerm.toLowerCase();
-    
+
     // Handle the complaint ID format and general search terms
-    return complaintId?.includes(search) || 
-           item?._id.toLowerCase().includes(search) || 
-           item?.phoneNumber?.includes(searchTerm);
+    return complaintId?.includes(search) ||
+      item?._id.toLowerCase().includes(search) ||
+      item?.phoneNumber?.includes(searchTerm);
   });
-  
+
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -120,41 +121,41 @@ const ComplaintList = (props) => {
     setId(id);
 
     const filterCom = complaint?.find((f) => f?._id === id);
-  
+
     if (!filterCom?.pincode) {
       console.log("Pincode not found in the complaint");
       return;
     }
-  
+
     const targetPincode = filterCom?.pincode.trim(); // Trim the complaint pincode
-  
+
     const serviceCenter1 = props?.serviceCenter?.filter((f) => {
       if (Array.isArray(f?.pincodeSupported)) {
-      
+
         return f.pincodeSupported.some((pincodeString) => {
-        
+
           const supportedPincodes = pincodeString.split(',').map(p => p.trim());
-       
+
           return supportedPincodes.includes(targetPincode);
         });
       }
       return false;
     });
-  
+
     setFilterSer(serviceCenter1)
     // console.log(serviceCenter1, "Filtered service centers with matching pincode");
-  
+
     if (serviceCenter1.length === 0) {
       console.log("No service centers found for the given pincode.");
     }
-  
+
     setAssign(true);
   };
-  
-  
 
-  
-  
+
+
+
+
   const handleUpdateStatus = async (id) => {
     setId(id)
     setStatus(true)
@@ -178,8 +179,14 @@ const ComplaintList = (props) => {
 
     setOrder(false)
   }
+  const handleUpdateCommentClose = () => {
 
-
+    setUpdateCommm(false)
+  }
+  const handleUpdatedCommm = (id) => {
+    setId(id)
+    setUpdateCommm(true)
+  }
   const handleServiceChange = (event) => {
     // if (status === true) {
     //   setValue("status", event.target.value)
@@ -199,8 +206,8 @@ const ComplaintList = (props) => {
   const onSubmit = async (data) => {
     try {
       const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
-    // console.log(reqdata);
-    
+      // console.log(reqdata);
+
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       setAssign(false)
@@ -222,7 +229,22 @@ const ComplaintList = (props) => {
       console.log(err);
     }
   };
-
+  const updateComment = async (data) => {
+    try {
+      console.log(id);
+      console.log(data);
+      const sndStatus= data.comments
+      const response = await http_request.patch(`/updateComplaintComments/${id}`, {
+        sndStatus
+      });
+      let { data: responseData } = response;
+      setUpdateCommm(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const preStatus = ["In Progress", "Part Pending", "Completed"]
   return (
     <div>
@@ -466,7 +488,7 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.serialNo}</TableCell>
 
                     <TableCell>
-                      <div> {   row?.issueType?.map((item, i) =>    <div   key={i}>  {item} ,  </div>)  }
+                      <div> {row?.issueType?.map((item, i) => <div key={i}>  {item} ,  </div>)}
                       </div>
                     </TableCell>
                     <TableCell>{row?.detailedDescription}</TableCell>
@@ -479,7 +501,7 @@ const ComplaintList = (props) => {
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {userData?.role === "ADMIN" ||   userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -496,7 +518,7 @@ const ComplaintList = (props) => {
                             Order Part
                           </div>
                           : ""}
-                        {userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE" || userData?.role === "BRAND" &&userData?.brandSaas==="YES" ?
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -504,7 +526,19 @@ const ComplaintList = (props) => {
                             Assign Service
                           </div>
                           : ""}
-                        
+                        {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
+                          (row?.status === "PENDING" || row?.status === "ASIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
+                          <div
+                            onClick={() => {
+                               // Debugging
+                              handleUpdatedCommm(row?._id);
+                            }}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Comments
+                          </div>
+                        ) : null}
+
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
@@ -644,6 +678,42 @@ const ComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
+      <Dialog open={updateCommm} onClose={handleUpdateCommentClose}>
+        <DialogTitle> Part Order</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleUpdateCommentClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent style={{width:"350px"}}>
+          <form onSubmit={handleSubmit(updateComment)} className="max-w-lg mx-auto grid grid-cols-1 gap-3   bg-white shadow-md rounded-md">
+
+            <div>
+              <label className="block text-gray-700 ">Comments/Notes</label>
+              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
+
+            {/* <div>
+              <label className="block text-gray-700 ">Attachments</label>
+              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
+              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
+            </div> */}
+
+            <button type="submit" className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
+
+          </form>
+
+        </DialogContent>
+
+      </Dialog>
       <Dialog open={assign} onClose={handleAssignClose}>
         <DialogTitle>  Assign Service Center</DialogTitle>
         <IconButton
@@ -710,10 +780,10 @@ const ComplaintList = (props) => {
                 className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               >
                 <option value="IN PROGRESS">In Progress</option>
-            <option value="PART PENDING">Awaiting Parts</option>
-            {/* <option value="ONHOLD">On Hold</option> */}
-            <option value="FINAL VERIFICATION">Completed</option>
-            <option value="CANCELED">Canceled</option>
+                <option value="PART PENDING">Awaiting Parts</option>
+                {/* <option value="ONHOLD">On Hold</option> */}
+                <option value="FINAL VERIFICATION">Completed</option>
+                <option value="CANCELED">Canceled</option>
               </select>
             </div>
             <div>

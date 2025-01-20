@@ -20,7 +20,7 @@ const ComplaintDetails = ({ params }) => {
     useEffect(() => {
         const storedValue = localStorage.getItem("user");
         if (storedValue) {
-          setLocalValue(JSON.parse(storedValue));
+            setLocalValue(JSON.parse(storedValue));
         }
         getComplaintById()
         getComplaintByUserId()
@@ -32,7 +32,7 @@ const ComplaintDetails = ({ params }) => {
             let { data } = response;
             setComplaint(data)
             setId(data?.userId)
-          
+
         }
         catch (err) {
             console.log(err);
@@ -43,7 +43,7 @@ const ComplaintDetails = ({ params }) => {
             let response = await http_request.get(`/getAllComplaint`)
             let { data } = response;
             setUserComplaint(data)
-           
+
         }
         catch (err) {
             console.log(err);
@@ -52,11 +52,12 @@ const ComplaintDetails = ({ params }) => {
     const handleEdit = () => {
         router.push(`/complaint/edit/${complaint?._id}`);
     };
-     
-    
-    const userComp=userComplaint?.filter((f)=>f?.userId===complaint?.userId)
-   
-    
+
+
+    const userComp = userComplaint?.filter((f) => f?.userId === complaint?.userId)
+// console.log(complaint);
+
+
     return (
         <>
 
@@ -80,7 +81,7 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='text-md  '> {new Date(complaint?.createdAt).toLocaleString()} </div>
                                 <div className='text-md font-bold'>Last Updated :  </div>
                                 <div className='text-md  '> {new Date(complaint?.updatedAt).toLocaleString()} </div>
-                               
+
                                 <div className='text-md font-semibold'>Brand : </div>
                                 <div className='text-md font-medium'>{complaint?.productBrand}</div>
                                 <div className='text-md font-semibold'>Category Name : </div>
@@ -124,18 +125,31 @@ const ComplaintDetails = ({ params }) => {
                                         alt='image'
                                     />
                                 </div>
+                                <div>
                                 <div className='text-md font-bold mb-5'>Task Updated :  </div>
-                               {complaint?.updateHistory?.map((item,i)=>(
-                                 <div key={i}className='text-md font-bold'>  
-                                 <div>{new Date(item?.updatedAt).toLocaleString()}{"."} </div>
-                                 <div> {item?.changes?.status}"{"." }"</div>
-                                 </div>
+                                {complaint?.updateHistory?.map((item, i) => (
+                                    <div key={i} className='text-md font-bold'>
+                                        <div> {item?.changes?.status}"{"."}"</div>
+                                        <div>{new Date(item?.updatedAt).toLocaleString()} </div>
+
+                                    </div>
                                 ))}
+                                </div>
+                                  <div>
+                                <div className='text-md font-bold mb-5'>Updated  Comments :  </div>
+                                {complaint?.updateComments?.map((item, i) => (
+                                    <div key={i} className='text-md font-bold'>
+                                        
+                                        <div> {item?.changes?.sndStatus} </div>
+                                        <div>{new Date(item?.updatedAt).toLocaleString()}  </div>
+                                    </div>
+                                ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 }
-                <UserAllServicesList  data={userComp}  />
+                <UserAllServicesList data={userComp} />
 
             </Sidenav>
         </>

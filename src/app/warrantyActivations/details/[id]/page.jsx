@@ -5,6 +5,7 @@ import http_request from "../../../../../http-request";
 import { useRouter } from 'next/navigation';
 import { ReactLoader } from '@/app/components/common/Loading';
 import UserDashboard from '@/app/dashboard/userDashboard';
+import EditWarrantyDetails from './EditActivationWarranty';
 
 const WarrantyActivationDetails = ({ params }) => {
 
@@ -12,6 +13,7 @@ const WarrantyActivationDetails = ({ params }) => {
 
     const [data, setWarranty] = useState({})
     const [loading, setLoading] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
 
     const [dashData, setData] = React.useState("");
     const [value, setBrandValue] = React.useState(null);
@@ -26,6 +28,8 @@ const WarrantyActivationDetails = ({ params }) => {
                 setWarranty(warrantyResponse.data);
 
                 // Fetch user data and dashboard details after fetching the warranty
+                // console.log(warrantyResponse.data);
+                
                 if (warrantyResponse.data) {
                     getUserById(warrantyResponse.data.userId);
                     setBrandValue({ _id: warrantyResponse.data.userId, role: "USER" })
@@ -52,8 +56,8 @@ const WarrantyActivationDetails = ({ params }) => {
         try {
             const response = await http_request.get(`/getUserBy/${userId}`);
             const userData = response.data;
-            setUser(userData);
-            setId(userData?._id);
+            // setUser(userData);
+            // setId(userData?._id);
         } catch (err) {
             console.log('Error fetching user details', err);
         }
@@ -71,6 +75,10 @@ const WarrantyActivationDetails = ({ params }) => {
         }
     };
 
+const handleEdit=(data)=>{
+    setIsEdit(data)
+}
+
     // console.log(data);
 
 
@@ -83,13 +91,20 @@ const WarrantyActivationDetails = ({ params }) => {
                 </div>
                 :
                 <>
+                    {isEdit && <EditWarrantyDetails data={data}handleEdit={handleEdit} />}
+
                     <div className="container mx-auto p-4">
-                        <h1 className="text-3xl font-bold mb-4">Product Warranty Details</h1>
+                        <div className="flex justify-between mb-5">
+                            <h1 className="text-3xl font-bold">Product Warranty Details</h1>
+                            <button onClick={()=>handleEdit(true)} className="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded-md">
+                                Edit Details
+                            </button>
+                        </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div><strong>QR Codes:</strong></div>
-                        <div>
-                                
+                            <div>
+
                                 {data?.qrCodes?.map((qr, index) => (
                                     <div key={index}>
                                         {/* <span>{qr.qrCodeUrl}</span> */}
@@ -144,7 +159,7 @@ const WarrantyActivationDetails = ({ params }) => {
                                         return remainingDays > 0 ? remainingDays : 0; // If remaining days is negative, set it to 0
                                     })()}
                             </div>
-                           
+
 
                             <div>
                                 <strong>User Name:</strong> {data.userName}

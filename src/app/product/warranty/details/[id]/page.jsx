@@ -12,7 +12,7 @@ const WarrantyDetails = ({ params }) => {
 
     const [warranty, setWarranty] = useState({})
     const [brand, setBrand] = useState({})
-
+const [loading, setLoading] = useState(false);
     useEffect(() => {
         getWarranty()
 
@@ -25,13 +25,16 @@ const WarrantyDetails = ({ params }) => {
     }, [warranty]);
     const getWarranty = async () => {
         try {
+            setLoading(true)
             let response = await http_request.get(`/getProductWarranty/${params?.id}`)
             let { data } = response
             setWarranty(data);
-
+            setLoading(false)
         }
         catch (err) {
             console.log(err)
+            setLoading(false)
+
         }
     }
     const getBrandById = async (brandId) => {
@@ -469,13 +472,13 @@ body {
     };
 
 
-    // console.log(brand);
+    console.log(warranty);
 
 
     return (
         <Sidenav>
 
-            {!warranty ?
+            {loading===true ?
                 <div className='h-[400px] flex justify-center items-center'>
                     <ReactLoader />
                 </div>

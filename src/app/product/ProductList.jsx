@@ -34,17 +34,40 @@ const ProductList = (props) => {
   const [sortBy, setSortBy] = useState('id');
 
   const [userData, setUserData] = React.useState(null);
+  const [userProduct, setUserProduct] = React.useState([]);
 
   React.useEffect(() => {
     const storedValue = localStorage.getItem("user");
     if (storedValue) {
+      const userData4 = JSON.parse(storedValue)
+      
+      
       setUserData(JSON.parse(storedValue));
+      if (userData4?.user?.role === "USER") {
+        getAllUserProducts(userData4?.user?._id)
+      }
+
     }
   }, []);
 
-  const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
-  const data = userData?.user?.role==="ADMIN" ?props?.data:filterData;
+  const getAllUserProducts = async (id) => {
+    try {
+      let response = await http_request.get(`/getActivationWarrantyByUserId/${id}`)
+      let { data } = response;
 
+      setUserProduct(data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  // console.log(userProduct);
+
+  const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  const filUserData=[...userProduct,...filterData]
+  const data2 = userData?.user?.role === "ADMIN" ? props?.data : filUserData;
+  const data = data2?.map((item, index) => ({ ...item, i: index + 1}));
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -159,7 +182,7 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('categoryName')}
                     >
-                     Sub Category Name
+                      Sub Category Name
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -168,7 +191,7 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('productBrand')}
                     >
-                     Brand
+                      Brand
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -177,7 +200,7 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('modelNo')}
                     >
-                     Model No.
+                      Model No.
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -186,17 +209,17 @@ const ProductList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('serialNo')}
                     >
-                   Serial No.
+                      Serial No.
                     </TableSortLabel>
                   </TableCell>
-                  
+
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'warrantyStatus'}
                       direction={sortDirection}
                       onClick={() => handleSort('warrantyStatus')}
                     >
-                        Warranty In Days
+                      Warranty In Days
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -235,38 +258,38 @@ const ProductList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.productName}</TableCell>
+                    <TableCell>{row?.productName  }</TableCell>
                     <TableCell>{row?.productDescription}</TableCell>
                     <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.subCategory }</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
+                    <TableCell>{row?.subCategory}</TableCell>
+                    <TableCell>{row?.productBrand || row?.brandName}</TableCell>
+                    <TableCell>{row?.modelNo || row?.batchNo}</TableCell>
                     <TableCell>{row?.serialNo}</TableCell>
                     {/* <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell> */}
-                    <TableCell>{row?.warrantyInDays}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
-                    <TableCell>{row?.purchaseDate}</TableCell>
-                    <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
+                    <TableCell>{row?.warrantyInDays }</TableCell>
+                    <TableCell>{row?.status || (row?.isActivated === true ? "ACTIVE" : "INACTIVE")}</TableCell>
+                    <TableCell> {new Date(row?.purchaseDate || row?.activationDate)?.toLocaleString()}</TableCell>
+                    <TableCell>{new Date(row?.createdAt || row?.activationDate)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                  <div className='flex'>
+                      <div className='flex'>
 
-                      <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
-                        Request Service
-                      </div>
-                      <div onClick={()=>handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
-                        View Warranty
-                      </div>
-                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                        <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
+                          Request Service
+                        </div>
+                        <div onClick={() => handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
+                          View Warranty
+                        </div>
+                        {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
                       </IconButton> */}
-                      <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
-                        <EditIcon color='success' />
-                      </IconButton>
-                    {  userData?.user?.role==="ADMIN" ?
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                        <DeleteIcon color='error' />
-                      </IconButton>
-                      :""}
+                        <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                          <EditIcon color='success' />
+                        </IconButton>
+                        {userData?.user?.role === "ADMIN" ?
+                          <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                            <DeleteIcon color='error' />
+                          </IconButton>
+                          : ""}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -301,7 +324,7 @@ const ProductList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <AddProduct subCategories={props?.subCategories}categories={categories} userData={userData} brands={props?.brands}existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <AddProduct subCategories={props?.subCategories} categories={categories} userData={userData} brands={props?.brands} existingProduct={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>
@@ -311,25 +334,25 @@ const ProductList = (props) => {
 
 
       <Dialog open={isWarranty} onClose={handleWarrantyClose}>
-        <div className= {warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>
-        <DialogTitle  > {"Warranty Status"}</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleWarrantyClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <div className='md:w-[350px]'>
-            <div className={warranty?"p-3 bg-green-400 text-bold":"p-3 bg-red-400 text-bold"}>{warranty? "Your product is under Warranty":"Your product is not under Warranty"}</div>
-          </div>
-        </DialogContent>
+        <div className={warranty ? "p-3 bg-green-400 text-bold" : "p-3 bg-red-400 text-bold"}>
+          <DialogTitle  > {"Warranty Status"}</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleWarrantyClose}
+            sx={{
+              position: 'absolute',
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <div className='md:w-[350px]'>
+              <div className={warranty ? "p-3 bg-green-400 text-bold" : "p-3 bg-red-400 text-bold"}>{warranty ? "Your product is under Warranty" : "Your product is not under Warranty"}</div>
+            </div>
+          </DialogContent>
         </div>
       </Dialog>
     </div>

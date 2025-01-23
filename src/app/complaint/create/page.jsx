@@ -386,7 +386,7 @@ const AddComplaint = () => {
     console.log("Days difference (in days):", validDaysDifference);
 
     // Calculate the remaining warranty
-    const remainingWarranty = Number(validWarrantyInDays) + Number(validDaysDifference);
+    const remainingWarranty = Number(validWarrantyInDays) - Number(validDaysDifference);
 
     console.log("Remaining Warranty (in days):", remainingWarranty);
 

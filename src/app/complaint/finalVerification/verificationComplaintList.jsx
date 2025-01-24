@@ -15,6 +15,8 @@ import axios from 'axios';
 
 const VerificationComplaintList = (props) => {
 
+ 
+
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
   const router = useRouter()
@@ -77,16 +79,22 @@ const VerificationComplaintList = (props) => {
   }
 
   const onSubmit = async (data) => {
-    try {
 
+    try {
+setLoading(true)
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
+      
 
       setStatus(false)
       setAssignTech(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      setLoading(false)
+      reset()
     } catch (err) {
+      setLoading(false)
+
       console.log(err);
     }
   };
@@ -584,9 +592,14 @@ const VerificationComplaintList = (props) => {
                 )}
               </div>
               <div>
-                <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                {loading===true? 
+                <div className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                  Submiting........
+                </div>
+                :<button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
                   Submit
                 </button>
+}
               </div>
             </form>
           }

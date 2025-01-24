@@ -23,30 +23,59 @@ const Product = () => {
   
   
     const getAllProducts = async () => {
+      try{
       let response = await http_request.get("/getAllProduct")
       let { data } = response;
   
       setProducts(data)
     }
+    catch(err){
+      console.log(err);
+      
+    }
+  }
+
+
     const getAllCategories = async () => {
+      try{
       let response = await http_request.get("/getAllProductCategory")
       let { data } = response;
   
       setCategories(data)
     }
+    catch(err){
+      console.log(err);
+      
+    }
+  }
     const getAllSubCategories = async () => {
+      try{
       let response = await http_request.get("/getAllSubCategory")
       let { data } = response;
   
       setSubCategories(data)
     }
-    const getAllBrands = async () => {
-      let response = await http_request.get("/getAllBrand")
-      let { data } = response;
-  
-      setBrands(data)
+    catch(err){
+      console.log(err);
+      
     }
-    const data = products?.map((item, index) => ({ ...item, i: index + 1}));
+  }
+
+
+    const getAllBrands = async () => {
+      try{
+        let response = await http_request.get("/getAllBrand")
+        let { data } = response;
+    
+        setBrands(data)
+      }
+     
+      catch(err){
+        console.log(err);
+        
+      }
+    }
+    const data = products 
    
 
     const RefreshData = (data) => {

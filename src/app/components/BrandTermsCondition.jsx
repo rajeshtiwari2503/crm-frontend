@@ -1,27 +1,25 @@
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
-import axios from "axios"; // For API calls
-import "react-quill/dist/quill.snow.css"; // Import Quill's CSS for the snow theme
+import DOMPurify from "dompurify"; // For sanitizing HTML
+import http_request from "../../../http-request";
+import "react-quill/dist/quill.snow.css";
+import { ToastMessage } from "./common/Toastify";
+import { Toaster } from "react-hot-toast";
 
-const TermsEditor = () => {
-  const [content, setContent] = useState("");
-  const [loading, setLoading] = useState(false); // To manage API call state
-  const [message, setMessage] = useState("");
+const TermsEditor = (props) => {
+  const [content, setContent] = useState(props?.warrantyCondition || "");
+  const [loading, setLoading] = useState(false);
 
-  // Quill Toolbar Options (Customize as needed)
   const toolbarOptions = [
-    [{ header: [1, 2, 3, false] }], // Header dropdown
-    ["bold", "italic", "underline", "strike"], // Text styling
-    [{ list: "ordered" }, { list: "bullet" }], // Lists
-    [{ align: [] }], // Alignment
-    ["link", "image"], // Links and Images
-    ["clean"], // Clear formatting
+    [{ header: [1, 2, 3, false] }],
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    [{ align: [] }],
+    ["link", "image"],
+    ["clean"],
   ];
 
-  const modules = {
-    toolbar: toolbarOptions,
-  };
-
+  const modules = { toolbar: toolbarOptions };
   const formats = [
     "header",
     "bold",
@@ -36,32 +34,28 @@ const TermsEditor = () => {
   ];
 
   const handleSave = async () => {
-    setLoading(true);
-    setMessage("");
+    const sanitizedContent = DOMPurify.sanitize(content);
 
     try {
-      const response = await axios.put(
-        "/api/brands/update", // Replace with your update API endpoint
-        {
-          warrantyCondition: content, // Sending warranty condition to the API
-        }
+      setLoading(true);
+      const response = await http_request.patch(
+        `/updateBrandTerms/${props?.brandId}`,
+        { warrantyCondition: sanitizedContent }
       );
-
-      if (response.status === 200) {
-        setMessage("Terms and Conditions updated successfully!");
-      } else {
-        setMessage("Failed to update Terms and Conditions.");
-      }
+      const { data } = response;
+      props?.RefreshData(data);
+      ToastMessage(data);
     } catch (error) {
+      ToastMessage(error?.response?.data);
       console.error("Error updating Terms and Conditions:", error);
-      setMessage("An error occurred while updating Terms and Conditions.");
     } finally {
       setLoading(false);
     }
   };
-
+  const sanitizedContent = DOMPurify.sanitize(content);
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="p-6 mb-8 bg-gray-100">
+      <Toaster />
       <h1 className="text-2xl font-bold mb-6">Edit Terms and Conditions</h1>
       <ReactQuill
         theme="snow"
@@ -81,20 +75,14 @@ const TermsEditor = () => {
       >
         {loading ? "Saving..." : "Save Terms"}
       </button>
-
-      {message && (
-        <p className={`mt-4 ${message.includes("success") ? "text-green-500" : "text-red-500"}`}>
-          {message}
-        </p>
-      )}
-
-      <div className="mt-8">
+      {/* <div className="mt-8">
+        <hr className="mb-4" />
         <h2 className="text-xl font-semibold mb-2">Preview:</h2>
         <div
           className="p-4 border rounded bg-gray-50"
-          dangerouslySetInnerHTML={{ __html: content }}
+          dangerouslySetInnerHTML={{ __html: sanitizedContent }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

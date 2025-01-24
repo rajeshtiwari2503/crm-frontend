@@ -91,6 +91,7 @@ setLoading(true)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
       setLoading(false)
+      reset()
     } catch (err) {
       setLoading(false)
 

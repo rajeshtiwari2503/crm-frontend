@@ -16,12 +16,14 @@ const ActivateWarrantyButton = () => {
   const [qrCodeUrl, setQrCodeUrl] = useState('');
   const [warrantyDetails, setWarrantyDetails] = useState('');
   const [loading, setLoading] = useState(false);
+  const [read, setRead] = useState(false);
   const [refresh, setRefresh] = useState(false);
   const [query, setQuery] = useState('');
   const [contactNo, setContactNo] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
   const [product, setProduct] = useState([])
+  const [users, setUsers] = useState(null);
   // Set up react-hook-form
   const { register, handleSubmit, formState: { errors }, setValue } = useForm({
     mode: 'onBlur', // or 'onChange' for real-time validation
@@ -36,6 +38,17 @@ const ActivateWarrantyButton = () => {
   }, [searchParams, refresh]);
 
 
+  const getUserById = async (id) => {
+    try {
+
+      const response = await http_request.get(`/getBrandBy/${id}`);
+      const { data } = response;
+      setUsers(data);
+    } catch (err) {
+      console.error('Failed to fetch user data:', err);
+    }
+  };
+
   const getwarrantyDetails = async (qrCode) => {
     try {
       setLoading(true);
@@ -44,6 +57,7 @@ const ActivateWarrantyButton = () => {
       const response = await http_request.get(`/getProductWarrantyByUniqueId/${qrCode}`);
       const { data } = response;
       setWarrantyDetails(data);
+      getUserById(data?.brandId)
       setLoading(false);
     } catch (err) {
       console.error("Error fetching warranty details:", err);
@@ -105,7 +119,7 @@ const ActivateWarrantyButton = () => {
       console.log(error);
 
       ToastMessage(error?.response?.data)
-      
+
     }
   };
 
@@ -429,13 +443,13 @@ const ActivateWarrantyButton = () => {
   // console.log(filterProduct);
   const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
   // console.log(filterProductByBrand);
-  
-  const handleProductChange = (e) => {
-  const selectedProductId = e.target.value;
-  const selectedProduct = product?.find(prod => prod._id === selectedProductId);
-  console.log(selectedProduct);
 
-  if (selectedProduct) {
+  const handleProductChange = (e) => {
+    const selectedProductId = e.target.value;
+    const selectedProduct = product?.find(prod => prod._id === selectedProductId);
+    console.log(selectedProduct);
+
+    if (selectedProduct) {
       setValue('productId', selectedProduct._id);
       setValue('productName', selectedProduct.productName);
       // setValue('brandName', selectedProduct.productBrand);
@@ -443,8 +457,8 @@ const ActivateWarrantyButton = () => {
       setValue('categoryId', selectedProduct.categoryId);
       setValue('categoryName', selectedProduct.categoryName);
       setValue('year', new Date());
-  }
-};
+    }
+  };
 
   const handleComplaint = async () => {
 
@@ -505,7 +519,7 @@ const ActivateWarrantyButton = () => {
       // console.log(id);
       const response = await http_request.post("/dashboardLogin", { userId: id });
       let { data } = response;
-      
+
       ToastMessage(data)
       localStorage.setItem('user', JSON.stringify(data));
       window.location.href = "/complaint/pending"
@@ -520,7 +534,7 @@ const ActivateWarrantyButton = () => {
 
   return (
     <>
-    <Toaster />
+      <Toaster />
       {loading === true ? <div>
         <ReactLoader />
       </div>
@@ -546,7 +560,7 @@ const ActivateWarrantyButton = () => {
               </div>
               <div className='mt-2'>
                 <label className="font-bold text-gray-700 text-sm">Year </label>
-               {filterWarranty && <p className="text-gray-600 text-sm">{new Date(filterWarranty?.year).toLocaleDateString()}</p>}
+                {filterWarranty && <p className="text-gray-600 text-sm">{new Date(filterWarranty?.year).toLocaleDateString()}</p>}
               </div>
               {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>
@@ -602,31 +616,31 @@ const ActivateWarrantyButton = () => {
               <div>
                 {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                  
-                 { filterWarranty?.isActivated === false  && !filterWarranty?.productId  ?
-                  <div className='mt-5'>
-                  <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
-                      Product Name
-                  </label>
-                  <select
-                      id="productName"
-                      name="productName"
-                      onChange={handleProductChange}
-                      className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
-                  >
-                      <option value="">Select a product</option>
-                      {filterProductByBrand?.map((prod) => (
+
+                  {filterWarranty?.isActivated === false && !filterWarranty?.productId ?
+                    <div className='mt-5'>
+                      <label htmlFor="productName" className="block text-sm font-medium text-gray-700">
+                        Product Name
+                      </label>
+                      <select
+                        id="productName"
+                        name="productName"
+                        onChange={handleProductChange}
+                        className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
+                      >
+                        <option value="">Select a product</option>
+                        {filterProductByBrand?.map((prod) => (
                           <option key={prod._id} value={prod._id}>
-                              {prod.productName}
+                            {prod.productName}
                           </option>
-                      ))}
-                  </select>
-                  {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
-              </div>
-                :""
-                 }
-                 <div className='mt-5'>
-                   <label htmlFor="name" className="block text-gray-700">Full Name:</label>
+                        ))}
+                      </select>
+                      {errors.productName && <p className="text-red-500 text-sm mt-1">{errors.productName.message}</p>}
+                    </div>
+                    : ""
+                  }
+                  <div className='mt-5'>
+                    <label htmlFor="name" className="block text-gray-700">Full Name:</label>
                     <input
                       id="name"
                       type="text"
@@ -727,7 +741,25 @@ const ActivateWarrantyButton = () => {
                     Search
                   </button>
                 </div>
-
+                <div className="mt-5">
+                  <input
+                    id="terms"
+                    type="checkbox"
+                    {...register('termsCondtions', { required: 'You must accept the terms and conditions' })}
+                    className="mr-2"
+                  />
+                  <label htmlFor="terms" className="text-gray-700">
+                    I agree to warranty{' '}
+                    <button
+                      type="button"
+                      onClick={() => setRead(true)} // Handle showing terms
+                      className="text-blue-500 underline hover:text-blue-700 focus:outline-none"
+                    >
+                      Terms and Conditions
+                    </button>
+                  </label>
+                  {errors.termsCondtions && <p className="text-red-500 text-sm mt-1">{errors.termsCondtions.message}</p>}
+                </div>
                 <button
                   type="button"
                   onClick={handleSubmit(onSubmit)}
@@ -744,6 +776,23 @@ const ActivateWarrantyButton = () => {
 
 
         </div>
+      }
+      {read === true ? <div className="m-10">
+        <h2 className="text-xl font-semibold mb-2">Warranty Terms & Conditions</h2>
+        <div
+          className="p-4 border rounded bg-gray-50"
+          dangerouslySetInnerHTML={{ __html: users?.warrantyCondition }}
+        />
+         <div className="flex justify-center mt-5">
+          <button
+            onClick={() => setRead(false)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+        : ""
       }
       {/* <Hero /> */}
     </>

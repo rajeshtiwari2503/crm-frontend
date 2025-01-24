@@ -148,8 +148,15 @@ const BrandProfile = (props) => {
 
                 {/* <Recharge sidebar={false} brandData={userData} /> */}
             </div>
-
-            <TermsEditor />
+            <div className="my-8">
+            <h2 className="text-xl font-semibold mb-2">Warranty Terms & Conditions</h2>
+            <div
+              className="p-4 border rounded bg-gray-50"
+              dangerouslySetInnerHTML={{ __html: userData?.warrantyCondition }}
+            />
+          </div>
+            <TermsEditor brandId={userData?._id} warrantyCondition={userData?.warrantyCondition} RefreshData={props?.RefreshData}/>
+           
         </>
     );
 };

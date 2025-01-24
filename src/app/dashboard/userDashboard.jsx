@@ -77,9 +77,9 @@ const UserDashboard = (props) => {
       </div>
 
       <div className='my-8'>
-        <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
+        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
               </div>
@@ -87,7 +87,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
@@ -95,7 +95,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
               </div>
@@ -103,7 +103,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
@@ -111,7 +111,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
               </div>
@@ -119,7 +119,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
               </div>
@@ -127,7 +127,7 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
               </div>
@@ -135,14 +135,14 @@ const UserDashboard = (props) => {
             </div>
           </div>
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full text-center'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
               <div className='text-center mt-2'>TAT</div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/create")} className='ms-8 bg-yellow-400 rounded-md mt-3 cursor-pointer p-4'>
+          <div onClick={()=>router.push("/complaint/create")} className=' bg-yellow-400 rounded-md mt-3 cursor-pointer p-4'>
                 Add Service Request
               </div>
               <div onClick={()=>router.push("/product")}className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>

@@ -1020,9 +1020,10 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                  <div className='font-bold text-xl'  >
+                 {value?.user?.role==="ADMIN"? <div className='font-bold text-xl'  >
                     Dashboard
                   </div>
+                  :""}
                   {/* <div className='font-bold text-xl ms-8 flex items-center'  >
                     <Wallet fontSize='large' color='secondary' />
                     <div className='text-sm'>1000.0 INR</div>

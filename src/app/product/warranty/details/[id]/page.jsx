@@ -12,7 +12,53 @@ const WarrantyDetails = ({ params }) => {
 
     const [warranty, setWarranty] = useState({})
     const [brand, setBrand] = useState({})
-const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState( );
+
+    const [search, setSearch] = useState([]);
+
+    const [uniqueId, setUniqueId] = useState("");
+    const [result, setResult] = useState(null);
+
+    const [error, setError] = useState("");
+
+    const handleSearch = async () => {
+        if (!uniqueId.trim()) {
+            setError("Unique ID is required.");
+            return;
+        }
+
+        setLoading(true);
+        setError("");
+        setResult(null);
+
+        try {
+            const response = await http_request.get(
+                `/getProductWarrantyByUniqueId/${uniqueId}`
+            );
+            const {data}=response;
+            
+            const filterWarranty = data?.records?.filter((f) => f?.uniqueId === uniqueId)
+            // console.log("filterWarranty",filterWarranty);
+            setSearch(data)
+            setResult(filterWarranty);
+           if(data){
+            getBrandById(data?.brandId)
+           } 
+            // setWarranty(data)
+        } catch (err) {
+            if (err.response && err.response.status === 404) {
+                setError("Warranty not found.");
+            } else {
+                setError("An error occurred while fetching the warranty.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    // console.log("result" ,result);
+    
     useEffect(() => {
         getWarranty()
 
@@ -48,6 +94,12 @@ const [loading, setLoading] = useState(false);
         }
     }
 
+    // console.log("search",search);
+ const filtRecord =search?.records?.length>0?{records:result,brandId:search?.brandId
+    ,brandName:search?.brandName,numberOfGenerate:search?.numberOfGenerate,warrantyInDays:search?.warrantyInDays,createdAt:search?.createdAt,
+    updatedAt:search?.updatedAt,
+ }:warranty
+//  console.log("filtRecord",filtRecord);
     // console.log(brand);
 
     const handleEdit = (id) => {
@@ -428,7 +480,7 @@ body {
         `);
         printWindow.document.write('</style></head><body>');
 
-        const records = warranty?.records || [];
+        const records = filtRecord?.records || [];
 
         records.forEach((item, index) => {
             if (index > 0) {
@@ -438,7 +490,7 @@ body {
                 <div class="record-container">
                 <div class="item1">
                     <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
-                    <div class="text-12">${warranty?.productName || 'Product Name'}</div>
+                    <div class="text-12">${filtRecord?.productName || 'Product Name'}</div>
                     <div class="logo-and-qr">
                         <img src="${logoUrl}" alt="Company Logo" width="40" height="40" />
                         <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="40" height="40" />
@@ -472,18 +524,44 @@ body {
     };
 
 
-    console.log(warranty);
-
 
     return (
         <Sidenav>
 
-            {loading===true ?
+            {loading === true ?
                 <div className='h-[400px] flex justify-center items-center'>
                     <ReactLoader />
                 </div>
                 :
                 <>
+                    <div className="  flex items-center mb-4 justify-center bg-gray-100">
+                        <div className="bg-white p-6 grid grid-cols-1 md:grid-cols-3 rounded-2xl shadow-md my-4 items-center gap-5 ">
+                            <h1 className="text-2xl font-semibold text-gray-800 mb-4">
+                                Search Warranty QR
+                            </h1>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">
+                                    Unique ID
+                                </label>
+                                <input
+                                    type="text"
+                                    className="mt-1 block w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    value={uniqueId}
+                                    onChange={(e) => setUniqueId(e.target.value)}
+                                    placeholder="Enter Unique ID"
+                                />
+                                 {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                            </div>
+                           
+                            <button
+                                onClick={handleSearch}
+                                disabled={loading}
+                                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 disabled:opacity-50"
+                            >
+                                {loading ? "Searching..." : "Search"}
+                            </button>
+                        </div>
+                    </div>
                     <div className='flex justify-between items-center mb-3'>
                         <div className='font-bold text-2xl'>Warranty Information</div>
                         {/* <div onClick={() => handleEdit(warranty?._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
@@ -493,24 +571,31 @@ body {
                     </div>
                     <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-5'>
                         <div className='font-bold mt-5'>Brand Name</div>
-                        <div>{warranty?.brandName}</div>
-                        <div className='font-bold'>Part Name</div>
-                        <div>{warranty?.productName}</div>
+                        <div>{filtRecord?.brandName?filtRecord?.brandName:warranty?.brandName}</div>
+                        {/* <div className='font-bold'>Part Name</div>
+                        <div> 
+                        {filtRecord?.productName?filtRecord?.productName:warranty?.productName}
+                        </div> */}
                         <div className='font-bold'>Warranty In Days</div>
-                        <div>{warranty?.warrantyInDays}</div>
+                        <div> 
+                        {filtRecord?.warrantyInDays?filtRecord?.warrantyInDays:warranty?.warrantyInDays}
+
+                        </div>
                         <div className='font-bold'>Year</div>
-                        <div>{warranty?.year}</div>
+                        <div> 
+                        {filtRecord?.year?filtRecord?.year:warranty?.year}
+                        </div>
                         <div className='font-bold'>Created At</div>
-                        <div>{new Date(warranty?.createdAt).toLocaleString()}</div>
+                        <div>{new Date(filtRecord?.createdAt?filtRecord?.createdAt:warranty?.createdAt).toLocaleString()}</div>
                         <div className='font-bold'>Updated At</div>
-                        <div>{new Date(warranty?.updatedAt).toLocaleString()}</div>
+                        <div>{new Date( filtRecord?.updatedAt?filtRecord?.updatedAt:warranty?.updatedAt).toLocaleString()}</div>
                     </div>
                     <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                         Print Records
                     </button>
                     <div className='font-bold mt-5'>Generated QR codes</div>
                     <div className=' grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
-                        {warranty?.records?.map((item, i) => (
+                        {filtRecord?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
                                 <div className=' mb-5 '>
                                     <div className='  mt-3 mb-3 font-bold text-[12px]'>  QR Code warranty is powered by Servsy.in</div>

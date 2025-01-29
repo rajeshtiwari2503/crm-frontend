@@ -114,22 +114,19 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='text-lg font-medium'>{complaint?.assignServiceCenter}</div>
                                 <div className='text-md font-semibold'>AssignTechnician : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignTechnician}</div>
-                                <div className='text-md font-semibold'>Image : </div>
+                               
+                                <div className='text-md font-semibold'>Brand Payments : </div>
+                                <div className='text-lg font-medium'>{complaint?.paymentBrand}</div>
+                                <div className='text-md font-semibold'>Final Comments : </div>
+                                <div className='text-lg font-medium'>{complaint?.finalComments}</div>
+                                <div className='text-md font-semibold'>Kilometer : </div>
+                                <div className='text-lg font-medium'>{complaint?.kilometer}</div>
                                 <div>
-                                    <img
-
-                                        src={complaint?.issueImages}
-                                        height="100px"
-                                        width="100px"
-                                        className='m-2'
-                                        alt='image'
-                                    />
-                                </div>
-                                <div>
+                               
                                 <div className='text-md font-bold mb-5'>Task Updated :  </div>
                                 {complaint?.updateHistory?.map((item, i) => (
                                     <div key={i} className='text-md font-bold'>
-                                        <div> {item?.changes?.status}"{"."}"</div>
+                                        <div> {item?.changes?.status} </div>
                                         <div>{new Date(item?.updatedAt).toLocaleString()} </div>
 
                                     </div>
@@ -144,6 +141,17 @@ const ComplaintDetails = ({ params }) => {
                                         <div>{new Date(item?.updatedAt).toLocaleString()}  </div>
                                     </div>
                                 ))}
+                                </div>
+                                <div className='text-md font-semibold'>Image : </div>
+                                <div>
+                                    <img
+
+                                        src={complaint?.issueImages}
+                                        height="100px"
+                                        width="100px"
+                                        className='m-2'
+                                        alt='image'
+                                    />
                                 </div>
                             </div>
                         </div>

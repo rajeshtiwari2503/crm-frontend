@@ -209,7 +209,11 @@ const ComplaintList = (props) => {
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+      if (data.comments) {
+        updateComment({ comments: data?.comments })
+      }
       let { data: responseData } = response;
+     
       setAssign(false)
       setStatus(false)
       props?.RefreshData(responseData)
@@ -231,9 +235,9 @@ const ComplaintList = (props) => {
   };
   const updateComment = async (data) => {
     try {
-      console.log(id);
-      console.log(data);
-      const sndStatus= data.comments
+      // console.log(id);
+      // console.log(data);
+      const sndStatus = data.comments
       const response = await http_request.patch(`/updateComplaintComments/${id}`, {
         sndStatus
       });
@@ -530,7 +534,7 @@ const ComplaintList = (props) => {
                           (row?.status === "PENDING" || row?.status === "ASIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
                           <div
                             onClick={() => {
-                               // Debugging
+                              // Debugging
                               handleUpdatedCommm(row?._id);
                             }}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -679,7 +683,7 @@ const ComplaintList = (props) => {
 
       </Dialog>
       <Dialog open={updateCommm} onClose={handleUpdateCommentClose}>
-        <DialogTitle> Part Order</DialogTitle>
+        <DialogTitle> Update</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleUpdateCommentClose}
@@ -692,7 +696,7 @@ const ComplaintList = (props) => {
         >
           <Close />
         </IconButton>
-        <DialogContent style={{width:"350px"}}>
+        <DialogContent style={{ width: "350px" }}>
           <form onSubmit={handleSubmit(updateComment)} className="max-w-lg mx-auto grid grid-cols-1 gap-3   bg-white shadow-md rounded-md">
 
             <div>
@@ -785,6 +789,18 @@ const ComplaintList = (props) => {
                 <option value="FINAL VERIFICATION">Completed</option>
                 <option value="CANCELED">Canceled</option>
               </select>
+            </div>
+            <div className='mb-6'>
+              <label className="block text-gray-700">Comments/Notes</label>
+              <textarea
+                {...register('comments', {
+                  required: 'Comments are required',
+                  minLength: { value: 10, message: 'Comments must be at least 10 characters' },
+                  maxLength: { value: 500, message: 'Comments cannot exceed 500 characters' }
+                })}
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              ></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
               <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">

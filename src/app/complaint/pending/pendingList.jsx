@@ -89,11 +89,31 @@ const PendingComplaintList = (props) => {
     setValue('srerviceCenterResponseTime', new Date());
 
   };
+
+  const updateComment = async (data) => {
+    try {
+      // console.log(id);
+      // console.log(data);
+      const sndStatus = data.comments
+      const response = await http_request.patch(`/updateComplaintComments/${id}`, {
+        sndStatus
+      });
+      let { data: responseData } = response;
+      // setUpdateCommm(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const onSubmit = async (data) => {
     try {
       const reqdata=assignTech===true?{status:data?.status,technicianId:data?.technicianId,assignTechnician:data?.assignTechnician,
        assignTechnicianTime:data?.assignTechnicianTime,srerviceCenterResponseTime:data?.srerviceCenterResponseTime, technicianContact:data?.technicianContact}:{status:data?.status}
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+      if (data.comments) {
+        updateComment({ comments: data?.comments })
+      }
       let { data: responseData } = response;
       
       setStatus(false)
@@ -504,6 +524,18 @@ setAssignData(technician)
             <option value="CANCELED">Canceled</option>
           </select>
         </div>
+        <div className='mb-6'>
+              <label className="block text-gray-700">Comments/Notes</label>
+              <textarea
+                {...register('comments', {
+                  required: 'Comments are required',
+                  minLength: { value: 10, message: 'Comments must be at least 10 characters' },
+                  maxLength: { value: 500, message: 'Comments cannot exceed 500 characters' }
+                })}
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              ></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
         <div>
           <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
             Submit

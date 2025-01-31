@@ -55,7 +55,7 @@ const ComplaintDetails = ({ params }) => {
 
 
     const userComp = userComplaint?.filter((f) => f?.userId === complaint?.userId)
-// console.log(complaint);
+    // console.log(complaint);
 
 
     return (
@@ -114,16 +114,16 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='text-lg font-medium'>{complaint?.assignServiceCenter}</div>
                                 <div className='text-md font-semibold'>AssignTechnician : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignTechnician}</div>
-                               
+
                                 <div className='text-md font-semibold'>Brand Payments : </div>
                                 <div className='text-lg font-medium'>{complaint?.paymentBrand}</div>
                                 <div className='text-md font-semibold'>Final Comments : </div>
                                 <div className='text-lg font-medium'>{complaint?.finalComments}</div>
                                 <div className='text-md font-semibold'>Kilometer : </div>
                                 <div className='text-lg font-medium'>{complaint?.kilometer}</div>
-                                <div>
-                               
-                                <div className='text-md font-bold mb-5'>Task Updated :  </div>
+
+
+                                {/* <div className='text-md font-bold mb-5'>Task Updated :  </div>
                                 {complaint?.updateHistory?.map((item, i) => (
                                     <div key={i} className='text-md font-bold'>
                                         <div> {item?.changes?.status} </div>
@@ -132,8 +132,8 @@ const ComplaintDetails = ({ params }) => {
                                     </div>
                                 ))}
                                 </div>
-                                  <div>
-                                <div className='text-md font-bold mb-5'>Updated  Comments :  </div>
+                                  <div> */}
+                                {/* <div className='text-md font-bold mb-5'>Updated  Comments :  </div>
                                 {complaint?.updateComments?.map((item, i) => (
                                     <div key={i} className='text-md font-bold'>
                                         
@@ -141,7 +141,7 @@ const ComplaintDetails = ({ params }) => {
                                         <div>{new Date(item?.updatedAt).toLocaleString()}  </div>
                                     </div>
                                 ))}
-                                </div>
+                                </div> */}
                                 <div className='text-md font-semibold'>Image : </div>
                                 <div>
                                     <img
@@ -155,6 +155,49 @@ const ComplaintDetails = ({ params }) => {
                                 </div>
                             </div>
                         </div>
+                        <div className="p-4">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {/* Update Comments Section */}
+                                <div className="border p-4 rounded-lg">
+                                    <h2 className="text-xl font-bold mb-2">Update Comments</h2>
+                                    <div className="space-y-3">
+                                        {complaint?.updateComments?.map((comment) => (
+                                            <div key={comment._id} className="border-b pb-2">
+                                                <p className="text-sm text-gray-500">
+                                                    <strong>Updated At:</strong> {new Date(comment.updatedAt).toLocaleString()}
+                                                </p>
+                                                {Object.entries(comment.changes).map(([key, value]) => (
+                                                    <p key={key} className="text-sm">
+                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Update History Section */}
+                                <div className="border p-4 rounded-lg">
+                                    <h2 className="text-xl font-bold mb-2">Update History</h2>
+                                    <div className="space-y-3">
+                                        {complaint?.updateHistory?.map((history) => (
+                                            <div key={history._id} className="border-b pb-2">
+                                                <p className="text-sm text-gray-500">
+                                                    <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
+                                                </p>
+                                                {Object.entries(history.changes).map(([key, value]) => (
+                                                    <p key={key} className="text-sm">
+                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                 }
                 <UserAllServicesList data={userComp} />

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import http_request from "../../../http-request"
 import { ReactLoader } from './common/Loading';
 import ServicePincodes from './ServicePincodes';
+import AddSupportedBrands from '../user/service/details/[id]/AddSupportedBrands';
 
 const ServiceProfile = (props) => {
 
@@ -127,20 +128,8 @@ const ServiceProfile = (props) => {
           <div className='text-lg font-medium'>{userData?.operatingHours}</div>
           <div className='text-1xl font-semibold'>serviceCenterType :</div>
           <div className='text-lg font-medium'>{userData?.serviceCenterType}</div>
-          <div className='text-1xl font-semibold'>serviceCategories :</div>
-          <div className='text-lg font-medium'>
-            {
-              userData?.serviceCategories?.map((item, i) =>
-                <div className="font-bold" key={i}>{i + 1} {item?.label} ,  </div>
-              )
-            }
-          </div>
-          <div className='text-1xl font-semibold'>brandsSupported :</div>
-          <div className='text-lg font-medium'>
-            {
-              userData?.brandName
-            }
-          </div>
+         
+         
           <div className='text-1xl font-semibold'>Status :</div>
           <div className='text-lg font-medium'>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
           <div className='text-1xl font-semibold'>insuranceCoverage :</div>
@@ -288,8 +277,27 @@ const ServiceProfile = (props) => {
               Upload Document Certificate
             </button>
           </div>
+          <div className='text-1xl font-semibold'>ServiceCategories :</div>
+          <div className='text-lg font-medium'>
+            {
+              userData?.serviceCategories?.map((item, i) =>
+                <div className="font-bold" key={i}>{i + 1}. {item?.label} ,  </div>
+              )
+            }
+          </div>
+          <div className='text-1xl font-semibold'>BrandsSupported :</div>
+          <div className='text-lg font-medium'>
+            {
+              userData?.brandsSupported?.map((item, i) =>
+                <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
+              )
+            }
+          </div>
 
-
+         {props?.admin?.user?.role==="ADMIN"? <AddSupportedBrands serviceCenterId={userData?._id}existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
+        
+        :""
+          }
         </div>
 
       }

@@ -19,7 +19,13 @@ const serviceDetails = ({ params }) => {
     const [value, setBrandValue] = React.useState(null);
    
 
-    useEffect(() => {
+    const [admin, setAdmin] = React.useState(null);
+   
+     useEffect(() => {
+       const storedValue = localStorage.getItem("user");
+       if (storedValue) {
+        setAdmin(JSON.parse(storedValue));
+       }
         getServiceById()
         getAllDashboard()
         setBrandValue({_id:params.id,role:"SERVICE"})
@@ -78,7 +84,7 @@ const getAllDashboard = async () => {
                     </div>
                     <hr />
                     <div  >
-                       <ServiceProfile RefreshData={RefreshData} userData={service} />
+                       <ServiceProfile admin={admin} RefreshData={RefreshData} userData={service} />
                     </div>
                     <div>
                     <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">

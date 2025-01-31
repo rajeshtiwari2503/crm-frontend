@@ -84,7 +84,7 @@ function Sidenav(props) {
                   : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
-// console.log(data);
+      // console.log(data);
 
       setData(data)
     }
@@ -324,7 +324,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'Final Verification','In Progress', 'Part Pending', 'Cancel', 'Close','Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
+  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
   const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND" ? ["Stock", "Order"] : ["Stock", "Order"]
@@ -354,13 +354,13 @@ function Sidenav(props) {
                 </ListItemButton>
               </ListItem>
             }
-            { value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton>
                 <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <Analytics style={{ color: pathname.startsWith('/analytics') ? '#007BFF' : '#64748b' }}/>
+                  <Analytics style={{ color: pathname.startsWith('/analytics') ? '#007BFF' : '#64748b' }} />
                 </ListItemIcon>
                 <ListItemText primary={"Analytics"} />
-                
+
               </ListItemButton>
             </ListItem>
               : ""}
@@ -530,15 +530,15 @@ function Sidenav(props) {
             <Collapse in={isCollapseComplaint} timeout={"auto"} unmountOnExit >
               <List className=' '>
                 {complaints.map((text, index) => (
-                  <ListItem key={index} disablePadding  
+                  <ListItem key={index} disablePadding
                     className={
                       text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                             text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                            text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                            text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                              pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                              text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                                text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                                  pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
 
@@ -546,9 +546,9 @@ function Sidenav(props) {
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
                           text === "In Progress" ? router.push(`/complaint/inprogress`) :
                             text === "Part Pending" ? router.push(`/complaint/partpending`) :
-                            text === "Out of Warranty" ? router.push(`/complaint/outOfWarranty`) :
-                            text === "Final Verification" ? router.push(`/complaint/finalVerification`) :
-                              router.push(`/complaint/${text.toLowerCase()}`)
+                              text === "Out of Warranty" ? router.push(`/complaint/outOfWarranty`) :
+                                text === "Final Verification" ? router.push(`/complaint/finalVerification`) :
+                                  router.push(`/complaint/${text.toLowerCase()}`)
                     }}
                   >
                     <ListItemButton>
@@ -558,9 +558,9 @@ function Sidenav(props) {
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
                               text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
                                 text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
-                                text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600  ' : 'text-slate-700 ') :
-                                text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600  ' : 'text-slate-700 ') :
-                                  pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
+                                  text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                    text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                      pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
                         <Assignment style={{
@@ -576,21 +576,21 @@ function Sidenav(props) {
                                 ? pathname === "/complaint/inprogress"
                                   ? '#007BFF' // text-sky-600
                                   : '#64748b' // text-slate-700
-                                  : text === "Final Verification"
-                                ? pathname === "/complaint/finalVerification"
-                                  ? '#007BFF' // text-sky-600
-                                  : '#64748b' // text-slate-700
-                                : text === "Part Pending"
-                                  ? pathname === "/complaint/partpending"
+                                : text === "Final Verification"
+                                  ? pathname === "/complaint/finalVerification"
                                     ? '#007BFF' // text-sky-600
                                     : '#64748b' // text-slate-700
+                                  : text === "Part Pending"
+                                    ? pathname === "/complaint/partpending"
+                                      ? '#007BFF' // text-sky-600
+                                      : '#64748b' // text-slate-700
                                     : text === "Out of Warranty"
-                                  ? pathname === "/complaint/outOfWarranty"
-                                    ? '#007BFF' // text-sky-600
-                                    : '#64748b' // text-slate-700
-                                  : pathname === `/complaint/${text.toLowerCase()}`
-                                    ? '#007BFF' // text-sky-600
-                                    : '#64748b', // text-slate-700
+                                      ? pathname === "/complaint/outOfWarranty"
+                                        ? '#007BFF' // text-sky-600
+                                        : '#64748b' // text-slate-700
+                                      : pathname === `/complaint/${text.toLowerCase()}`
+                                        ? '#007BFF' // text-sky-600
+                                        : '#64748b', // text-slate-700
 
                         }} />
                       </ListItemIcon>
@@ -598,19 +598,19 @@ function Sidenav(props) {
                       {text === "Pending" ? dashData?.complaints?.pending
                         : text === "Assign" ? dashData?.complaints?.assign
                           : text === "In Progress" ? dashData?.complaints?.inProgress
-                          : text === "Final Verification" ? dashData?.complaints?.finalVerification
-                            : text === "Part Pending" ? dashData?.complaints?.partPending
-                              : text === "Cancel" ? dashData?.complaints?.cancel
-                                : text === "Close" ? dashData?.complaints?.complete
-                                  : text === "All Service" ? dashData?.complaints?.allComplaints
-                                    : ""}
+                            : text === "Final Verification" ? dashData?.complaints?.finalVerification
+                              : text === "Part Pending" ? dashData?.complaints?.partPending
+                                : text === "Cancel" ? dashData?.complaints?.cancel
+                                  : text === "Close" ? dashData?.complaints?.complete
+                                    : text === "All Service" ? dashData?.complaints?.allComplaints
+                                      : ""}
                     </ListItemButton>
                   </ListItem>
                 ))}
               </List>
             </Collapse>
 
-            {value?.user?.role === "ADMIN" ||  value?.user?.role === "EMPLOYEE" ||  value?.user?.role === "BRAND"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND"
               ? <ListItem onClick={(event) => {
                 router.push(`/warrantyActivations`)
               }} disablePadding className={pathname.startsWith("/warrantyActivations") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
@@ -1020,10 +1020,10 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                 {value?.user?.role==="ADMIN"? <div className='font-bold text-xl'  >
+                  {value?.user?.role === "ADMIN" ? <div className='font-bold text-xl'  >
                     Dashboard
                   </div>
-                  :""}
+                    : ""}
                   {/* <div className='font-bold text-xl ms-8 flex items-center'  >
                     <Wallet fontSize='large' color='secondary' />
                     <div className='text-sm'>1000.0 INR</div>
@@ -1044,8 +1044,8 @@ function Sidenav(props) {
                     >
                       <NotificationsNone />
                       {unreadNoti?.length > 0 && (
-                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-[10px]">
-                          {unreadNoti?.length}
+                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-[8px]">
+                          {unreadNoti.length > 99 ? '+99' : unreadNoti.length}
                         </div>
                       )}
                     </div>

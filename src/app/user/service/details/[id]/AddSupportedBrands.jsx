@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { useForm, Controller } from 'react-hook-form';
 import http_request from '../../../../../../http-request';
+import { Toaster } from 'react-hot-toast';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
 const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData }) => {
     const { control, setValue, handleSubmit, watch, reset } = useForm({
@@ -61,6 +63,7 @@ const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData 
             
             const response = await http_request.patch(`/editService/${serviceCenterId}`, payload);
             RefreshData(response.data);
+              ToastMessage(response?.data)
         } catch (error) {
             setError("Error updating service center: " + error.message);
             console.error("Error updating service center:", error);
@@ -79,7 +82,8 @@ const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData 
     };
 
     return (
-        <div className="w-full md:w-[700px] p-6 bg-white rounded-lg shadow-md">
+        <div className="w-full   p-6 bg-white rounded-lg shadow-md">
+               <Toaster />
             <form onSubmit={handleSubmit(onSubmit)} className="w-full">
                 {/* Supported Brands */}
                 <div className="w-full mb-6">
@@ -133,7 +137,7 @@ const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData 
                 <div className="flex justify-center mt-6">
                     <button
                         type="submit"
-                        className={` px-6 py-3 ${loadingSubmit ? 'bg-gray-400' : 'bg-blue-600'} text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition`}
+                        className={` px-4 py-2 ${loadingSubmit ? 'bg-gray-400' : 'bg-blue-600'} text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition`}
                         disabled={loadingSubmit}
                     >
                         {loadingSubmit ? 'Updating...' : 'Update Brands'}

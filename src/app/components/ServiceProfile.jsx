@@ -4,6 +4,7 @@ import http_request from "../../../http-request"
 import { ReactLoader } from './common/Loading';
 import ServicePincodes from './ServicePincodes';
 import AddSupportedBrands from '../user/service/details/[id]/AddSupportedBrands';
+import AddCategory from '../user/service/details/[id]/AddCategory';
 
 const ServiceProfile = (props) => {
 
@@ -281,7 +282,7 @@ const ServiceProfile = (props) => {
           <div className='text-lg font-medium'>
             {
               userData?.serviceCategories?.map((item, i) =>
-                <div className="font-bold" key={i}>{i + 1}. {item?.label} ,  </div>
+                <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
           </div>
@@ -293,11 +294,18 @@ const ServiceProfile = (props) => {
               )
             }
           </div>
-
+          <div className='col-span-2'>
+          {props?.admin?.user?.role==="ADMIN"? <AddCategory serviceCenterId={userData?._id}existingCategories={userData?.serviceCategories} RefreshData={props?.RefreshData} />
+        
+        :""
+          }
+          </div>
+           <div className='col-span-2'>
          {props?.admin?.user?.role==="ADMIN"? <AddSupportedBrands serviceCenterId={userData?._id}existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
         
         :""
           }
+          </div>
         </div>
 
       }

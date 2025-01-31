@@ -234,6 +234,23 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-3 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PeopleAlt fontSize='large' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>Total Pending</div>
+                  <div className='text-3xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/complaint/close")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -284,6 +301,8 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             </div>
           </div>
         </div>
+       
+      
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
@@ -301,9 +320,8 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             </div>
           </div>
         </div>
-      
       </div>
-      <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Complaints</div>
+      <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
       <div className='grid grid-cols-4 gap-4'>
       <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >

@@ -16,6 +16,7 @@ import TechnicianList from '../user/technician/technicianList';
 import ServiceList from '../user/service/serviceList';
 import dynamic from 'next/dynamic';
 import DealerReport from './DealerReport';
+import BrandReport from './BrandReport';
 
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
@@ -221,6 +222,8 @@ const Report = () => {
     <Sidenav>
      {value?.user?.role==="DEALER" ? 
      <DealerReport  userData={value?.user}/>
+     :value?.user?.role==="BRAND" ? 
+     <BrandReport userData={value?.user}/>
      : <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
         <div className="mb-4 grid grid-cols-1 gap-2">

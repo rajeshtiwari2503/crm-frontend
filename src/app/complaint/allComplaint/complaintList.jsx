@@ -35,7 +35,7 @@ const ComplaintList = (props) => {
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
               : []
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors },getValues, reset, setValue } = useForm();
   const router = useRouter()
 
 
@@ -51,6 +51,7 @@ const ComplaintList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -192,24 +193,55 @@ const ComplaintList = (props) => {
     //   setValue("status", event.target.value)
     //   // console.log(event.target.value);
     // }
-
+   
     const selectedId = event.target.value;
+ 
+
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
+ 
 
-    setValue('status', "ASSIGN");
+    // setValue('status', "ASSIGN");
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
     setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
     setValue('assignServiceCenterTime', new Date());
 
   };
+
+  const asignCenter = async ( ) => {
+    try {
+      const data = getValues();
+    setLoading(true);
+      
+      const reqdata =   { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } 
+      // console.log(reqdata);
+
+      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+       
+      let { data: responseData } = response;
+     
+      setAssign(false)
+      setStatus(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+
+      console.log(err);
+    }
+  };
+
   const onSubmit = async (data) => {
     try {
+      setLoading(true);
+
+      
       const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
-      if (data.comments) {
+      if (data?.comments) {
         updateComment({ comments: data?.comments })
       }
       let { data: responseData } = response;
@@ -218,25 +250,33 @@ const ComplaintList = (props) => {
       setStatus(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      setLoading(false);
+
     } catch (err) {
+      setLoading(false);
+
       console.log(err);
     }
   };
   const partOrder = async (data) => {
     try {
+      setLoading(true);
+
       let response = await http_request.post(`/addOrder`, data);
       let { data: responseData } = response;
       setOrder(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
     } catch (err) {
+      setLoading(false);
+
       console.log(err);
     }
   };
   const updateComment = async (data) => {
     try {
-      // console.log(id);
-      // console.log(data);
+      setLoading(true);
+
       const sndStatus = data.comments
       const response = await http_request.patch(`/updateComplaintComments/${id}`, {
         sndStatus
@@ -245,7 +285,11 @@ const ComplaintList = (props) => {
       setUpdateCommm(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      setLoading(false);
+
     } catch (err) {
+      setLoading(false);
+
       console.log(err);
     }
   };
@@ -675,7 +719,7 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+            <button type="submit" disabled={loading} className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
           </form>
 
@@ -711,7 +755,7 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
+            <button type="submit"disabled={loading} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
 
           </form>
 
@@ -733,7 +777,7 @@ const ComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(asignCenter)}>
             <div className='w-[350px] mb-5'>
               <label id="service-center-label" className="block text-sm font-medium text-black ">
                 Assign  Service Center
@@ -754,9 +798,12 @@ const ComplaintList = (props) => {
               </select>
 
             </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+            
+            <button type="submit" disabled={loading} onClick={()=>asignCenter()} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"> Assign   Service Center</button>
+
+            {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
               Assign   Service Center
-            </Button>
+            </Button> */}
           </form>
         </DialogContent>
 
@@ -803,7 +850,7 @@ const ComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+              <button type="submit" disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
                 Submit
               </button>
             </div>

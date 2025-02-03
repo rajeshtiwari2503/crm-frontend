@@ -67,9 +67,29 @@ const InProgressComplaintList = (props) => {
       console.log(err);
     }
   }
+
+  const updateComment = async (data) => {
+    try {
+      // console.log(id);
+      // console.log(data);
+      const sndStatus = data?.comments
+      const response = await http_request.patch(`/updateComplaintComments/${id}`, {
+        sndStatus
+      });
+      let { data: responseData } = response;
+      // setUpdateCommm(false)
+      props?.RefreshData(responseData)
+      ToastMessage(responseData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const onSubmit = async (data) => {
     try {
       let response = await http_request.patch(`/editComplaint/${id}`, data);
+      if (data.comments) {
+        updateComment({ comments: data?.comments })
+      }
       let { data: responseData } = response;
       
       setStatus(false)
@@ -359,6 +379,14 @@ const InProgressComplaintList = (props) => {
                         </div>
                         </>
                         :""}
+                          {userData?.role === "ADMIN" ||  userData?.role === "EMPLOYEE" || userData?.role === "SERVICE"&&userData?.serviceCenterType==="Independent" || userData?.role === "TECHNICIAN" ?
+                        <div
+                          onClick={() => handleUpdateStatus(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                        >
+                          Update Status
+                        </div>
+                        :""}
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
@@ -405,7 +433,40 @@ const InProgressComplaintList = (props) => {
         </IconButton>
         <DialogContent>
            
-         <AddFeedback  complaints={id}  onClose={handleUpdateClose}/>
+         {/* <AddFeedback  complaints={id}  onClose={handleUpdateClose}/> */}
+         <form onSubmit={handleSubmit(onSubmit)}>
+          <div className='w-[350px] mb-5'>
+          <label className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            {...register('status')}
+            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          >
+            {/* <option value="NEW">New</option> */}
+            <option value="IN PROGRESS">In Progress</option>
+            <option value="PART PENDING">Awaiting Parts</option>
+            {/* <option value="ONHOLD">On Hold</option> */}
+            <option value="FINAL VERIFICATION">Completed</option>
+            <option value="CANCELED">Canceled</option>
+          </select>
+        </div>
+        <div className='mb-6'>
+              <label className="block text-gray-700">Comments/Notes</label>
+              <textarea
+                {...register('comments', {
+                  required: 'Comments are required',
+                  minLength: { value: 10, message: 'Comments must be at least 10 characters' },
+                  maxLength: { value: 500, message: 'Comments cannot exceed 500 characters' }
+                })}
+                className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              ></textarea>
+              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
+        <div>
+          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+            Submit
+          </button>
+        </div>
+          </form>
         </DialogContent>
 
       </Dialog>

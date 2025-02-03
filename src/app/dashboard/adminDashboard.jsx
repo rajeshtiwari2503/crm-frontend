@@ -324,7 +324,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
       <div className='grid grid-cols-4 gap-4'>
       <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/pending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push(`/complaint/pending/${"0-1"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>
@@ -341,7 +341,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/pending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push(`/complaint/pending/${"2-5"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>
@@ -358,7 +358,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/pending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push(`/complaint/pending/${"more-than-week"}`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>

@@ -28,7 +28,7 @@ const Assign = () => {
   }, [refresh])
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      let response = await http_request.get("/getComplaintsByAssign")
       let { data } = response;
 
       setComplaint(data)
@@ -62,8 +62,8 @@ const Assign = () => {
   const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id):technicians
 
 
-  const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
-  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
+  // const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
+  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
 
 

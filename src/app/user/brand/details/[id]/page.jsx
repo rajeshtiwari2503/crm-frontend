@@ -88,7 +88,7 @@ const BrandDetails = ({ params }) => {
                     </div>
                     <div>
                     <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
-                                BrandI Information
+                                Brand Information
                             </h2>
                     <BrandDashboard dashData={dashData} userData={value} />
                     </div>

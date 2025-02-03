@@ -24,7 +24,7 @@ const Cancel = () => {
 
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      let response = await http_request.get("/getComplaintsByCancel")
       let { data } = response;
 
       setComplaint(data)
@@ -33,8 +33,8 @@ const Cancel = () => {
       console.log(err);
     }
   }
-  const sortData = complaint?.filter((f1) => f1?.status ==="CANCELED")
-  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
+  // const sortData = complaint?.filter((f1) => f1?.status ==="CANCELED")
+  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
 
 

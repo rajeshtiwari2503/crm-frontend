@@ -38,7 +38,7 @@ const Pending = () => {
   }
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      let response = await http_request.get("/getComplaintsByPending")
       let { data } = response;
 
       setComplaint(data)
@@ -47,8 +47,8 @@ const Pending = () => {
       console.log(err);
     }
   }
-  const sortData = complaint?.filter((f1) => f1?.status ==="PENDING")
-  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
+  // const sortData = complaint?.filter((f1) => f1?.status ==="PENDING")
+  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id)
                 :technicians 

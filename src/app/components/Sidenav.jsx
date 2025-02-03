@@ -344,15 +344,33 @@ function Sidenav(props) {
             <Divider />
 
             {value?.user?.role === "EMPLOYEE" ? ""
-              : <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
-                    <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
-                  </ListItemIcon  >
-                  <ListItemText primary={"Dashboard"} />
+              :
+              // <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              //   <ListItemButton>
+              //     <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
+              //       <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
+              //     </ListItemIcon  >
+              //     <ListItemText primary={"Dashboard"} />
 
+              //   </ListItemButton>
+              // </ListItem>
+              <ListItem
+                disablePadding
+                onClick={() => { router.push("/dashboard") }}
+                className={pathname === "/" || pathname.startsWith("/dashboard") ?
+                  "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" :
+                  "text-slate-700 pl-2"}
+              >
+                <ListItemButton>
+                  <ListItemIcon className={pathname === "/" || pathname.startsWith("/dashboard") ?
+                    "bg-[#f1f5f9] text-[#007BFF]" :
+                    "text-slate-700"}>
+                    <Dashboard style={{ color: pathname === "/" || pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Dashboard"} />
                 </ListItemButton>
               </ListItem>
+
             }
             {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton>

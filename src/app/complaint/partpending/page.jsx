@@ -25,7 +25,7 @@ const PartPending = () => {
 
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      let response = await http_request.get("/getComplaintsByPartPending")
       let { data } = response;
 
       setComplaint(data)
@@ -34,8 +34,8 @@ const PartPending = () => {
       console.log(err);
     }
   }
-  const sortData = complaint?.filter((f1) => f1?.status ==="PART PENDING")
-  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
+  // const sortData = complaint?.filter((f1) => f1?.status ==="PART PENDING")
+  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
 
 
 

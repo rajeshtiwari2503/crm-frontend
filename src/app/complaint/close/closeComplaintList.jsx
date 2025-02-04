@@ -12,7 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
- import logo from "../../../../public/Logo.png"
+import logo from "../../../../public/Logo.png"
 import axios from 'axios';
 
 
@@ -24,13 +24,13 @@ const CloseComplaintList = (props) => {
   const complaint = props?.data;
   const userData = props?.userData;
 
-  const data = userData.role === "ADMIN" ||userData?.role === "EMPLOYEE"? complaint
-  : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+  const data = userData.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+    : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+        : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+            : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+              : []
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -74,7 +74,7 @@ const CloseComplaintList = (props) => {
     try {
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
-      
+
       setStatus(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
@@ -106,14 +106,14 @@ const CloseComplaintList = (props) => {
 
     setStatus(false)
   }
-const amount=1;
+  const amount = 1;
 
   const userPayment = async (row) => {
     try {
       const userInfo = localStorage.getItem("user");
-     const userData=JSON.parse(userInfo)
-     
-      let response = await http_request.post("/payment", { amount: +amount   });
+      const userData = JSON.parse(userInfo)
+
+      let response = await http_request.post("/payment", { amount: +amount });
       let { data } = response;
       const options = {
         key: "rzp_live_4uXy7FSuag8Sap", // Enter the Key ID generated from the Dashboard
@@ -125,14 +125,14 @@ const amount=1;
         order_id: data.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
         handler: async function (orderDetails) {
           try {
-           
-            let response = await axios.post("https://lybleycrmserver-production.up.railway.app/paymentVerificationForUser", { response:orderDetails ,row,amount  });
+
+            let response = await axios.post("https://lybleycrmserver-production.up.railway.app/paymentVerificationForUser", { response: orderDetails, row, amount });
             let { data } = response;
-            if(data?.status===true){
+            if (data?.status === true) {
               ToastMessage(data)
               props?.RefreshData(data)
             }
-           
+
           } catch (err) {
             console.log(err);
           }
@@ -158,7 +158,7 @@ const amount=1;
 
   return (
     <div>
-      
+
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Close Service Information</div>
@@ -173,9 +173,9 @@ const amount=1;
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-             <TableContainer component={Paper}>
+          <TableContainer component={Paper}>
             <Table>
-            <TableHead>
+              <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
@@ -192,7 +192,7 @@ const amount=1;
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                     Complaint Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -204,42 +204,51 @@ const amount=1;
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'emailAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('emailAddress')}
+                                   >
+                                     Customer Email
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'emailAddress'}
+                      active={sortBy === 'district'}
                       direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
+                      onClick={() => handleSort('district')}
                     >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                      Service_Address
+                      City
                     </TableSortLabel>
                   </TableCell>
                   {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
+                                   <TableSortLabel
+                                     active={sortBy === 'serviceAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serviceAddress')}
+                                   >
+                                     Service_Address
+                                   </TableSortLabel>
+                                 </TableCell> */}
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'city'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('city')}
+                                   >
+                                    City
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'state'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('state')}
+                                   >
+                                    State
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'customerMobile'}
@@ -249,15 +258,15 @@ const amount=1;
                       Contact No.
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'categoryName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('categoryName')}
+                                   >
+                                     Category Name
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
@@ -267,97 +276,88 @@ const amount=1;
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'issueType'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('issueType')}
-                    >
-                      Issue Type
-                    </TableSortLabel>
-                  </TableCell>
-
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'detailedDescription'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('detailedDescription')}
-                    >
-                      Detailed Description
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'errorMessages'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('errorMessages')}
-                    >
-                      Error Messages
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Assign Service Center
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Payment
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'modelNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('modelNo')}
+                                   >
+                                     Model No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'serialNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serialNo')}
+                                   >
+                                     Serial No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'issueType'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('issueType')}
+                                   >
+                                     Issue Type
+                                   </TableSortLabel>
+                                 </TableCell>
+               
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'detailedDescription'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('detailedDescription')}
+                                   >
+                                     Detailed Description
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'errorMessages'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('errorMessages')}
+                                   >
+                                     Error Messages
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Assign Service Center
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Technician Name
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianContact'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianContact')}
+                                   >
+                                     Technician Contact
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianComments'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianComments')}
+                                   >
+                                     Technician Comments
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -386,46 +386,51 @@ const amount=1;
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
+                    <TableCell>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
+                    </TableCell>
 
-                    <TableCell>{row?.issueType}</TableCell>
-                    <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell>
-                    <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.assignTechnician}</TableCell>
-                    <TableCell>{row?.technicianContact}</TableCell>
-                    <TableCell>{row?.comments}</TableCell>
-                    <TableCell>{row?.payment}</TableCell>
+                    {/* <TableCell>{row?.modelNo}</TableCell>
+                                   <TableCell>{row?.serialNo}</TableCell>
+               
+                                   <TableCell>{row?.issueType}</TableCell>
+                                   <TableCell>{row?.detailedDescription}</TableCell>
+                                   <TableCell>{row?.errorMessages}</TableCell>
+                                   <TableCell>{row?.assignServiceCenter}</TableCell>
+                                   <TableCell>{row?.assignTechnician}</TableCell>
+                                   <TableCell>{row?.technicianContact}</TableCell>
+                                   <TableCell>{row?.comments}</TableCell> */}
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {userData?.role==="USER"?
-                        <>
-                        <div
-                          onClick={() => handleUpdateStatus(row)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Give Feedback
-                        </div>
-                       {row?.payment===0 ?
-                       <div
-                          onClick={() => userPayment(row)}
-                          className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
-                        >
-                          Pay
-                        </div>
-                        :""
-                        }
-                        </>
-                        :""}
+                        {userData?.role === "USER" ?
+                          <>
+                            <div
+                              onClick={() => handleUpdateStatus(row)}
+                              className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            >
+                              Give Feedback
+                            </div>
+                            {row?.payment === 0 ?
+                              <div
+                                onClick={() => userPayment(row)}
+                                className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
+                              >
+                                Pay
+                              </div>
+                              : ""
+                            }
+                          </>
+                          : ""}
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
@@ -456,7 +461,7 @@ const amount=1;
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
+      <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  ADD Feedback</DialogTitle>
         <IconButton
           aria-label="close"
@@ -471,8 +476,8 @@ const amount=1;
           <Close />
         </IconButton>
         <DialogContent>
-           
-         <AddFeedback  complaints={id}  onClose={handleUpdateClose}/>
+
+          <AddFeedback complaints={id} onClose={handleUpdateClose} />
         </DialogContent>
 
       </Dialog>

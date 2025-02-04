@@ -35,7 +35,7 @@ const ComplaintList = (props) => {
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
               : []
 
-  const { register, handleSubmit, formState: { errors },getValues, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm();
   const router = useRouter()
 
 
@@ -193,13 +193,13 @@ const ComplaintList = (props) => {
     //   setValue("status", event.target.value)
     //   // console.log(event.target.value);
     // }
-   
+
     const selectedId = event.target.value;
- 
+
 
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
- 
+
 
     // setValue('status', "ASSIGN");
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
@@ -208,18 +208,18 @@ const ComplaintList = (props) => {
 
   };
 
-  const asignCenter = async ( ) => {
+  const asignCenter = async () => {
     try {
       const data = getValues();
-    setLoading(true);
-      
-      const reqdata =   { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } 
+      setLoading(true);
+
+      const reqdata = { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
-       
+
       let { data: responseData } = response;
-     
+
       setAssign(false)
       setStatus(false)
       props?.RefreshData(responseData)
@@ -236,7 +236,7 @@ const ComplaintList = (props) => {
     try {
       setLoading(true);
 
-      
+
       const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
       // console.log(reqdata);
 
@@ -245,7 +245,7 @@ const ComplaintList = (props) => {
         updateComment({ comments: data?.comments })
       }
       let { data: responseData } = response;
-     
+
       setAssign(false)
       setStatus(false)
       props?.RefreshData(responseData)
@@ -353,42 +353,51 @@ const ComplaintList = (props) => {
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'emailAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('emailAddress')}
+                                   >
+                                     Customer Email
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'emailAddress'}
+                      active={sortBy === 'district'}
                       direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
+                      onClick={() => handleSort('district')}
                     >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                      Service_Address
+                      City
                     </TableSortLabel>
                   </TableCell>
                   {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
+                                   <TableSortLabel
+                                     active={sortBy === 'serviceAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serviceAddress')}
+                                   >
+                                     Service_Address
+                                   </TableSortLabel>
+                                 </TableCell> */}
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'city'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('city')}
+                                   >
+                                    City
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'state'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('state')}
+                                   >
+                                    State
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'customerMobile'}
@@ -398,15 +407,15 @@ const ComplaintList = (props) => {
                       Contact No.
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'categoryName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('categoryName')}
+                                   >
+                                     Category Name
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
@@ -416,88 +425,88 @@ const ComplaintList = (props) => {
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'issueType'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('issueType')}
-                    >
-                      Issue Type
-                    </TableSortLabel>
-                  </TableCell>
-
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'detailedDescription'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('detailedDescription')}
-                    >
-                      Detailed Description
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'errorMessages'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('errorMessages')}
-                    >
-                      Error Messages
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Assign Service Center
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'modelNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('modelNo')}
+                                   >
+                                     Model No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'serialNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serialNo')}
+                                   >
+                                     Serial No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'issueType'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('issueType')}
+                                   >
+                                     Issue Type
+                                   </TableSortLabel>
+                                 </TableCell>
+               
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'detailedDescription'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('detailedDescription')}
+                                   >
+                                     Detailed Description
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'errorMessages'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('errorMessages')}
+                                   >
+                                     Error Messages
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Assign Service Center
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Technician Name
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianContact'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianContact')}
+                                   >
+                                     Technician Contact
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianComments'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianComments')}
+                                   >
+                                     Technician Comments
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -526,25 +535,28 @@ const ComplaintList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
-
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
                     <TableCell>
-                      <div> {row?.issueType?.map((item, i) => <div key={i}>  {item} ,  </div>)}
-                      </div>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
                     </TableCell>
-                    <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell>
-                    <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.assignTechnician}</TableCell>
-                    <TableCell>{row?.technicianContact}</TableCell>
-                    <TableCell>{row?.comments}</TableCell>
+
+                    {/* <TableCell>{row?.modelNo}</TableCell>
+                                   <TableCell>{row?.serialNo}</TableCell>
+               
+                                   <TableCell>{row?.issueType}</TableCell>
+                                   <TableCell>{row?.detailedDescription}</TableCell>
+                                   <TableCell>{row?.errorMessages}</TableCell>
+                                   <TableCell>{row?.assignServiceCenter}</TableCell>
+                                   <TableCell>{row?.assignTechnician}</TableCell>
+                                   <TableCell>{row?.technicianContact}</TableCell>
+                                   <TableCell>{row?.comments}</TableCell> */}
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -755,7 +767,7 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit"disabled={loading} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
+            <button type="submit" disabled={loading} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
 
           </form>
 
@@ -798,8 +810,8 @@ const ComplaintList = (props) => {
               </select>
 
             </div>
-            
-            <button type="submit" disabled={loading} onClick={()=>asignCenter()} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"> Assign   Service Center</button>
+
+            <button type="submit" disabled={loading} onClick={() => asignCenter()} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"> Assign   Service Center</button>
 
             {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
               Assign   Service Center

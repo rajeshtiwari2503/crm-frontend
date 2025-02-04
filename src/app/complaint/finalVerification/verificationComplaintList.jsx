@@ -15,7 +15,7 @@ import axios from 'axios';
 
 const VerificationComplaintList = (props) => {
 
- 
+
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
@@ -81,10 +81,10 @@ const VerificationComplaintList = (props) => {
   const onSubmit = async (data) => {
 
     try {
-setLoading(true)
+      setLoading(true)
       let response = await http_request.patch(`/editComplaint/${id}`, data);
       let { data: responseData } = response;
-      
+
 
       setStatus(false)
       setAssignTech(false)
@@ -167,7 +167,7 @@ setLoading(true)
     return earthRadiusKm * c; // Distance in kilometers
   };
   const handleCalculate = async (pincode1, pincode2) => {
-    
+
 
     setError("");
     setDistance(null);
@@ -249,7 +249,7 @@ setLoading(true)
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'emailAddress'}
                       direction={sortDirection}
@@ -257,8 +257,17 @@ setLoading(true)
                     >
                       Customer Email
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'district'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('district')}
+                    >
+                      City
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'serviceAddress'}
                       direction={sortDirection}
@@ -266,7 +275,7 @@ setLoading(true)
                     >
                       Service_Address
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'city'}
@@ -294,7 +303,7 @@ setLoading(true)
                       Contact No.
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'categoryName'}
                       direction={sortDirection}
@@ -302,7 +311,7 @@ setLoading(true)
                     >
                       Category Name
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
@@ -312,7 +321,7 @@ setLoading(true)
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'modelNo'}
                       direction={sortDirection}
@@ -393,7 +402,7 @@ setLoading(true)
                     >
                       Technician Comments
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -422,13 +431,19 @@ setLoading(true)
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
+                    <TableCell>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
+                    </TableCell>
+
+                    {/* <TableCell>{row?.modelNo}</TableCell>
                     <TableCell>{row?.serialNo}</TableCell>
 
                     <TableCell>{row?.issueType}</TableCell>
@@ -437,7 +452,7 @@ setLoading(true)
                     <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.assignTechnician}</TableCell>
                     <TableCell>{row?.technicianContact}</TableCell>
-                    <TableCell>{row?.comments}</TableCell>
+                    <TableCell>{row?.comments}</TableCell> */}
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -592,14 +607,14 @@ setLoading(true)
                 )}
               </div>
               <div>
-                {loading===true? 
-                <div className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-                  Submiting........
-                </div>
-                :<button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-                  Submit
-                </button>
-}
+                {loading === true ?
+                  <div className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                    Submiting........
+                  </div>
+                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                    Submit
+                  </button>
+                }
               </div>
             </form>
           }

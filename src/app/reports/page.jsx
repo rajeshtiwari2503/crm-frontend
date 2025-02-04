@@ -271,7 +271,8 @@ const Report = () => {
                   "pincode",
                   "serialNo",
                   "purchaseDate",
-                  "assignServiceCenter",  
+                  "assignServiceCenter", 
+                  "paymentBrand", 
                   "updatedAt",
                   "createdAt",
                   ]}

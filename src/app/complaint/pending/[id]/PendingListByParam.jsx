@@ -24,20 +24,20 @@ const PendingParamComplaintList = (props) => {
 
   const userData = props?.userData
 
-  const data = userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE"? complaint
-  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+              : []
 
 
   const technician = props?.technicians
   const [status, setStatus] = useState(false);
   const [order, setOrder] = useState(false);
   const [assignTech, setAssignTech] = useState(false);
-  const [techData, setAssignData] = useState( []);
+  const [techData, setAssignData] = useState([]);
   const [selectedTechnician, setSelectedTechnician] = useState('');
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [id, setId] = useState("");
@@ -67,7 +67,7 @@ const PendingParamComplaintList = (props) => {
 
 
   //jdhjhjhhjdhj
-  
+
   const deleteData = async () => {
     try {
       let response = await http_request.deleteData(`/deleteComplaint/${id}`);
@@ -82,7 +82,7 @@ const PendingParamComplaintList = (props) => {
   const handleTechnicianChange = (event) => {
 
     const selectedId = event.target.value;
-    
+
     const selectedTechnician = technician.find(center => center._id === selectedId);
     setSelectedTechnician(selectedTechnician);
     setValue('status', "ASSIGN");
@@ -112,14 +112,16 @@ const PendingParamComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata=assignTech===true?{status:data?.status,technicianId:data?.technicianId,assignTechnician:data?.assignTechnician,
-       assignTechnicianTime:data?.assignTechnicianTime,srerviceCenterResponseTime:data?.srerviceCenterResponseTime, technicianContact:data?.technicianContact}:{status:data?.status}
+      const reqdata = assignTech === true ? {
+        status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
+        assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
+      } : { status: data?.status }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       if (data.comments) {
         updateComment({ comments: data?.comments })
       }
       let { data: responseData } = response;
-      
+
       setStatus(false)
       setAssignTech(false)
       props?.RefreshData(responseData)
@@ -148,11 +150,11 @@ const PendingParamComplaintList = (props) => {
   }
 
   const handleAssignTechnician = async (id) => {
-    const comp=data?.find((f)=>f?._id===id)
-    const technician=props?.technicians?.filter((f)=>f?.serviceCenterId===comp?.assignServiceCenterId)
+    const comp = data?.find((f) => f?._id === id)
+    const technician = props?.technicians?.filter((f) => f?.serviceCenterId === comp?.assignServiceCenterId)
     // console.log(technician);
     setId(id)
-setAssignData(technician)
+    setAssignData(technician)
     setAssignTech(true)
   }
   const handleTechnicianClose = () => {
@@ -196,7 +198,7 @@ setAssignData(technician)
       setSelectedSparepart(selectedId);
       setValue('sparepartId', selectedpart?._id);
       setValue('partName', selectedpart?.partName);
-     
+
     }
   };
   return (
@@ -215,9 +217,9 @@ setAssignData(technician)
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-             <TableContainer component={Paper}>
+          <TableContainer component={Paper}>
             <Table>
-            <TableHead>
+              <TableHead>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel
@@ -246,42 +248,51 @@ setAssignData(technician)
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'emailAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('emailAddress')}
+                                   >
+                                     Customer Email
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'emailAddress'}
+                      active={sortBy === 'district'}
                       direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
+                      onClick={() => handleSort('district')}
                     >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                      Service_Address
+                      City
                     </TableSortLabel>
                   </TableCell>
                   {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
+                                   <TableSortLabel
+                                     active={sortBy === 'serviceAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serviceAddress')}
+                                   >
+                                     Service_Address
+                                   </TableSortLabel>
+                                 </TableCell> */}
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'city'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('city')}
+                                   >
+                                    City
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'state'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('state')}
+                                   >
+                                    State
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'customerMobile'}
@@ -291,15 +302,15 @@ setAssignData(technician)
                       Contact No.
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'categoryName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('categoryName')}
+                                   >
+                                     Category Name
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
@@ -309,88 +320,88 @@ setAssignData(technician)
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'issueType'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('issueType')}
-                    >
-                      Issue Type
-                    </TableSortLabel>
-                  </TableCell>
-
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'detailedDescription'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('detailedDescription')}
-                    >
-                      Detailed Description
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'errorMessages'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('errorMessages')}
-                    >
-                      Error Messages
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Assign Service Center
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'modelNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('modelNo')}
+                                   >
+                                     Model No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'serialNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serialNo')}
+                                   >
+                                     Serial No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'issueType'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('issueType')}
+                                   >
+                                     Issue Type
+                                   </TableSortLabel>
+                                 </TableCell>
+               
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'detailedDescription'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('detailedDescription')}
+                                   >
+                                     Detailed Description
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'errorMessages'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('errorMessages')}
+                                   >
+                                     Error Messages
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Assign Service Center
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Technician Name
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianContact'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianContact')}
+                                   >
+                                     Technician Contact
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianComments'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianComments')}
+                                   >
+                                     Technician Comments
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -419,22 +430,28 @@ setAssignData(technician)
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
+                    <TableCell>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
+                    </TableCell>
 
-                    <TableCell>{row?.issueType}</TableCell>
-                    <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell>
-                    <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.assignTechnician}</TableCell>
-                    <TableCell>{row?.technicianContact}</TableCell>
-                    <TableCell>{row?.comments}</TableCell>
+                    {/* <TableCell>{row?.modelNo}</TableCell>
+                                   <TableCell>{row?.serialNo}</TableCell>
+               
+                                   <TableCell>{row?.issueType}</TableCell>
+                                   <TableCell>{row?.detailedDescription}</TableCell>
+                                   <TableCell>{row?.errorMessages}</TableCell>
+                                   <TableCell>{row?.assignServiceCenter}</TableCell>
+                                   <TableCell>{row?.assignTechnician}</TableCell>
+                                   <TableCell>{row?.technicianContact}</TableCell>
+                                   <TableCell>{row?.comments}</TableCell> */}
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -445,16 +462,16 @@ setAssignData(technician)
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" ||  userData?.role === "EMPLOYEE" || userData?.role === "SERVICE"&&userData?.serviceCenterType==="Independent" || userData?.role === "TECHNICIAN" ?
-                        <div
-                          onClick={() => handleUpdateStatus(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Update Status
-                        </div>
-                        :""}
-                       
-                        {userData?.role === "SERVICE"  ?
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleUpdateStatus(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                          >
+                            Update Status
+                          </div>
+                          : ""}
+
+                        {userData?.role === "SERVICE" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -462,7 +479,7 @@ setAssignData(technician)
                             Order Part
                           </div>
                           : ""}
-                        {userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE"||userData?.role === "SERVICE"  || userData?.role === "BRAND" &&userData?.brandSaas==="YES" ?
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -473,7 +490,7 @@ setAssignData(technician)
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        
+
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -498,7 +515,7 @@ setAssignData(technician)
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
+      <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton
           aria-label="close"
@@ -514,21 +531,21 @@ setAssignData(technician)
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='w-[350px] mb-5'>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            {/* <option value="NEW">New</option> */}
-            <option value="IN PROGRESS">In Progress</option>
-            <option value="PART PENDING">Awaiting Parts</option>
-            {/* <option value="ONHOLD">On Hold</option> */}
-            <option value="FINAL VERIFICATION">Completed</option>
-            <option value="CANCELED">Canceled</option>
-          </select>
-        </div>
-        <div className='mb-6'>
+            <div className='w-[350px] mb-5'>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <select
+                {...register('status')}
+                className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                {/* <option value="NEW">New</option> */}
+                <option value="IN PROGRESS">In Progress</option>
+                <option value="PART PENDING">Awaiting Parts</option>
+                {/* <option value="ONHOLD">On Hold</option> */}
+                <option value="FINAL VERIFICATION">Completed</option>
+                <option value="CANCELED">Canceled</option>
+              </select>
+            </div>
+            <div className='mb-6'>
               <label className="block text-gray-700">Comments/Notes</label>
               <textarea
                 {...register('comments', {
@@ -540,11 +557,11 @@ setAssignData(technician)
               ></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
-        <div>
-          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-            Submit
-          </button>
-        </div>
+            <div>
+              <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                Submit
+              </button>
+            </div>
           </form>
         </DialogContent>
 
@@ -567,36 +584,36 @@ setAssignData(technician)
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[350px] mb-5'>
               <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign Technician 
+                Assign Technician
               </label>
-            
-                <select
-                  id="service-center-label"
-                  value={selectedTechnician}
-                  onChange={handleTechnicianChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Technician</option>
-                  {techData?.map((tech) => (
-                    <option key={tech._id} value={tech._id}>
-                      {tech.name}
-                    </option>
-                  ))}
-                </select>
+
+              <select
+                id="service-center-label"
+                value={selectedTechnician}
+                onChange={handleTechnicianChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Technician</option>
+                {techData?.map((tech) => (
+                  <option key={tech._id} value={tech._id}>
+                    {tech.name}
+                  </option>
+                ))}
+              </select>
+              <div>
                 <div>
-                <div>
-              <label className="block text-gray-700 ">Contact</label>
-              <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
-            </div>
-              <label className="block text-gray-700 mt-3">Comments/Notes</label>
-              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-            </div>
-                
+                  <label className="block text-gray-700 ">Contact</label>
+                  <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                  {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
+                </div>
+                <label className="block text-gray-700 mt-3">Comments/Notes</label>
+                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+              </div>
+
             </div>
             <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign  Technician 
+              Assign  Technician
             </Button>
           </form>
         </DialogContent>
@@ -626,24 +643,24 @@ setAssignData(technician)
             </div>
 
             <div>
-            <label id="service-center-label" className="block text-sm font-medium text-black ">
-               Sparepart Name
+              <label id="service-center-label" className="block text-sm font-medium text-black ">
+                Sparepart Name
               </label>
-              
+
               <select
-                  id="service-center-label"
-                  value={selectedSparepart}
-                  onChange={handleServiceChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Sparepart</option>
-                  {props?.sparepart?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.partName}
-                    </option>
-                  ))}
-                </select>
-            
+                id="service-center-label"
+                value={selectedSparepart}
+                onChange={handleServiceChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Sparepart</option>
+                {props?.sparepart?.map((center) => (
+                  <option key={center.id} value={center._id}>
+                    {center.partName}
+                  </option>
+                ))}
+              </select>
+
             </div>
 
             <div>

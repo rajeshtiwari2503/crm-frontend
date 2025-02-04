@@ -170,42 +170,51 @@ const CancelComplaintList = (props) => {
                       Customer Name
                     </TableSortLabel>
                   </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'emailAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('emailAddress')}
+                                   >
+                                     Customer Email
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
-                      active={sortBy === 'emailAddress'}
+                      active={sortBy === 'district'}
                       direction={sortDirection}
-                      onClick={() => handleSort('emailAddress')}
+                      onClick={() => handleSort('district')}
                     >
-                      Customer Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceAddress'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceAddress')}
-                    >
-                      Service_Address
+                      City
                     </TableSortLabel>
                   </TableCell>
                   {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                     City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'state'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('state')}
-                    >
-                     State
-                    </TableSortLabel>
-                  </TableCell> */}
+                                   <TableSortLabel
+                                     active={sortBy === 'serviceAddress'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serviceAddress')}
+                                   >
+                                     Service_Address
+                                   </TableSortLabel>
+                                 </TableCell> */}
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'city'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('city')}
+                                   >
+                                    City
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'state'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('state')}
+                                   >
+                                    State
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'customerMobile'}
@@ -215,15 +224,15 @@ const CancelComplaintList = (props) => {
                       Contact No.
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'categoryName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('categoryName')}
+                                   >
+                                     Category Name
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productBrand'}
@@ -233,88 +242,88 @@ const CancelComplaintList = (props) => {
                       Product Brand
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'issueType'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('issueType')}
-                    >
-                      Issue Type
-                    </TableSortLabel>
-                  </TableCell>
-
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'detailedDescription'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('detailedDescription')}
-                    >
-                      Detailed Description
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'errorMessages'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('errorMessages')}
-                    >
-                      Error Messages
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Assign Service Center
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  {/* <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'modelNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('modelNo')}
+                                   >
+                                     Model No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'serialNo'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('serialNo')}
+                                   >
+                                     Serial No.
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'issueType'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('issueType')}
+                                   >
+                                     Issue Type
+                                   </TableSortLabel>
+                                 </TableCell>
+               
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'detailedDescription'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('detailedDescription')}
+                                   >
+                                     Detailed Description
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'errorMessages'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('errorMessages')}
+                                   >
+                                     Error Messages
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Assign Service Center
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianName'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianName')}
+                                   >
+                                     Technician Name
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianContact'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianContact')}
+                                   >
+                                     Technician Contact
+                                   </TableSortLabel>
+                                 </TableCell>
+                                 <TableCell>
+                                   <TableSortLabel
+                                     active={sortBy === 'technicianComments'}
+                                     direction={sortDirection}
+                                     onClick={() => handleSort('technicianComments')}
+                                   >
+                                     Technician Comments
+                                   </TableSortLabel>
+                                 </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -343,22 +352,28 @@ const CancelComplaintList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
-                    <TableCell>{row?.emailAddress}</TableCell>
-                    <TableCell>{row?.serviceAddress}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
                     {/* <TableCell>{row?.state}</TableCell> */}
                     <TableCell>{row?.phoneNumber}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.productBrand}</TableCell>
-                    <TableCell>{row?.modelNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
+                    <TableCell>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
+                    </TableCell>
 
-                    <TableCell>{row?.issueType}</TableCell>
-                    <TableCell>{row?.detailedDescription}</TableCell>
-                    <TableCell>{row?.errorMessages}</TableCell>
-                    <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.assignTechnician}</TableCell>
-                    <TableCell>{row?.technicianContact}</TableCell>
-                    <TableCell>{row?.comments}</TableCell>
+                    {/* <TableCell>{row?.modelNo}</TableCell>
+                                   <TableCell>{row?.serialNo}</TableCell>
+               
+                                   <TableCell>{row?.issueType}</TableCell>
+                                   <TableCell>{row?.detailedDescription}</TableCell>
+                                   <TableCell>{row?.errorMessages}</TableCell>
+                                   <TableCell>{row?.assignServiceCenter}</TableCell>
+                                   <TableCell>{row?.assignTechnician}</TableCell>
+                                   <TableCell>{row?.technicianContact}</TableCell>
+                                   <TableCell>{row?.comments}</TableCell> */}
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -373,9 +388,9 @@ const CancelComplaintList = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>

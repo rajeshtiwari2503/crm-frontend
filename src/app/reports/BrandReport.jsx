@@ -161,7 +161,8 @@ const BrandReport = (props) => {
                   "pincode",
                   "serialNo",
                   "purchaseDate",
-                  "assignServiceCenter",  
+                  "assignServiceCenter", 
+                  "paymentBrand",  
                   "updatedAt",
                   "createdAt",
                   ]}

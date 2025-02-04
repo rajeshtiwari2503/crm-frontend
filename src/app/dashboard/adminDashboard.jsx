@@ -9,6 +9,7 @@ import Chart from 'react-google-charts';
 import http_request from "../../../http-request"
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
+import UploadApk from '../components/AppAPK';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -488,6 +489,9 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
       </div>
       <div>
       <RecentServicesList data={complaints}   />
+      <div>
+        {/* <UploadApk /> */}
+      </div>
       </div>
     </>
 

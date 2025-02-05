@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ToastMessage } from './common/Toastify';
 import http_request from "../../../http-request"
 import { Toaster } from 'react-hot-toast';
@@ -8,171 +8,187 @@ import { useForm } from 'react-hook-form';
 
 
 const ServicePincodes = ({ userId, RefreshData, pincode }) => {
-    const [city, setCity] = useState('');
-    const [pincodes, setPincodes] = useState([]);
+   
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    const [jsonData, setJsonData] = useState([]);
+    const [selectedState, setSelectedState] = useState("");
+    const [selectedDistrict, setSelectedDistrict] = useState("");
+    const [selectedArea, setSelectedArea] = useState("");
+    const [pincodee, setPincode] = useState("");
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    const fetchPincodes = async (city) => {
-        try {
-            setLoading(true);
 
-            // Fetch pincodes from the Postal Pincode API
-            const response = await fetch(`https://api.postalpincode.in/postoffice/${city}`);
-            const data = await response.json();
 
-            if (data[0].Status === "Success") {
-                const districtData = data[0].PostOffice.map((office) => ({
-                    name: office.Name,
-                    district: office.District,
-                    pincode: office.Pincode,
-                }));
 
-                // Filter by exact city name or district
-                const filterData = districtData?.filter(
-                    (f) =>
-                        f?.district.toLowerCase() === city.toLowerCase() 
-                );
+   const onSubmit = async () => {
+    if (!selectedState || !selectedDistrict) {
+        console.error("Please select a state and district.");
+        return;
+    }
 
-                if (filterData.length > 0) {
-                    // Map the filtered data to get the list of pincodes
-                    const pincodeString = filterData.map((entry) => entry.pincode);
+    let pincodes1 = [];
 
-                    // Join the pincodes into a comma-separated string
-                    const pincodes = pincodeString.join(',');
-                    console.log(pincodes);
-                    
-                    // Sending pincodes to the backend
-                    // try {
-                    //     const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
-                    //         pincodes,  
-                    //     });
-                       
-                    //     const { data } = responsePin
-                    //     if ( data?.status === true) {  
-                    //         ToastMessage(data);
-                    //         RefreshData(responsePin);  
-                    //         setLoading(false);
-                    //     } else {
-                    //         setLoading(false);
-                    //         RefreshData(responsePin);
-                    //         console.error('Failed to update pincodes');
-                    //     }
-                    //     RefreshData(responsePin);
-                    // } catch (error) {
-                    //     setLoading(false);
-                    //     console.error('Error updating pincodes:', error);
-                    // }
-                    setLoading(false);
-                    setError(null);
-                } else {
-                    setError(`No data found for the provided city "${city}".`);
-                    setPincodes([]);
-                    setLoading(false);
-                }
-            } else {
-                setError("No data found for the provided city.");
-                setPincodes([]);
-                setLoading(false);
+    if (selectedArea === "All") {
+        // Include all pincodes in the district and remove duplicates
+        pincodes1 = [...new Set(jsonData[selectedState][selectedDistrict]?.map(area => area.pincode) || [])];
+    } else {
+        // Otherwise, send the selected pincode, ensuring uniqueness
+        pincodes1 = [...new Set([selectedArea])];
+    }
+  const pincodes = pincodes1.join(',');
+    try {
+        setLoading(true);
+
+        // API request to update pincodes
+        const response = await http_request.patch(`/updateServiceCenterpincode/${userId}`, { pincodes });
+
+        const { data } = response;
+        ToastMessage(data);
+        RefreshData(pincodes+data); // Refresh data after successful update
+
+        setLoading(false);
+         
+    } catch (error) {
+        setLoading(false);
+        console.error("Error updating pincodes:", error);
+    }
+};
+
+
+  
+
+    // Handle file upload
+
+
+
+    useEffect(() => {
+        // Fetch the file from the public folder
+        const loadFileFromPublic = async () => {
+            try {
+                const response = await fetch("/INpostalCode.txt");
+                // console.log("response",response);
+                // Adjust filename if needed
+                const text = await response.text();  // Read file content as text
+
+                const lines = text.trim().split("\n");
+                const stateData = {};
+
+                lines.forEach((line) => {
+                    const parts = line.split("\t").map((s) => s.trim());
+
+                    if (parts.length >= 5) {
+                        const pincode = parts[1]; // Pincode
+                        const areaName = parts[2]; // Area
+                        const state = parts[3]; // State
+                        const district = parts[5]; // District
+
+                        if (!stateData[state]) {
+                            stateData[state] = {};
+                        }
+                        if (!stateData[state][district]) {
+                            stateData[state][district] = [];
+                        }
+
+                        stateData[state][district].push({ areaName, pincode });
+                    }
+                });
+                // console.log("stateData",stateData);
+
+                setJsonData(stateData);
+            } catch (error) {
+                console.error("Error loading file:", error);
             }
+        };
 
-            setLoading(false);  // Stop loading after the process completes
-        } catch (err) {
-            setLoading(false);
-            setError("Error fetching data.");
-            setPincodes([]);
-        }
+        loadFileFromPublic();
+    }, []);
+    // console.log("jsonData", jsonData);
+
+
+    // Handle state change
+    const handleStateChange = (e) => {
+        setSelectedState(e.target.value);
+        setSelectedDistrict("");
+        setSelectedArea("");
+        setPincode("");
+    };
+
+    // Handle district change
+    const handleDistrictChange = (e) => {
+        setSelectedDistrict(e.target.value);
+        setSelectedArea("");
+        setPincode("");
+    };
+
+    // Handle area change
+    const handleAreaChange = (e) => {
+        const area = e.target.value;
+        setSelectedArea(area);
+
+        const foundArea = jsonData[selectedState][selectedDistrict].find((a) => a.areaName === area);
+        setPincode(foundArea ? foundArea.pincode : "");
     };
 
 
-
-    const handleSubmitP = (e) => {
-        e.preventDefault();
-        if (city) {
-            fetchPincodes(city);
-        }
-    };
-    const onSubmit = async (data1) => {
-        const pincodes = data1?.pincode;
-        try {
-            setLoading(true)
-            const responsePin = await http_request.patch(`/updateServiceCenterpincode/${userId}`, {
-                pincodes, // Sending the array of pincodes
-            });
-            // console.log(responsePin);
-            const { data } = responsePin
-            // Check for HTTP status code 200 (success)
-            ToastMessage(data);
-            RefreshData(responsePin); // Refresh the data after successful update
-            setLoading(false);
-
-            // RefreshData(responsePin);
-        } catch (error) {
-            setLoading(false);
-            console.error('Error updating pincodes:', error);
-        }
-    };
     return (
         <div className=" container   p-4">
             <Toaster />
             {loading === true ? <div className='mt-[-200px]'> <ReactLoader /></div>
                 : <div>
+
                     <h1 className="text-xl font-bold mb-4">Add Area Pincodes</h1>
-                    <div className='flex'>
-                        <form onSubmit={handleSubmitP} className="mb-4 flex gap-4">
-                            <input
-                                type="text"
-                                value={city}
-                                onChange={(e) => setCity(e.target.value)}
-                                placeholder="Enter City Name"
-                                className="border border-gray-400 p-2 rounded mr-2"
-                            />
-                            <button
-                                type="submit"
-                                className="bg-blue-500 w-[120px] text-white p-2 rounded"
-                            >
-                                Add Area
-                            </button>
-                        </form>
+                    <div className="p-4">
+                        <h2 className="text-lg font-bold mb-2">Select State, District, and Area</h2>
+
+
+                        {/* State Dropdown */}
+                        {Object.keys(jsonData).length > 0 && (
+                            <select value={selectedState} onChange={handleStateChange} className="border p-2 rounded mt-4 block">
+                                <option value="">Select State</option>
+                                {Object.keys(jsonData).map((state) => (
+                                    <option key={state} value={state}>
+                                        {state}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        {/* District Dropdown */}
+                        {selectedState && jsonData[selectedState] && (
+                            <select value={selectedDistrict} onChange={handleDistrictChange} className="border p-2 rounded mt-4 block">
+                                <option value="">Select District</option>
+                                {Object.keys(jsonData[selectedState]).map((district) => (
+                                    <option key={district} value={district}>
+                                        {district}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+
+                        {/* Area Dropdown */}
+                        {selectedDistrict && jsonData[selectedState][selectedDistrict] && (
+                            <select value={selectedArea} onChange={handleAreaChange} className="border p-2 rounded mt-4 block">
+                                <option value=" ">Select Area</option> {/* Include All Option */}
+                                <option value="All">All</option> {/* Include All Option */}
+                                {jsonData[selectedState][selectedDistrict].map((area, index) => (
+                                    <option key={index} value={area.areaName}>
+                                        {area.areaName}
+                                    </option>
+                                ))}
+                            </select>
+                        )}
+                        <button
+                            onClick={onSubmit}
+                            disabled={loading}
+                            className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 disabled:bg-gray-400"
+                        >
+                            {loading ? "Processing..." : "Add Pincode "}
+                        </button>
+
+
                     </div>
-                    <div>
-                        <div>
-                            <h1 className="text-xl font-bold mb-4">Add Pincode</h1>
-                            <form onSubmit={handleSubmit(onSubmit)} className="mb-4 flex gap-4">
-                                <input
-                                    type="number"
-                                    {...register("pincode", {
-                                        required: "Pincode is required",
-                                        minLength: {
-                                            value: 6,
-                                            message: "Pincode must be exactly 6 digits",
-                                        },
-                                        maxLength: {
-                                            value: 6,
-                                            message: "Pincode must be exactly 6 digits",
-                                        },
-                                        pattern: {
-                                            value: /^[0-9]{6}$/,
-                                            message: "Pincode must be 6 digits long and numeric",
-                                        },
-                                    })}
-                                    placeholder="Enter 6-digit Pincode"
-                                    className="border border-gray-400 p-2 rounded mr-2"
-                                />
-                                {errors.pincode && (
-                                    <p className="text-red-500">{errors.pincode.message}</p>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="bg-blue-500 w-[120px] text-white p-2 rounded"
-                                >
-                                    Add Pincode
-                                </button>
-                            </form>
-                        </div>
-                    </div>
+
                     {error && <p className="text-red-500">{error}</p>}
                     <div className='   p-4 '>
                         <div className='text-md font-bold mb-4'>Pincodes Supported</div>
@@ -185,30 +201,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                             )}
                         </div>
                     </div>
-                    {/* <div>
-        {pincodes.length > 0 ? (
-          <table className="table-auto w-full">
-            <thead>
-              <tr>
-                <th className="px-4 py-2">Post Office Name</th>
-                <th className="px-4 py-2">District</th>
-                <th className="px-4 py-2">Pincode</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pincodes.map((office, index) => (
-                <tr key={index}>
-                  <td className="border px-4 py-2">{office.name}</td>
-                  <td className="border px-4 py-2">{office.district}</td>
-                  <td className="border px-4 py-2">{office.pincode}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p>No pincodes found</p>
-        )}
-      </div> */}
+
                 </div>
             }
         </div>
@@ -216,3 +209,4 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 };
 
 export default ServicePincodes;
+

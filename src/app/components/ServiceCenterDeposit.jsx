@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import http_request from "../../../http-request"
 import { Modal, Box, TextField, Button, Typography } from "@mui/material";
 import { ToastMessage } from "./common/Toastify";
+import { Edit } from "@mui/icons-material";
 
 const ServiceCenterDepositForm = ({ userData }) => {
     const {
@@ -14,14 +15,19 @@ const ServiceCenterDepositForm = ({ userData }) => {
     } = useForm();
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
+    const [editTrue, setEditTrue] = useState(false);
     const [depositId, setDepositId] = useState(null);
+    const [adminData, setAdminData] = useState(null);
     const [depositData, setDepositData] = useState(null);
     const [selectedImage, setSelectedImage] = useState(null);
     const [refresh, setRefresh] = useState(false);
 
 
     useEffect(() => {
-
+        const storedValue = localStorage.getItem("user");
+        if (storedValue) {
+            setAdminData(JSON.parse(storedValue));
+        }
         getServiceCenterAllDeposit();
         if (userData) {
             setValue("serviceCenterId", userData?._id)
@@ -34,14 +40,14 @@ const ServiceCenterDepositForm = ({ userData }) => {
 
             const response = await http_request.get(`/getServiceCenterAllDeposit/${userData?._id}`);
             const { data } = response;
-            setDepositId(data)
+            // setDepositId(data)
             setDepositData(data);
         } catch (err) {
             console.error('Failed to fetch user data:', err);
         }
     };
 
-    console.log("depo", depositData);
+
 
     const onSubmit = async (req) => {
 
@@ -54,7 +60,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
             }
 
             const response = depositId ?
-                await http_request.post(`/editServiceCenterDeposit/${userData?._id}`, formData)
+                await http_request.patch(`/editServiceCenterDeposit/${userData?._id}`, formData)
                 : await http_request.post(`/addServiceCenterDeposit`, formData)
             const { data } = response
             setRefresh(data)
@@ -67,27 +73,77 @@ const ServiceCenterDepositForm = ({ userData }) => {
         }
 
     };
+
+    const handleEdit = (item) => {
+        setEditTrue(true)
+        setDepositId(item?._id)
+        setValue("serviceCenterId", item?._id)
+        setValue("serviceCenterName", item?.serviceCenterName)
+        setValue("payAmount", item?.payAmount)
+        setValue("paymentType", item?.paymentType)
+        setValue("paymentDate", item?.paymentDate)
+        setValue("image", item?.image)
+    }
     const totalPayAmount = depositData?.reduce((total, deposit) => total + deposit.payAmount, 0);
     return (
-        <><div className="mt-5" >
-            <div className="flex justify-between items-center">  
+        <><div className="p-5 bg-white shadow-md rounded-lg" >
+            <div className="flex justify-between items-center">
                 <div>
-                   
-                    <p className="text-lg font-medium">Total Pay Amount: {totalPayAmount}</p>
+
+                    <p className="text-lg font-medium">Total Pay Amount: <span className="font-bold p-2 bg-slate-400 rounded-md">{totalPayAmount}</span></p>
                 </div>
                 <div>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => setOpen(true)}
-                      
-                >
-                   
-                    {depositId ? "Edit Deposit" : "Add Deposit"}
-                </Button>
+                    {adminData?.user?.role === "ADMIN" ?
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setOpen(true)}
+
+                    >
+
+                        {editTrue ? "Edit Deposit" : "Add Deposit"}
+                    </Button>
+                       :""
+                    }
                 </div>
             </div>
-            
+
+            <div className="overflow-x-auto ">
+                <table className="min-w-full mt-10 table-auto text-xs">
+                    <thead className="bg-gray-100">
+                        <tr>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Service Center</th>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Payment Type</th>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Amount</th>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Payment Date</th>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Image</th>
+                            <th className="px-2 py-2 text-left font-semibold text-gray-700">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {depositData?.map((item, i) => (
+                            <tr key={i} className="border-b hover:bg-gray-50">
+                                <td className="px-2 py-2 text-xs text-gray-600">{item?.serviceCenterName}</td>
+                                <td className="px-2 py-2 text-xs text-gray-600">{item?.paymentType}</td>
+                                <td className="px-2 py-2 text-xs text-gray-600">{item?.payAmount}</td>
+                                <td className="px-2 py-2 text-xs text-gray-600">{item?.paymentDate}</td>
+                                <td className="px-2 py-2 text-xs">
+                                    <img src={item?.image} alt="Payment receipt" className="w-16 h-16 object-cover rounded" />
+                                </td>
+                                <td className="px-2 py-2 text-xs text-gray-600">
+                                    <button
+                                        onClick={() => handleEdit(item)}
+                                        className="bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+                                    >
+                                        <Edit />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+            </div>
 
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Box className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-96">

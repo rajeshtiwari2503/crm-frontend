@@ -5,6 +5,7 @@ import { ReactLoader } from './common/Loading';
 import ServicePincodes from './ServicePincodes';
 import AddSupportedBrands from '../user/service/details/[id]/AddSupportedBrands';
 import AddCategory from '../user/service/details/[id]/AddCategory';
+import ServiceCenterDepositForm from './ServiceCenterDeposit';
 
 const ServiceProfile = (props) => {
 
@@ -306,12 +307,18 @@ const ServiceProfile = (props) => {
         :""
           }
           </div>
+          <div className='col-span-2'  >
+        <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
+      </div>
+      <div className='col-span-2'  >
+        <ServiceCenterDepositForm userData={userData}  RefreshData={props?.RefreshData} />
+      </div>
         </div>
 
       }
-      <div className='w-100' >
-        <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
-      </div>
+    
+     
+     
     </div>
 
 

@@ -132,10 +132,10 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 
 
     return (
-        <div className=" container   p-4">
+        <div className=" w-full    bg-white rounded-lg shadow-md  p-4">
             <Toaster />
             {loading === true ? <div className='mt-[-200px]'> <ReactLoader /></div>
-                : <div>
+                : <div className='w-full'>
 
                     <h1 className="text-xl font-bold mb-4">Add Area Pincodes</h1>
                     <div className="p-4">

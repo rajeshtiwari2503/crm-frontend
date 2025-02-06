@@ -85,6 +85,8 @@ const ServiceCenterDepositForm = ({ userData }) => {
         setValue("image", item?.image)
     }
     const totalPayAmount = depositData?.reduce((total, deposit) => total + deposit.payAmount, 0);
+    console.log(depositData);
+    
     return (
         <><div className="p-5 bg-white shadow-md rounded-lg" >
             <div className="flex justify-between items-center">
@@ -94,23 +96,23 @@ const ServiceCenterDepositForm = ({ userData }) => {
                 </div>
                 <div>
                     {adminData?.user?.role === "ADMIN" ?
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => setOpen(true)}
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setOpen(true)}
 
-                    >
+                        >
 
-                        {editTrue ? "Edit Deposit" : "Add Deposit"}
-                    </Button>
-                       :""
+                            {editTrue ? "Edit Deposit" : "Add Deposit"}
+                        </Button>
+                        : ""
                     }
                 </div>
             </div>
 
             <div className="overflow-x-auto ">
                 <table className="min-w-full mt-10 table-auto text-xs">
-                    <thead className="bg-gray-100">
+                    {depositData?.length>0 && <thead className="bg-gray-100">
                         <tr>
                             <th className="px-2 py-2 text-left font-semibold text-gray-700">Service Center</th>
                             <th className="px-2 py-2 text-left font-semibold text-gray-700">Payment Type</th>
@@ -120,6 +122,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
                             <th className="px-2 py-2 text-left font-semibold text-gray-700">Action</th>
                         </tr>
                     </thead>
+                    }
                     <tbody>
                         {depositData?.map((item, i) => (
                             <tr key={i} className="border-b hover:bg-gray-50">

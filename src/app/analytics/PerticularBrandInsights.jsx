@@ -7,6 +7,7 @@ const PerticularBrandights = (props) => {
     complaintsByBrand: [],
     complaintsByLocationAndProduct: [],
     commonFaults: [],
+    pendingComplaintsByBrand:[]
   });
   const [filterBrand, setFilterBrand] = useState(props?.user?.brandName);
   const [loading, setLoading] = useState(true);
@@ -22,12 +23,13 @@ const PerticularBrandights = (props) => {
       try {
         setLoading(true);
         const response = await http_request.get("/getComplaintInsights");
-        let { complaintsByBrand, complaintsByLocationAndProduct, commonFaults } = response.data;
+        let { complaintsByBrand, pendingComplaintsByBrand,complaintsByLocationAndProduct, commonFaults } = response.data;
 
         setComplaintInsights({
           complaintsByBrand,
           complaintsByLocationAndProduct,
           commonFaults,
+          pendingComplaintsByBrand,
         });
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,12 +52,17 @@ const PerticularBrandights = (props) => {
   };
 
   const chartOptions = {
+    title: "All Complaints",
+    is3D: true,
+    slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
+    pieSliceText: "value",
+  };
+  const chartOptionsPending = {
     title: "Pending Complaints",
     is3D: true,
     slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
-    pieSliceText: "percentage",
+    pieSliceText: "value",
   };
-
   const filteredComplaintsByBrand = filterBrand
     ? complaintInsights.complaintsByBrand.filter(
         (item) => item._id.toLowerCase() === filterBrand.toLowerCase()
@@ -67,7 +74,11 @@ const PerticularBrandights = (props) => {
         (item) => item?._id?.productBrand?.toLowerCase() === filterBrand.toLowerCase()
       )
     : complaintInsights.complaintsByLocationAndProduct;
-
+    const filteredPendingComplaintsByBrand = filterBrand
+    ? complaintInsights?.pendingComplaintsByBrand?.filter(
+        (item) => item._id.toLowerCase() === filterBrand.toLowerCase()
+      )
+    : complaintInsights?.pendingComplaintsByBrand;
   const filteredCommonFaults = filterBrand
     ? complaintInsights.commonFaults.filter(
         (item) => item?.productBrand?.toLowerCase() === filterBrand.toLowerCase()
@@ -105,6 +116,35 @@ console.log("filteredComplaintsByBrand",filteredComplaintsByBrand);
           )}
         </div> */}
 
+      
+        <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
+          <h3 className="text-xl mb-4">Common Faults</h3>
+          {filteredCommonFaults.length > 0 ? (
+            <Chart
+              chartType="PieChart"
+              width="100%"
+              height="400px"
+              data={prepareChartData(filteredCommonFaults)}
+              options={chartOptions}
+            />
+          ) : (
+            <p>No data available.</p>
+          )}
+        </div>
+        <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
+          <h3 className="text-xl mb-4">Pending Complaints</h3>
+          {filteredPendingComplaintsByBrand.length > 0 ? (
+            <Chart
+              chartType="PieChart"
+              width="100%"
+              height="400px"
+              data={prepareChartData(filteredPendingComplaintsByBrand)}
+              options={chartOptionsPending}
+            />
+          ) : (
+            <p>No data available.</p>
+          )}
+        </div>
         <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
           <h3 className="text-xl mb-4">Complaints by Product</h3>
           {filteredComplaintsByLocationAndProduct.length > 0 ? (
@@ -120,20 +160,6 @@ console.log("filteredComplaintsByBrand",filteredComplaintsByBrand);
           )}
         </div>
 
-        <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
-          <h3 className="text-xl mb-4">Common Faults</h3>
-          {filteredCommonFaults.length > 0 ? (
-            <Chart
-              chartType="PieChart"
-              width="100%"
-              height="400px"
-              data={prepareChartData(filteredCommonFaults)}
-              options={chartOptions}
-            />
-          ) : (
-            <p>No data available.</p>
-          )}
-        </div>
       </div>
 
       {/* Tables Section */}

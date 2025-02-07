@@ -200,8 +200,12 @@ const ComplaintList = (props) => {
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
 
-
-    // setValue('status', "ASSIGN");
+    if (selectedServiceCenter?.serviceCenterType  === "Independent") {
+      setValue('status', "ASSIGN");
+    }else{
+      setValue('status', "PENDING");
+    }
+   
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
     setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
     setValue('assignServiceCenterTime', new Date());
@@ -213,7 +217,7 @@ const ComplaintList = (props) => {
       const data = getValues();
       setLoading(true);
 
-      const reqdata = { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
+      const reqdata = { status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);

@@ -78,7 +78,7 @@ const NoServiceableAreaComplaints = () => {
   const chartOptions = {
     title: "State-wise Complaints",
     is3D: true,
-    pieSliceText: "percentage",
+    pieSliceText: "value",
   };
 
   // Unique States for Dropdown

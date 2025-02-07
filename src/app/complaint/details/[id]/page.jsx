@@ -84,6 +84,8 @@ const ComplaintDetails = ({ params }) => {
 
                                 <div className='text-md font-semibold'>Brand : </div>
                                 <div className='text-md font-medium'>{complaint?.productBrand}</div>
+                                <div className='text-md font-semibold'>Product Name : </div>
+                                <div className='text-lg font-medium'>{complaint?.productName}</div>
                                 <div className='text-md font-semibold'>Category Name : </div>
                                 <div className='text-lg font-medium'>{complaint?.categoryName}</div>
                                 <div className='text-md font-semibold'>Status: </div>

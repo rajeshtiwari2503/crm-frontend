@@ -252,16 +252,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/close")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push("/complaint/assign")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>
               <div className='flex items-center'>
                 <PeopleAlt fontSize='large' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Close</div>
+                  <div className='text-blue-600 font-semibold'>Assign</div>
                   <div className='text-3xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.complete} delay={1} />
+                  <CountUp start={0} end={data?.complaints?.assign} delay={1} />
                   </div>
                 </div>
               </div>
@@ -286,22 +286,23 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/assign")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push("/complaint/close")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-3 flex justify-between items-center'>
               <div className='flex items-center'>
                 <PeopleAlt fontSize='large' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Assign</div>
+                  <div className='text-blue-600 font-semibold'>Close</div>
                   <div className='text-3xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.assign} delay={1} />
+                  <CountUp start={0} end={data?.complaints?.complete} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      
        
       
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>

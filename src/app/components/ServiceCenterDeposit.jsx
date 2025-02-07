@@ -130,7 +130,13 @@ const ServiceCenterDepositForm = ({ userData }) => {
                                 <td className="px-2 py-2 text-xs text-gray-600">{item?.payAmount}</td>
                                 <td className="px-2 py-2 text-xs text-gray-600">{item?.paymentDate}</td>
                                 <td className="px-2 py-2 text-xs">
-                                    <img src={item?.image} alt="Payment receipt" className="w-16 h-16 object-cover rounded" />
+                                    <a href={item?.image} target="_blank" rel="noopener noreferrer">
+                                        <img
+                                            src={item?.image}
+                                            alt="Payment receipt"
+                                            className="w-16 h-16 object-cover rounded cursor-pointer"
+                                        />
+                                    </a>
                                 </td>
                                 <td className="px-2 py-2 text-xs text-gray-600">
                                     <button

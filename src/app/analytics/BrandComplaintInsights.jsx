@@ -7,6 +7,7 @@ const BrandComplaintInsights = () => {
     complaintsByBrand: [],
     complaintsByLocationAndProduct: [],
     commonFaults: [],
+    pendingComplaintsByBrand:[]
   });
   const [filterBrand, setFilterBrand] = useState(""); // State to manage the selected brand
   const [loading, setLoading] = useState(true); // State to track data loading
@@ -16,11 +17,13 @@ const BrandComplaintInsights = () => {
       try {
         setLoading(true);
         const response = await http_request.get("/getComplaintInsights"); // Adjust the API endpoint as needed
-        let { complaintsByBrand, complaintsByLocationAndProduct, commonFaults } = response.data;
+        let { complaintsByBrand, complaintsByLocationAndProduct,pendingComplaintsByBrand, commonFaults } = response.data;
+ 
 
         setComplaintInsights({
           complaintsByBrand,
           complaintsByLocationAndProduct,
+          pendingComplaintsByBrand,
           commonFaults,
         });
       } catch (error) {
@@ -49,12 +52,17 @@ const BrandComplaintInsights = () => {
 
   // Chart options
   const chartOptions = {
+    title: "All Complaints",
+    is3D: true,
+    slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
+    pieSliceText: "value",
+  };
+  const chartOptionsPending = {
     title: "Pending Complaints",
     is3D: true,
     slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
-    pieSliceText: "percentage",
+    pieSliceText: "value",
   };
-
   // Filter the complaints by brand if a filter is applied
   const filteredComplaintsByBrand = filterBrand
     ? complaintInsights.complaintsByBrand.filter(
@@ -68,6 +76,11 @@ const BrandComplaintInsights = () => {
         (item) => item?._id?.productBrand && item?._id?.productBrand.toLowerCase() === filterBrand.toLowerCase()
       )
     : complaintInsights.complaintsByLocationAndProduct;
+    const filteredPendingComplaintsByBrand = filterBrand
+    ? complaintInsights.pendingComplaintsByBrand.filter(
+        (item) => item._id.toLowerCase() === filterBrand.toLowerCase()
+      )
+    : complaintInsights.pendingComplaintsByBrand;
 
   const filteredCommonFaults = filterBrand
     ? complaintInsights.commonFaults.filter(
@@ -133,7 +146,20 @@ const BrandComplaintInsights = () => {
             <p>No data available.</p>
           )}
         </div>
-
+        <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
+          <h3 className="text-xl mb-4">Complaints by Brand</h3>
+          {filteredPendingComplaintsByBrand.length > 0 ? (
+            <Chart
+              chartType="PieChart"
+              width="100%"
+              height="400px"
+              data={prepareChartData(filteredPendingComplaintsByBrand)}
+              options={chartOptionsPending}
+            />
+          ) : (
+            <p>No data available.</p>
+          )}
+        </div>
         {/* Common Faults Pie Chart */}
         <div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
           <h3 className="text-xl mb-4">Common Faults</h3>

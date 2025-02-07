@@ -36,7 +36,7 @@ const StatewisePendingComplaints = () => {
       0: { offset: 0.1 },
       1: { offset: 0.1 },
     },
-    pieSliceText: "percentage",
+    pieSliceText: "value",
   };
 
   return (

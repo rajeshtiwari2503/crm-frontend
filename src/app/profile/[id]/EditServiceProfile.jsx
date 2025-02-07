@@ -24,7 +24,7 @@ const EditServiceCenter = (props) => {
             localStorage.setItem('userInfo', JSON.stringify(reqdata));
             ToastMessage(data)
             setLoading(false)
-          router.push(`/user/service`)
+        //   router.push(`/user/service`)
         }
         catch (err) {
             setLoading(false)

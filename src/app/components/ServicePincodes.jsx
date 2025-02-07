@@ -190,7 +190,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                     </div>
 
                     {error && <p className="text-red-500">{error}</p>}
-                    <div className='   p-4 '>
+                    {/* <div className='   p-4 '>
                         <div className='text-md font-bold mb-4'>Pincodes Supported</div>
                         <div className="w-100 grid grid-cols-3 md:grid-cols-10 overflow-x-auto whitespace-nowrap">
                             {pincode?.map((item, i) =>
@@ -200,7 +200,8 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                                 </div>
                             )}
                         </div>
-                    </div>
+                       
+                    </div> */}
 
                 </div>
             }

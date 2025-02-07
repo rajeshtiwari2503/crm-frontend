@@ -317,7 +317,18 @@ const ServiceProfile = (props) => {
 
       }
     
-     
+       <div className=' m-5 border p-4 '>
+                        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
+                        <div className="w-100 grid grid-cols-3 md:grid-cols-10 overflow-x-auto whitespace-nowrap">
+                            {userData?.pincodeSupported?.map((item, i) =>
+
+                                <div key={i} className=' '>
+                                    <div >{item}</div>
+                                </div>
+                            )}
+                        </div>
+                       
+                    </div>  
      
     </div>
 

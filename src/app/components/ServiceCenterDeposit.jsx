@@ -86,7 +86,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
     }
     const totalPayAmount = depositData?.reduce((total, deposit) => total + deposit.payAmount, 0);
     console.log(depositData);
-    
+
     return (
         <><div className="p-5 bg-white shadow-md rounded-lg" >
             <div className="flex justify-between items-center">
@@ -96,15 +96,14 @@ const ServiceCenterDepositForm = ({ userData }) => {
                 </div>
                 <div>
                     {adminData?.user?.role === "ADMIN" ?
-                        <Button
-                            variant="contained"
-                            color="primary"
+                        <button
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
                             onClick={() => setOpen(true)}
 
                         >
 
                             {editTrue ? "Edit Deposit" : "Add Deposit"}
-                        </Button>
+                        </button>
                         : ""
                     }
                 </div>
@@ -112,7 +111,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
 
             <div className="overflow-x-auto ">
                 <table className="min-w-full mt-10 table-auto text-xs">
-                    {depositData?.length>0 && <thead className="bg-gray-100">
+                    {depositData?.length > 0 && <thead className="bg-gray-100">
                         <tr>
                             <th className="px-2 py-2 text-left font-semibold text-gray-700">Service Center</th>
                             <th className="px-2 py-2 text-left font-semibold text-gray-700">Payment Type</th>
@@ -180,9 +179,14 @@ const ServiceCenterDepositForm = ({ userData }) => {
                         <TextField fullWidth label="Payment Type" {...register("paymentType", { required: "Payment Type is required" })} error={!!errors.paymentType} helperText={errors.paymentType?.message} />
                         <TextField fullWidth type="date" {...register("paymentDate", { required: "Payment Date is required" })} error={!!errors.paymentDate} helperText={errors.paymentDate?.message} />
                         <input type="file" accept="image/*" onChange={(e) => setSelectedImage(e.target.files[0])} />
-                        <Button type="submit" fullWidth variant="contained" color="primary" disabled={loading}>
+                        <button
+                            type="submit"
+                            className={`w-full px-4 py-2 text-white rounded-md transition ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                                }`}
+                            disabled={loading}
+                        >
                             {loading ? "Saving..." : "Submit"}
-                        </Button>
+                        </button>
                     </form>
                 </Box>
             </Modal>

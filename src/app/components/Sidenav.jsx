@@ -66,9 +66,10 @@ function Sidenav(props) {
   React.useEffect(() => {
     if(user){
       setValue(user)
+      getAllNotification()
+      getAllDashboard()
     }
-    getAllNotification()
-    getAllDashboard()
+  
   }, [refresh,user]);
 
   const getAllDashboard = async () => {
@@ -99,7 +100,7 @@ function Sidenav(props) {
     
     try {
 
-      const endPoint = (user?.user?.role) === "ADMIN" ? `/getAllNotification` : (user?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
+      const endPoint = (user?.user?.role) === "ADMIN" ? `/getAllNotification` : (user?.user?.role) === "USER" ? `/getNotificationByUserId/${user?.user?._id}`
         : (user?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${user?.user?._id}`
           : (user?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${user?.user?._id}`
             : (user?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${user?.user?._id}`

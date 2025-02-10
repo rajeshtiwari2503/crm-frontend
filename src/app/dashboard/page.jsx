@@ -9,32 +9,35 @@ import UserDashboard from './userDashboard'
 import DealerDashboard from './deallerDashboard'
 import http_request from "../../../http-request"
 import TechnicianDashboard from './technicianDashboard'
+import { useUser } from '../components/UserContext'
 
 
 const Dashboard = () => {
-
-  const [value, setValue] = React.useState(null);
+  const { user } = useUser();
+  const [value, setValue] = React.useState(user);
   const [dashData, setData] = React.useState("");
-
+ 
+   
+  
   React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+   
+    if (user) {
+      setValue(user);
+      getAllDashboard()
     }
-    getAllDashboard()
-  }, []);
+    
+  }, [user]);
 
   const getAllDashboard = async () => {
-    const storedValue = localStorage.getItem("user");
-    const user1 = JSON.parse(storedValue);
+    
     try {
     
-      const endPoint=user1?.user.role==="ADMIN"? "/dashboardDetails"
-      :user1?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user1?.user?._id}`
-      :user1?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user1?.user?._id}`
-      :user1?.user.role==="USER"?`/dashboardDetailsByUserId/${user1?.user?._id}`
-      :user1?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user1?.user?._id}`
-      :user1?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
+      const endPoint=user?.user.role==="ADMIN"? "/dashboardDetails"
+      :user?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user?.user?._id}`
+      :user?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user?.user?._id}`
+      :user?.user.role==="USER"?`/dashboardDetailsByUserId/${user?.user?._id}`
+      :user?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user?.user?._id}`
+      :user?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user?.user?._id}`
       :""
       let response = await http_request.get(endPoint)
       let { data } = response;

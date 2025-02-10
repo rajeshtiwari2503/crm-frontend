@@ -4,21 +4,23 @@ import React, { useEffect, useState } from 'react'
 import http_request from '.././../../http-request'
 
 import RechargeList from './RechargeList'
+import { useUser } from '../components/UserContext'
 
 const Recharge = (props) => {
   const [recharge, setRecharge] = useState([])
   const [product, setProduct] = useState([])
 
   const [refresh, setRefresh] = useState("")
+   const { user } = useUser();
   const [userData, setUserData] = React.useState(null);
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setUserData(JSON.parse(storedValue));
+    
+    if (user) {
+      setUserData(user);
     }
     getAllRecharge()
     getAllProduct()
-  }, [refresh])
+  }, [refresh,user])
 
 
   const getAllRecharge = async () => {

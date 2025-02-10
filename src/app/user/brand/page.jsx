@@ -6,6 +6,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useUser } from '@/app/components/UserContext';
 
 
 const Brand = () => {
@@ -14,15 +15,17 @@ const Brand = () => {
   const [refresh, setRefresh] = useState("")
 
   const [value, setValue] = React.useState(null);
-
+ const { user } = useUser();
+ console.log("brand",user);
+ 
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-        setValue(JSON.parse(storedValue));
+     
+    if (user) {
+        setValue(user);
     }
     getAllBrand()
 
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllBrand = async () => {
     try {

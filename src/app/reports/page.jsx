@@ -17,6 +17,7 @@ import ServiceList from '../user/service/serviceList';
 import dynamic from 'next/dynamic';
 import DealerReport from './DealerReport';
 import BrandReport from './BrandReport';
+import { useUser } from '../components/UserContext';
 
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
@@ -137,11 +138,11 @@ const Report = () => {
   const [complaints, setComplaints] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [value, setValue] = React.useState(null);
-
+const { user } = useUser();
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+     
+    if (user) {
+      setValue(user);
     }
     getAllUserAndProducts()
     fetchComplaints()

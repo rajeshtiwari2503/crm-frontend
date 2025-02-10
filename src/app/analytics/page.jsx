@@ -8,6 +8,7 @@ import ServiceCenterWisePendingComplaints from "./ServiceCenterWisePendingCompla
 import NoServiceableAreaComplaints from "./NoServiceableAreaComplaints";
 import BrandComplaintInsights from "./BrandComplaintInsights";
 import PerticularBrandights from "./PerticularBrandInsights";
+import { useUser } from "../components/UserContext";
 
 const AreaChart = dynamic(() => import("./charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>,
@@ -35,15 +36,8 @@ const Analytics = () => {
         return <StatewisePendingComplaints />;
     }
   };
-  const [user,setUser]=useState(null)
- useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if(storedValue){
-      setUser(JSON.parse(storedValue));
-
-    }
-      
- },[])
+ const { user } = useUser();
+ 
 
   return (
     <>

@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { ReactLoader } from './common/Loading';
 import http_request from "../../../http-request"
+import { useUser } from './UserContext';
 
 const drawerWidth = 240;
 
@@ -52,6 +53,7 @@ function Sidenav(props) {
   const [isCollapseTechnician, setIsCollapseTechnician] = React.useState(false);
 
   const [isOpen, setIsOpen] = React.useState(false);
+  const { user } = useUser();
   const [value, setValue] = React.useState(null);
   const [notifications, setNotifications] = React.useState([]);
 
@@ -62,25 +64,23 @@ function Sidenav(props) {
   const notificationsPerPage = 5;
 
   React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+    if(user){
+      setValue(user)
     }
     getAllNotification()
     getAllDashboard()
-  }, [refresh]);
+  }, [refresh,user]);
 
   const getAllDashboard = async () => {
-    const storedValue = localStorage.getItem("user");
-    const user1 = JSON.parse(storedValue);
+   
     try {
 
-      const endPoint = user1?.user.role === "ADMIN" || user1?.user.role === "EMPLOYEE" ? "/dashboardDetails"
-        : user1?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user1?.user?._id}`
-          : user1?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user1?.user?._id}`
-            : user1?.user.role === "USER" ? `/dashboardDetailsByUserId/${user1?.user?._id}`
-              : user1?.user.role === "TECHNICIAN" ? `/dashboardDetailsByTechnicianId/${user1?.user?._id}`
-                : user1?.user.role === "SERVICE" ? `/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
+      const endPoint = user?.user.role === "ADMIN" || user?.user.role === "EMPLOYEE" ? "/dashboardDetails"
+        : user?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user?.user?._id}`
+          : user?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user?.user?._id}`
+            : user?.user.role === "USER" ? `/dashboardDetailsByUserId/${user?.user?._id}`
+              : user?.user.role === "TECHNICIAN" ? `/dashboardDetailsByTechnicianId/${user?.user?._id}`
+                : user?.user.role === "SERVICE" ? `/dashboardDetailsBySeviceCenterId/${user?.user?._id}`
                   : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
@@ -95,15 +95,15 @@ function Sidenav(props) {
   // console.log(dashData);
 
   const getAllNotification = async () => {
-    const storedValue = localStorage.getItem("user");
-    const userType = JSON.parse(storedValue)
+   
+    
     try {
 
-      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : (userType?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
-        : (userType?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${userType?.user?._id}`
-          : (userType?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${userType?.user?._id}`
-            : (userType?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${userType?.user?._id}`
-              : (userType?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${userType?.user?._id}`
+      const endPoint = (user?.user?.role) === "ADMIN" ? `/getAllNotification` : (user?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
+        : (user?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${user?.user?._id}`
+          : (user?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${user?.user?._id}`
+            : (user?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${user?.user?._id}`
+              : (user?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${user?.user?._id}`
                 : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
@@ -141,16 +141,15 @@ function Sidenav(props) {
 
 
   const handleReadMark = async (id) => {
-    const storedValue = localStorage.getItem("user");
-    const userType = JSON.parse(storedValue)
+    
     try {
 
       const status = (userType?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
-        : (userType?.user?.role) === "USER" ? { userStatus: "READ" }
-          : (userType?.user?.role) === "BRAND" ? { brandStatus: "READ" }
-            : (userType?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
-              : (userType?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
-                : (userType?.user?.role) === "DEALER" ? { dealerStatus: "READ" }
+        : (user?.user?.role) === "USER" ? { userStatus: "READ" }
+          : (user?.user?.role) === "BRAND" ? { brandStatus: "READ" }
+            : (user?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
+              : (user?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
+                : (user?.user?.role) === "DEALER" ? { dealerStatus: "READ" }
                   : ""
 
       let response = await http_request.patch(`/editNotification/${id}`, status)

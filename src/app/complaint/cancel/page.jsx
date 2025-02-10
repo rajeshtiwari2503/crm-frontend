@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import CancelComplaintList from './cancelComplaintList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -14,13 +15,17 @@ const Cancel = () => {
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
 
-  useEffect(() => {
+  const { user } = useUser();
+  
+  
+    useEffect(() => {
+  
+      if (user) {
+        setValue(user)
+      }
     getAllComplaint()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, [refresh])
+    
+  }, [refresh,user])
 
   const getAllComplaint = async () => {
     try {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Chart } from "react-google-charts";
 import http_request from "../../../http-request";
+import { ReactLoader } from "../components/common/Loading";
 
 const PerticularBrandights = (props) => {
   const [complaintInsights, setComplaintInsights] = useState({
@@ -31,7 +32,9 @@ const PerticularBrandights = (props) => {
           commonFaults,
           pendingComplaintsByBrand,
         });
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
@@ -86,7 +89,7 @@ const PerticularBrandights = (props) => {
     : complaintInsights.commonFaults;
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>
   }
 console.log("filteredComplaintsByBrand",filteredComplaintsByBrand);
 

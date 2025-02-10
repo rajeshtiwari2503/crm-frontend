@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import http_request from '.././../../../http-request'
 import WarrantyList from './WarrantyList'
 import ProductWarrantyPage from './paginationWithWarrantyList'
+import { useUser } from '@/app/components/UserContext'
 
 const Warranty = () => {
     const [warranty, setWarranty] = useState([])
@@ -11,29 +12,41 @@ const Warranty = () => {
     const [brand, setBrand] = useState([])
 
     const [refresh, setRefresh] = useState("")
-    const [user, setUser] = useState(null)
+    const [value, setUser] = useState(null)
 
-    useEffect(() => {
-      getAllwarranty()
+   const { user } = useUser();
+           
+          
+           useEffect(() => {
+            
+             if (user) {
+              setUser(user)
+              // getAllwarranty()
+             }
+     
       getAllProduct()
       getAllBrand()
-    }, [refresh])
+    }, [refresh,user])
   
   
-    const getAllwarranty = async () => {
-      const storedValue = localStorage.getItem("user");
-      const user=JSON.parse(storedValue)
-      setUser(user?.user)
-      const reqData=user?.user?.role==="ADMIN"?"/getAllProductWarranty" :`/getAllProductWarrantyById/${user?.user?._id}`
-      let response = await http_request.get(reqData)
-      let { data } = response;
+    // const getAllwarranty = async () => {
+      
+    //   try{
+
+    
+    //   const reqData=value?.user?.role==="ADMIN"?"/getAllProductWarranty" :`/getAllProductWarrantyById/${value?.user?._id}`
+    //   let response = await http_request.get(reqData)
+    //   let { data } = response;
   
-      setWarranty (data?.data)
-    }
+    //   setWarranty (data?.data)
+    //   }
+    //   catch(err){
+    //     console.log(err);
+        
+    //   }
+    // }
     const getAllProduct = async () => {
-      const storedValue = localStorage.getItem("user");
-      const user=JSON.parse(storedValue)
-      setUser(user?.user)
+      
         let response = await http_request.get("/getAllProduct")
         let { data } = response;
     
@@ -57,7 +70,7 @@ const Warranty = () => {
             <Sidenav>
                
                 {/* <WarrantyList data={data}brand={brand}product={product}user={user} RefreshData={RefreshData}/> */}
-                <ProductWarrantyPage brand={brand}product={product}user={user} RefreshData={RefreshData}/>
+                <ProductWarrantyPage brand={brand}product={product}user={value} RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

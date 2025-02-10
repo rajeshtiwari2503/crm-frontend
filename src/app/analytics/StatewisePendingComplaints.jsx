@@ -3,18 +3,24 @@ import React, { useState, useEffect } from "react";
 import Sidenav from "../components/Sidenav";
 import { Chart } from "react-google-charts"; // Import Chart component from react-google-charts
 import http_request from "../../../http-request"
+import { ReactLoader } from "../components/common/Loading";
 
 const StatewisePendingComplaints = () => {
   const [statewiseData, setStatewiseData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Fetch data from the backend API
     const fetchData = async () => {
       try {
+        setLoading(true)
         const response = await http_request.get("/getStatewisePendingComplaints"); // Adjust the API path if needed
         let { data } = response;
         setStatewiseData(data);
+        setLoading(false)
       } catch (error) {
+        setLoading(false)
+
         console.error("Error fetching data:", error);
       }
     };
@@ -40,8 +46,10 @@ const StatewisePendingComplaints = () => {
   };
 
   return (
-   
-      <div>
+   <>
+   {loading? <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>
+  
+      :<div>
         {/* <h2 className="text-lg mb-2">Analytics</h2> */}
 
         {/* Pie Chart Section */}
@@ -89,7 +97,8 @@ const StatewisePendingComplaints = () => {
           </div>
         </div>
       </div>
-   
+}
+      </>
   );
 };
 

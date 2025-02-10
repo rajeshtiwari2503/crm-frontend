@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import DealerList from './dealerList';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -14,14 +15,16 @@ const Dealer = () => {
   const [refresh, setRefresh] = useState("")
 
   const [value, setValue] = React.useState(null);
-
+ const { user } = useUser();
+  
+ 
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-        setValue(JSON.parse(storedValue));
+   
+    if (user) {
+        setValue(user);
     }
     getAllDealers()
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllDealers = async () => {
     try {

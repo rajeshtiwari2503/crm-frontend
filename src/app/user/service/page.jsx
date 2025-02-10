@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import { ReactLoader } from '@/app/components/common/Loading';
 import ServiceList from './serviceList';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -16,14 +17,17 @@ const Service = () => {
 
   const [value, setValue] = React.useState(null);
 
-  useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-        setValue(JSON.parse(storedValue));
-    }
+  const { user } = useUser();
+    
+   
+    useEffect(() => {
+     
+      if (user) {
+          setValue(user);
+      }
     getAllService()
 
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllService = async () => {
     try {

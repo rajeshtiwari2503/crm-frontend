@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Chart } from "react-google-charts"; // Import Chart component from react-google-charts
 import http_request from "../../../http-request"; // HTTP request utility to fetch data
+import { ReactLoader } from "../components/common/Loading";
 
 const BrandComplaintInsights = () => {
   const [complaintInsights, setComplaintInsights] = useState({
@@ -89,7 +90,9 @@ const BrandComplaintInsights = () => {
     : complaintInsights.commonFaults;
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading message while data is being fetched
+    return   <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>
+    
+          
   }
 
   return (

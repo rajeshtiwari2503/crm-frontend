@@ -16,7 +16,7 @@ const Brand = () => {
 
   const [value, setValue] = React.useState(null);
  const { user } = useUser();
- console.log("brand",user);
+//  console.log("brand",user);
  
   useEffect(() => {
      

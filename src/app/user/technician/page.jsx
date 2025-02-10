@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import TechnicianList from './technicianList';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -15,14 +16,17 @@ const Technician = () => {
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = useState(null)
 
-  useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-        setValue(JSON.parse(storedValue));
-    }
+   const { user } = useUser();
+      
+     
+      useEffect(() => {
+       
+        if (user) {
+            setValue(user);
+        }
     getAllTechnician()
 
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllTechnician = async () => {
     try {

@@ -3,17 +3,21 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from '.././../../../http-request'
 import SparepartList from './sparepartList'
+import { useUser } from '@/app/components/UserContext'
 const Sparepart = () => {
     const [spareparts, setSpareparts] = useState([])
 
     const [refresh, setRefresh] = useState("")
     const [userData, setUserData] = useState(null)
 
-    useEffect(() => {
-      const storedValue = localStorage.getItem("user");
-      if (storedValue) {
-        setUserData(JSON.parse(storedValue));
-      }
+    const { user } = useUser();
+   
+   
+     useEffect(() => {
+   
+       if (user) {
+         setUserData(user);
+       }
       getAllSpareparts()
     }, [refresh])
   

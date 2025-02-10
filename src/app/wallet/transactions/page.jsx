@@ -3,6 +3,7 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import TransactionList from './TransactionList'
 import http_request from '../../../../http-request'
+import { useUser } from '@/app/components/UserContext'
 
  const transactions = ({}) => {
 
@@ -13,22 +14,24 @@ import http_request from '../../../../http-request'
     const [refresh, setRefresh] = React.useState("");
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const storedValue = localStorage.getItem("user");
-        if (storedValue) {
-            setValue(JSON.parse(storedValue));
-        }
+   const { user } = useUser();
+            
+           
+            useEffect(() => {
+             
+              if (user) {
+                  setValue(user);
+              }
         getTransactions();
         getWalletById()
         getWalletDetails()
-    }, [refresh]);
+    }, [refresh,user]);
 
     const getWalletById = async () => {
         try {
             setLoading(true);
-            const storedValue = localStorage.getItem("user");
-           const userD=JSON.parse(storedValue)
-          let response = await http_request.get(`/getWalletByCenterId/${userD?.user?._id}`);
+            
+          let response = await http_request.get(`/getWalletByCenterId/${value?.user?._id}`);
           let { data } = response;
           setWallet(data)
           setLoading(false);
@@ -39,10 +42,9 @@ import http_request from '../../../../http-request'
       };
       const getWalletDetails = async () => {
         try {
-            const storedValue = localStorage.getItem("user");
-            const value1 = JSON.parse(storedValue);
+            
             setLoading(true);
-            const response = await http_request.get(`/bankDetailByUser/${value1?.user?._id}`);
+            const response = await http_request.get(`/bankDetailByUser/${value?.user?._id}`);
             const { data } = response
             setBankDetails(data);
             setLoading(false);
@@ -53,10 +55,9 @@ import http_request from '../../../../http-request'
     };
     const getTransactions = async () => {
         try {
-            const storedValue = localStorage.getItem("user");
-            const value1 = JSON.parse(storedValue);
             
-            const endPoint=value1?.user?.role==="ADMIN"?`/getAllTransaction`:value1?.user?.role==="BRAND"?`getTransactionByBrandId/${value1?.user?._id}`:`/getTransactionByCenterId/${value1?.user?._id}`
+            
+            const endPoint=value?.user?.role==="ADMIN"?`/getAllTransaction`:value?.user?.role==="BRAND"?`getTransactionByBrandId/${value?.user?._id}`:`/getTransactionByCenterId/${value?.user?._id}`
             setLoading(true);
             const response = await http_request.get(endPoint);
             let {data}=response;

@@ -21,12 +21,12 @@ const PartPendingComplaintList = (props) => {
   const complaint = props?.data;
   const userData = props?.userData;
 
-  const data = userData.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
-    : userData.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-      : userData.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
               : []
   const [status, setStatus] = useState(false);
 

@@ -16,6 +16,7 @@ const Cancel = () => {
   const [value, setValue] = React.useState(null);
 
   const { user } = useUser();
+  // console.log("usercancel",user,value);
   
   
     useEffect(() => {
@@ -27,7 +28,7 @@ const Cancel = () => {
     
   }, [refresh,user])
 
-  
+
 
   const getAllComplaint = async () => {
     try {

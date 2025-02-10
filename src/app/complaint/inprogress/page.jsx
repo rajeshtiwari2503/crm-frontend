@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import InProgressComplaintList from './inProgressList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -16,13 +17,16 @@ const InProgress = () => {
 
   const [value, setValue] = React.useState(null);
 
+  const { user } = useUser();
+
+
   useEffect(() => {
-    getAllComplaint()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+
+    if (user) {
+      setValue(user)
     }
-  }, [refresh])
+    getAllComplaint()
+    }, [refresh,user])
 
   const getAllComplaint = async () => {
     try {
@@ -48,7 +52,7 @@ const InProgress = () => {
     <Sidenav>
       <Toaster />
       <>
-        <InProgressComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
+        <InProgressComplaintList data={data} userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

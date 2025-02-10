@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import CloseComplaintList from './closeComplaintList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -15,13 +16,17 @@ const Close = () => {
 
   const [value, setValue] = React.useState(null);
 
-  useEffect(() => {
+ const { user } = useUser();
+ 
+ 
+   useEffect(() => {
+ 
+     if (user) {
+       setValue(user)
+     }
     getAllComplaint()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, [refresh])
+    
+  }, [refresh,user])
 
   const getAllComplaint = async () => {
     try {

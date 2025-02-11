@@ -24,39 +24,35 @@ export default function SignIn() {
       setLoading(true);
       let response = await http_request.post('/login', reqdata);
       let { data } = response;
+      
+      // Store user data in local storage
       localStorage.setItem('user', JSON.stringify(data));
       setUserData(data?.user);
-
+  
       if (data?.user?.verification === "VERIFIED") {
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(data));
         } else {
           localStorage.setItem('user', JSON.stringify(data));
         }
-
+  
         setLoading(false);
-        router.push("/dashboard");
-        // ToastMessage(data);
+        ToastMessage(data);
+        
+        // Navigate and reload
+        window.location.href = "/dashboard"; // Ensures navigation and reload
+      } else {
+        // Handle unverified users
+        window.location.href = "/dashboard"; // Ensures navigation and reload
       }
-      else {
-        // console.log(userData);
-        // let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
-        // const { data } = response;
-        // if (data?.status === true) {
-        // ToastMessage(data);
-        //   setLoading(false);
-        // router.push("/verification");
-        router.push("/dashboard");
-
-        // }
-      }
-      ToastMessage(data);
     } catch (err) {
       setLoading(false);
-      // ToastMessage(err?.response?.data);
+      ToastMessage(err?.response?.data);
       console.log(err);
     }
   };
+  
+  
 
   const onSubmit = (data) => {
     Login(data);

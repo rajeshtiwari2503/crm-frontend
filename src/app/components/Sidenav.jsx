@@ -1014,7 +1014,7 @@ function Sidenav(props) {
 
   return (
     <>
-      {/* {value ? */}
+      {value ?
         <Box sx={{ display: 'flex' }}>
           <CssBaseline />
           <AppBar
@@ -1173,10 +1173,10 @@ function Sidenav(props) {
             <main>{children}</main>
           </Box>
         </Box>
-        {/* : <div className='h-[600px] flex justify-center items-center'>
+      : <div className='h-[600px] flex justify-center items-center'>
           <ReactLoader />
         </div>
-      } */}
+      }   
     </>
   );
 }

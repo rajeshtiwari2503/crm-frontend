@@ -308,8 +308,10 @@ const AddComplaint = () => {
       } else if (value?.user?.role === "DEALER") {
         setValue('dealerName', value?.user?.name)
         setValue('dealerId', value?.user?._id);
-      } else if (value?.user?.role === "BRAND") {
+      } else if (value?.user?.role === "BRAND ") {
         setValue('brandId', value?.user?._id);
+      }else if (value?.user?.role === "BRAND EMPLOYEE") {
+        setValue('brandId', value?.user?.brandId);
       }
 
     }
@@ -420,7 +422,7 @@ const AddComplaint = () => {
   };
   // console.log(products);
 
-  const filterProducts = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? products?.filter((f) => f?.userId === selectedBrand) : products?.filter((f) => f?.userId === value?.user?._id)
+  const filterProducts = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? products?.filter((f) => f?.userId === selectedBrand) :value?.user?.role === "BRAND EMPLOYEE"?products?.filter((f) => f?.userId === value?.user?.brandId): products?.filter((f) => f?.userId === value?.user?._id)
   return (
     <>
 

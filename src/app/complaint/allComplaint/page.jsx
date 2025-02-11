@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -14,15 +15,15 @@ const Service = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
-
+  const {user}=useUser()
   useEffect(() => {
     getAllComplaint()
     getAllServiceCenter()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+    
+    if (user) {
+      setValue(user);
     }
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllComplaint = async () => {
     try {

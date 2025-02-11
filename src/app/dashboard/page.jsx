@@ -35,6 +35,7 @@ const Dashboard = () => {
       const endPoint=user?.user.role==="ADMIN"? "/dashboardDetails"
       :user?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user?.user?._id}`
       :user?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user?.user?._id}`
+      :user?.user.role==="BRAND EMPLOYEE"?`/dashboardDetailsByBrandId/${user?.user?.brandId}`
       :user?.user.role==="USER"?`/dashboardDetailsByUserId/${user?.user?._id}`
       :user?.user.role==="TECHNICIAN"?`/dashboardDetailsByTechnicianId/${user?.user?._id}`
       :user?.user.role==="SERVICE"?`/dashboardDetailsBySeviceCenterId/${user?.user?._id}`
@@ -55,7 +56,7 @@ const Dashboard = () => {
       <>
         {value?.user?.role === "ADMIN" ?
           <AdminDashboard dashData={dashData} userData={value?.user} />
-          : value?.user?.role === "BRAND" ?
+          : value?.user?.role === "BRAND"|| value?.user?.role === "BRAND EMPLOYEE"  ?
             <BrandDashboard dashData={dashData} userData={value?.user} />
             : value?.user?.role === "SERVICE" ?
               <ServiceDashboard dashData={dashData} userData={value?.user} />

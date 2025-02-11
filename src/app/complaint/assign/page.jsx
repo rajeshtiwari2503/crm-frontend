@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import AssignComplaintList from './assignComplaintList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -16,16 +17,15 @@ const Assign = () => {
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
 
-  
+  const {user}=useUser()
   useEffect(() => {
     getAllComplaint()
     getAllTechnician()
     getAllSparepart()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+    if (user) {
+      setValue(user);
     }
-  }, [refresh])
+  }, [refresh,user])
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getComplaintsByAssign")

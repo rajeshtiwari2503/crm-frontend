@@ -114,6 +114,15 @@ const EmployeeList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Creator
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -124,6 +133,9 @@ const EmployeeList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.name}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+             
+               <TableCell>{row?.brandName?row?.brandName:"ADMIN"}</TableCell>
+               
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

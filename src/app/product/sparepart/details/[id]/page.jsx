@@ -52,7 +52,11 @@ const SparepartDetails = ({ params }) => {
             <div className='font-bold'>category  </div>
             <div>{spareParts?.category}</div>
             <div className='font-bold'>productModel  </div>
-            <div>{spareParts?.productModel}</div>
+            <div>
+            {spareParts?.products?.map((item,i)=>
+              <div key={i}>{item?.productName}</div>
+            )}
+            </div>
             <div className='font-bold'>skuNo  </div>
             <div>{spareParts?.skuNo}</div>
             <div className='font-bold'>description  </div>
@@ -65,6 +69,10 @@ const SparepartDetails = ({ params }) => {
             <div>{spareParts?.length}</div>
             <div className='font-bold'>status  </div>
             <div>{spareParts?.status}</div>
+            <div className='font-bold'>MRP  </div>
+            <div>{spareParts?.MRP}</div>
+            <div className='font-bold'>Best Price  </div>
+            <div>{spareParts?.bestPrice}</div>
             <div className='font-bold'>createdAt  </div>
             <div>{new Date(spareParts?.createdAt).toLocaleString()}</div>
             <div className='font-bold'>updatedAt  </div>

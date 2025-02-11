@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import VerificationComplaintList from './verificationComplaintList';
 import PincodeDistanceCalculator from './Distance';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -18,16 +19,20 @@ const Verification = () => {
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
 
-  
-  useEffect(() => {
+ const { user } = useUser();
+   // console.log("usercancel",user,value);
+   
+   
+     useEffect(() => {
+   
+       if (user) {
+         setValue(user)
+       }
     getAllComplaint()
     getAllTechnician()
     getAllSparepart()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, [refresh])
+    
+  }, [refresh,user])
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getComplaintsByFinalVerification")

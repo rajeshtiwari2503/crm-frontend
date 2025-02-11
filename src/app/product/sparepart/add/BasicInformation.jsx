@@ -224,6 +224,7 @@ function BasicInformation(props) {
     }
     
   }, [ ]);
+ 
    
     let products1 = props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId===value?.user?._id )
     // console.log(products1 );

@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import PendingComplaintList from './pendingList';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -17,14 +18,19 @@ const Pending = () => {
 
   const [value, setValue] = React.useState(null);
 
-  useEffect(() => {
+  const { user } = useUser();
+    // console.log("usercancel",user,value);
+    
+    
+      useEffect(() => {
+    
+        if (user) {
+          setValue(user)
+        }
     getAllComplaint()
     getAllTechnician()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, [refresh])
+    
+  }, [refresh,user])
   const getAllTechnician = async () => {
     try {
       let response = await http_request.get("/getAllTechnician")

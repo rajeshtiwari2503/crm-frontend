@@ -100,6 +100,7 @@ const ProductWarrantyPage = (props) => {
       setConfirmBoxView(true);
     };
   
+  
     return (
       <div>
         <Toaster />
@@ -201,7 +202,7 @@ const ProductWarrantyPage = (props) => {
                         <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                           <Visibility color="primary" />
                         </IconButton>
-                        {props?.user.role === "ADMIN" &&
+                        {props?.user?.role === "ADMIN" &&
                           <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <Delete color="error" />
                           </IconButton>

@@ -147,7 +147,7 @@ const { user } = useUser();
     getAllUserAndProducts()
     fetchComplaints()
     // applyFilters();
-  }, [ ])
+  }, [user ])
 // }, [filters,  startDate, endDate])
 
 // console.log(filteredComplaints,"gggggf");
@@ -223,7 +223,7 @@ const { user } = useUser();
     <Sidenav>
      {value?.user?.role==="DEALER" ? 
      <DealerReport  userData={value?.user}/>
-     :value?.user?.role==="BRAND" ? 
+     :value?.user?.role==="BRAND"|| value?.user?.role==="BRAND EMPLOYEE"? 
      <BrandReport userData={value?.user}/>
      : <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>

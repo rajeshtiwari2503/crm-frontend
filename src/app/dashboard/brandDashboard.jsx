@@ -43,7 +43,7 @@ const router=useRouter()
           }
   
           // Filtering data by userData._id
-          const userId = userData?._id;
+          const userId = userData?.role==="BRAND"? userData?._id:userData?.brandId;
           if (!userId) {
               console.error("userData._id is not available");
               return;
@@ -75,7 +75,7 @@ const router=useRouter()
   
   const getWarrantyById = async () => {
     try {
-      let response = await http_request.get(`/getAllProductWarrantyByBrandIdTotal/${userData?._id}`)
+      let response = await http_request.get(`/getAllProductWarrantyByBrandIdTotal/${userData?.role==="BRAND"?userData?._id:userData?.brandId}`)
       let { data } = response
       // console.log(data);
       
@@ -119,6 +119,7 @@ const router=useRouter()
   const filterData = userData?.role === "ADMIN" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
       : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)

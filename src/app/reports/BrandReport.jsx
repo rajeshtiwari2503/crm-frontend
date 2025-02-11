@@ -20,11 +20,12 @@ const BrandReport = (props) => {
     useEffect(() => {
         fetchComplaints();
     }, []);
-
+ 
     const fetchComplaints = async () => {
         try {
             const response = await http_request.get('/getAllComplaint');
-            const dealerComplaints = response?.data?.filter((item) => item?.brandId === props?.userData?._id);
+            const dealerComplaints = props?.userData?.role==="BRAND"?response?.data?.filter((item) => item?.brandId === props?.userData?._id)
+           : response?.data?.filter((item) => item?.brandId === props?.userData?.brandId)
             setComplaints(dealerComplaints);
             // setFilteredComplaints(dealerComplaints);
         } catch (error) {

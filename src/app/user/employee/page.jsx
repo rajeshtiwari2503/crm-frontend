@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import { ReactLoader } from '@/app/components/common/Loading';
 import EmployeeList from './employeeList';
+import { useUser } from '@/app/components/UserContext';
  
 
 
@@ -13,11 +14,11 @@ const Employee = () => {
 
   const [employees, setEmployees] = useState([])
   const [refresh, setRefresh] = useState("")
-
+const { user } = useUser()
   useEffect(() => {
     getAllEmployees()
 
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllEmployees = async () => {
     try {
@@ -31,8 +32,9 @@ const Employee = () => {
     }
   }
 
-  const data = employees?.map((item, index) => ({ ...item, i: index + 1 }));
-
+  const data1 = user?.user?.role==="ADMIN"? employees
+  :employees?.filter((f)=>f?.brandId===user?.user?._id)
+const data=data1?.map((item, index) => ({ ...item, i: index + 1 }))
   const RefreshData = (data) => {
     setRefresh(data)
   }
@@ -41,7 +43,7 @@ const Employee = () => {
     <Sidenav>
       <Toaster />
       <>
-      <EmployeeList data={data} RefreshData={RefreshData} />
+      <EmployeeList data={data} user={user?.user} RefreshData={RefreshData} />
        
       </>
     </Sidenav>

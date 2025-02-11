@@ -149,14 +149,13 @@ export default function SignIn() {
                         className={`block w-full p-3 pr-10 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.password ? "border-red-500" : ""}`}
                       />
                       {/* Eye Icon (Properly Positioned) */}
-                      <IconButton
+                      <div
                         onClick={() => setShowPassword(!showPassword)}
                         className="absolute inset-y-0 right-2 flex items-center"
-                        tabIndex={-1} // Prevents focus on tab key
-                        edge="end"
+                        
                       >
                         {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
-                      </IconButton>
+                      </div>
                     </div>
  
                     {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}

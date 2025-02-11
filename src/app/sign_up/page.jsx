@@ -100,8 +100,12 @@ const SignUp = () => {
             </div>
             <div className={selectedItem === "SERVICE CENTER" || selectedItem === "BRAND" ? "col-span-2 shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8" : "shadow-lg bg-[#ade1e4] rounded-xl flex min-h-full flex-1 flex-col justify-center px-6 py-4 lg:px-8"}>
               <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <div className="flex justify-center">
-                  <InputIcon fontSize="large" />
+              <div className="flex justify-center  ">
+                  <img
+                    src="/Logo.png" // Replace with actual logo path
+                    alt="Servsy Logo"
+                    className="h-16 w-auto rounded-md" // Adjust size as needed
+                  />
                 </div>
                 <h2 className={selectedItem === "SERVICE CENTER" ? "  w-[100%] mt-3 text-center text-xl font-bold leading-9 tracking-tight text-gray-900" : " w-full mt-3 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"}>
                   Create a new {selectedItem?.toLocaleLowerCase()} account

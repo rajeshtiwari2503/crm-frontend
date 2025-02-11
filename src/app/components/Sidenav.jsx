@@ -317,9 +317,10 @@ function Sidenav(props) {
   const handleLogout = () => {
     localStorage.removeItem("user")
     router.push("/sign_in")
+     
   }
 
-
+  
 
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"

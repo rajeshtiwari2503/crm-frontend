@@ -35,6 +35,7 @@ const FilterOptions = ({ filters,userValue, setFilters,userData }) => {
     { value: 'PENDING', label: 'PENDING' },
     { value: 'ASSIGN', label: 'ASSIGN' },
     { value: 'IN PROGRESS', label: 'IN PROGRESS' },
+    { value: 'PART PENDING', label: 'PART PENDING' },
     { value: 'COMPLETED', label: 'COMPLETED' },
     { value: 'CANCELED', label: 'CANCELED' },
     { value: 'FINAL VERIFICATION', label: 'FINAL VERIFICATION' },

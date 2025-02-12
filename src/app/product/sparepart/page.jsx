@@ -19,7 +19,7 @@ const Sparepart = () => {
          setUserData(user);
        }
       getAllSpareparts()
-    }, [refresh])
+    }, [refresh,user])
   
   
     const getAllSpareparts = async () => {
@@ -29,7 +29,8 @@ const Sparepart = () => {
       setSpareparts (data)
     }
     const filterData = userData?.user.role === "ADMIN" ? spareparts : userData?.user.role === "BRAND" ? spareparts?.filter((f) =>
-      f?.brandId === userData?.user?._id) : spareparts
+      f?.brandId === userData?.user?._id) : userData?.user.role === "BRAND EMPLOYEE"?spareparts?.filter((f) =>
+        f?.brandId === userData?.user?.brandId): []
   
     const data = filterData?.map((item, index) => ({ ...item, i: index + 1}));
 

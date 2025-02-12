@@ -226,7 +226,7 @@ function BasicInformation(props) {
   }, [ ]);
  
    
-    let products1 = props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId===value?.user?._id )
+    let products1 =value?.user?.role==="BRAND EMPLOYEE"?props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId===value?.user?.brandId ) :props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId===value?.user?._id )
     // console.log(products1 );
     const [selectedProducts, setSelectedProducts] = useState([]);
     const handleProductChange = (e) => {

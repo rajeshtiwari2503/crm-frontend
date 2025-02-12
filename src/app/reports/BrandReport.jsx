@@ -39,6 +39,7 @@ const BrandReport = (props) => {
             prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
         );
     };
+console.log(complaints);
 
     const applyFilters = () => {
         let filtered = complaints;

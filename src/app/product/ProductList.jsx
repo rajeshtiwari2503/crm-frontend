@@ -14,6 +14,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 
 import AddProduct from './addProduct';
 import { ReactLoader } from '../components/common/Loading';
+import { useUser } from '../components/UserContext';
 
 const ProductList = (props) => {
 
@@ -35,20 +36,21 @@ const ProductList = (props) => {
 
   const [userData, setUserData] = React.useState(null);
   const [userProduct, setUserProduct] = React.useState([]);
-
+  
+  const {user}=useUser()
   React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      const userData4 = JSON.parse(storedValue)
+    
+    if (user) {
+      const userData4 = user
       
       
-      setUserData(JSON.parse(storedValue));
+      setUserData(user);
       if (userData4?.user?.role === "USER") {
         getAllUserProducts(userData4?.user?._id)
       }
 
     }
-  }, []);
+  }, [user]);
 
   const getAllUserProducts = async (id) => {
     try {
@@ -62,11 +64,15 @@ const ProductList = (props) => {
 
     }
   }
-  // console.log(userProduct);
+  // console.log(userData?.user?._id);
 
-  const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  const filterData = userData?.user?.role==="BRAND EMPLOYEE" ?props?.data?.filter((item) => item?.userId === userData?.user?.brandId) :props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  // console.log("filterData",filterData);
+  
   const filUserData=[...userProduct,...filterData]
+  // console.log("filUserData",filUserData);
   const data2 = userData?.user?.role === "ADMIN" ? props?.data : filUserData;
+  // console.log("data2",data2);
   const data = data2?.map((item, index) => ({ ...item, i: index + 1}));
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -231,7 +237,7 @@ const ProductList = (props) => {
                       Status
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'purchaseDate'}
                       direction={sortDirection}
@@ -239,7 +245,7 @@ const ProductList = (props) => {
                     >
                       Purchase Date
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -268,17 +274,17 @@ const ProductList = (props) => {
                     {/* <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell> */}
                     <TableCell>{row?.warrantyInDays }</TableCell>
                     <TableCell>{row?.status || (row?.isActivated === true ? "ACTIVE" : "INACTIVE")}</TableCell>
-                    <TableCell> {new Date(row?.purchaseDate || row?.activationDate)?.toLocaleString()}</TableCell>
+                    {/* <TableCell> {new Date(row?.purchaseDate || row?.activationDate)?.toLocaleString()}</TableCell> */}
                     <TableCell>{new Date(row?.createdAt || row?.activationDate)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
                       <div className='flex'>
 
-                        <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
+                        {/* <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
                           Request Service
                         </div>
                         <div onClick={() => handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
                           View Warranty
-                        </div>
+                        </div> */}
                         {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
                       </IconButton> */}

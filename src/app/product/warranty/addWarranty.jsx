@@ -111,7 +111,7 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
     };
 
 
-    const brandData = user?.role === "ADMIN" ? brand : brand?.filter((f) => f?._id === user?._id)
+    const brandData = user?.role === "ADMIN" ? brand :user?.role === "BRAND EMPLOYEE" ? brand?.filter((f) => f?._id === user?.brandId):brand?.filter((f) => f?._id === user?._id)
     return (
         <div className="max-w-4xl mx-auto">
             {loadind === true ? <div className='w-[400px]'><ReactLoader /></div>

@@ -51,12 +51,15 @@ const SparepartDetails = ({ params }) => {
             <div>{spareParts?.partNo}</div>
             <div className='font-bold'>category  </div>
             <div>{spareParts?.category}</div>
+            
             <div className='font-bold'>productModel  </div>
             <div>
             {spareParts?.products?.map((item,i)=>
               <div key={i}>{item?.productName}</div>
             )}
             </div>
+            <div className='font-bold'>Brand Name  </div>
+            <div>{spareParts?.brandName}</div>
             <div className='font-bold'>skuNo  </div>
             <div>{spareParts?.skuNo}</div>
             <div className='font-bold'>description  </div>

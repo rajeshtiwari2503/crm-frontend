@@ -5,18 +5,18 @@ import { Button, Chip, IconButton } from '@mui/material';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useUser } from '@/app/components/UserContext';
 
 const AddNature = ({ existingNature, product, RefreshData, onClose }) => {
     const [loading, setLoading] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState([]); // Array to hold selected products (productId and productName)
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
-
+const {user}=useUser()
     const AddProductCategory = async (data) => {
         try {
-            const storedValue = localStorage.getItem("user");
-              const userDa=JSON.parse(storedValue)
+             
             setLoading(true);
-            const reqData=userDa?.user?.role==="BRAND"?{...data,brandName:userDa?.user?.brandName,brandId:userDa?.user?._id}:data
+            const reqData=user?.user?.role==="BRAND"?{...data,brandName:user?.user?.brandName,brandId:user?.user?._id}:user?.user?.role==="BRAND EMPLOYEE"?{...data,brandName:user?.user?.brandName,brandId:user?.user?.brandId}:data
             const endpoint = existingNature?._id ? `/editComplaintNature/${existingNature._id}` : '/addComplaintNature';
             const response = existingNature?._id ? await http_request.patch(endpoint, reqData) : await http_request.post(endpoint, reqData);
             const { data: responseData } = response;

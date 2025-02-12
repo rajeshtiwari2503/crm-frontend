@@ -372,8 +372,14 @@ const router=useRouter()
             formData.append("MRP", sparePart?.MRP);
             formData.append("bestPrice", sparePart?.bestPrice);
             // formData.append("technician",technician);
-            formData.append("brandId", obj?.user?._id);
+            if(obj?.user?.role==="BRAND EMPLOYEE"){
+                formData.append("brandId", obj?.user?.brandId);
             formData.append("brandName",obj?.user?.brandName);
+            }else{
+                formData.append("brandId", obj?.user?._id);
+                formData.append("brandName",obj?.user?.brandName);
+            }
+         
             formData.append("skuNo", sparePart?.skuNo);
             formData.append("partNo", sparePart?.partNo);
             formData.append("length", +sparePart?.length);

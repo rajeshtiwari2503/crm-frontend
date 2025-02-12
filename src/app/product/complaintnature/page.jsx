@@ -37,12 +37,14 @@ const ComplaintNature = () => {
   }
 
   const filterData = userData?.user.role === "ADMIN" ? complaintNature : userData?.user.role === "BRAND" ? complaintNature?.filter((f) =>
-    f?.brandId === userData?.user?._id) : complaintNature
+    f?.brandId === userData?.user?._id) : userData?.user.role === "BRAND EMPLOYEE" ? complaintNature?.filter((f) =>
+      f?.brandId === userData?.user?.brandId):[]
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const filterProduct = userData?.user.role === "ADMIN" ? product : userData?.user.role === "BRAND" ? product?.filter((f) =>
-    f?.brandId === userData?.user?._id) : product
+    f?.brandId === userData?.user?._id) : userData?.user.role === "BRAND EMPLOYEE" ? product?.filter((f) =>
+      f?.brandId === userData?.user?.brandId):[]
   const RefreshData = (data) => {
     setRefresh(data)
   }

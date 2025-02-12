@@ -39,8 +39,8 @@ const AddProduct = ({ existingProduct, RefreshData, subCategories, onClose, user
                 categoryName: selectedCategory?.categoryName,
                 categoryId: selectedCategory?._id,
 
-                userId: userData?.user?._id,
-                userName: userData?.user?.name,
+                userId: userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandId:userData?.user?._id,
+                userName: userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandName:userData?.user?.name,
                 warrantyYears: selectedYear,
                 // warrantyStatus:calculateWarrantyStatus(data.purchaseDate, selectedYear)
             };
@@ -112,8 +112,8 @@ const AddProduct = ({ existingProduct, RefreshData, subCategories, onClose, user
         if (selectedCat) {
             setValue('categoryName', selectedCat?.categoryName);
             setValue('categoryId', selectedCat?._id);
-            setValue('productBrand', userData?.user?.brandName);
-            setValue('brandId', userData?.user?._id);
+            setValue('productBrand', userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandName:userData?.user?.brandName);
+            setValue('brandId', userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandId:userData?.user?._id);
             const filterSabCat = subCategories?.filter((f) => f?.categoryId === selectedCat?._id)
             //   console.log(filterSabCat);
 

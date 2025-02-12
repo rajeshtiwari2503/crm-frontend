@@ -11,6 +11,7 @@ import ProductWarrantyForm from './addWarranty';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import http_request from '.././../../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
+import { useUser } from '@/app/components/UserContext';
 
 const ProductWarrantyPage = (props) => {
     const router = useRouter();
@@ -25,17 +26,16 @@ const ProductWarrantyPage = (props) => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editData, setEditData] = useState(null);
     const [loading, setLoading] = useState(false);
-  
+  const {user}=useUser()
     useEffect(() => {
       fetchProductWarranty();
-    }, [page, rowsPerPage]); // Fetch data when page or rowsPerPage changes
+    }, [page, rowsPerPage,user]); // Fetch data when page or rowsPerPage changes
   
     const fetchProductWarranty = async () => {
      
-      const storedValue = localStorage.getItem("user");
-      const user=JSON.parse(storedValue)
+      
        
-      const reqData=user?.user?.role==="ADMIN"? `/getAllProductWarrantyWithPage?page=${page + 1}&limit=${rowsPerPage}`  :  `/getAllProductWarrantyByIdWithPage/${user?.user?._id}?page=${page}&limit=${rowsPerPage}`
+      const reqData=user?.user?.role==="ADMIN"? `/getAllProductWarrantyWithPage?page=${page + 1}&limit=${rowsPerPage}`  : user?.user?.role==="BRAND EMPLOYEE"? `/getAllProductWarrantyByIdWithPage/${user?.user?.brandId}?page=${page}&limit=${rowsPerPage}`:`/getAllProductWarrantyByIdWithPage/${user?.user?._id}?page=${page}&limit=${rowsPerPage}`
       try {
         setLoading(true);
         const response = await http_request.get(

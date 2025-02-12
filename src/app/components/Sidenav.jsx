@@ -719,7 +719,8 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
+            
+            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"|| (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")
               ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton>
                   <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
@@ -1040,10 +1041,10 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                  {value?.user?.role === "ADMIN" ? <div className='font-bold text-xl'  >
+                   <div className='font-bold text-xl'  >
                     Dashboard
                   </div>
-                    : ""}
+                   
                   {/* <div className='font-bold text-xl ms-8 flex items-center'  >
                     <Wallet fontSize='large' color='secondary' />
                     <div className='text-sm'>1000.0 INR</div>

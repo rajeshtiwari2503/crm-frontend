@@ -154,6 +154,7 @@ const router=useRouter()
   const options = {
     title: "Complaints Summary",
   };
+// console.log("dashData",dashData);
 
   return (
     <>

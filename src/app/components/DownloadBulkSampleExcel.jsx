@@ -1,7 +1,7 @@
 import React from 'react';
 import { utils, writeFile } from 'xlsx';
 
-const DownloadExcel = ({ data, fileName, fieldsToInclude }) => {
+const DownloadBulkSampleExcel = ({ data, fileName, fieldsToInclude }) => {
   // Helper function to filter data
   const filterFields = (data, fields) => {
     return data.map(item => {
@@ -25,29 +25,29 @@ const DownloadExcel = ({ data, fileName, fieldsToInclude }) => {
     writeFile(workbook, `${fileName}.xlsx`);
   };
 
-  const handleDownload = () => {
-    const filteredData = filterFields(data, fieldsToInclude);
-    exportToExcel(filteredData, fileName);
-  };
   // const handleDownload = () => {
-  //   console.log("Fields to include:", fieldsToInclude); // Debugging
-  
-  //   if (!Array.isArray(fieldsToInclude) || fieldsToInclude.length === 0) {
-  //     console.warn("No valid fields specified, exporting full data.");
-  //     fieldsToInclude = data[0]; // Use all column headers as default
-  //   }
-  
-  //   const formattedData = data.slice(1).map(row => {
-  //     let obj = {};
-  //     data[0].forEach((header, index) => {
-  //       obj[header] = row[index];
-  //     });
-  //     return obj;
-  //   });
-  
-  //   const filteredData = filterFields(formattedData, fieldsToInclude);
+  //   const filteredData = filterFields(data, fieldsToInclude);
   //   exportToExcel(filteredData, fileName);
   // };
+  const handleDownload = () => {
+    console.log("Fields to include:", fieldsToInclude); // Debugging
+  
+    if (!Array.isArray(fieldsToInclude) || fieldsToInclude.length === 0) {
+      console.warn("No valid fields specified, exporting full data.");
+      fieldsToInclude = data[0]; // Use all column headers as default
+    }
+  
+    const formattedData = data.slice(1).map(row => {
+      let obj = {};
+      data[0].forEach((header, index) => {
+        obj[header] = row[index];
+      });
+      return obj;
+    });
+  
+    const filteredData = filterFields(formattedData, fieldsToInclude);
+    exportToExcel(filteredData, fileName);
+  };
   
   
   
@@ -62,4 +62,4 @@ const DownloadExcel = ({ data, fileName, fieldsToInclude }) => {
   );
 };
 
-export default DownloadExcel;
+export default DownloadBulkSampleExcel;

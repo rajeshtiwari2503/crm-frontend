@@ -206,9 +206,10 @@ const ComplaintList = (props) => {
     }else{
       setValue('status', "PENDING");
     }
-   
+    
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
     setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
+    setValue('serviceCenterContact', selectedServiceCenter?.contact);
     setValue('assignServiceCenterTime', new Date());
 
   };

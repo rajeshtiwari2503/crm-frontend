@@ -2,12 +2,12 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Sidenav from '@/app/components/Sidenav';
-import DownloadExcel from '@/app/components/DownLoadExcel';
 import http_request from "../../../../http-request"
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { useUser } from '@/app/components/UserContext';
+import DownloadBulkSampleExcel from '@/app/components/DownloadBulkSampleExcel';
 const BulkServiceRequestForm = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -91,7 +91,7 @@ const BulkUpload = async (data) => {
           <h2 className="text-2xl font-bold mb-4">Bulk Service Request Form</h2>
           <div className="mb-4">
 
-            <DownloadExcel data={data} fileName="complaint" />
+            <DownloadBulkSampleExcel data={data} fileName="complaint" />
 
           </div>
 

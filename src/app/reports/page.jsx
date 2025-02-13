@@ -273,6 +273,8 @@ const { user } = useUser();
                   "serialNo",
                   "purchaseDate",
                   "assignServiceCenter", 
+                  "assignTechnician", 
+                  "technicianContact", 
                   "paymentBrand", 
                   "updatedAt",
                   "createdAt",

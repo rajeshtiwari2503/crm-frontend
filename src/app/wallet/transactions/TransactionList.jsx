@@ -20,7 +20,7 @@ import {
     TextField,
     CircularProgress,
 } from '@mui/material';
-import { Visibility, Edit as EditIcon, Delete as DeleteIcon, Close, Wallet } from '@mui/icons-material';
+import { Visibility, Edit as EditIcon, Delete as DeleteIcon, Close, Wallet, Payments } from '@mui/icons-material';
 import http_request from '../../../../http-request'
 import { useForm } from 'react-hook-form';
 import { Toaster } from 'react-hot-toast';
@@ -36,7 +36,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
         "ifsc": "UTIB0CCH274",
         "account_number": "4564568731430371"
     }
- 
+
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
@@ -283,16 +283,16 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
 
     const handleWallet = async () => {
         try {
-            const resData = value?.role==="SERVICE"?{
-                serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName,serviceCenterName: value?.name ,
+            const resData = value?.role === "SERVICE" ? {
+                serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName, serviceCenterName: value?.name,
                 contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
                 bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
             }
-           : {
-                brandId: value?._id, brandName: value?.brandName, 
-                contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
-                bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
-            }
+                : {
+                    brandId: value?._id, brandName: value?.brandName,
+                    contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
+                    bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
+                }
             let response = await http_request.post("/addWallet", resData)
             let { data } = response
             ToastMessage(data)
@@ -319,7 +319,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
     const UpdateStatus = async () => {
         try {
             if (image === "") {
-                ToastMessage({staus:true,msg:"Please select image"}); 
+                ToastMessage({ staus: true, msg: "Please select image" });
             }
             setLoading(true);
             const formData = new FormData();
@@ -331,7 +331,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
             RefreshData(responseData);
             setIsUpdateModalOpen(false)
             setImage("")
-           
+
         } catch (err) {
             setLoading(false);
 
@@ -340,7 +340,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
     };
 
     // console.log(wallet);
-    
+
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">
@@ -353,7 +353,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                     </div>
                 ) :
                     <>
-                        {value?.role === "ADMIN" ||value?.role === "BRAND" ? ""
+                        {value?.role === "ADMIN" || value?.role === "BRAND" ? ""
                             :
                             <div>
                                 {wallet ?
@@ -467,6 +467,15 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                             </TableCell>
                                             <TableCell>
                                                 <TableSortLabel
+                                                    active={sortBy === 'payScreenshot'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('payScreenshot')}
+                                                >
+                                                    Pay Screenshot
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
                                                     active={sortBy === 'status'}
                                                     direction={sortDirection}
                                                     onClick={() => handleSort('status')}
@@ -483,20 +492,28 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                                     Payment Release Date
                                                 </TableSortLabel>
                                             </TableCell>
-                                            {value?.role === "ADMIN" ? <TableCell>Actions</TableCell> : null}
+                                            {value?.role === "ADMIN" || value?.role === "BRAND" ? <TableCell>Actions</TableCell> : null}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {sortedData?.map((row, index) => (
                                             <TableRow key={index} hover>
                                                 <TableCell>{row.i}</TableCell>
-                                                <TableCell>{row?.serviceCenterName || row?.userName||row?.name}</TableCell>
+                                                <TableCell>{row?.serviceCenterName || row?.userName || row?.name}</TableCell>
                                                 <TableCell>{row?.bankName}</TableCell>
                                                 <TableCell>{row?.name}</TableCell>
                                                 <TableCell>{row?.ifscCode}</TableCell>
                                                 <TableCell>{row?.accountNo}</TableCell>
 
                                                 <TableCell>{row.paidAmount} INR</TableCell>
+                                                <TableCell>
+                                                    {row.payScreenshot ? (
+                                                        <img src={row.payScreenshot} alt="Payment Screenshot" width={50} height={50} style={{ borderRadius: '5px' }} />
+                                                    ) : (
+                                                        "No Image"
+                                                    )}
+                                                </TableCell>
+
                                                 <TableCell style={{ textAlign: "center" }} >
                                                     <div className={row?.status === "PROCESSING" ? 'bg-red-400   text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
                                                         <div>{row.status}</div>
@@ -515,10 +532,12 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                                     </IconButton>
                                                 </TableCell> */}
                                                 <TableCell>
-                                                    {value?.role === "ADMIN" || (value?.role === "BRAND" && value?.brandSaas === "YES")?
+                                                    {value?.role === "ADMIN" || (value?.role === "BRAND" && value?.brandSaas === "YES") ?
                                                         <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
-                                                            <EditIcon color='success' />
+                                                            <Payments color='success' />
+
                                                         </IconButton>
+
                                                         : null
                                                     }
                                                 </TableCell>
@@ -555,7 +574,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                     <Close />
                 </IconButton>
                 <DialogContent>
-                    <form onSubmit={ UpdateStatus}>
+                    <form onSubmit={UpdateStatus}>
                         <div className="mb-1 w-[350px]">
 
                             <div>
@@ -591,7 +610,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                 className={`border border-green-500 text-green-500 hover:bg-[#2e7d32] hover:text-white py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
                                 disabled={uploading}
                                 style={{ pointerEvents: uploading ? 'none' : 'auto' }}
-                                onClick={ UpdateStatus}
+                                onClick={UpdateStatus}
                             >
                                 Update
                             </button>

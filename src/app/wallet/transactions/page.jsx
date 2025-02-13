@@ -18,18 +18,16 @@ const transactions = ({ }) => {
 
 
   useEffect(() => {
-
-    if (user) {
+    if (user?.user?._id) {
       setValue(user);
       getTransactions();
-      getWalletById()
-      getWalletDetails()
+      getWalletById();
+      getWalletDetails();
     }
-    
      
   
    
-  }, [refresh, user]);
+  }, [refresh, user ]);
 
   const getWalletById = async () => {
     try {
@@ -88,7 +86,7 @@ const transactions = ({ }) => {
 
   const transData =   transactions?.map((item, index) => ({ ...item, i: index + 1 })) 
 
-console.log("transData",transData);
+// console.log("transData",transData);
 
   return (
     <Sidenav>

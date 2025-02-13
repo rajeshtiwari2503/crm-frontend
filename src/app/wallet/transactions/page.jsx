@@ -21,21 +21,21 @@ const transactions = ({ }) => {
 
     if (user) {
       setValue(user);
-     
-    }
-    if (value) {
       getTransactions();
       getWalletById()
       getWalletDetails()
     }
     
+     
+  
+   
   }, [refresh, user]);
 
   const getWalletById = async () => {
     try {
       setLoading(true);
 
-      let response = await http_request.get(`/getWalletByCenterId/${value?.user?._id}`);
+      let response = await http_request.get(`/getWalletByCenterId/${user?.user?._id}`);
       let { data } = response;
       setWallet(data)
       setLoading(false);
@@ -48,7 +48,7 @@ const transactions = ({ }) => {
     try {
 
       setLoading(true);
-      const response = await http_request.get(`/bankDetailByUser/${value?.user?._id}`);
+      const response = await http_request.get(`/bankDetailByUser/${user?.user?._id}`);
       const { data } = response
       setBankDetails(data);
       setLoading(false);
@@ -59,20 +59,20 @@ const transactions = ({ }) => {
   };
   const getTransactions = async () => {
     try {
-      const endPoint = value?.user?.role === "ADMIN" 
+      const endPoint = user?.user?.role === "ADMIN" 
         ? `/getAllTransaction` 
         : value?.user?.role === "BRAND" 
-        ? `/getTransactionByBrandId/${value?.user?._id}` 
-        : `/getTransactionByCenterId/${value?.user?._id}`;
+        ? `/getTransactionByBrandId/${user?.user?._id}` 
+        : `/getTransactionByCenterId/${user?.user?._id}`;
   
-      console.log("endPoint", endPoint);
+      // console.log("endPoint", endPoint);
       setLoading(true);
       
       // Use endPoint variable correctly here
       const response = await http_request.get(endPoint);
       
       let { data } = response;
-      console.log("data", data);
+      
       setTransactions(data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
@@ -88,7 +88,7 @@ const transactions = ({ }) => {
 
   const transData =   transactions?.map((item, index) => ({ ...item, i: index + 1 })) 
 
-// console.log("transData",transData);
+console.log("transData",transData);
 
   return (
     <Sidenav>

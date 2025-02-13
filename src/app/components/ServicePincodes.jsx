@@ -37,6 +37,8 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
         pincodes1 = [...new Set([selectedArea])];
     }
   const pincodes = pincodes1.join(',');
+  console.log("pincodes",pincodes);
+  
     try {
         setLoading(true);
 
@@ -172,8 +174,8 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
                                 <option value=" ">Select Area</option> {/* Include All Option */}
                                 <option value="All">All</option> {/* Include All Option */}
                                 {jsonData[selectedState][selectedDistrict].map((area, index) => (
-                                    <option key={index} value={area.areaName}>
-                                        {area.areaName}
+                                    <option key={index} value={area.pincode}>
+                                        {area.pincode}
                                     </option>
                                 ))}
                             </select>

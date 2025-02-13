@@ -129,8 +129,8 @@ const BulkUpload = async (data) => {
 
             {/* Submit Button */}
             <div className="mb-4">
-              <button onClick={handleSubmit(onSubmit)} className="w-full p-2 bg-blue-500 text-white rounded-md">
-                {loading?"Submitting":"Submit"}
+              <button   disabled={loading}onClick={handleSubmit(onSubmit)} className="w-full p-2 bg-blue-500 text-white rounded-md">
+                {loading?"Submitting......":"Submit"}
               </button>
             </div>
 

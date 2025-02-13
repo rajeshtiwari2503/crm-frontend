@@ -1,6 +1,6 @@
 
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import http_request from '../../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
@@ -19,11 +19,16 @@ const AddEmployee = () => {
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
     // console.log("user",user);
 
+
+useEffect(()=>{
+
+},[user])
+
     const RegiterEmployee = async (reqdata) => {
         try {
             setLoading(true)
             const reqData2 = user?.user?.role === "ADMIN" ? reqdata : { ...reqdata, brandId: user?.user?._id, brandName: user?.user?.brandName,role:"BRAND EMPLOYEE" }
-
+ 
 
             let response = await http_request.post('/employeeRegistration', reqData2)
             const { data } = response

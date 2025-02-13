@@ -78,7 +78,7 @@ const DealerList = (props) => {
         {props?.report === true ? ""
           : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
-            <div className=' ml-2 '>Add Brand</div>
+            <div className=' ml-2 '>Add Dealer</div>
           </div>
         }
       </div>

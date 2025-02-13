@@ -36,6 +36,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
         "ifsc": "UTIB0CCH274",
         "account_number": "4564568731430371"
     }
+ 
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
@@ -282,12 +283,16 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
 
     const handleWallet = async () => {
         try {
-            const resData = {
+            const resData = value?.role==="SERVICE"?{
                 serviceCenterId: value?._id, serviceCenterName: value?.serviceCenterName,serviceCenterName: value?.name ,
                 contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
                 bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
             }
-
+           : {
+                brandId: value?._id, brandName: value?.brandName, 
+                contact: +(value?.contact), email: value?.email, accountHolderName: bankDetails?.accountHolderName,
+                bankDetailId: bankDetails?._id, ifsc: bankDetails?.IFSC, accountNumber: bankDetails?.accountNumber
+            }
             let response = await http_request.post("/addWallet", resData)
             let { data } = response
             ToastMessage(data)
@@ -348,7 +353,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                     </div>
                 ) :
                     <>
-                        {value?.role === "ADMIN" ? ""
+                        {value?.role === "ADMIN" ||value?.role === "BRAND" ? ""
                             :
                             <div>
                                 {wallet ?
@@ -485,7 +490,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                         {sortedData?.map((row, index) => (
                                             <TableRow key={index} hover>
                                                 <TableCell>{row.i}</TableCell>
-                                                <TableCell>{row?.serviceCenterName || row?.userName}</TableCell>
+                                                <TableCell>{row?.serviceCenterName || row?.userName||row?.name}</TableCell>
                                                 <TableCell>{row?.bankName}</TableCell>
                                                 <TableCell>{row?.name}</TableCell>
                                                 <TableCell>{row?.ifscCode}</TableCell>
@@ -510,7 +515,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                                     </IconButton>
                                                 </TableCell> */}
                                                 <TableCell>
-                                                    {value?.role === "ADMIN" ?
+                                                    {value?.role === "ADMIN" || (value?.role === "BRAND" && value?.brandSaas === "YES")?
                                                         <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
                                                             <EditIcon color='success' />
                                                         </IconButton>

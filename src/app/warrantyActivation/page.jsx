@@ -541,6 +541,13 @@ const ActivateWarrantyButton = () => {
         : <div className="flex justify-center items-center min-h-screen bg-white p-6">
           <Toaster />
           <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
+          <div className="flex justify-center mb-5 ">
+                  <img
+                    src="/Logo.png" // Replace with actual logo path
+                    alt="Servsy Logo"
+                    className="h-16 w-auto rounded-md" // Adjust size as needed
+                  />
+                </div>
             <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
             <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
 

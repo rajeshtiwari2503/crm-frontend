@@ -51,7 +51,7 @@ const filData=value?.user?.role==="BRAND"?service?.filter((f)=>f?.brandId===valu
     <Sidenav>
       <Toaster />
       <>
-        <ServiceList data={data}   RefreshData={RefreshData} />
+        <ServiceList data={data} user={value?.user}  RefreshData={RefreshData} />
      
       </>
     </Sidenav>

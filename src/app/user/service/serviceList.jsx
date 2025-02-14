@@ -1,15 +1,17 @@
- "use client"
+"use client"
 import React, { useMemo, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Search, Visibility } from '@mui/icons-material';
+import { Add, PictureAsPdf, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const ServiceList = (props) => {
 
@@ -84,19 +86,69 @@ const ServiceList = (props) => {
   const handleEdit = (id) => {
     router.push(`/user/service/edit/${id}`);
   };
+
+
+  // Function to download a single service center info as PDF
+  const downloadSinglePDF = (serviceCenter) => {
+    const doc = new jsPDF();
+    doc.text("Service Center Details", 10, 10);
+    doc.autoTable({
+      startY: 20,
+      head: [["Field", "Details"]],
+      body: [
+        ["Service Name", serviceCenter?.serviceCenterName],
+        ["Address", serviceCenter?.streetAddress],
+        ["City", serviceCenter?.city],
+        ["Pincode", serviceCenter?.postalCode],
+        ["Contact", serviceCenter?.contact],
+       
+      ],
+    });
+    doc.save(`${serviceCenter?.serviceCenterName}_Details.pdf`);
+  };
+
+  // Function to download all service centers as a single PDF
+  const downloadAllPDF = () => {
+    const doc = new jsPDF();
+    doc.text("All Service Centers", 10, 10);
+    doc.autoTable({
+      startY: 20,
+      head: [["ID", "Service Name",   "Address", "City", "Pincode", "Contact"]],
+      body: data.map((row, index) => [
+        index + 1,
+        row?.serviceCenterName,
+        row?.streetAddress,
+        row?.city,
+        row?.postalCode,
+        row?.contact,
+      ]),
+    });
+    doc.save("All_Service_Centers.pdf");
+  };
+  
+
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Service Information</div>
-        {props?.report === true ? ""
-          : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-            <Add style={{ color: "white" }} />
-            <div className=' ml-2 '>Add Service</div>
-          </div>
-        }
+        <div className="flex">
+          {props?.user?.role === "ADMIN" && <button onClick={downloadAllPDF} className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+            <PictureAsPdf className="mr-2" />
+          </button>
+          }
+          {!props?.report && (
+            <div
+              onClick={() => router.push("/user/service/add")}
+              className="ml-3 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white items-center"
+            >
+              <Add style={{ color: "white" }} />
+              <div className="ml-2">Add Service</div>
+            </div>
+          )}
+        </div>
       </div>
-       <div className="flex items-center mb-3">
+      <div className="flex items-center mb-3">
         <Search className="text-gray-500" />
         <input
           type="text"
@@ -180,7 +232,7 @@ const ServiceList = (props) => {
                     <TableCell>{row?.serviceCenterType}</TableCell>
                     <TableCell>{row?.city}</TableCell>
                     <TableCell>{row?.contact}</TableCell>
-                    <TableCell>
+                    <TableCell style={{ display: "flex" }}>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
@@ -193,7 +245,10 @@ const ServiceList = (props) => {
                           <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>
-
+                          {props?.user?.role === "ADMIN" && <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
+                            <PictureAsPdf color="error" />
+                          </IconButton>
+                          }
                         </>
                       }
                     </TableCell>

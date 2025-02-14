@@ -136,9 +136,11 @@ const router=useRouter()
     ["AllComplaints", dashData?.complaints?.allComplaints],
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
+    ["Cancel", dashData?.complaints?.cancel],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
-    ["In Progress", data?.complaints?.inProgress],
+    ["FinalVerification", dashData?.complaints?.finalVerification],
+    ["In Progress", dashData?.complaints?.inProgress],
   ];
 
   const barChartData = [
@@ -146,9 +148,11 @@ const router=useRouter()
     ["AllComplaints", dashData?.complaints?.allComplaints],
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
+    ["Cancel", dashData?.complaints?.cancel],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
-    ["In Progress", data?.complaints?.inProgress],
+    ["FinalVerification", dashData?.complaints?.finalVerification],
+    ["In Progress", dashData?.complaints?.inProgress],
   ];
 
   const options = {
@@ -210,6 +214,14 @@ const router=useRouter()
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
               </div>
               <div className='text-center mt-2'>Part Pending </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div onClick={()=>router.push("/complaint/finalVerification")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Final Verification </div>
             </div>
           </div>
           <div className='justify-center flex items-center'>

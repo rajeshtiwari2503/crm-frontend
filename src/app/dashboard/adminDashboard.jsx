@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typography } from '@mui/material'
-import { PeopleAlt } from '@mui/icons-material'
+import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings } from '@mui/icons-material'
 
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
@@ -29,6 +29,7 @@ const pieChartData = [
   ["Pending", data?.complaints?.pending],
   ["Complete", data?.complaints?.complete],
   ["PartPending", data?.complaints?.partPending],
+  ["FinalVerification", data?.complaints?.finalVerification],
   ["Cancel", data?.complaints?.cancel],
   ["In Progress", data?.complaints?.inProgress],
 ];
@@ -40,6 +41,7 @@ const barChartData = [
   ["Pending", data?.complaints?.pending],
   ["Complete", data?.complaints?.complete],
   ["PartPending", data?.complaints?.partPending],
+  ["FinalVerification", data?.complaints?.finalVerification],
   ["Cancel", data?.complaints?.cancel],
   ["In Progress", data?.complaints?.inProgress],
 
@@ -92,18 +94,18 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
 // console.log(cancelOrder);
   return (
     <>
-      <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4 mb-5'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
      
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/user/customer")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PeopleAlt  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold '>Users</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.customers} delay={1} />
                   </div>
                 </div>
@@ -115,12 +117,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/user/brand")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PeopleAlt  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Brands</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.brands} delay={1} />
                   </div>
                 </div>
@@ -132,12 +134,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/user/dealer")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PeopleAlt  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Dealer</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.dealers} delay={1} />
                   </div>
                 </div>
@@ -149,12 +151,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/user/service")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PeopleAlt  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Service Centers</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.services} delay={1} />
                   </div>
                 </div>
@@ -166,12 +168,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/user/technician")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PeopleAlt  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Technician</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.technicians} delay={1} />
                   </div>
                 </div>
@@ -182,17 +184,17 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
       </div>
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mb-3'>Complaints</div>
      
-      <div className='grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
       <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/complaint/pending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PendingActions  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Pending</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.pending} delay={1} />
                   </div>
                 </div>
@@ -204,13 +206,30 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/complaint/inprogress")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <Pending  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>In Progress</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.inProgress} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push("/complaint/assign")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <AssignmentTurnedIn  fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>Assign</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.assign} delay={1} />
                   </div>
                 </div>
               </div>
@@ -221,12 +240,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/complaint/partpending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <Settings  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Part Pending</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.partPending} delay={1} />
                   </div>
                 </div>
@@ -238,12 +257,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PendingActions  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Pending</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
                   </div>
                 </div>
@@ -251,17 +270,18 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             </div>
           </div>
         </div>
+       
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/assign")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push("/complaint/cancel")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <Cancel  fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Assign</div>
-                  <div className='text-3xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.assign} delay={1} />
+                  <div className='text-blue-600 font-semibold'>Cancel</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
                   </div>
                 </div>
               </div>
@@ -269,16 +289,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/cancel")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={()=>router.push("/complaint/finalVerification")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <FactCheck  fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Cancel</div>
-                  <div className='text-3xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
+                  <div className='text-blue-600 font-semibold'>Final Verification</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.finalVerification} delay={1} />
                   </div>
                 </div>
               </div>
@@ -289,12 +309,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/complaint/close")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <AssignmentTurnedIn  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Close</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.complete} delay={1} />
                   </div>
                 </div>
@@ -302,19 +322,19 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             </div>
           </div>
         </div>
-      
+       
        
       
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <Assignment  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Complaints</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
                   </div>
                 </div>
@@ -323,18 +343,19 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
       </div>
-      <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
-      <div className='grid grid-cols-4 gap-4'>
+      
+      <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
+
+      <div className='grid grid-cols-5 gap-4'>
       <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push(`/complaint/pending/${"0-1"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+            
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center justify-between'>
+                <PendingActions  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>0-1 day</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.zeroToOneDays} delay={1} />
                   </div>
                 </div>
@@ -344,14 +365,13 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push(`/complaint/pending/${"2-5"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PendingActions  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>2-5 Days</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.twoToFiveDays} delay={1} />
                   </div>
                 </div>
@@ -361,14 +381,13 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={()=>router.push(`/complaint/pending/${"more-than-week"}`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <PendingActions  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>more than week</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
                   </div>
                 </div>
@@ -376,7 +395,78 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             </div>
           </div>
         </div>
-       
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push(`/complaint/close`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PendingActions  fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>Today completed</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
+
+      <div className='grid grid-cols-5 gap-4'>
+      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push(`/complaint/partpending/${"0-1"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <Settings  fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>0-1 day</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.zeroToOneDaysPartPending} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push(`/complaint/partpending/${"2-5"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <Settings  fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>2-5 Days</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.twoToFiveDaysPartPending} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={()=>router.push(`/complaint/partpending/${"more-than-week"}`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <Settings  fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-600 font-semibold'>more than week</div>
+                  <div className=' text-2xl font-semibold'>
+                  <CountUp start={0} end={data?.complaints?.moreThanFiveDaysPartPending} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
       </div>
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Order </div>
       <div className='grid grid-cols-4 gap-4'>
@@ -384,12 +474,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <LocalShipping  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>New Order</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={order?.length} delay={1} />
                   </div>
                 </div>
@@ -401,12 +491,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <LocalShipping  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Cancel Order</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={cancelOrder?.length} delay={1} />
                   </div>
                 </div>
@@ -418,12 +508,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <LocalShipping  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Approved</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={approveOrder?.length} delay={1} />
                   </div>
                 </div>
@@ -435,12 +525,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <LocalShipping  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Not Approved</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={notApproveOrder?.length} delay={1} />
                   </div>
                 </div>
@@ -452,12 +542,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
-            <div className='pl-5 py-3 flex justify-between items-center'>
+            <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt fontSize='large' />
+                <LocalShipping  fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Orders</div>
-                  <div className='text-3xl font-semibold'>
+                  <div className=' text-2xl font-semibold'>
                   <CountUp start={0} end={orderData?.length} delay={1} />
                   </div>
                 </div>

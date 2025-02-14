@@ -380,6 +380,7 @@ const ServiceDashboard = (props) => {
     ["AllComplaints", dashData?.complaints?.allComplaints],
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
+    ["Cancel", dashData?.complaints?.cancel],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
     ["InProgress", dashData?.complaints?.inProgress],
@@ -392,6 +393,7 @@ const ServiceDashboard = (props) => {
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
+    ["Cancel", dashData?.complaints?.cancel],
     ["PartPending", dashData?.complaints?.partPending],
     ["InProgress", dashData?.complaints?.inProgress],
   ];

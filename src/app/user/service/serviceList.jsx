@@ -104,7 +104,7 @@ const ServiceList = (props) => {
        
       ],
     });
-    doc.save(`${serviceCenter?.serviceCenterName}_Details.pdf`);
+    doc.save(`${serviceCenter?.serviceCenterName}_${serviceCenter?.city}_Details.pdf`);
   };
 
   // Function to download all service centers as a single PDF

@@ -40,12 +40,12 @@ const CityWiseComplaintList = () => {
     setOrderBy(property);
   };
 
-  const sortedData = [...data].sort((a, b) => {
-    const valueA = a[orderBy] || 0;
-    const valueB = b[orderBy] || 0;
-    return order === "asc" ? valueA - valueB : valueB - valueA;
-  });
-
+  // const sortedData = [...data].sort((a, b) => {
+  //   const valueA = a[orderBy] || 0;
+  //   const valueB = b[orderBy] || 0;
+  //   return order === "asc" ? valueA - valueB : valueB - valueA;
+  // });
+  const sortedData=data
   // Pagination
   const handleChangePage = (_, newPage) => {
     setPage(newPage);

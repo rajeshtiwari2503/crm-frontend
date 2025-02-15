@@ -9,38 +9,8 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useUser } from '../components/UserContext';
  
 
-const StatusComponent = ({ row }) => {
-    let statusToDisplay = row?.status;
-    let preferredServiceDate = new Date(row?.preferredServiceDate);
-    let currentDate = new Date();
 
-    // Normalize the dates to only compare Y/M/D (ignoring time)
-    let preferredDateOnly = new Date(preferredServiceDate.setHours(0, 0, 0, 0));
-    let currentDateOnly = new Date(currentDate.setHours(0, 0, 0, 0));
-
-    if (row?.updateHistory?.length > 0) {
-        const lastIndex = row?.updateHistory.length - 1;
-        statusToDisplay = row?.updateHistory[lastIndex]?.changes?.status || row?.status;
-        console.log("statusToDisplay",statusToDisplay);
-        
-    }
-
-    // Determine color based on priority
-    let bgColor = 'bg-green-400'; // Default (future dates)
-    if (statusToDisplay.toLowerCase() === 'pending') {
-        if (preferredDateOnly < currentDateOnly) {
-            bgColor = 'bg-red-500'; // Past date (overdue)
-        } else if (preferredDateOnly.getTime() === currentDateOnly.getTime()) {
-            bgColor = 'bg-orange-400'; // Due today
-        }
-    }
-
-    return <div className={`${bgColor} text-white p-2 rounded-md`}>{statusToDisplay}</div>;
-};
-
-
-
-const HighPriorityComplaintList = (props) => {
+const UnAssignComplaintList = (props) => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -58,10 +28,10 @@ const HighPriorityComplaintList = (props) => {
       }, [ user]);
       const getAllComplaint = async () => {
         try {
-          let response = await http_request.get("/getComplaintsByPending")
+          let response = await http_request.get("/getAllUnAssignComplaint")
           let { data } = response;
     
-          setComplaint(data)
+          setComplaint(data?.data)
         }
         catch (err) {
           console.log(err);
@@ -69,11 +39,10 @@ const HighPriorityComplaintList = (props) => {
       }
 const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.brandId===user?.user?.brandId):complaint
 
-      const data = filtData
-      ?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
-      .map((item, index) => ({ ...item, i: index + 1 }));
+      const data = filtData?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
+      ?.map((item, index) => ({ ...item, i: index + 1 }));
     
-    // const data =   data1 
+   
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -106,7 +75,7 @@ const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.br
         <div>
             <Toaster />
             <div className='flex justify-between items-center mb-3'>
-                <div className='font-bold text-2xl'> High Priority Complaints</div>
+                <div className='font-bold text-2xl'> Unassigned Complaints</div>
 
             </div>
 
@@ -218,7 +187,7 @@ const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.br
 
                                         {/* <TableCell>{row?.status}</TableCell> */}
                                         <TableCell>
-                                            <StatusComponent row={row} />
+                                            {row?.status}
                                         </TableCell>
 
                                         <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
@@ -252,7 +221,7 @@ const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.br
     );
 };
 
-export default HighPriorityComplaintList;
+export default UnAssignComplaintList;
 
 function stableSort(array, comparator) {
     const stabilizedThis = array?.map((el, index) => [el, index]);

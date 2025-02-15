@@ -11,6 +11,10 @@ import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
 import UploadApk from '../components/AppAPK';
 import HighPriorityComplaintList from '../complaint/HighPriorityComplaints';
+import UnAssignComplaintList from '../complaint/UnAssignComplaints';
+import CityWiseComplaintList from '../complaint/CityWiseComplaints';
+import ServiceCenterWiseComplaintList from '../complaint/ServiceCenterWiseComplaint';
+import BrandWiseComplaintList from '../complaint/BrandWiseComplaint';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -20,90 +24,90 @@ const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
 });
 const AdminDashboard = (props) => {
 
-const data=props?.dashData;
-// console.log(data);
-const router=useRouter();
-const pieChartData = [
-  ["Task", "Hours per Day"],
-  ["AllComplaints", data?.complaints?.allComplaints],
-  ["Assign", data?.complaints?.assign],
-  ["Pending", data?.complaints?.pending],
-  ["Complete", data?.complaints?.complete],
-  ["PartPending", data?.complaints?.partPending],
-  ["FinalVerification", data?.complaints?.finalVerification],
-  ["Cancel", data?.complaints?.cancel],
-  ["In Progress", data?.complaints?.inProgress],
-];
+  const data = props?.dashData;
+  // console.log(data);
+  const router = useRouter();
+  const pieChartData = [
+    ["Task", "Hours per Day"],
+    ["AllComplaints", data?.complaints?.allComplaints],
+    ["Assign", data?.complaints?.assign],
+    ["Pending", data?.complaints?.pending],
+    ["Complete", data?.complaints?.complete],
+    ["PartPending", data?.complaints?.partPending],
+    ["FinalVerification", data?.complaints?.finalVerification],
+    ["Cancel", data?.complaints?.cancel],
+    ["In Progress", data?.complaints?.inProgress],
+  ];
 
-const barChartData = [
-  ["Complaint Status", "Count"],
-  ["AllComplaints", data?.complaints?.allComplaints],
-  ["Assign", data?.complaints?.assign],
-  ["Pending", data?.complaints?.pending],
-  ["Complete", data?.complaints?.complete],
-  ["PartPending", data?.complaints?.partPending],
-  ["FinalVerification", data?.complaints?.finalVerification],
-  ["Cancel", data?.complaints?.cancel],
-  ["In Progress", data?.complaints?.inProgress],
+  const barChartData = [
+    ["Complaint Status", "Count"],
+    ["AllComplaints", data?.complaints?.allComplaints],
+    ["Assign", data?.complaints?.assign],
+    ["Pending", data?.complaints?.pending],
+    ["Complete", data?.complaints?.complete],
+    ["PartPending", data?.complaints?.partPending],
+    ["FinalVerification", data?.complaints?.finalVerification],
+    ["Cancel", data?.complaints?.cancel],
+    ["In Progress", data?.complaints?.inProgress],
 
-];
+  ];
 
-const options = {
-  title: "Complaints Summary",
-};
+  const options = {
+    title: "Complaints Summary",
+  };
 
-const [orderData,setOrderData]=useState([])
-const [complaints,setComplaints]=useState([])
+  const [orderData, setOrderData] = useState([])
+  const [complaints, setComplaints] = useState([])
 
-React.useEffect(() => {
-  getAllComplaint()
-  getAllOrder()
-}, []);
-const getAllComplaint = async () => {
-  try {
-    let response = await http_request.get("/getAllComplaint");
-    let { data } = response; 
-    setComplaints(data);
-  } catch (err) {
-    console.log(err);
+  React.useEffect(() => {
+    getAllComplaint()
+    getAllOrder()
+  }, []);
+  const getAllComplaint = async () => {
+    try {
+      let response = await http_request.get("/getAllComplaint");
+      let { data } = response;
+      setComplaints(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getAllOrder = async () => {
+
+    try {
+
+      const endPoint = "/getAllOrder"
+
+      let response = await http_request.get(endPoint)
+      let { data } = response;
+
+      setOrderData(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
   }
-};
-
-const getAllOrder = async () => {
- 
-  try {
-  
-    const endPoint=  "/getAllOrder"
-   
-    let response = await http_request.get(endPoint)
-    let { data } = response;
-
-    setOrderData(data)
-  }
-  catch (err) {
-    console.log(err);
-  }
-}
-// console.log(orderData?.length);
-const order=orderData?.filter((f)=>f?.status==="ORDER")
-// console.log(order);
-const approveOrder=order?.filter((f)=>f?.brandApproval==="APPROVED")
-// console.log(approveOrder);
-const notApproveOrder=order?.filter((f)=>f?.brandApproval==="NOT_APPROVE")
-// console.log(notApproveOrder);
-const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
-// console.log(cancelOrder);
+  // console.log(orderData?.length);
+  const order = orderData?.filter((f) => f?.status === "ORDER")
+  // console.log(order);
+  const approveOrder = order?.filter((f) => f?.brandApproval === "APPROVED")
+  // console.log(approveOrder);
+  const notApproveOrder = order?.filter((f) => f?.brandApproval === "NOT_APPROVE")
+  // console.log(notApproveOrder);
+  const cancelOrder = orderData?.filter((f) => f?.status === "OrderCanceled")
+  // console.log(cancelOrder);
   return (
     <>
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
-     
+
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/user/customer")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/user/customer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt  fontSize='medium' />
+                <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold '>Users</div>
                   <div className=' text-2xl font-semibold'>
@@ -115,12 +119,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/user/brand")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/user/brand")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt  fontSize='medium' />
+                <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Brands</div>
                   <div className=' text-2xl font-semibold'>
@@ -132,12 +136,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/user/dealer")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/user/dealer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt  fontSize='medium' />
+                <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Dealer</div>
                   <div className=' text-2xl font-semibold'>
@@ -149,12 +153,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/user/service")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/user/service")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt  fontSize='medium' />
+                <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Service Centers</div>
                   <div className=' text-2xl font-semibold'>
@@ -166,12 +170,12 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/user/technician")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/user/technician")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PeopleAlt  fontSize='medium' />
+                <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Technician</div>
                   <div className=' text-2xl font-semibold'>
@@ -184,19 +188,19 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
         </div>
       </div>
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mb-3'>Complaints</div>
-     
+
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/pending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Pending</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.pending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.pending} delay={1} />
                   </div>
                 </div>
               </div>
@@ -204,16 +208,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/inprogress")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Pending  fontSize='medium' />
+                <Pending fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>In Progress</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.inProgress} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.inProgress} delay={1} />
                   </div>
                 </div>
               </div>
@@ -221,16 +225,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/assign")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <AssignmentTurnedIn  fontSize='medium' />
+                <AssignmentTurnedIn fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Assign</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.assign} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.assign} delay={1} />
                   </div>
                 </div>
               </div>
@@ -238,16 +242,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/partpending")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Settings  fontSize='medium' />
+                <Settings fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Part Pending</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.partPending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.partPending} delay={1} />
                   </div>
                 </div>
               </div>
@@ -255,34 +259,34 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Pending</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-       
+
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/cancel")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Cancel  fontSize='medium' />
+                <Cancel fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Cancel</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
                   </div>
                 </div>
               </div>
@@ -290,16 +294,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/finalVerification")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <FactCheck  fontSize='medium' />
+                <FactCheck fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Final Verification</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.finalVerification} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.finalVerification} delay={1} />
                   </div>
                 </div>
               </div>
@@ -307,36 +311,36 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/close")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <AssignmentTurnedIn  fontSize='medium' />
+                <AssignmentTurnedIn fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Close</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.complete} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.complete} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-       
-       
-      
+
+
+
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/complaint/allComplaint")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Assignment  fontSize='medium' />
+                <Assignment fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Complaints</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
                   </div>
                 </div>
               </div>
@@ -344,20 +348,20 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
       </div>
-      
+
       <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/pending/${"0-1"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center justify-between'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>0-1 day</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.zeroToOneDays} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.zeroToOneDays} delay={1} />
                   </div>
                 </div>
               </div>
@@ -365,15 +369,15 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/pending/${"2-5"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            
+          <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>2-5 Days</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.twoToFiveDays} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.twoToFiveDays} delay={1} />
                   </div>
                 </div>
               </div>
@@ -381,15 +385,15 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/pending/${"more-than-week"}`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            
+          <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>more than week</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
                   </div>
                 </div>
               </div>
@@ -397,15 +401,15 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/close`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            
+          <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <PendingActions  fontSize='medium' />
+                <PendingActions fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Today completed</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
                   </div>
                 </div>
               </div>
@@ -416,17 +420,17 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
       <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/partpending/${"0-1"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Settings  fontSize='medium' />
+                <Settings fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>0-1 day</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.zeroToOneDaysPartPending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.zeroToOneDaysPartPending} delay={1} />
                   </div>
                 </div>
               </div>
@@ -434,16 +438,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/partpending/${"2-5"}`)}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push(`/complaint/partpending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Settings  fontSize='medium' />
+                <Settings fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>2-5 Days</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.twoToFiveDaysPartPending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.twoToFiveDaysPartPending} delay={1} />
                   </div>
                 </div>
               </div>
@@ -451,37 +455,37 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push(`/complaint/partpending/${"more-than-week"}`)}   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <Settings  fontSize='medium' />
+                <Settings fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>more than week</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={data?.complaints?.moreThanFiveDaysPartPending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.moreThanFiveDaysPartPending} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
+
       </div>
       <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Order </div>
       <div className='grid grid-cols-4 gap-4'>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping  fontSize='medium' />
+                <LocalShipping fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>New Order</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={order?.length} delay={1} />
+                    <CountUp start={0} end={order?.length} delay={1} />
                   </div>
                 </div>
               </div>
@@ -489,16 +493,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping  fontSize='medium' />
+                <LocalShipping fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Cancel Order</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={cancelOrder?.length} delay={1} />
+                    <CountUp start={0} end={cancelOrder?.length} delay={1} />
                   </div>
                 </div>
               </div>
@@ -506,16 +510,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping  fontSize='medium' />
+                <LocalShipping fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Approved</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={approveOrder?.length} delay={1} />
+                    <CountUp start={0} end={approveOrder?.length} delay={1} />
                   </div>
                 </div>
               </div>
@@ -523,16 +527,16 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping  fontSize='medium' />
+                <LocalShipping fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Not Approved</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={notApproveOrder?.length} delay={1} />
+                    <CountUp start={0} end={notApproveOrder?.length} delay={1} />
                   </div>
                 </div>
               </div>
@@ -540,27 +544,27 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={()=>router.push("/inventory/order")}  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping  fontSize='medium' />
+                <LocalShipping fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Orders</div>
                   <div className=' text-2xl font-semibold'>
-                  <CountUp start={0} end={orderData?.length} delay={1} />
+                    <CountUp start={0} end={orderData?.length} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-     
+
       </div>
-      
+
       <div className='grid grid-cols-2 gap-4 my-8'>
-      <div className='rounded-lg shadow px-4 py-4 bg-white'>
+        <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <Chart
             chartType="PieChart"
             data={pieChartData}
@@ -569,7 +573,7 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             height={"400px"}
           />
         </div>
-        <div className='rounded-lg shadow px-4 py-4 bg-white'>
+        {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <Chart
             chartType="BarChart"
             data={barChartData}
@@ -577,17 +581,33 @@ const cancelOrder=orderData?.filter((f)=>f?.status==="OrderCanceled")
             width={"100%"}
             height={"400px"}
           />
+        </div> */}
+        <div>
+          <BrandWiseComplaintList />
         </div>
       </div>
+
       <div>
-      <HighPriorityComplaintList data={complaints} />
+        <UnAssignComplaintList />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        <div>
+          <ServiceCenterWiseComplaintList />
+        </div>
+     
+      <div>
+        <CityWiseComplaintList />
+      </div>
       </div>
       <div>
-        
-      <RecentServicesList data={complaints}   />
-      <div>
-        {/* <UploadApk /> */}
+        <HighPriorityComplaintList data={complaints} />
       </div>
+
+      <div>
+        <RecentServicesList data={complaints} />
+        <div>
+          {/* <UploadApk /> */}
+        </div>
       </div>
     </>
 

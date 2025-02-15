@@ -140,7 +140,7 @@ const RecentServicesList = (props) => {
         <>
           <TableContainer component={Paper}>
             <Table>
-              <TableHead>
+              <TableHead sx={{ backgroundColor: "#bae6fd" }}>
                 <TableRow>
                   <TableCell>
                     <TableSortLabel

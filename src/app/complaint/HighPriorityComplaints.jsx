@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useUser } from '../components/UserContext';
  
 
 const StatusComponent = ({ row }) => {
@@ -49,12 +50,12 @@ const HighPriorityComplaintList = (props) => {
     const router = useRouter()
 
  const [complaint, setComplaint] = useState([])
- 
+   const {user}=useUser()
     useEffect(() => {
     
           getAllComplaint()
          
-      }, [ ]);
+      }, [ user]);
       const getAllComplaint = async () => {
         try {
           let response = await http_request.get("/getComplaintsByPending")
@@ -66,7 +67,9 @@ const HighPriorityComplaintList = (props) => {
           console.log(err);
         }
       }
-      const data = complaint
+const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.brandId===user?.user?.brandId):complaint
+
+      const data = filtData
       ?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
       .map((item, index) => ({ ...item, i: index + 1 }));
     
@@ -96,7 +99,7 @@ const HighPriorityComplaintList = (props) => {
         router.push(`/complaint/details/${id}`)
     }
 
-console.log("complaint",complaint);
+ 
 
 
     return (

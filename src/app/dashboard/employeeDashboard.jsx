@@ -5,6 +5,7 @@ import { PeopleAlt } from '@mui/icons-material'
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
 import dynamic from 'next/dynamic'
+import HighPriorityComplaintList from '../complaint/HighPriorityComplaints';
 
 const AreaChart=dynamic(()=>import("../analytics/charts/areaChart"),{
     loading: ()=><p>Chart loading.........</p>
@@ -102,7 +103,9 @@ const  EmployeeDashboard = () => {
 
       </div>
     </div> */}
-    <div>Start your Work</div>
+    <div> 
+      <HighPriorityComplaintList />
+    </div>
   </>
   )
 }

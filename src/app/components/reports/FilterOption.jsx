@@ -81,7 +81,7 @@ const cityOptions = [{
     value: technician._id,
     label: technician.name,
   }));
-  const brand =userValue?.user?.role==="ADMIN"?userData?.brands:userData?.brands?.filter((f)=>f?._id===userValue?.user?._id)
+  const brand =userValue?.user?.role==="ADMIN"||userValue?.user?.role==="EMPLOYEE" ?userData?.brands:userData?.brands?.filter((f)=>f?._id===userValue?.user?._id)
   const brandOptions =  brand?.map(brand => ({
     value: brand._id,
     label: brand.brandName,

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Visibility } from '@mui/icons-material';
+import { Add, AssignmentTurnedIn, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -22,14 +22,14 @@ const AssignComplaintList = (props) => {
 
   const userData = props?.userData
 
-  const data = userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE"? complaint
-  : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-  : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-    : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-      : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId ===  userData._id)
-        : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId ===  userData._id)
-          : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId ===   userData._id)
-            : []
+  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
 
 
   const technician = props?.technicians
@@ -78,7 +78,7 @@ const AssignComplaintList = (props) => {
   const handleTechnicianChange = (event) => {
 
     const selectedId = event.target.value;
-    
+
     const selectedTechnician = technician.find(center => center._id === selectedId);
     setSelectedTechnician(selectedTechnician);
     setValue('status', "ASSIGN");
@@ -107,8 +107,10 @@ const AssignComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata=assignTech===true?{status:data?.status,technicianId:data?.technicianId,assignTechnician:data?.assignTechnician,
-       assignTechnicianTime:data?.assignTechnicianTime,srerviceCenterResponseTime:data?.srerviceCenterResponseTime, technicianContact:data?.technicianContact}:{status:data?.status}
+      const reqdata = assignTech === true ? {
+        status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
+        assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
+      } : { status: data?.status }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       if (data.comments) {
@@ -187,7 +189,7 @@ const AssignComplaintList = (props) => {
       setSelectedSparepart(selectedId);
       setValue('sparepartId', selectedpart?._id);
       setValue('partName', selectedpart?.partName);
-     
+
     }
   };
   return (
@@ -206,38 +208,38 @@ const AssignComplaintList = (props) => {
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-             <TableContainer component={Paper}>
+          <TableContainer component={Paper}>
             <Table>
-            <TableHead>
+              <TableHead>
                 <TableRow>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === '_id'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('_id')}
-                                   >
-                                     ID
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === '_id'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('_id')}
-                                   >
-                                     Complaint Id
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'fullName'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('fullName')}
-                                   >
-                                     Customer Name
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 {/* <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === '_id'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('_id')}
+                    >
+                      ID
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === '_id'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('_id')}
+                    >
+                      Complaint Id
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'fullName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('fullName')}
+                    >
+                      Customer Name
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'emailAddress'}
                                      direction={sortDirection}
@@ -246,16 +248,16 @@ const AssignComplaintList = (props) => {
                                      Customer Email
                                    </TableSortLabel>
                                  </TableCell> */}
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'district'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('district')}
-                                   >
-                                     City
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 {/* <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'district'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('district')}
+                    >
+                      City
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'serviceAddress'}
                                      direction={sortDirection}
@@ -264,7 +266,7 @@ const AssignComplaintList = (props) => {
                                      Service_Address
                                    </TableSortLabel>
                                  </TableCell> */}
-                                 {/* <TableCell>
+                  {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'city'}
                                      direction={sortDirection}
@@ -282,16 +284,16 @@ const AssignComplaintList = (props) => {
                                     State
                                    </TableSortLabel>
                                  </TableCell> */}
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'customerMobile'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('customerMobile')}
-                                   >
-                                     Contact No.
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 {/* <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'customerMobile'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('customerMobile')}
+                    >
+                      Contact No.
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'categoryName'}
                                      direction={sortDirection}
@@ -300,16 +302,16 @@ const AssignComplaintList = (props) => {
                                      Category Name
                                    </TableSortLabel>
                                  </TableCell> */}
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'productBrand'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('productBrand')}
-                                   >
-                                     Product Brand
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 {/* <TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'productBrand'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('productBrand')}
+                    >
+                      Product Brand
+                    </TableSortLabel>
+                  </TableCell>
+                  {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'modelNo'}
                                      direction={sortDirection}
@@ -391,47 +393,47 @@ const AssignComplaintList = (props) => {
                                      Technician Comments
                                    </TableSortLabel>
                                  </TableCell> */}
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'status'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('status')}
-                                   >
-                                     Status
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'createdAt'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('createdAt')}
-                                   >
-                                     Created_At
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>Actions</TableCell>
-               
-                               </TableRow>
-                             </TableHead>
-                             <TableBody>
-                               {sortedData.map((row) => (
-                                 <TableRow key={row?.i} hover>
-                                   <TableCell>{row?.i}</TableCell>
-                                   <TableCell>{row?.complaintId}</TableCell>
-                                   <TableCell>{row?.fullName}</TableCell>
-                                   {/* <TableCell>{row?.emailAddress}</TableCell> */}
-                                   <TableCell>{row?.district}</TableCell>
-                                   {/* <TableCell>{row?.serviceAddress}</TableCell> */}
-                                   {/* <TableCell>{row?.state}</TableCell> */}
-                                   <TableCell>{row?.phoneNumber}</TableCell>
-                                   {/* <TableCell>{row?.categoryName}</TableCell> */}
-                                   <TableCell>
-                                     {String(row?.productBrand || "").length > 15
-                                       ? String(row?.productBrand).substring(0, 15) + "..."
-                                       : row?.productBrand}
-                                   </TableCell>
-               
-                                   {/* <TableCell>{row?.modelNo}</TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'status'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('status')}
+                    >
+                      Status
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      Created_At
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>Actions</TableCell>
+
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedData.map((row) => (
+                  <TableRow key={row?.i} hover>
+                    <TableCell>{row?.i}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
+                    <TableCell>{row?.fullName}</TableCell>
+                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                    <TableCell>{row?.district}</TableCell>
+                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
+                    {/* <TableCell>{row?.state}</TableCell> */}
+                    <TableCell>{row?.phoneNumber}</TableCell>
+                    {/* <TableCell>{row?.categoryName}</TableCell> */}
+                    <TableCell>
+                      {String(row?.productBrand || "").length > 15
+                        ? String(row?.productBrand).substring(0, 15) + "..."
+                        : row?.productBrand}
+                    </TableCell>
+
+                    {/* <TableCell>{row?.modelNo}</TableCell>
                                    <TableCell>{row?.serialNo}</TableCell>
                
                                    <TableCell>{row?.issueType}</TableCell>
@@ -441,45 +443,51 @@ const AssignComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
-                                   <TableCell>{row?.status}</TableCell>
-                                   <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
                         {/* <div
                           onClick={() => handleUpdateStatus(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                         className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" ||   userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                        <div
-                          onClick={() => handleUpdateStatus(row?._id)}
-                          className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                        >
-                          Update Status
-                        </div>
-                        :""}
-                       
-                        {userData?.role === "SERVICE"  ?
+                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          <div
+                            onClick={() => handleUpdateStatus(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          >
+                            <SystemSecurityUpdate />
+                          </div>
+                          : ""}
+
+                        {userData?.role === "SERVICE" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
                           >
                             Order Part
                           </div>
                           : ""}
-                        {userData?.role === "ADMIN" ||userData?.role === "EMPLOYEE"||userData?.role === "SERVICE"  || userData?.role === "BRAND" &&userData?.brandSaas==="YES" ?
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
                           >
-                            Assign Technician
+                            <AssignmentTurnedIn />
                           </div>
                           : ""}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
-                        
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
+
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -504,7 +512,7 @@ const AssignComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
-        <Dialog open={status} onClose={handleUpdateClose}>
+      <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton
           aria-label="close"
@@ -520,21 +528,21 @@ const AssignComplaintList = (props) => {
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(onSubmit)}>
-          <div className='w-[350px] mb-5'>
-          <label className="block text-sm font-medium text-gray-700">Status</label>
-          <select
-            {...register('status')}
-            className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-          >
-            {/* <option value="NEW">New</option> */}
-            <option value="IN PROGRESS">In Progress</option>
-            <option value="PART PENDING">Awaiting Parts</option>
-            {/* <option value="ONHOLD">On Hold</option> */}
-            <option value="FINAL VERIFICATION">Completed</option>
-            <option value="CANCELED">Canceled</option>
-          </select>
-        </div>
-        <div className='mb-6'>
+            <div className='w-[350px] mb-5'>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <select
+                {...register('status')}
+                className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+                {/* <option value="NEW">New</option> */}
+                <option value="IN PROGRESS">In Progress</option>
+                <option value="PART PENDING">Awaiting Parts</option>
+                {/* <option value="ONHOLD">On Hold</option> */}
+                <option value="FINAL VERIFICATION">Completed</option>
+                <option value="CANCELED">Canceled</option>
+              </select>
+            </div>
+            <div className='mb-6'>
               <label className="block text-gray-700">Comments/Notes</label>
               <textarea
                 {...register('comments', {
@@ -546,11 +554,11 @@ const AssignComplaintList = (props) => {
               ></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
-        <div>
-          <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
-            Submit
-          </button>
-        </div>
+            <div>
+              <button type="submit"   className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                Submit
+              </button>
+            </div>
           </form>
         </DialogContent>
 
@@ -573,36 +581,36 @@ const AssignComplaintList = (props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className='w-[350px] mb-5'>
               <label id="service-center-label" className="block text-sm font-medium text-black ">
-                Assign Technician 
+                Assign Technician
               </label>
-            
-                <select
-                  id="service-center-label"
-                  value={selectedTechnician}
-                  onChange={handleTechnicianChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Technician</option>
-                  {technician?.map((tech) => (
-                    <option key={tech._id} value={tech._id}>
-                      {tech.name}
-                    </option>
-                  ))}
-                </select>
+
+              <select
+                id="service-center-label"
+                value={selectedTechnician}
+                onChange={handleTechnicianChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Technician</option>
+                {technician?.map((tech) => (
+                  <option key={tech._id} value={tech._id}>
+                    {tech.name}
+                  </option>
+                ))}
+              </select>
+              <div>
                 <div>
-                <div>
-              <label className="block text-gray-700 ">Contact</label>
-              <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
+                  <label className="block text-gray-700 ">Contact</label>
+                  <input {...register('technicianContact', { valueAsNumber: true })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                  {errors.technicianContact && <p className="text-red-500 text-sm mt-1">{errors.technicianContact.message}</p>}
+                </div>
+                <label className="block text-gray-700 mt-3">Comments/Notes</label>
+                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+              </div>
+
             </div>
-              <label className="block text-gray-700 mt-3">Comments/Notes</label>
-              <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-              {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-            </div>
-                
-            </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-              Assign  Technician 
+            <Button onClick={handleSubmit(onSubmit)} className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"color="success" type="submit">
+              Assign  Technician
             </Button>
           </form>
         </DialogContent>
@@ -632,24 +640,24 @@ const AssignComplaintList = (props) => {
             </div>
 
             <div>
-            <label id="service-center-label" className="block text-sm font-medium text-black ">
-               Sparepart Name
+              <label id="service-center-label" className="block text-sm font-medium text-black ">
+                Sparepart Name
               </label>
-              
+
               <select
-                  id="service-center-label"
-                  value={selectedSparepart}
-                  onChange={handleServiceChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Sparepart</option>
-                  {props?.sparepart?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.partName}
-                    </option>
-                  ))}
-                </select>
-            
+                id="service-center-label"
+                value={selectedSparepart}
+                onChange={handleServiceChange}
+                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              >
+                <option value="" disabled>Select Sparepart</option>
+                {props?.sparepart?.map((center) => (
+                  <option key={center.id} value={center._id}>
+                    {center.partName}
+                  </option>
+                ))}
+              </select>
+
             </div>
 
             <div>

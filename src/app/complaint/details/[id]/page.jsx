@@ -149,6 +149,7 @@ const ComplaintDetails = ({ params }) => {
                                     </div>
                                 ))}
                                 </div> */}
+                              
                                 <div className='text-md font-semibold'>Image : </div>
                                 <div>
                                     <img
@@ -160,8 +161,22 @@ const ComplaintDetails = ({ params }) => {
                                         alt='image'
                                     />
                                 </div>
+                             
+                            <div className='text-md font-semibold'>Replace Part Image : </div>
+                                <div>
+                                    <img
+
+                                        src={complaint?.partImage}
+                                        height="100px"
+                                        width="100px"
+                                        className='m-2'
+                                        alt='image'
+                                    />
+                                </div>
                             </div>
+                           
                         </div>
+                        
                         <div className="p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {/* Update Comments Section */}

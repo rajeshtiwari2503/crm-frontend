@@ -27,12 +27,12 @@ const VerificationComplaintList = (props) => {
 
   const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
 
 
   const serviceCenter = props?.technicians
@@ -79,27 +79,59 @@ const VerificationComplaintList = (props) => {
     }
   }
 
-  const onSubmit = async (data) => {
+  // const onSubmit = async (data) => {
 
+  //   try {
+  //     setLoading(true)
+  //     let response = await http_request.patch(`/editComplaint/${id}`, data);
+  //     let { data: responseData } = response;
+
+
+  //     setStatus(false)
+  //     setAssignTech(false)
+  //     props?.RefreshData(responseData)
+  //     ToastMessage(responseData);
+  //     setLoading(false)
+  //     reset()
+  //   } catch (err) {
+  //     setLoading(false)
+
+  //     console.log(err);
+  //   }
+  // };
+
+  const onSubmit = async (data) => {
     try {
-      setLoading(true)
-      let response = await http_request.patch(`/editComplaint/${id}`, data);
+      setLoading(true);
+
+      const formData = new FormData();
+      formData.append("status", data.status);
+      formData.append("kilometer", data.kilometer);
+      formData.append("paymentBrand", data.paymentBrand);
+      formData.append("finalComments", data.finalComments);
+
+      // Append the image file if it's selected
+      if (data.partImage && data.partImage[0]) {
+        formData.append("partImage", data.partImage[0]);
+      }
+
+      let response = await http_request.patch(`/updateFinalVerification/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }, // Important for file uploads
+      });
+
       let { data: responseData } = response;
 
-
-      setStatus(false)
-      setAssignTech(false)
-      props?.RefreshData(responseData)
+      setStatus(false);
+      setAssignTech(false);
+      props?.RefreshData(responseData);
       ToastMessage(responseData);
-      setLoading(false)
-      reset()
+      setLoading(false);
+      reset();
     } catch (err) {
-      setLoading(false)
-
+      setLoading(false);
       console.log(err);
     }
   };
-
 
 
   const handleDetails = (id) => {
@@ -606,6 +638,16 @@ const VerificationComplaintList = (props) => {
                 {errors.finalComments && (
                   <p className="text-red-500 text-sm mt-1">{errors.finalComments.message}</p>
                 )}
+              </div>
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register('partImage' )}
+                  className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+                />
+                
               </div>
               <div>
                 {loading === true ?

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, Select, MenuItem, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, AssignmentTurnedIn, Close, Comment, Print, Search, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -308,7 +308,7 @@ const ComplaintList = (props) => {
         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
           ""
           :
-          <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+          <div onClick={handleAdd}   className="flex cursor-pointer rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Service Request</div>
           </div>
@@ -321,7 +321,7 @@ const ComplaintList = (props) => {
           placeholder="Search by ID"
           value={searchTerm}
           onChange={handleSearch}
-          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-white  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -570,16 +570,16 @@ const ComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate   />
                           </div>
                           : ""}
 
                         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
                             Order Part
                           </div>
@@ -587,9 +587,9 @@ const ComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Assign Service
+                           <AssignmentTurnedIn  />
                           </div>
                           : ""}
                         {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
@@ -599,20 +599,28 @@ const ComplaintList = (props) => {
                               // Debugging
                               handleUpdatedCommm(row?._id);
                             }}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Comments
+                             <Comment  />
                           </div>
                         ) : null}
 
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                        {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
-                        </IconButton>
+                        
+                        </IconButton> */}
+                        <div
+                           onClick={() => handleDetails(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          >
+                          <Visibility  />
+                          </div>
                         {userData?.role === "ADMIN" ?
                           <>
                             <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                               <EditIcon color="success" />
                             </IconButton>
+                            
                             <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                               <DeleteIcon color="error" />
                             </IconButton>
@@ -737,7 +745,8 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" disabled={loading} className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+                          
+            <button type="submit" disabled={loading}   className="rounded-md p-2 cursor-pointer bg-[#09090b] text-white hover:bg-[#ffffff] hover:text-black" >Submit</button>
 
           </form>
 
@@ -773,7 +782,7 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" disabled={loading} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit Comments</button>
+            <button type="submit" disabled={loading}     className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" >Submit Comments</button>
 
           </form>
 
@@ -797,7 +806,7 @@ const ComplaintList = (props) => {
         <DialogContent>
           <form onSubmit={handleSubmit(asignCenter)}>
             <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-black ">
+              <label id="service-center-label" className="block text-sm font-medium text-white ">
                 Assign  Service Center
               </label>
 
@@ -817,9 +826,9 @@ const ComplaintList = (props) => {
 
             </div>
 
-            <button type="submit" disabled={loading} onClick={() => asignCenter()} className="w-full mt-5 py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"> Assign   Service Center</button>
+            <button type="submit" disabled={loading} onClick={() => asignCenter()}   className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
 
-            {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+            {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#09090b] hover:text-white' color="success" type="submit">
               Assign   Service Center
             </Button> */}
           </form>
@@ -868,7 +877,7 @@ const ComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit" disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+              <button type="submit" disabled={loading}   className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>

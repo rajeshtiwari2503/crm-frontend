@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Visibility } from '@mui/icons-material';
+import { Add, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -489,7 +489,7 @@ const VerificationComplaintList = (props) => {
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center  space-x-2">
                         {/* <div
                           onClick={() => handleUpdateStatus(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -499,9 +499,9 @@ const VerificationComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
 
@@ -521,9 +521,12 @@ const VerificationComplaintList = (props) => {
                             Assign Technician
                           </div>
                           : ""} */}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
 
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
@@ -644,17 +647,17 @@ const VerificationComplaintList = (props) => {
                 <input
                   type="file"
                   accept="image/*"
-                  {...register('partImage' )}
+                  {...register('partImage')}
                   className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
                 />
-                
+
               </div>
               <div>
                 {loading === true ?
-                  <div className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                  <div  className="rounded-lg w-full p-3 mt-3 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submiting........
                   </div>
-                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading}  className="rounded-lg w-full  p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submit
                   </button>
                 }

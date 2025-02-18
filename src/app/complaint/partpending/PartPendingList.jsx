@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Visibility } from '@mui/icons-material';
+import { Add, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -23,12 +23,12 @@ const PartPendingComplaintList = (props) => {
 
   const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -398,14 +398,17 @@ const PartPendingComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
                         {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
                         </IconButton>
@@ -479,7 +482,7 @@ const PartPendingComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+              <button type="submit" className="rounded-lg p-3 w-full mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>

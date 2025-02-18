@@ -26,12 +26,12 @@ const CloseComplaintList = (props) => {
 
   const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -432,10 +432,13 @@ const CloseComplaintList = (props) => {
                             }
                           </>
                           : ""}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                          </div>
+                          {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
                         </IconButton>
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
@@ -444,7 +447,7 @@ const CloseComplaintList = (props) => {
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
                         </IconButton> */}
-                      </div>
+                        </div>
                     </TableCell>
                   </TableRow>
                 ))}

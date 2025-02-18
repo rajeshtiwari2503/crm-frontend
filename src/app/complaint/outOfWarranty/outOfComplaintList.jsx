@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, Select, MenuItem, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, AssignmentTurnedIn, Close, Print, Search, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -29,12 +29,12 @@ const OutOfWarrantyList = (props) => {
 
   const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
   const router = useRouter()
@@ -230,14 +230,14 @@ const OutOfWarrantyList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Service Information</div>
-        {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+        {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
           ""
           :
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Service Request</div>
           </div>
-        }
+        } */}
       </div>
       <div className="flex items-center mb-3">
         <Search className="text-gray-500" />
@@ -495,9 +495,9 @@ const OutOfWarrantyList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
 
@@ -512,16 +512,19 @@ const OutOfWarrantyList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignServiceCenter(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Assign Service
+                            <AssignmentTurnedIn />
                           </div>
                           : ""}
 
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
-                        {userData?.role === "ADMIN" ?
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
+                        {/* {userData?.role === "ADMIN" ?
                           <>
                             <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                               <EditIcon color="success" />
@@ -530,7 +533,7 @@ const OutOfWarrantyList = (props) => {
                               <DeleteIcon color="error" />
                             </IconButton>
                           </>
-                          : ""}
+                          : ""} */}
                       </div>
                     </TableCell>
                   </TableRow>

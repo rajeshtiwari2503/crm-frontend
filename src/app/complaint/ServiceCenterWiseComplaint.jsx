@@ -60,28 +60,39 @@ const ServiceCenterWiseComplaintList = () => {
     </Typography>
     <TableContainer component={Paper} sx={{ maxHeight: 350 }}>
       <Table size="small">
-        <TableHead sx={{ backgroundColor: "#bae6fd" }}>
+        <TableHead sx={{ backgroundColor: "#09090b" }}>
           <TableRow>
             {[
-                  { label: " Service Center",  key: "_id.assignServiceCenter" },
+                  { label: "Center",  key: "_id.assignServiceCenter" },
               { label: "City", key: "city" },
             
-              { label: "Total", key: "TOTAL" },
-              { label: "Pending", key: "PENDING" },
-              { label: "In Progress", key: "INPROGRESS" },
-              { label: "Part Pending", key: "PART_PENDING" },
-              { label: "Assigned", key: "ASSIGN" },
-              { label: "Canceled", key: "CANCEL" },
+              { label: "T", key: "TOTAL" },
+              { label: "P ", key: "PENDING" },
+              { label: "I.P. ", key: "INPROGRESS" },
+              { label: "P.P. ", key: "PART_PENDING" },
+              { label: "A ", key: "ASSIGN" },
+              { label: "C", key: "CANCEL" },
              
-              { label: "Final Verif.", key: "FINAL_VERIFICATION" },
-              { label: "Completed", key: "COMPLETE" },
+              { label: "F.V. ", key: "FINAL_VERIFICATION" },
+              { label: "Close", key: "COMPLETE" },
             ].map(({ label, key }) => (
-              <TableCell key={key} sx={{ fontSize: 12, padding: "4px" }}>
-                <TableSortLabel
-                  active={orderBy === key}
-                  direction={orderBy === key ? order : "asc"}
-                  onClick={() => handleSortRequest(key)}
-                  sx={{ fontSize: 12 }}
+              <TableCell key={key} sx={{
+                              fontSize: 12,
+                              padding: "4px",
+                              color: "white", // White text for all header cells
+                              transition: "background-color 0.3s, color 0.3s",
+                            }}>
+                              <TableSortLabel
+                                active={orderBy === key}
+                                direction={orderBy === key ? order : "asc"}
+                                onClick={() => handleSortRequest(key)}
+                                sx={{
+                                  fontSize: 12,
+                                  color: "white !important", // White text
+                                  "& .MuiTableSortLabel-icon": {
+                                    color: "white !important", // White sort arrow
+                                  },
+                                }}
                 >
                   {label}
                 </TableSortLabel>

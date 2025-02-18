@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typography } from '@mui/material'
-import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings } from '@mui/icons-material'
+import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings, ShoppingBag } from '@mui/icons-material'
 
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
@@ -99,6 +99,8 @@ const AdminDashboard = (props) => {
   // console.log(cancelOrder);
   return (
     <>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mb-3'>Users</div>
+
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
 
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -109,7 +111,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold '>Users</div>
+                  <div className='text-blue-600 font-semibold '>Customers</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.customers} delay={1} />
                   </div>
@@ -187,7 +189,7 @@ const AdminDashboard = (props) => {
           </div>
         </div>
       </div>
-      <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mb-3'>Complaints</div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mb-3'>Complaints</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -349,7 +351,7 @@ const AdminDashboard = (props) => {
         </div>
       </div>
 
-      <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
+      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -417,7 +419,7 @@ const AdminDashboard = (props) => {
           </div>
         </div>
       </div>
-      <div className='h-10 col-span-4 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
+      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -473,7 +475,7 @@ const AdminDashboard = (props) => {
         </div>
 
       </div>
-      <div className='h-10 rounded-md flex items-center pl-5 bg-sky-200 text-1xl font-bold mt-5 mb-3'>Order </div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Order </div>
       <div className='grid grid-cols-4 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
@@ -481,7 +483,7 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping fontSize='medium' />
+                <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>New Order</div>
                   <div className=' text-2xl font-semibold'>
@@ -498,7 +500,7 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping fontSize='medium' />
+                <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Cancel Order</div>
                   <div className=' text-2xl font-semibold'>
@@ -515,7 +517,7 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping fontSize='medium' />
+                <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Approved</div>
                   <div className=' text-2xl font-semibold'>
@@ -532,7 +534,7 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping fontSize='medium' />
+                <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Not Approved</div>
                   <div className=' text-2xl font-semibold'>
@@ -549,7 +551,7 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <LocalShipping fontSize='medium' />
+                <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
                   <div className='text-blue-600 font-semibold'>Total Orders</div>
                   <div className=' text-2xl font-semibold'>

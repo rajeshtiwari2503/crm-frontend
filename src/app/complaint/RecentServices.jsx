@@ -140,208 +140,35 @@ const RecentServicesList = (props) => {
         <>
           <TableContainer component={Paper}>
             <Table>
-              <TableHead sx={{ backgroundColor: "#bae6fd" }}>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      Complaint Id
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'fullName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('fullName')}
-                    >
-                      Customer Name
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'emailAddress'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('emailAddress')}
-                                   >
-                                     Customer Email
-                                   </TableSortLabel>
-                                 </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'district'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('district')}
-                    >
-                      City
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'serviceAddress'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('serviceAddress')}
-                                   >
-                                     Service_Address
-                                   </TableSortLabel>
-                                 </TableCell> */}
-                  {/* <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'city'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('city')}
-                                   >
-                                    City
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'state'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('state')}
-                                   >
-                                    State
-                                   </TableSortLabel>
-                                 </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'customerMobile'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('customerMobile')}
-                    >
-                      Contact No.
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'categoryName'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('categoryName')}
-                                   >
-                                     Category Name
-                                   </TableSortLabel>
-                                 </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productBrand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productBrand')}
-                    >
-                      Product Brand
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'modelNo'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('modelNo')}
-                                   >
-                                     Model No.
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'serialNo'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('serialNo')}
-                                   >
-                                     Serial No.
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'issueType'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('issueType')}
-                                   >
-                                     Issue Type
-                                   </TableSortLabel>
-                                 </TableCell>
-               
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'detailedDescription'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('detailedDescription')}
-                                   >
-                                     Detailed Description
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'errorMessages'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('errorMessages')}
-                                   >
-                                     Error Messages
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'technicianName'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('technicianName')}
-                                   >
-                                     Assign Service Center
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'technicianName'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('technicianName')}
-                                   >
-                                     Technician Name
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'technicianContact'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('technicianContact')}
-                                   >
-                                     Technician Contact
-                                   </TableSortLabel>
-                                 </TableCell>
-                                 <TableCell>
-                                   <TableSortLabel
-                                     active={sortBy === 'technicianComments'}
-                                     direction={sortDirection}
-                                     onClick={() => handleSort('technicianComments')}
-                                   >
-                                     Technician Comments
-                                   </TableSortLabel>
-                                 </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      Updated_At
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
+              <TableHead sx={{ backgroundColor: "#09090b" }}>
+                <TableRow >
+                  {[
+                    { label: "ID", key: "_id" },
+                    { label: "Complaint_Id", key: "_id" },
+                    { label: "Customer", key: "fullName" },
+                    { label: "City", key: "district" },
+                    { label: "Contact", key: "customerMobile" },
+                    { label: "Product_Brand", key: "productBrand" },
+                    { label: "Status", key: "status" },
+                    { label: "Created_At", key: "createdAt" },
+                  ].map(({ label, key }) => (
+                    <TableCell key={key} sx={{ color: "white" }}>
+                      <TableSortLabel
+                        active={sortBy === key}
+                        direction={sortDirection}
+                        onClick={() => handleSort(key)}
+                        sx={{
+                          color: "white !important", // White text
+                          "& .MuiTableSortLabel-icon": {
+                            color: "white !important", // White sort arrow
+                          },
+                        }}
+                      >
+                        {label}
+                      </TableSortLabel>
+                    </TableCell>
+                  ))}
+                  <TableCell sx={{ color: "white" }}>Actions</TableCell>
 
                 </TableRow>
               </TableHead>

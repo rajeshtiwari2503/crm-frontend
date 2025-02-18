@@ -1,13 +1,13 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,   TablePagination, TableSortLabel, IconButton  } from '@mui/material';
-import {   Visibility } from '@mui/icons-material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, TableSortLabel, IconButton } from '@mui/material';
+import { Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useUser } from '../components/UserContext';
- 
+
 
 
 const UnAssignComplaintList = (props) => {
@@ -19,30 +19,30 @@ const UnAssignComplaintList = (props) => {
 
     const router = useRouter()
 
- const [complaint, setComplaint] = useState([])
-   const {user}=useUser()
+    const [complaint, setComplaint] = useState([])
+    const { user } = useUser()
     useEffect(() => {
-    
-          getAllComplaint()
-         
-      }, [ user]);
-      const getAllComplaint = async () => {
+
+        getAllComplaint()
+
+    }, [user]);
+    const getAllComplaint = async () => {
         try {
-          let response = await http_request.get("/getAllUnAssignComplaint")
-          let { data } = response;
-    
-          setComplaint(data?.data)
+            let response = await http_request.get("/getAllUnAssignComplaint")
+            let { data } = response;
+
+            setComplaint(data?.data)
         }
         catch (err) {
-          console.log(err);
+            console.log(err);
         }
-      }
-const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.brandId===user?.user?.brandId):complaint
+    }
+    const filtData = user?.user?.role === "BRAND EMPLOYEE" ? complaint?.filter((f) => f?.brandId === user?.user?.brandId) : complaint
 
-      const data = filtData?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
-      ?.map((item, index) => ({ ...item, i: index + 1 }));
-    
-   
+    const data = filtData?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
+        ?.map((item, index) => ({ ...item, i: index + 1 }));
+
+
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -68,7 +68,7 @@ const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.br
         router.push(`/complaint/details/${id}`)
     }
 
- 
+
 
 
     return (
@@ -84,86 +84,35 @@ const filtData=user?.user?.role==="BRAND EMPLOYEE"? complaint?.filter((f)=>f?.br
                 <>
                     <TableContainer component={Paper}>
                         <Table>
-                            <TableHead sx={{ backgroundColor: "#bae6fd" }}>
-                                <TableRow>
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === '_id'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('_id')}
-                                        >
-                                            ID
-                                        </TableSortLabel>
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === '_id'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('_id')}
-                                        >
-                                            Complaint Id
-                                        </TableSortLabel>
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'fullName'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('fullName')}
-                                        >
-                                            Customer Name
-                                        </TableSortLabel>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'district'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('district')}
-                                        >
-                                            City
-                                        </TableSortLabel>
-                                    </TableCell>
-
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'customerMobile'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('customerMobile')}
-                                        >
-                                            Contact No.
-                                        </TableSortLabel>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'productBrand'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('productBrand')}
-                                        >
-                                            Product Brand
-                                        </TableSortLabel>
-                                    </TableCell>
-
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'status'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('status')}
-                                        >
-                                            Status
-                                        </TableSortLabel>
-                                    </TableCell>
-                                    <TableCell>
-                                        <TableSortLabel
-                                            active={sortBy === 'createdAt'}
-                                            direction={sortDirection}
-                                            onClick={() => handleSort('createdAt')}
-                                        >
-                                            Created_At
-                                        </TableSortLabel>
-                                    </TableCell>
-                                    <TableCell>Actions</TableCell>
+                            <TableHead sx={{ backgroundColor: "#09090b" }}>
+                                <TableRow >
+                                    {[
+                                        { label: "ID", key: "_id" },
+                                        { label: "Complaint_Id", key: "_id" },
+                                        { label: "Customer", key: "fullName" },
+                                        { label: "City", key: "district" },
+                                        { label: "Contact", key: "customerMobile" },
+                                        { label: "Product_Brand", key: "productBrand" },
+                                        { label: "Status", key: "status" },
+                                        { label: "Created_At", key: "createdAt" },
+                                    ].map(({ label, key }) => (
+                                        <TableCell key={key} sx={{ color: "white" }}>
+                                            <TableSortLabel
+                                                active={sortBy === key}
+                                                direction={sortDirection}
+                                                onClick={() => handleSort(key)}
+                                                sx={{
+                                                    color: "white !important", // White text
+                                                    "& .MuiTableSortLabel-icon": {
+                                                        color: "white !important", // White sort arrow
+                                                    },
+                                                }}
+                                            >
+                                                {label}
+                                            </TableSortLabel>
+                                        </TableCell>
+                                    ))}
+                                    <TableCell sx={{ color: "white" }}>Actions</TableCell>
 
                                 </TableRow>
                             </TableHead>

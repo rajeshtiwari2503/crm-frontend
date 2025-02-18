@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Visibility } from '@mui/icons-material';
+import { Add, AssignmentTurnedIn, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -465,9 +465,9 @@ const PartPendingParamComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
 
@@ -482,14 +482,17 @@ const PartPendingParamComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Assign Technician
+                            <AssignmentTurnedIn />
                           </div>
                           : ""}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
 
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />

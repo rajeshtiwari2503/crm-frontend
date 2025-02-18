@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Search, Visibility } from '@mui/icons-material';
+import { Add, AssignmentTurnedIn, Close, DepartureBoard, Print, Search, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -24,12 +24,12 @@ const PendingComplaintList = (props) => {
 
   const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
 
 
   const technician = props?.technicians
@@ -45,7 +45,7 @@ const PendingComplaintList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
   const [selectedSparepart, setSelectedSparepart] = useState('');
- const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -224,15 +224,15 @@ const PendingComplaintList = (props) => {
         </div>
         } */}
         <div className="flex items-center mb-3">
-                <Search className="text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search by ID"
-                  value={searchTerm}
-                  onChange={handleSearch}
-                  className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
+          <Search className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search by ID"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
       </div>
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -486,31 +486,35 @@ const PendingComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Update Status
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
 
                         {userData?.role === "SERVICE" ?
                           <div
                             onClick={() => handleOrderPart(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Order Part
+                            <DepartureBoard />
+
                           </div>
                           : ""}
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                           <div
                             onClick={() => handleAssignTechnician(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            Assign Technician
+                            <AssignmentTurnedIn />
                           </div>
                           : ""}
-                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                          <Visibility color="primary" />
-                        </IconButton>
+                        <div
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
 
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
@@ -579,7 +583,7 @@ const PendingComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit" className="mt-1 block w-full rounded-md bg-blue-500 text-white py-2 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm">
+              <button type="submit" className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>
@@ -633,9 +637,9 @@ const PendingComplaintList = (props) => {
               </div>
 
             </div>
-            <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+            <button onClick={handleSubmit(onSubmit)}   className="rounded-lg p-3 w-full mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
               Assign  Technician
-            </Button>
+            </button>
           </form>
         </DialogContent>
 
@@ -756,7 +760,7 @@ const PendingComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
+            <button type="submit"  className="rounded-lg p-3 w-full mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">Submit</button>
 
           </form>
 

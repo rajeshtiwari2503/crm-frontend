@@ -263,6 +263,7 @@ const { user } = useUser();
                   "modelNo",
                   "warrantyStatus",
                   "userName",
+                  "fullName",
                   "phoneNumber",
                   "serviceAddress",
                   "detailedDescription",

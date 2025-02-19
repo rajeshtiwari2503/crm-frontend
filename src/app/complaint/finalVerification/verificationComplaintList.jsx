@@ -582,12 +582,17 @@ const VerificationComplaintList = (props) => {
                         >
                           <Visibility />
                         </div>
+                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"?
+                      <div> {!props?.transactions.some(transaction => transaction.complaintId === row?._id) && (
                         <div
                           onClick={() => handlePaymentStatus(row)}
-                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                         >
-                          <Payment color='success' />
+                          <Payment color="success" />
                         </div>
+                      )}
+                      </div>
+                        :""}
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>

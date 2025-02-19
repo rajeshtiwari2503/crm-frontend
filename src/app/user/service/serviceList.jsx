@@ -101,7 +101,7 @@ const ServiceList = (props) => {
         ["City", serviceCenter?.city],
         ["Pincode", serviceCenter?.postalCode],
         ["Contact", serviceCenter?.contact],
-       
+
       ],
     });
     doc.save(`${serviceCenter?.serviceCenterName}_${serviceCenter?.city}_Details.pdf`);
@@ -113,7 +113,7 @@ const ServiceList = (props) => {
     doc.text("All Service Centers", 10, 10);
     doc.autoTable({
       startY: 20,
-      head: [["ID", "Service Name",   "Address", "City", "Pincode", "Contact"]],
+      head: [["ID", "Service Name", "Address", "City", "Pincode", "Contact"]],
       body: data.map((row, index) => [
         index + 1,
         row?.serviceCenterName,
@@ -125,7 +125,7 @@ const ServiceList = (props) => {
     });
     doc.save("All_Service_Centers.pdf");
   };
-  
+
 
   return (
     <div>
@@ -219,6 +219,15 @@ const ServiceList = (props) => {
                       contact
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      Created_At
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -232,13 +241,14 @@ const ServiceList = (props) => {
                     <TableCell>{row?.serviceCenterType}</TableCell>
                     <TableCell>{row?.city}</TableCell>
                     <TableCell>{row?.contact}</TableCell>
-                    <TableCell style={{ display: "flex" }}>
+                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                    <TableCell   >
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />
                       </IconButton>
                       {props?.report === true ? ""
                         :
-                        <>
+                        <div className='flex'>
                           <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                             <EditIcon color='success' />
                           </IconButton>
@@ -249,7 +259,7 @@ const ServiceList = (props) => {
                             <PictureAsPdf color="error" />
                           </IconButton>
                           }
-                        </>
+                        </div>
                       }
                     </TableCell>
                   </TableRow>

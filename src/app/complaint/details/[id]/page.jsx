@@ -119,6 +119,8 @@ const ComplaintDetails = ({ params }) => {
                             
                                 <div className='text-md font-semibold'>AssignServiceCenter : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignServiceCenter}</div>
+                                <div className='text-md font-semibold'>AssignServiceCenter contact : </div>
+                                <div className='text-lg font-medium'>{complaint?.serviceCenterContact}</div>
                                 <div className='text-md font-semibold'>AssignTechnician : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignTechnician}</div>
 

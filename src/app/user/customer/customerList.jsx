@@ -116,6 +116,15 @@ const CustomerList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      Created_At
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -126,6 +135,7 @@ const CustomerList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.name}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

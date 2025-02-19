@@ -246,7 +246,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                 Pay_Date
                                             </TableSortLabel>
                                         </TableCell>
-                                        {value?.role === "ADMIN" || value?.role === "BRAND" ? <TableCell>Actions</TableCell> : null}
+                                        {value?.role === "ADMIN"   ? <TableCell>Actions</TableCell> : null}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

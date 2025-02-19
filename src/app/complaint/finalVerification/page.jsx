@@ -18,6 +18,7 @@ const Verification = () => {
   const [sparepart, setSparepart] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
+const [transactions, setTransactions] = useState([]);
 
  const { user } = useUser();
    // console.log("usercancel",user,value);
@@ -31,8 +32,27 @@ const Verification = () => {
     getAllComplaint()
     getAllTechnician()
     getAllSparepart()
-    
+    getTransactions()
   }, [refresh,user])
+
+  const getTransactions = async () => {
+    try {
+      const endPoint = user?.user?.role === "ADMIN"||user?.user?.role === "EMPLOYEE" 
+        ? `/getAllServicePayment` 
+        : value?.user?.role === "BRAND" 
+        ? `/getTransactionByBrandId/${user?.user?._id}` 
+        : `/getTransactionByCenterId/${user?.user?._id}`;
+   
+      const response = await http_request.get(endPoint);
+      
+      let { data } = response;
+      
+      setTransactions(data);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+    }  
+  };
+  
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getComplaintsByFinalVerification")
@@ -82,7 +102,7 @@ const Verification = () => {
     <Sidenav>
       <Toaster />
       <>
-        <VerificationComplaintList  sparepart={sparepart} data={data}technicians={techData}userData={value?.user} RefreshData={RefreshData} />
+        <VerificationComplaintList  sparepart={sparepart} data={data}transactions={transactions} technicians={techData}userData={value?.user} RefreshData={RefreshData} />
         {/* <PincodeDistanceCalculator /> */}
       </>
     </Sidenav>

@@ -32,7 +32,7 @@ const ServiceTransactions = ({ }) => {
    
   const getTransactions = async () => {
     try {
-      const endPoint = user?.user?.role === "ADMIN" 
+      const endPoint = user?.user?.role === "ADMIN"||user?.user?.role === "EMPLOYEE" 
         ? `/getAllServicePayment` 
         : value?.user?.role === "BRAND" 
         ? `/getTransactionByBrandId/${user?.user?._id}` 

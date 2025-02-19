@@ -111,7 +111,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold '>Customers</div>
+                  <div className='text-blue-500 font-semibold '>Customers</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.customers} delay={1} />
                   </div>
@@ -128,7 +128,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Brands</div>
+                  <div className='text-blue-500 font-semibold'>Brands</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.brands} delay={1} />
                   </div>
@@ -145,7 +145,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Dealer</div>
+                  <div className='text-blue-500 font-semibold'>Dealer</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.dealers} delay={1} />
                   </div>
@@ -162,7 +162,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Service Centers</div>
+                  <div className='text-blue-500 font-semibold'>Service Centers</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.services} delay={1} />
                   </div>
@@ -179,7 +179,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PeopleAlt fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Technician</div>
+                  <div className='text-blue-500 font-semibold'>Technician</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.technicians} delay={1} />
                   </div>
@@ -200,7 +200,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Pending</div>
+                  <div className='text-blue-500 font-semibold'>Pending</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.pending} delay={1} />
                   </div>
@@ -217,7 +217,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Pending fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>In Progress</div>
+                  <div className='text-blue-500 font-semibold'>In Progress</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.inProgress} delay={1} />
                   </div>
@@ -234,7 +234,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <AssignmentTurnedIn fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Assign</div>
+                  <div className='text-blue-500 font-semibold'>Assign</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.assign} delay={1} />
                   </div>
@@ -251,7 +251,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Settings fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Part Pending</div>
+                  <div className='text-blue-500 font-semibold'>Part Pending</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.partPending} delay={1} />
                   </div>
@@ -268,7 +268,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Total Pending</div>
+                  <div className='text-blue-500 font-semibold'>Total Pending</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
                   </div>
@@ -286,7 +286,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Cancel fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Cancel</div>
+                  <div className='text-blue-500 font-semibold'>Cancel</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.cancel} delay={1} />
                   </div>
@@ -303,7 +303,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <FactCheck fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Final Verification</div>
+                  <div className='text-blue-500 font-semibold'>Final Verification</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.finalVerification} delay={1} />
                   </div>
@@ -320,7 +320,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <AssignmentTurnedIn fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Close</div>
+                  <div className='text-blue-500 font-semibold'>Close</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.complete} delay={1} />
                   </div>
@@ -340,7 +340,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Assignment fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Total Complaints</div>
+                  <div className='text-blue-500 font-semibold'>Total Complaints</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.allComplaints} delay={1} />
                   </div>
@@ -361,7 +361,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center justify-between'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>0-1 day</div>
+                  <div className='text-blue-500 font-semibold'>0-1 day</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.zeroToOneDays} delay={1} />
                   </div>
@@ -377,7 +377,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>2-5 Days</div>
+                  <div className='text-blue-500 font-semibold'>2-5 Days</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.twoToFiveDays} delay={1} />
                   </div>
@@ -393,7 +393,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>more than week</div>
+                  <div className='text-blue-500 font-semibold'>more than week</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
                   </div>
@@ -409,7 +409,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Today completed</div>
+                  <div className='text-blue-500 font-semibold'>Today completed</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
                   </div>
@@ -430,7 +430,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Settings fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>0-1 day</div>
+                  <div className='text-blue-500 font-semibold'>0-1 day</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.zeroToOneDaysPartPending} delay={1} />
                   </div>
@@ -447,7 +447,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Settings fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>2-5 Days</div>
+                  <div className='text-blue-500 font-semibold'>2-5 Days</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.twoToFiveDaysPartPending} delay={1} />
                   </div>
@@ -464,7 +464,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <Settings fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>more than week</div>
+                  <div className='text-blue-500 font-semibold'>more than week</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.moreThanFiveDaysPartPending} delay={1} />
                   </div>
@@ -485,7 +485,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>New Order</div>
+                  <div className='text-blue-500 font-semibold'>New Order</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={order?.length} delay={1} />
                   </div>
@@ -502,7 +502,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Cancel Order</div>
+                  <div className='text-blue-500 font-semibold'>Cancel Order</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={cancelOrder?.length} delay={1} />
                   </div>
@@ -519,7 +519,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Approved</div>
+                  <div className='text-blue-500 font-semibold'>Approved</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={approveOrder?.length} delay={1} />
                   </div>
@@ -536,7 +536,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Not Approved</div>
+                  <div className='text-blue-500 font-semibold'>Not Approved</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={notApproveOrder?.length} delay={1} />
                   </div>
@@ -553,7 +553,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center'>
                 <ShoppingBag fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-600 font-semibold'>Total Orders</div>
+                  <div className='text-blue-500 font-semibold'>Total Orders</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={orderData?.length} delay={1} />
                   </div>

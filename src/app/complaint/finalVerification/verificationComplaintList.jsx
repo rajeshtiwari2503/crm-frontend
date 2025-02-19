@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
+import { Add, Close, Payment, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -17,7 +17,7 @@ const VerificationComplaintList = (props) => {
 
 
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset, getValues, setValue } = useForm();
 
   const router = useRouter()
 
@@ -37,7 +37,7 @@ const VerificationComplaintList = (props) => {
 
   const serviceCenter = props?.technicians
   const [status, setStatus] = useState(false);
-  const [order, setOrder] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState(false);
   const [assignTech, setAssignTech] = useState(false);
   const [selectedTechnician, setSelectedTechnician] = useState('');
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -101,6 +101,7 @@ const VerificationComplaintList = (props) => {
   // };
 
   const onSubmit = async (data) => {
+
     try {
       setLoading(true);
 
@@ -134,6 +135,7 @@ const VerificationComplaintList = (props) => {
   };
 
 
+
   const handleDetails = (id) => {
     router.push(`/complaint/details/${id}`)
   }
@@ -151,6 +153,59 @@ const VerificationComplaintList = (props) => {
 
     setStatus(false)
   }
+
+  const handlePaymentStatus = async (row) => {
+    setId(row?._id)
+
+    if (row) {
+      setValue("complaintId", row?._id)
+
+    }
+    setPaymentStatus(true)
+  }
+
+  const handlePaymentClose = () => {
+
+    setPaymentStatus(false)
+  }
+
+  const handlePayment = async () => {
+    const data = getValues(); // Get all form values
+  
+    // Create FormData
+    const formData = new FormData();
+    formData.append("serviceCenterName", data.serviceCenterName);
+    formData.append("payment", data.payment);
+    formData.append("description", data.description);
+    formData.append("contactNo", data.contactNo);
+    formData.append("complaintId", data.complaintId);
+    formData.append("city", data.city);
+    formData.append("address", data.address);
+  
+    // Append QR code if exists
+    if (data.qrCode && data.qrCode.length > 0) {
+      formData.append("qrCode", data.qrCode[0]);
+    }
+  
+    setLoading(true);
+    try {
+      const response = await http_request.post("/addServicePayment", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    
+        reset(); // Reset form on success
+    ToastMessage(response?.data)
+      setPaymentStatus(false)
+    } catch (error) {
+      console.error("Error processing payment", error);
+      setPaymentStatus(false)
+      alert("There was an error processing the payment. Please try again.");
+    } finally {
+      setPaymentStatus(false)
+      setLoading(false);
+    }
+  };
+  
 
   const [distance, setDistance] = useState(null);
   const [error, setError] = useState("");
@@ -489,7 +544,7 @@ const VerificationComplaintList = (props) => {
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
-                      <div className="flex items-center  space-x-2">
+                      <div className="flex items-center  space-x-1">
                         {/* <div
                           onClick={() => handleUpdateStatus(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
@@ -527,7 +582,12 @@ const VerificationComplaintList = (props) => {
                         >
                           <Visibility />
                         </div>
-
+                        <div
+                          onClick={() => handlePaymentStatus(row)}
+                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Payment color='success' />
+                        </div>
                         {/* <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                           <EditIcon color="success" />
                         </IconButton>
@@ -654,10 +714,10 @@ const VerificationComplaintList = (props) => {
               </div>
               <div>
                 {loading === true ?
-                  <div  className="rounded-lg w-full p-3 mt-3 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <div className="rounded-lg w-full p-3 mt-3 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submiting........
                   </div>
-                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading}  className="rounded-lg w-full  p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="rounded-lg w-full  p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submit
                   </button>
                 }
@@ -667,6 +727,186 @@ const VerificationComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
+      <Dialog open={paymentStatus} onClose={handlePaymentClose}>
+        <DialogTitle>Service Center Payment</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handlePaymentClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          {loading ? (
+            <div className='w-[400px] h-[400px] flex justify-center items-center'>
+              <ReactLoader />
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit(handlePayment)} >
+              {/* Service Center Name */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Service Center Name</label>
+                <input
+                  type="text"
+                  {...register('serviceCenterName', {
+                    required: 'Service Center Name is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter service center name"
+                />
+                {errors.serviceCenterName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.serviceCenterName.message}</p>
+                )}
+              </div>
+
+              {/* Payment */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Payment</label>
+                <input
+                  type="text"
+                  {...register('payment', {
+                    required: 'Payment is required',
+                    pattern: {
+                      value: /^\d+(\.\d{1,2})?$/,
+                      message: 'Invalid payment amount',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter payment amount"
+                />
+                {errors.payment && (
+                  <p className="text-red-500 text-sm mt-1">{errors.payment.message}</p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <input
+                  {...register('description', {
+                    required: 'Description is required',
+                    minLength: {
+                      value: 10,
+                      message: 'Description must be at least 10 characters long',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter description"
+
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                )}
+              </div>
+
+              {/* Contact Number */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Contact Number</label>
+                <input
+                  type="text"
+                  {...register('contactNo', {
+                    required: 'Contact number is required',
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: 'Invalid phone number',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter contact number"
+                />
+                {errors.contactNo && (
+                  <p className="text-red-500 text-sm mt-1">{errors.contactNo.message}</p>
+                )}
+              </div>
+
+              {/* Complaint ID */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Complaint ID</label>
+                <input
+                  type="text"
+                  {...register('complaintId', {
+                    required: 'Complaint ID is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter complaint ID"
+                readOnly
+                />
+                {errors.complaintId && (
+                  <p className="text-red-500 text-sm mt-1">{errors.complaintId.message}</p>
+                )}
+              </div>
+
+              {/* City */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">City</label>
+                <input
+                  type="text"
+                  {...register('city', {
+                    required: 'City is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter city"
+                />
+                {errors.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
+                )}
+              </div>
+
+              {/* Address */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Address</label>
+                <input
+                  {...register('address', {
+                    required: 'Address is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter address"
+
+                />
+                {/* {errors.address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+                )} */}
+              </div>
+
+
+
+              {/* QR Code Upload */}
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Upload QR Code</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register('qrCode', {
+                    required: 'QR Code is required',
+                  })}
+                  className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+                />
+                {errors.qrCode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.qrCode.message}</p>
+                )}
+              </div>
+
+              <div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  onClick={() => handlePayment()}
+                  className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Submitting..." : "Payment Request"}
+                </button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
 
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />

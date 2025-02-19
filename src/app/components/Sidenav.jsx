@@ -722,7 +722,7 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseWallet} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {["Bank Details", "Transactions"]?.map((text, index) => (
+                {["Bank Details", "Transactions","ServiceTransactions"]?.map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                       pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'

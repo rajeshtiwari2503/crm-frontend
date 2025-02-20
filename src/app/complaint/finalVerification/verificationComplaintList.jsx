@@ -102,8 +102,29 @@ const VerificationComplaintList = (props) => {
 
   const onSubmit = async ( ) => {
     const data = getValues();
-    console.log("datapp",data);
+  
     
+   
+    if (!data.kilometer || isNaN(data.kilometer) || Number(data.kilometer) < 0) {
+      alert("Kilometer must be a positive number");
+      return;
+    }
+  
+    if (!data.paymentBrand) {
+      alert("Payment Brand is required");
+      return;
+    }
+  
+    
+  
+    if (data.qrCode && data.qrCode.length > 0) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(data.qrCode[0].type)) {
+        alert("Invalid QR Code format. Please upload a JPEG or PNG image.");
+        return;
+      }
+    }
+  
     try {
       setLoading(true);
 
@@ -175,7 +196,44 @@ const VerificationComplaintList = (props) => {
 
   const handlePayment = async () => {
     const data = getValues(); // Get all form values
+    if (!data.serviceCenterName) {
+      alert("Service Center Name is required");
+      return;
+    }
   
+    if (!data.payment || isNaN(data.payment) || Number(data.payment) <= 0) {
+      alert("Please enter a valid payment amount");
+      return;
+    }
+  
+    if (!data.description) {
+      alert("Description is required");
+      return;
+    }
+  
+    if (!data.contactNo || !/^\d{10}$/.test(data.contactNo)) {
+      alert("Please enter a valid 10-digit contact number");
+      return;
+    }
+  
+    if (!data.complaintId) {
+      alert("Complaint ID is required");
+      return;
+    }
+  
+    if (!data.city) {
+      alert("City is required");
+      return;
+    }
+  
+    
+    if (data.qrCode && data.qrCode.length > 0) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(data.qrCode[0].type)) {
+        alert("Invalid QR Code format. Please upload a JPEG or PNG image.");
+        return;
+      }
+    }
     // Create FormData
     const formData = new FormData();
     formData.append("serviceCenterName", data.serviceCenterName);

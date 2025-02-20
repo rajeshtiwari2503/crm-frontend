@@ -219,7 +219,7 @@ const ComplaintList = (props) => {
       const data = getValues();
       setLoading(true);
 
-      const reqdata = { status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
+      const reqdata = {empId:userData._id ,empName:userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -243,7 +243,7 @@ const ComplaintList = (props) => {
       setLoading(true);
 
 
-      const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
+      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -283,10 +283,10 @@ const ComplaintList = (props) => {
     try {
       setLoading(true);
 
-      const sndStatus = data.comments
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, {
-        sndStatus
-      });
+      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
+      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+        sndStatusReq
+      );
       let { data: responseData } = response;
       setUpdateCommm(false)
       props?.RefreshData(responseData)

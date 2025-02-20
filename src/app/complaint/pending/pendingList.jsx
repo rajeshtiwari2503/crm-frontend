@@ -104,10 +104,10 @@ const PendingComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatus = data.comments
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, {
-        sndStatus
-      });
+      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
+      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+        sndStatusReq
+      );
       let { data: responseData } = response;
       // setUpdateCommm(false)
       props?.RefreshData(responseData)
@@ -118,10 +118,10 @@ const PendingComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata = assignTech === true ? {
+      const reqdata = assignTech === true ? {empId:userData._id ,empName:userData.name,
         status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
         assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
-      } : { status: data?.status }
+      } : { status: data?.status,empId:userData._id ,empName:userData.name }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       if (data.comments) {
         updateComment({ comments: data?.comments })

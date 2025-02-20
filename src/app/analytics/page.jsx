@@ -43,34 +43,34 @@ const Analytics = () => {
     <>
       <Sidenav>
       {user?.user.role==="ADMIN"?  <div className="p-4 text-center">
-          <div className="flex space-x-4 mb-6">
+          <div className="flex space-x-4 mb-6 bg-[#09090b] p-2">
             <button
               onClick={() => setActiveSection("state")}
-              className={`px-4 py-2 rounded ${activeSection === "state" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+              className={` px-2  py-1 rounded ${activeSection === "state" ? "bg-[#09090b]  text-[#fafafa]" : "bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300  text-[#09090b]"}  `}
             >
               Statewide Pending Complaints
             </button>
             <button
               onClick={() => setActiveSection("district")}
-              className={`px-4 py-2 rounded ${activeSection === "district" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+              className={` px-2  py-1 rounded ${activeSection === "district" ? "bg-[#09090b]  text-[#fafafa]" : "bg-white shadow-md hover:shadow-xl transition-shadow duration-300  text-[#09090b]"}  `}
             >
               District Wise Pending Complaints
             </button>
             <button
               onClick={() => setActiveSection("serviceCenter")}
-              className={`px-4 py-2 rounded ${activeSection === "serviceCenter" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+              className={` px-2  py-1 rounded ${activeSection === "serviceCenter" ? "bg-[#09090b]  text-[#fafafa]" : "bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300  text-[#09090b]"}  `}
             >
               Service-Center Wise Pending Complaints
             </button>
             <button
               onClick={() => setActiveSection("noServiceArea")}
-              className={`px-4 py-2 rounded ${activeSection === "noServiceArea" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+              className={` px-2  py-1 rounded ${activeSection === "noServiceArea" ? "bg-[#09090b]  text-[#fafafa]" : "bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300  text-[#09090b]"}  `}
             >
               No Serviceable Area Complaints
             </button>
             <button
               onClick={() => setActiveSection("brandStats")}
-              className={`px-4 py-2 rounded ${activeSection === "brandStats" ? "bg-blue-700" : "bg-blue-200"} text-white`}
+              className={` px-2  py-1 rounded ${activeSection === "brandStats" ? "bg-[#09090b]  text-[#fafafa]" : "bg-white shadow-lg hover:shadow-2xl transition-shadow duration-300  text-[#09090b]"}  `}
             >
               Brand Complaint Stats
             </button>

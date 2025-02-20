@@ -100,8 +100,10 @@ const VerificationComplaintList = (props) => {
   //   }
   // };
 
-  const onSubmit = async (data) => {
-
+  const onSubmit = async ( ) => {
+    const data = getValues();
+    console.log("datapp",data);
+    
     try {
       setLoading(true);
 
@@ -110,6 +112,8 @@ const VerificationComplaintList = (props) => {
       formData.append("kilometer", data.kilometer);
       formData.append("paymentBrand", data.paymentBrand);
       formData.append("finalComments", data.finalComments);
+      formData.append("empId", userData._id);
+      formData.append("empName", userData.name);
 
       // Append the image file if it's selected
       if (data.partImage && data.partImage[0]) {
@@ -722,7 +726,7 @@ const VerificationComplaintList = (props) => {
                   <div className="rounded-lg w-full p-3 mt-3 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submiting........
                   </div>
-                  : <button type="button" onClick={handleSubmit(onSubmit)} disabled={loading} className="rounded-lg w-full  p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                  : <button type="button" onClick={()=>onSubmit()} disabled={loading} className="rounded-lg w-full  p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submit
                   </button>
                 }

@@ -607,7 +607,7 @@ const ServiceDashboard = (props) => {
           <div className='justify-center flex items-center'>
             <div>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={100} delay={1} />
+                <CountUp start={0} end={0} delay={1} />
               </div>               <div className='text-center mt-2'>Wallet Amount</div>
             </div>
           </div>

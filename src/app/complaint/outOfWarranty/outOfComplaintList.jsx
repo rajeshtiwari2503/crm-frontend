@@ -199,7 +199,7 @@ const OutOfWarrantyList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata = assign === true ? { status: "PENDING", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status }
+      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);

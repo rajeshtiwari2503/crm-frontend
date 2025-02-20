@@ -150,7 +150,7 @@ const RecentServicesList = (props) => {
                     { label: "Contact", key: "customerMobile" },
                     { label: "Product_Brand", key: "productBrand" },
                     { label: "Status", key: "status" },
-                    { label: "Created_At", key: "createdAt" },
+                    { label: "Updated_At", key: "UpdatedAt" },
                   ].map(({ label, key }) => (
                     <TableCell key={key} sx={{ color: "white" }}>
                       <TableSortLabel

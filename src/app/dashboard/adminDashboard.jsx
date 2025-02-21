@@ -27,6 +27,18 @@ const AdminDashboard = (props) => {
   const data = props?.dashData;
   // console.log(data);
   const router = useRouter();
+
+
+  const [orderData, setOrderData] = useState([])
+  const [complaints, setComplaints] = useState([])
+  const [brandData, setBrandData] = useState([]);
+
+  React.useEffect(() => {
+    getAllComplaint()
+    getAllOrder()
+    fetchComplaintData();
+  }, []);
+
   const pieChartData = [
     ["Task", "Hours per Day"],
     ["AllComplaints", data?.complaints?.allComplaints],
@@ -38,7 +50,31 @@ const AdminDashboard = (props) => {
     ["Cancel", data?.complaints?.cancel],
     ["In Progress", data?.complaints?.inProgress],
   ];
-
+  const pieChartBrandData = [
+    ["Brand", "Total"], // Header for PieChart
+    ...brandData?.map((item) => [item.productBrand, item.TOTAL]),
+  ];
+  const pieChartBrandPenData = [
+    ["Brand", "Total"], // Header for PieChart
+    ...brandData?.map((item) => [item.productBrand, item.PENDING]),
+  ];
+  const optionsPenBrand = {
+    title: "Pendind Complaints by Brand ",
+    pieHole: 0.4, // Makes it a donut chart (optional)
+    is3D: true,
+    slices: { 0: { offset: 0.1 }, 1: { offset: 0. } },
+    pieSliceText: "value",
+    // pieSliceText: "label",
+    legend: { position: "right" },
+  };
+  const optionsBrand = {
+    title: "Complaints by Brand",
+    pieHole: 0.4, // Makes it a donut chart (optional)
+    is3D: true,
+    slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
+    pieSliceText: "value",
+    legend: { position: "right" },
+  };
   const barChartData = [
     ["Complaint Status", "Count"],
     ["AllComplaints", data?.complaints?.allComplaints],
@@ -54,15 +90,24 @@ const AdminDashboard = (props) => {
 
   const options = {
     title: "Complaints Summary",
+    pieHole: 0.4, // Makes it a donut chart (optional)
+    is3D: true,
+    slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },
+    pieSliceText: "value",
+    legend: { position: "right" },
   };
 
-  const [orderData, setOrderData] = useState([])
-  const [complaints, setComplaints] = useState([])
+  
 
-  React.useEffect(() => {
-    getAllComplaint()
-    getAllOrder()
-  }, []);
+  const fetchComplaintData = async () => {
+    try {
+      const response = await http_request.get("/getComplaintCountByBrand");
+      setBrandData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching complaints:", error);
+    }
+  };
+
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint");
@@ -99,7 +144,7 @@ const AdminDashboard = (props) => {
   // console.log(cancelOrder);
   return (
     <>
-      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mb-3'>Users</div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Users</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
 
@@ -189,7 +234,7 @@ const AdminDashboard = (props) => {
           </div>
         </div>
       </div>
-      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mb-3'>Complaints</div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -351,7 +396,7 @@ const AdminDashboard = (props) => {
         </div>
       </div>
 
-      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
+      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -419,7 +464,7 @@ const AdminDashboard = (props) => {
           </div>
         </div>
       </div>
-      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
+      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
       <div className='grid grid-cols-5 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
@@ -475,7 +520,7 @@ const AdminDashboard = (props) => {
         </div>
 
       </div>
-      <div className=' h-8 rounded-md flex items-center pl-5 bg-[#09090b] text-1xl text-white font-bold mt-5 mb-3'>Order </div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Order </div>
       <div className='grid grid-cols-4 gap-4'>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
@@ -566,13 +611,31 @@ const AdminDashboard = (props) => {
       </div>
 
       <div className='grid grid-cols-2 gap-4 my-8'>
-        <div className='rounded-lg shadow px-4 py-4 bg-white'>
+        <div className='rounded-lg shadow   bg-white'>
           <Chart
             chartType="PieChart"
             data={pieChartData}
             options={options}
             width={"100%"}
-            height={"400px"}
+            height={"100%"}
+          />
+        </div>
+        <div className='rounded-lg shadow  bg-white'>
+          <Chart
+            chartType="PieChart"
+            data={pieChartBrandPenData}
+            options={optionsPenBrand}
+            width={"100%"}
+            height={"100%"}
+          />
+        </div>
+        <div className='rounded-lg shadow  bg-white'>
+          <Chart
+            chartType="PieChart"
+            data={pieChartBrandData}
+            options={optionsBrand}
+            width={"100%"}
+            height={"100%"}
           />
         </div>
         {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
@@ -585,12 +648,8 @@ const AdminDashboard = (props) => {
           />
         </div> */}
         <div>
-          <BrandWiseComplaintList />
+          <BrandWiseComplaintList brandData={brandData}/>
         </div>
-      </div>
-
-      <div>
-        <UnAssignComplaintList />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         <div>
@@ -604,6 +663,10 @@ const AdminDashboard = (props) => {
       <div>
         <HighPriorityComplaintList data={complaints} />
       </div>
+      <div>
+        <UnAssignComplaintList />
+      </div>
+     
 
       <div>
         <RecentServicesList data={complaints} />

@@ -112,6 +112,7 @@ const PendingComplaintList = (props) => {
       // setUpdateCommm(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }
@@ -132,6 +133,7 @@ const PendingComplaintList = (props) => {
       setAssignTech(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }

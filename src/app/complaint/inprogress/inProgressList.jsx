@@ -80,6 +80,7 @@ const InProgressComplaintList = (props) => {
       // setUpdateCommm(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }
@@ -96,6 +97,7 @@ const InProgressComplaintList = (props) => {
       setStatus(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }

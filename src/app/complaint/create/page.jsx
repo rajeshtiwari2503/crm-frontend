@@ -19,7 +19,7 @@ const AddComplaint = () => {
   const [productName, setProductName] = useState("")
   const [image, setImage] = useState("")
 
-  const { register, handleSubmit, formState: { errors }, getValues, watch, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues,reset, watch, setValue } = useForm();
   const [products, setProducts] = useState([])
   const [brand, setBrands] = useState([])
   const [subCategory, setSubCategory] = useState([])
@@ -186,6 +186,7 @@ const AddComplaint = () => {
         const { data } = response
         ToastMessage(data)
         setLoading(false)
+        reset()
         router.push("/complaint/allComplaint")
       }
       else {

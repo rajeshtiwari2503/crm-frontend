@@ -457,7 +457,7 @@ const AssignComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN"|| userData?.role === "EMPLOYEE"|| userData?.role === "BRAND EMPLOYEE" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"

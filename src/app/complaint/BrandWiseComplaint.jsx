@@ -13,25 +13,14 @@ import {
   Typography,
 } from "@mui/material";
 
-const BrandWiseComplaintList = () => {
-  const [data, setData] = useState([]);
+const BrandWiseComplaintList = ({brandData}) => {
+   const data=brandData;
+   
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("TOTAL");
-
-  useEffect(() => {
-    fetchComplaintData();
-  }, []);
-
-  const fetchComplaintData = async () => {
-    try {
-      const response = await http_request.get("/getComplaintCountByBrand");
-      setData(response.data.data);
-    } catch (error) {
-      console.error("Error fetching complaints:", error);
-    }
-  };
+ 
 
   // Sorting Function
   const handleSortRequest = (property) => {

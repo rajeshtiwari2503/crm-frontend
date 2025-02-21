@@ -231,6 +231,7 @@ const ComplaintList = (props) => {
       props?.RefreshData(responseData)
       ToastMessage(responseData);
       setLoading(false);
+      reset()
     } catch (err) {
       setLoading(false);
 
@@ -257,7 +258,7 @@ const ComplaintList = (props) => {
       props?.RefreshData(responseData)
       ToastMessage(responseData);
       setLoading(false);
-
+      reset()
     } catch (err) {
       setLoading(false);
 
@@ -272,6 +273,7 @@ const ComplaintList = (props) => {
       let { data: responseData } = response;
       setOrder(false)
       props?.RefreshData(responseData)
+      reset()
       ToastMessage(responseData);
     } catch (err) {
       setLoading(false);
@@ -292,7 +294,7 @@ const ComplaintList = (props) => {
       props?.RefreshData(responseData)
       ToastMessage(responseData);
       setLoading(false);
-
+      reset()
     } catch (err) {
       setLoading(false);
 

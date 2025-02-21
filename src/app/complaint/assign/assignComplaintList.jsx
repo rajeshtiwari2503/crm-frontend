@@ -101,6 +101,7 @@ const AssignComplaintList = (props) => {
       // setUpdateCommm(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }
@@ -121,6 +122,7 @@ const AssignComplaintList = (props) => {
       setAssignTech(false)
       props?.RefreshData(responseData)
       ToastMessage(responseData);
+      reset()
     } catch (err) {
       console.log(err);
     }

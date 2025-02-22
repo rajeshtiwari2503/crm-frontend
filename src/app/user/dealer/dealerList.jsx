@@ -130,9 +130,10 @@ const DealerList = (props) => {
       <div className='flex justify-between items-center mb-3'>
         <div className='flex'>
           <div className='font-bold text-2xl'>Dealer Information</div>
-          {props?.user?.role === "ADMIN" || props?.user?.role === "BRAND" && <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+          {props?.user?.role === "ADMIN" || props?.user?.role === "BRAND" ? <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
             <PictureAsPdf className="mr-2" />
           </button>
+          :""
           }
         </div>
         <div className="my-4">

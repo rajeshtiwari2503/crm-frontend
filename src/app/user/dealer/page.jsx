@@ -49,7 +49,7 @@ const Dealer = () => {
     <Sidenav>
       <Toaster />
       <>
-       <DealerList data={data} RefreshData={RefreshData} />
+       <DealerList data={data}user={value?.user} RefreshData={RefreshData} />
         
       </>
     </Sidenav>

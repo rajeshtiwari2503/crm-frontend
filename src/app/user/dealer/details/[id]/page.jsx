@@ -79,12 +79,26 @@ const DealerDetails = ({ params }) => {
                         <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4" >
                             <div className='text-1xl font-semibold'>Dealer Name : </div>
                             <div className='text-lg font-medium'>{dealer?.name}</div>
+                            <div className='text-1xl font-semibold'>Brand Name : </div>
+                            <div className='text-lg font-medium'>{dealer?.brandName}</div>
                             <div className='text-1xl font-semibold'>Email : </div>
                             <div className='text-lg font-medium'>{dealer?.email}</div>
                             <div className='text-1xl font-semibold'>Contact : </div>
                             <div className='text-lg font-medium'>{dealer?.contact}</div>
                             <div className='text-1xl font-semibold'>Password : </div>
                             <div className='text-lg font-medium'>{dealer?.password}</div>
+                            <div className='text-1xl font-semibold'>State : </div>
+                            <div className='text-lg font-medium'>{dealer?.state}</div>
+                             <div className='text-1xl font-semibold'>City : </div>
+                            <div className='text-lg font-medium'>{dealer?.city}</div>
+                            <div className='text-1xl font-semibold'>Other City : </div>
+                            <div>
+                           {dealer?.otherCities?.map((item,i)=> 
+                           <div key={i}>
+                           <div className='text-lg font-medium'>{item}</div>
+                           </div>
+                           )}
+                            </div>
                         </div>
                     </div>
                     <div>

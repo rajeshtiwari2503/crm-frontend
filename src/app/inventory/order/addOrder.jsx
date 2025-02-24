@@ -1,13 +1,18 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { useState } from "react";
 import http_request from '.././../../../http-request'
-export default function SparePartsForm({ sparepart ,brands,centers}) {
+import { ToastMessage } from "@/app/components/common/Toastify";
+import { Toaster } from "react-hot-toast";
+export default function SparePartsForm({ sparepart ,RefreshData,onClose,brands,centers}) {
+
+const [loading,setLoading]=useState(false)
+
   const { register, control, handleSubmit, setValue, watch, reset, formState: { errors } } = useForm({
     defaultValues: {
         brandId: "",
         brandName: "",
         serviceCenterId: "",
-        serviceCenterName: "",
+        serviceCenter: "",
       spareParts: [{ sparePartId: "", sparePartName: "", quantity: "", price: "" }],
       docketNo: "",
       trackLink: "",
@@ -19,19 +24,26 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
     control,
     name: "spareParts",
   });
+  const selectedBrandId = watch("brandId");
+  // console.log("selectedBrandId",selectedBrandId);
+  // Filter spare parts by selected brand
+  const filteredSpareParts = sparepart.filter(part => part.brandId === selectedBrandId);
+// console.log("filteredSpareParts",filteredSpareParts);
 
   // Watch selected spare parts to prevent duplicates
   const selectedSpareParts = watch("spareParts").map(part => part.sparePartId);
+ 
 
   const onSubmit = async (data) => {
-    console.log(data,"data");
+    // console.log(data,"data");
     
     try {
+      setLoading(true)
       const formData = new FormData();
       formData.append("brandId", data.brandId);
       formData.append("brandName", data.brandName);
       formData.append("serviceCenterId", data.serviceCenterId);
-      formData.append("serviceCenterName", data.serviceCenterName);
+      formData.append("serviceCenter", data.serviceCenter);
       formData.append("docketNo", data.docketNo);
       formData.append("trackLink", data.trackLink);
       formData.append("chalanImage", data.chalanImage[0]); 
@@ -40,18 +52,26 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
       const response = await http_request.post("/addOrder", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
-      alert(response.data.msg);
+      
       reset();
+        RefreshData(response?.data)
+        ToastMessage(response?.data);
+        setLoading(false)
+        onClose()
     } catch (error) {
       console.error("Order submission error:", error);
-      alert("Failed to submit order");
+  
+         ToastMessage(error?.response?.data);
+         onClose()
+         setLoading(false)
     }
   };
    
  
   return (
+
     <div className="max-w-2xl mx-auto p-2 bg-white shadow-lg rounded-lg">
+      <Toaster />
     <h2 className="text-xl font-semibold mb-4">Spare Parts Form</h2>
     <form onSubmit={handleSubmit(onSubmit)}>
     <div className="mb-4">
@@ -61,7 +81,7 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
             onChange={(e) => {
               const selectedBrand = brands.find(brand => brand._id === e.target.value);
               setValue("brandId", selectedBrand._id);
-              setValue("brandName", selectedBrand.name);
+              setValue("brandName", selectedBrand.brandName);
             }}
             className="w-full p-2 border rounded"
           >
@@ -81,7 +101,7 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
             onChange={(e) => {
               const selectedServiceCenter = centers.find(center => center._id === e.target.value);
               setValue("serviceCenterId", selectedServiceCenter._id);
-              setValue("serviceCenterName", selectedServiceCenter.name);
+              setValue("serviceCenter", selectedServiceCenter.serviceCenterName);
             }}
             className="w-full p-2 border rounded"
           >
@@ -92,60 +112,61 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
           </select>
           {errors.serviceCenterId && <p className="text-red-500">{errors.serviceCenterId.message}</p>}
         </div>
-      {fields.map((item, index) => (
-        <div key={item.id} className="mb-4  rounded-md">
-          <div className="flex gap-3">
-            {/* Spare Part Selection */}
-            <select
-              {...register(`spareParts.${index}.sparePartId`, { required: "Select a spare part" })}
-              onChange={(e) => {
-                const selectedPart = sparepart.find(part => part._id === e.target.value);
-                setValue(`spareParts.${index}.sparePartId`, selectedPart._id);
-                setValue(`spareParts.${index}.sparePartName`, selectedPart.partName);
-              }}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">Select Spare Part</option>
-              {sparepart
-                .filter(part => !selectedSpareParts.includes(part._id) || part._id === watch(`spareParts.${index}.sparePartId`))
-                .map((part) => (
-                  <option key={part._id} value={part._id}>{part.partName}</option>
-                ))}
-            </select>
-            {errors.spareParts?.[index]?.sparePartId && <p className="text-red-500">{errors.spareParts[index].sparePartId.message}</p>}
+        {fields.map((item, index) => (
+          <div key={item.id} className="mb-4 rounded-md">
+            <div className="flex gap-3">
+              {/* Spare Part Selection */}
+              <select
+                {...register(`spareParts.${index}.sparePartId`, { required: "Select a spare part" })}
+                onChange={(e) => {
+                  const selectedPart = filteredSpareParts.find(part => part._id === e.target.value);
+                  setValue(`spareParts.${index}.sparePartId`, selectedPart?._id || "");
+                  setValue(`spareParts.${index}.sparePartName`, selectedPart?.partName || "");
+                }}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">Select Spare Part</option>
+                {filteredSpareParts
+                  .filter(part => !selectedSpareParts.includes(part._id) || part._id === watch(`spareParts.${index}.sparePartId`))
+                  .map((part) => (
+                    <option key={part._id} value={part._id}>{part.partName}</option>
+                  ))}
+              </select>
+              {errors.spareParts?.[index]?.sparePartId && <p className="text-red-500">{errors.spareParts[index].sparePartId.message}</p>}
 
-            {/* Hidden Spare Part Name Field (Auto-filled) */}
-            <input type="hidden" {...register(`spareParts.${index}.sparePartName`)} />
+              {/* Hidden Spare Part Name Field (Auto-filled) */}
+              <input type="hidden" {...register(`spareParts.${index}.sparePartName`)} />
 
-            {/* Quantity */}
-            <input
-              {...register(`spareParts.${index}.quantity`, { required: "Enter quantity" })}
-              placeholder="Quantity"
-              type="number"
-              className="w-1/3 p-2 border rounded"
-            />
-            {errors.spareParts?.[index]?.quantity && <p className="text-red-500">{errors.spareParts[index].quantity.message}</p>}
+              {/* Quantity */}
+              <input
+                {...register(`spareParts.${index}.quantity`, { required: "Enter quantity" })}
+                placeholder="Quantity"
+                type="number"
+                className="w-1/3 p-2 border rounded"
+              />
+              {errors.spareParts?.[index]?.quantity && <p className="text-red-500">{errors.spareParts[index].quantity.message}</p>}
 
-            {/* Price */}
-            <input
-              {...register(`spareParts.${index}.price`, { required: "Enter price" })}
-              placeholder="Price"
-              type="number"
-              className="w-1/3 p-2 border rounded"
-            />
-            {errors.spareParts?.[index]?.price && <p className="text-red-500">{errors.spareParts[index].price.message}</p>}
+              {/* Price */}
+              <input
+                {...register(`spareParts.${index}.price`, { required: "Enter price" })}
+                placeholder="Price"
+                type="number"
+                className="w-1/3 p-2 border rounded"
+              />
+              {errors.spareParts?.[index]?.price && <p className="text-red-500">{errors.spareParts[index].price.message}</p>}
 
-            {/* Remove Button */}
-            <button
-              type="button"
-              onClick={() => remove(index)}
-              className="text-red-500 hover:text-red-700"
-            >
-              ❌
-            </button>
+              {/* Remove Button */}
+              <button
+                type="button"
+                onClick={() => remove(index)}
+                className="text-red-500 hover:text-red-700"
+              >
+                ❌
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+
 
       {/* Add Spare Part Button */}
       <button
@@ -192,9 +213,10 @@ export default function SparePartsForm({ sparepart ,brands,centers}) {
 
       <button
         type="submit"
+        disabled={loading}
         className="block w-full bg-green-500 text-white p-2 rounded"
       >
-        Submit
+       {loading?"Submitting......":"Submit"}
       </button>
     </form>
   </div>

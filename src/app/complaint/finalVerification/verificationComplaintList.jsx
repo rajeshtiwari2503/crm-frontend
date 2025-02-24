@@ -225,7 +225,10 @@ const VerificationComplaintList = (props) => {
       alert("City is required");
       return;
     }
-  
+    if (!data.qrCode) {
+      alert("QR code is required");
+      return;
+    }
     
     if (data.qrCode && data.qrCode.length > 0) {
       const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];

@@ -79,47 +79,65 @@ const DealerList = (props) => {
   // Function to download a single service center info as PDF
   const downloadSinglePDF = (dealer) => {
     const doc = new jsPDF();
-    doc.text("Service Center Details", 10, 10);
+    doc.text("Dealer Details", 10, 10);
+  
+    const locationDetails = dealer.locations.map((location, index) => [
+      `Location ${index + 1}`, 
+      `State: ${location.state}, City: ${location.city}, Other Cities: ${location.otherCities.join(", ")}`
+    ]);
+  
     doc.autoTable({
       startY: 20,
       head: [["Field", "Details"]],
       body: [
         ["Dealer Name", dealer?.name],
         ["Contact", dealer?.contact],
-        ["State", dealer?.state],
-        ["City", dealer?.city],
-        ["Other City", dealer?.otherCities],
-
-
+        ...locationDetails, // Add multiple locations dynamically
       ],
     });
-    doc.save(`${dealer?.name}_${dealer?.city}_Details.pdf`);
+  
+    doc.save(`${dealer?.name}_Details.pdf`);
   };
+  
 
   // Function to download all service centers as a single PDF
   const downloadAllPDF = () => {
     const doc = new jsPDF();
     doc.text("All Dealers", 10, 10);
+  
     doc.autoTable({
       startY: 20,
-      head: [["ID", "Dealer Name", "State", "City", "Other City", "Contact"]],
-      body: data.map((row, index) => [
-        index + 1,
-        row?.name,
-        row?.state,
-        row?.city,
-        row?.otherCities,
-        row?.contact,
-      ]),
+      head: [["ID", "Dealer Name", "State(s)", "City(s)", "Other City(s)", "Contact"]],
+      body: data.map((dealer, index) => {
+        const states = dealer.locations.map(loc => loc.state).join(", ");
+        const cities = dealer.locations.map(loc => loc.city).join(", ");
+        const otherCities = dealer.locations.map(loc => loc.otherCities.join(", ")).join(", ");
+  
+        return [
+          index + 1,
+          dealer.name,
+          states,
+          cities,
+          otherCities,
+          dealer.contact,
+        ];
+      }),
     });
+  
     doc.save("All_Dealers.pdf");
   };
+
+  
+
   useEffect(() => {
     if (searchCity.trim() === "") {
       setFilteredDealers(data);
     } else {
       const filtered = data.filter((dealer) =>
-        (dealer.city || "").toLowerCase().includes(searchCity.toLowerCase()) // Safe check
+        dealer.locations.some((location) =>
+          [location.state, location.city, ...location.otherCities]
+            .some((place) => place.toLowerCase().includes(searchCity.toLowerCase()))
+        )
       );
       setFilteredDealers(filtered);
     }
@@ -189,6 +207,16 @@ const DealerList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'state'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('state')}
+                    >
+                      State
+                    </TableSortLabel>
+                   
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'city'}
                       direction={sortDirection}
                       onClick={() => handleSort('city')}
@@ -211,36 +239,43 @@ const DealerList = (props) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.name}</TableCell>
-                    <TableCell>{row?.email}</TableCell>
-                    <TableCell>{row?.city}</TableCell>
-                    <TableCell>{row?.otherCities}</TableCell>
-                    <TableCell>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {props?.report === true ? ""
-                        :
-                        <> <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                          <EditIcon color='success' />
-                        </IconButton>
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
+              {sortedData.map((row) => (
+  <TableRow key={row?._id} hover>
+    <TableCell>{row?._id.slice(-6)}</TableCell> {/* Using a unique part of _id */}
+    <TableCell>{row?.name}</TableCell>
+    <TableCell>{row?.email}</TableCell>
+    <TableCell>
+      {row?.locations?.map((loc) => loc.state).join(", ")}
+    </TableCell>
+    <TableCell>
+      {row?.locations?.map((loc) => loc.city).join(", ")}
+    </TableCell>
+    <TableCell>
+      {row?.locations?.flatMap((loc) => loc.otherCities).join(", ")}
+    </TableCell>
+    <TableCell>
+      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+        <Visibility color='primary' />
+      </IconButton>
+      {props?.report !== true && (
+        <>
+          <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+            <EditIcon color='success' />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+            <DeleteIcon color='error' />
+          </IconButton>
+          {(props?.user?.role === "ADMIN" || props?.user?.role === "BRAND") && (
+            <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
+              <PictureAsPdf color="error" />
+            </IconButton>
+          )}
+        </>
+      )}
+    </TableCell>
+  </TableRow>
+))}
 
-                          {props?.user?.role === "ADMIN" || props?.user?.role === "BRAND" ? <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
-                            <PictureAsPdf color="error" />
-                          </IconButton>
-                            : ""
-                          }
-                        </>
-                      }
-                    </TableCell>
-                  </TableRow>
-                ))}
               </TableBody>
             </Table>
           </TableContainer>

@@ -1,19 +1,24 @@
 "use client"
 import React, { useEffect, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import http_request from '../../../../../http-request';
 import Sidenav from '@/app/components/Sidenav';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import Select from "react-select";
+import { Add, Delete } from '@mui/icons-material';
 
 const AddDealer = () => {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
-    const { register, handleSubmit, formState: { errors },getValues, control, setValue, watch } = useForm();
 
-   
+
+    const { register, handleSubmit, formState: { errors }, getValues, control, setValue, watch } = useForm({
+        defaultValues: { locations: [{ state: "", city: "", otherCities: [] }] }
+    });
+
+    const { fields, append, remove } = useFieldArray({ control, name: "locations" });
 
     // const RegisterDealer = async (reqdata) => {
     //     try {
@@ -86,20 +91,26 @@ const AddDealer = () => {
             setLoading(true);
             const storedValue = localStorage.getItem("user");
             const brand = JSON.parse(storedValue);
-
+            const formattedLocations = reqdata.locations.map((location) => ({
+                state: location.state,
+                city: location.city,
+                otherCities: location.otherCities?.map(city => city.value) || []
+            }));
             const regist = {
-                 
-                name:  reqdata?.name,
-                contact:  reqdata?.contact,
-                email:  reqdata?.email,
-                password:  reqdata?.password,
-                city:  reqdata?.city,
-                state:  reqdata?.state,
+
+                name: reqdata?.name,
+                contact: reqdata?.contact,
+                email: reqdata?.email,
+                password: reqdata?.password,
+
                 brandId: brand?.user?._id,
                 brandName: brand?.user?.brandName,
-                otherCities: reqdata.otherCities?.map(city => city.value) || []
+                // city: reqdata?.city,
+                // state: reqdata?.state,
+                // otherCities: reqdata.otherCities?.map(city => city.value) || []
+                locations: formattedLocations,
             };
- 
+
 
             let response = await http_request.post("/dealerRegistration", regist);
             const { data } = response;
@@ -157,6 +168,7 @@ const AddDealer = () => {
                         {errors.contact && <p className="text-red-500 text-sm">{errors.contact.message}</p>}
                     </div>
                     {/* State Dropdown */}
+                    {/* 
                     <div  >
                         <label className="block text-sm font-medium text-gray-900">State</label>
                         <select {...register("state")} className="border  w-full  p-2 rounded mt-2 block">
@@ -169,7 +181,7 @@ const AddDealer = () => {
                         </select>
                     </div>
 
-                    {/* District Dropdown */}
+                  
                     <div className="w-full" >
                         {selectedState && (
                             <div className="w-full" >
@@ -184,8 +196,94 @@ const AddDealer = () => {
                                 </select>
                             </div>
                         )}
+                    </div> */}
+
+
+                    {fields.map((field, index) => {
+                        const selectedState = watch(`locations.${index}.state`);
+
+                        return (
+                            <div key={field.id} className="border p-4 rounded-lg space-y-3">
+                                {/* State Dropdown */}
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900">State</label>
+                                    <select {...register(`locations.${index}.state`)} className="border w-full p-2 rounded mt-2 block">
+                                        <option value="">Select State</option>
+                                        {Object.keys(jsonData).map((state) => (
+                                            <option key={state} value={state}>
+                                                {state}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* District Dropdown */}
+                                {selectedState && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-900">District</label>
+                                        <select {...register(`locations.${index}.city`)} className="border w-full p-2 rounded mt-2 block">
+                                            <option value="">Select District</option>
+                                            {Object.keys(jsonData[selectedState] || {}).map((district) => (
+                                                <option key={district} value={district}>
+                                                    {district}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                {/* Multi-Select Districts */}
+                                {selectedState && jsonData[selectedState] && (
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-900">Select District(s)</label>
+                                        <Controller
+                                            name={`locations.${index}.otherCities`}
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Select
+                                                    {...field}
+                                                    options={Object.keys(jsonData[selectedState]).map(district => ({
+                                                        value: district,
+                                                        label: district
+                                                    }))}
+                                                    isMulti
+                                                    className="basic-multi-select"
+                                                    classNamePrefix="select"
+                                                    placeholder="Select districts..."
+                                                    onChange={(selected) => field.onChange(selected)}
+                                                />
+                                            )}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Remove Button */}
+                                {fields.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => remove(index)}
+                                        className="bg-red-500 text-white px-4 py-2 rounded flex items-center gap-2"
+                                    >
+                                        <Delete fontSize="small" />
+                                    </button>
+                                )}
+
+
+                            </div>
+                        );
+                    })}
+
+                    {/* Add Button */}
+                    <div>
+                        <button
+                            type="button"
+                            onClick={() => append({ state: "", city: "", otherCities: [] })}
+                            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
+                        >
+                            <Add fontSize="small" />
+                        </button>
                     </div>
-                    {/* Multi-Select District */}
+
                     <div className='w-full'>
                         {selectedState && jsonData[selectedState] && (
                             <div  >
@@ -212,39 +310,39 @@ const AddDealer = () => {
                         )}
                     </div>
                     <div>
-                                <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Password
-                                </label>
-                                <div className="mt-2">
-                                    <input
-                                        id="password"
-                                        name="password"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        required
-                                        {...register('password', { required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters long' } })}
-                                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.password ? 'border-red-500' : ''}`}
-                                    />
-                                </div>
-                                {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
-                            </div>
-                            <div>
-                                <label htmlFor="confirmPassword" className="block text-sm font-medium leading-6 text-gray-900">
-                                    Confirm Password
-                                </label>
-                                <div className="mt-2">
-                                    <input
-                                        id="confirmPassword"
-                                        name="confirmPassword"
-                                        type="password"
-                                        autoComplete="new-password"
-                                        required
-                                        {...register('confirmPassword', { required: 'Confirm Password is required', validate: value => value === getValues('password') || 'The passwords do not match' })}
-                                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.confirmPassword ? 'border-red-500' : ''}`}
-                                    />
-                                </div>
-                                {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
-                            </div>
+                        <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+                            Password
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autoComplete="new-password"
+                                required
+                                {...register('password', { required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters long' } })}
+                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.password ? 'border-red-500' : ''}`}
+                            />
+                        </div>
+                        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+                    </div>
+                    <div>
+                        <label htmlFor="confirmPassword" className="block text-sm font-medium leading-6 text-gray-900">
+                            Confirm Password
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                type="password"
+                                autoComplete="new-password"
+                                required
+                                {...register('confirmPassword', { required: 'Confirm Password is required', validate: value => value === getValues('password') || 'The passwords do not match' })}
+                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.confirmPassword ? 'border-red-500' : ''}`}
+                            />
+                        </div>
+                        {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
+                    </div>
                     <div className="mt-5">
                         <button
                             type="submit"

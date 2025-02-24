@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle,MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Add, Close, Delete, Label, LocationSearching, Print, Search, Visibility } from '@mui/icons-material';
@@ -61,19 +61,21 @@ const OrderList = (props) => {
 
   //   );
   const data1 = props?.data
-  
-  
-  const brandData=props?.data?.filter((f)=>f?.brand===selectedBrandFiltr)
-  
-  
-  const data=selectedBrandFiltr===""?data1:brandData
+// console.log("data1",data1);
+// console.log("selectedBrandFiltr",selectedBrandFiltr);
+
+
+  const brandData = props?.data?.filter((f) => f?.brandId === selectedBrandFiltr)
+
+
+  const data = selectedBrandFiltr === "" ? data1 : brandData
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteInventory/${id}`);
+      let response = await http_request.deleteData(`/deleteOrder/${id}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -91,7 +93,7 @@ const OrderList = (props) => {
 
         userInfo?.user?.role === 'BRAND' ?
           `/create-shipment`
-          :stockType==="Fresh Stock"?`/create-center-shipment`: `/create-defective-shipment`
+          : stockType === "Fresh Stock" ? `/create-center-shipment` : `/create-defective-shipment`
 
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
@@ -311,7 +313,7 @@ const OrderList = (props) => {
         className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
     </div> */}
-     {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
+      {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
         <FormControl fullWidth style={{ marginBottom: '20px' }}>
           <InputLabel id="brand-select-label">Select Brand</InputLabel>
           <Select
@@ -323,15 +325,15 @@ const OrderList = (props) => {
             <MenuItem value="">
               <em>All Brands</em>
             </MenuItem>
-            {Array.from(new Set(data1?.map(item => item.brand))).map(brand1 => (
-            <MenuItem key={brand1} value={brand1}>
-              {brand1}
-            </MenuItem>
-          ))}
+            {props?.brand?.map(brand1 => (
+              <MenuItem key={brand1?._id} value={brand1?._id}>
+                {brand1?.brandName}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       )}
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> No Data this Brand</div>
         :
         <>
 
@@ -339,170 +341,60 @@ const OrderList = (props) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'ticketID'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('ticketID')}
-                    >
-                      Sr. No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'partName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('partName')}
-                    >
-                      Part Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'partNumber'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('partNumber')}
-                    >
-                      Part_Number
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'brand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('brand')}
-                    >
-                      Brand_Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'quantity'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('quantity')}
-                    >
-                      Quantity
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'supplierInformation.name'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('supplierInformation.name')}
-                    >
-                      Send__To
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'orderDate'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('orderDate')}
-                    >
-                      Order_Date
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'expectedDeliveryDate'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('expectedDeliveryDate')}
-                    >
-                      Expected_Delivery_Date
-                    </TableSortLabel>
-                  </TableCell> */}
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'shippingMethod'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('shippingMethod')}
-                    >
-                      Shipping_Method
-                    </TableSortLabel>
-                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'brandApproval'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('brandApproval')}
-                    >
-                      Approval
-                    </TableSortLabel>
-                  </TableCell>
+                  <TableCell>Sr. No.</TableCell>
+                  <TableCell>Service Center</TableCell>
+                  <TableCell sx={{ minWidth: 300 }}>Spare_Parts</TableCell>
+                  <TableCell>Brand Name</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Approval</TableCell>
+                  <TableCell>Docket No.</TableCell>
+                  <TableCell>Track Link</TableCell>
+                  <TableCell>Chalan Image</TableCell>
+                  <TableCell>Order Date</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row.i} hover>
-                    <TableCell>{row.i}</TableCell>
-                    <TableCell>{row.partName}</TableCell>
-                    <TableCell>{row.partNumber}</TableCell>
-                    <TableCell>{row.brand}</TableCell>
-                    <TableCell>{row.quantity}</TableCell>
+                {sortedData.map((row, index) => (
+                  <TableRow key={row._id} hover>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{row.serviceCenter}</TableCell>
+                    <TableCell>
+                      {row.spareParts.map((part) => (
+                        <div key={part._id}>
+                          {part.sparePartName} (Qty: {part.quantity}, Price: ${part.price})
+                        </div>
+                      ))}
+                    </TableCell>
+                    <TableCell>{row.brandName}</TableCell>
+                    <TableCell>{row.spareParts.reduce((sum, part) => sum + part.quantity, 0)}</TableCell>
                     <TableCell>{row.status}</TableCell>
-                    <TableCell>{row.supplierInformation?.name}</TableCell>
+                    <TableCell>{row.brandApproval}</TableCell>
+                    <TableCell>{row.docketNo}</TableCell>
+                    <TableCell>
+                      <a href={row.trackLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                        Track
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <img src={row.chalanImage} alt="Chalan" width="50" height="50" />
+                    </TableCell>
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
-                    {/* <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell> */}
-                    {row?.brandApproval === "APPROVED" ? <TableCell>{row?.brandApproval}</TableCell>
-                      : <TableCell>
-                        {props?.userData?.user?.role === "BRAND" ?
-                          <button
-                            aria-label="edit"
-                            onClick={() => handleApproval(row?._id)}
-                            className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                          >
-                            <Print className='me-1' /> Approve
-                          </button>
-                          : <div>{row?.brandApproval}</div>
-                        }
-                      </TableCell>
-                    }
-                    {/* <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell> */}
-                    <TableCell className='flex'>
-                      <div className='flex'>
-
-                        <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                          <Visibility color='primary' />
-                        </IconButton>
-
-                        <button
-                          aria-label="edit"
-                          onClick={() => handleManifest(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
-                          className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        >
-                          <Print className='me-1' /> Manifest
-                        </button>
-                        <button
-                          aria-label="edit"
-                          onClick={() => handleLabel(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
-                          className="px-2 ms-1 flex  justify-between items-center py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        >
-                          <Print className='me-1' /> <div>Label</div>
-                        </button>
-
-                        <IconButton aria-label="delete" onClick={() => handleTracking(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}>
-                          <LocationSearching color='success' />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => handleDelete(row)}>
-                          <DeleteIcon color='error' />
-                        </IconButton>
-                      </div>
+                    <TableCell className="flex">
+                      <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                        <Visibility color="primary" />
+                      </IconButton>
+                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
@@ -531,10 +423,10 @@ const OrderList = (props) => {
         <DialogContent>
           {loading === true ? <div className='w-[400px]'><ReactLoader /> </div>
             :
-            
+
             // <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
 
-             
+
 
             //   <div>
             //     <label id="service-center-label" className="block text-sm font-medium text-black ">
@@ -623,7 +515,7 @@ const OrderList = (props) => {
             //     </select>
             //   </div>
 
-             
+
             //   {stockType === 'defective' && (
             //     <div>
             //       <label className="block text-gray-700">Attach Image</label>
@@ -643,17 +535,17 @@ const OrderList = (props) => {
             //     <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
             //     {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             //   </div>
-              
+
 
             //   <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
             // </form>
-            <SparePartsForm sparepart={props?.sparepart}brands={props?.brand} centers={props?.serviceCenter} />
+            <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} centers={props?.serviceCenter}  RefreshData={ props?.RefreshData}onClose={handleOrderClose} />
           }
         </DialogContent>
 
       </Dialog>
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={handleDeleteOrder} />
+      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );
 };

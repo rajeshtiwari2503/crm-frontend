@@ -181,10 +181,15 @@ const VerificationComplaintList = (props) => {
 
   const handlePaymentStatus = async (row) => {
     setId(row?._id)
+// console.log("row",row);
 
     if (row) {
       setValue("complaintId", row?._id)
-
+      setValue("serviceCenterName", row?.assignServiceCenter)
+      setValue("serviceCenterId", row?.assignServiceCenterId)
+      setValue("contactNo", row?.serviceCenterContact)
+      setValue("city", row?.district);
+      setValue("address", (row?.serviceAddress ,row?.serviceLocation));
     }
     setPaymentStatus(true)
   }
@@ -240,6 +245,7 @@ const VerificationComplaintList = (props) => {
     // Create FormData
     const formData = new FormData();
     formData.append("serviceCenterName", data.serviceCenterName);
+    formData.append("serviceCenterId", data.serviceCenterId);
     formData.append("payment", data.payment);
     formData.append("description", data.description);
     formData.append("contactNo", data.contactNo);
@@ -558,6 +564,15 @@ const VerificationComplaintList = (props) => {
                   </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -606,6 +621,7 @@ const VerificationComplaintList = (props) => {
                     <TableCell>{row?.assignTechnician}</TableCell>
                     <TableCell>{row?.technicianContact}</TableCell>
                     <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -826,6 +842,7 @@ const VerificationComplaintList = (props) => {
                   {...register('serviceCenterName', {
                     required: 'Service Center Name is required',
                   })}
+                  readOnly
                   className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   placeholder="Enter service center name"
                 />

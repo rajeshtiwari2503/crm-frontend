@@ -27,10 +27,11 @@ import { Toaster } from 'react-hot-toast';
 
 import { ReactLoader } from '../../components/common/Loading';
 import { ToastMessage } from '@/app/components/common/Toastify';
+import { useRouter } from 'next/navigation';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
-
+const router=useRouter()
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
@@ -146,8 +147,8 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>
-                                    <TableRow>
-                                        <TableCell>
+                                    <TableRow >
+                                        <TableCell >
                                             <TableSortLabel
                                                 active={sortBy === 'brandName'}
                                                 direction={sortDirection}
@@ -251,9 +252,9 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                 </TableHead>
                                 <TableBody>
                                     {sortedData?.map((row, index) => (
-                                        <TableRow key={index} hover>
-                                            <TableCell>{row.i}</TableCell>
-                                            <TableCell>{row?.serviceCenterName}</TableCell>
+                                        <TableRow  key={index} hover>
+                                            <TableCell onClick={()=>router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
+                                            <TableCell onClick={()=>router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell>
                                             <TableCell>{row?.city}</TableCell>
                                             <TableCell>{row?.address}</TableCell>
                                             <TableCell>{row?.description}</TableCell>

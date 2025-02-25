@@ -385,9 +385,10 @@ const OrderList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color="primary" />
                       </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                    {props?.userData?.user?.role === "ADMIN"?  <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <DeleteIcon color="error" />
                       </IconButton>
+                      :""}
                     </TableCell>
                   </TableRow>
                 ))}

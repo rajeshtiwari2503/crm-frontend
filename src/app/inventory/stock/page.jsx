@@ -3,21 +3,24 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from '.././../../../http-request'
 import StockList from './stockList'
+import { useUser } from '@/app/components/UserContext'
 const Stock = () => {
     const [stocks, setStocks] = useState([])
     const [products, setProducts] = useState([])
 
     const [refresh, setRefresh] = useState("")
     const [value, setValue] = useState(null)
-
+const {user}=useUser()
     useEffect(() => {
-      const storedValue = localStorage.getItem("user");
-      const userType = JSON.parse(storedValue)
-      setValue(userType?.user)
+      if(user){
+        setValue(user?.user)
+      }
+     
       getAllStocks()
       getAllProducts()
-    }, [refresh])
+    }, [refresh,user])
   
+  console.log("user",user);
   
     const getAllStocks = async () => {
       try{
@@ -54,7 +57,7 @@ const Stock = () => {
         <>
             <Sidenav>
                
-                <StockList data={data} products={filterProduct}  RefreshData={RefreshData}/>
+                <StockList data={data} products={filterProduct} userData={user}  RefreshData={RefreshData}/>
             </Sidenav>
         </>
     )

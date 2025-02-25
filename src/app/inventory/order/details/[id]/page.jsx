@@ -76,18 +76,7 @@ const OrderDetails = ({ params }) => {
             <div>{new Date(orders?.updatedAt).toLocaleString()}</div>
 
             {/* Chalan Image */}
-            {orders?.chalanImage && (
-              <>
-                <div className="font-bold col-span-2">Chalan Image</div>
-                <div className="col-span-2">
-                  <img
-                    src={orders.chalanImage}
-                    alt="Chalan"
-                    className="w-full max-w-sm border rounded-md shadow-sm"
-                  />
-                </div>
-              </>
-            )}
+           
           </div>
 
           {/* Spare Parts Section */}
@@ -111,6 +100,20 @@ const OrderDetails = ({ params }) => {
               </div>
             </>
           )}
+          <div>
+          {orders?.chalanImage && (
+              <>
+                <div className="font-bold m-10 w-full ">Chalan Image</div>
+                <div className=" w-full">
+                  <img
+                    src={orders.chalanImage}
+                    alt="Chalan"
+                    className="w-full   border rounded-md shadow-sm"
+                  />
+                </div>
+              </>
+            )}
+          </div>
         </>
       )}
     </Sidenav>

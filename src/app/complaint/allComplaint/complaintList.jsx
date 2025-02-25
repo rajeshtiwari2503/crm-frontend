@@ -201,11 +201,9 @@ const ComplaintList = (props) => {
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
 
-    if (selectedServiceCenter?.serviceCenterType  === "Independent") {
+    // if (selectedServiceCenter?.serviceCenterType  === "Independent") {
       setValue('status', "ASSIGN");
-    }else{
-      setValue('status', "PENDING");
-    }
+    // } 
     
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
     setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
@@ -219,7 +217,7 @@ const ComplaintList = (props) => {
       const data = getValues();
       setLoading(true);
 
-      const reqdata = {empId:userData._id ,empName:userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
+      const reqdata = {empId:userData._id ,empName:userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId,serviceCenterContact:data?.serviceCenterContact, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -244,7 +242,7 @@ const ComplaintList = (props) => {
       setLoading(true);
 
 
-      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
+      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter,serviceCenterContact:data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);

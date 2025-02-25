@@ -20,11 +20,21 @@ const Stock = () => {
   
   
     const getAllStocks = async () => {
-      let response = await http_request.get("/getAllStock")
+      try{
+        const storedValue = localStorage.getItem("user");
+        const userType = JSON.parse(storedValue)
+        const req=userType?.user?.role==="SERVICE"?"/getAllUserStock":"/getAllStock"
+      let response = await http_request.get(req)
       let { data } = response;
   
       setStocks (data)
     }
+      catch(err){
+        console.log(err);
+        
+      }
+    }
+     
     const getAllProducts = async () => {
       let response = await http_request.get("/getAllSparepart")
       let { data } = response;

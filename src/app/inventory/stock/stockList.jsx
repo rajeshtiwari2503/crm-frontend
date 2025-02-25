@@ -1,7 +1,7 @@
 
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle,MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
@@ -40,14 +40,16 @@ const StockList = (props) => {
     }
   }, []);
 
- 
- 
-  
+
+
+
   const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
 
-  const data1 = userData?.user?.role === "ADMIN" || "BRAND" ? props?.data : filterData;
-  const brandData=props?.data?.filter((f)=>f?.brandName===selectedBrand)
-const data=selectedBrand===""?data1:brandData
+  const data1 =   props?.data  
+  // console.log("data1",data1);
+  
+  const brandData = props?.data?.filter((f) => f?.brandName === selectedBrand)
+  const data = selectedBrand === "" ? data1 : brandData
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -95,17 +97,17 @@ const data=selectedBrand===""?data1:brandData
     setCateId(id)
     setConfirmBoxView(true);
   }
-const handleDetails=(id)=>{
-  router.push(`/inventory/stock/details/${id}`)
-}
- 
+  const handleDetails = (id) => {
+    router.push(`/inventory/stock/details/${id}`)
+  }
+
 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Stock Information</div>
-        {userData?.user?.role === "SERVICE" ||userData?.user?.role === "EMPLOYEE" ? ""
+        {userData?.user?.role === "SERVICE" || userData?.user?.role === "EMPLOYEE" ? ""
           : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Stock</div>
@@ -125,10 +127,10 @@ const handleDetails=(id)=>{
               <em>All Brands</em>
             </MenuItem>
             {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
-            <MenuItem key={brand} value={brand}>
-              {brand}
-            </MenuItem>
-          ))}
+              <MenuItem key={brand} value={brand}>
+                {brand}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       )}
@@ -175,34 +177,34 @@ const handleDetails=(id)=>{
                       Defective Stock
                     </TableSortLabel>
                   </TableCell>
-                
-                
-                  {userData?.user?.role === "ADMIN"  ||userData?.user?.role === "EMPLOYEE" ? 
+
+
+                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" ?
                     <>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'serviceCenterName'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('serviceCenterName')}
-                      >
-                        Service Center Name
-                      </TableSortLabel>
-                    </TableCell>
-                     <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'brandName'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('brandName')}
-                      >
-                        Brand Name
-                      </TableSortLabel>
-                    </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'serviceCenterName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('serviceCenterName')}
+                        >
+                          Service Center Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'brandName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('brandName')}
+                        >
+                          Brand Name
+                        </TableSortLabel>
+                      </TableCell>
                     </>
-                    :""
-                  
+                    : ""
+
                   }
 
-                 
+
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -224,29 +226,31 @@ const handleDetails=(id)=>{
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
                     <TableCell>{row?.defectiveStock}</TableCell>
-                    {userData?.user?.role === "ADMIN" ||userData?.user?.role === "EMPLOYEE" ? 
-                    <>
-                      <TableCell>{row?.serviceCenterName}</TableCell>
-                     
+                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" ?
+                      <>
+                        <TableCell>{row?.serviceCenterName}</TableCell>
+
                         <TableCell>{row?.brandName}</TableCell>
-                        </>
-                       :""
+                      </>
+                      : ""
                     }
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                      {userData?.user?.role === "SERVICE" ||userData?.user?.role === "EMPLOYEE" ? ""
+                      
+                      {userData?.user?.role === "SERVICE" || userData?.user?.role === "EMPLOYEE" ? ""
                         : <div className='flex'>
 
 
                           <IconButton aria-label="view" onClick={() => handleDetails(row?._id)} >
-                        <Visibility color='primary' />
-                      </IconButton>
+                            <Visibility color='primary' />
+                          </IconButton>
                           {/* <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
                             <EditIcon color='success' />
                           </IconButton> */}
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                          {userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>
+                            : ""}
                         </div>
                       }
                     </TableCell>

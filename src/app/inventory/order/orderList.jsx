@@ -61,8 +61,8 @@ const OrderList = (props) => {
 
   //   );
   const data1 = props?.data
-// console.log("data1",data1);
-// console.log("selectedBrandFiltr",selectedBrandFiltr);
+  // console.log("data1",data1);
+  // console.log("selectedBrandFiltr",selectedBrandFiltr);
 
 
   const brandData = props?.data?.filter((f) => f?.brandId === selectedBrandFiltr)
@@ -286,9 +286,46 @@ const OrderList = (props) => {
   const handleStockTypeChange = (e) => setStockType(e.target.value);
   const handleFileChange = (e) => setSelectedFile(e.target.files[0]);
 
-  const handleApproval = () => {
+  
+  const handleApproval = async (row) => {
+  console.log("row", row);
 
+  try {
+    setLoading(true);
+
+    // Extract necessary data from the row
+    const data = {
+      orderId: row?._id, // Ensure order ID is sent
+      spareParts: row?.spareParts || [], // Ensure spare parts data
+      serviceCenterId: row?.serviceCenterId,
+      serviceCenter: row?.serviceCenter,
+      brandId: row?.brandId,
+      brandName: row?.brandName,
+    };
+
+    let response = await http_request.patch(`/approvalServiceOrder`, data);
+    let { data: responseData } = response;
+
+    setOrder(false);
+    setLoading(false);
+    
+    // Refresh data after successful approval
+    props?.RefreshData(responseData);
+    
+    // Show success message
+    ToastMessage(responseData);
+
+  } catch (err) {
+    setLoading(false);
+
+    console.log("Approval Error:", err);
+
+    // Handle errors safely
+    const errorMessage = err?.response?.data?.msg || "Something went wrong!";
+     ToastMessage(err.response.data);
   }
+};
+
 
   return (
     <div>
@@ -325,9 +362,9 @@ const OrderList = (props) => {
             <MenuItem value="">
               <em>All Brands</em>
             </MenuItem>
-            {props?.brand?.map(brand1 => (
-              <MenuItem key={brand1?._id} value={brand1?._id}>
-                {brand1?.brandName}
+            {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
+              <MenuItem key={brand} value={brand}>
+                {brand}
               </MenuItem>
             ))}
           </Select>
@@ -370,7 +407,19 @@ const OrderList = (props) => {
                     <TableCell>{row.brandName}</TableCell>
                     <TableCell>{row.spareParts.reduce((sum, part) => sum + part.quantity, 0)}</TableCell>
                     <TableCell>{row.status}</TableCell>
-                    <TableCell>{row.brandApproval}</TableCell>
+                    <TableCell>
+                      {row.brandApproval === "DISAPPROVED" ? (
+                        <button
+                          onClick={() => handleApproval(row)}
+                          disabled={loading}
+                          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                         {loading ?"Approval proceed..." :"Approve"}
+                        </button>
+                      ) : (
+                        row.brandApproval
+                      )}
+                    </TableCell>
                     <TableCell>{row.docketNo}</TableCell>
                     <TableCell>
                       <a href={row.trackLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
@@ -385,10 +434,10 @@ const OrderList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color="primary" />
                       </IconButton>
-                    {props?.userData?.user?.role === "ADMIN"?  <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                      {props?.userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <DeleteIcon color="error" />
                       </IconButton>
-                      :""}
+                        : ""}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -541,7 +590,7 @@ const OrderList = (props) => {
             //   <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
             // </form>
-            <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} centers={props?.serviceCenter}  RefreshData={ props?.RefreshData}onClose={handleOrderClose} />
+            <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
           }
         </DialogContent>
 

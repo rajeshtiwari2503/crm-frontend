@@ -13,6 +13,7 @@ import { Add, Visibility } from '@mui/icons-material';
 import { Toaster } from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
 import { ToastMessage } from '@/app/components/common/Toastify';
+import { useUser } from '@/app/components/UserContext';
 const OrderDetails = ({ params }) => {
 
     const router = useRouter()
@@ -32,18 +33,20 @@ const OrderDetails = ({ params }) => {
     const [sortDirection, setSortDirection] = useState('asc');
     const [sortBy, setSortBy] = useState('id');
     const [refresh, setRefresh] = useState("")
+    const {user}=useUser()
     React.useEffect(() => {
-        const storedValue = localStorage.getItem("user");
-        if (storedValue) {
-            setUserData(JSON.parse(storedValue));
+       
+        if (user) {
+            setUserData(user);
         }
         GetStock()
 
-    }, [refresh]);
+    }, [refresh,user]);
 
     const GetStock = async () => {
         try {
-            let response = await http_request.get(`/getStockById/${params?.id}`)
+            const req=user?.user?.role==="ADMIN"?`/getStockById/${params?.id}`:`/getStockByCenterId/${params?.id}`
+            let response = await http_request.get(req)
             let { data } = response
             setOrders(data);
         }
@@ -141,11 +144,12 @@ const OrderDetails = ({ params }) => {
                         <Toaster />
                         <div className='flex justify-between items-center mt-10 mb-3'>
                             <div className='font-bold text-2xl'>Stock Information</div>
-                            {userData?.user?.role === "SERVICE" ? ""
-                                : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+                            {userData?.user?.role === "ADMIN" ? 
+                                 <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
                                     <Add style={{ color: "white" }} />
                                     <div className=' ml-2 '>Add Stock</div>
                                 </div>
+                                :""
                             }
                         </div>
                         {!sortedData  ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>

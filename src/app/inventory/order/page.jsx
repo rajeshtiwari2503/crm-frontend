@@ -5,6 +5,7 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import OrderList from './orderList';
+import { useUser } from '@/app/components/UserContext';
 
 
 
@@ -17,17 +18,17 @@ const Order = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [brands, setBrands] = useState([])
   const [value, setValue] = React.useState(null);
-
+const {user}=useUser()
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+ 
+    if (user) {
+      setValue(user);
     }
     getAllOrder()
     getAllSparepart()
     getAllServiceCenter()
     getAllBrand()
-  }, [refresh])
+  }, [refresh,user])
 
   const getAllOrder = async () => {
     const storedValue = localStorage.getItem('user');

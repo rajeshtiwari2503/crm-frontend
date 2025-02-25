@@ -30,24 +30,16 @@ const StockList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
 
-  const [userData, setUserData] = React.useState(null);
+
   const [selectedBrand, setSelectedBrand] = useState("");
 
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setUserData(JSON.parse(storedValue));
-    }
-  }, []);
-
-
-
+  const userData = props?.userData
 
   const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
 
-  const data1 =   props?.data  
+  const data1 = props?.data
   // console.log("data1",data1);
-  
+
   const brandData = props?.data?.filter((f) => f?.brandName === selectedBrand)
   const data = selectedBrand === "" ? data1 : brandData
 
@@ -101,6 +93,7 @@ const StockList = (props) => {
     router.push(`/inventory/stock/details/${id}`)
   }
 
+  // console.log("userData",userData);
 
   return (
     <div>
@@ -179,7 +172,7 @@ const StockList = (props) => {
                   </TableCell>
 
 
-                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" ?
+                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                     <>
                       <TableCell>
                         <TableSortLabel
@@ -190,21 +183,21 @@ const StockList = (props) => {
                           Service Center Name
                         </TableSortLabel>
                       </TableCell>
-                      <TableCell>
-                        <TableSortLabel
-                          active={sortBy === 'brandName'}
-                          direction={sortDirection}
-                          onClick={() => handleSort('brandName')}
-                        >
-                          Brand Name
-                        </TableSortLabel>
-                      </TableCell>
+
                     </>
                     : ""
 
                   }
 
-
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -226,33 +219,34 @@ const StockList = (props) => {
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
                     <TableCell>{row?.defectiveStock}</TableCell>
-                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" ?
+                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                       <>
-                        <TableCell>{row?.serviceCenterName}</TableCell>
+                        <TableCell>{row?.serviceCenterName || row?.serviceCenter}</TableCell>
 
-                        <TableCell>{row?.brandName}</TableCell>
+
                       </>
                       : ""
                     }
+                    <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                      
-                      {userData?.user?.role === "SERVICE" || userData?.user?.role === "EMPLOYEE" ? ""
-                        : <div className='flex'>
 
 
-                          <IconButton aria-label="view" onClick={() => handleDetails(row?._id)} >
-                            <Visibility color='primary' />
-                          </IconButton>
-                          {/* <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
+                      <div className='flex'>
+
+
+                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)} >
+                          <Visibility color='primary' />
+                        </IconButton>
+                        {/* <IconButton aria-label="edit" onClick={() => handleEdit(row)}>
                             <EditIcon color='success' />
                           </IconButton> */}
-                          {userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
-                            : ""}
-                        </div>
-                      }
+                        {userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                          <DeleteIcon color='error' />
+                        </IconButton>
+                          : ""}
+                      </div>
+
                     </TableCell>
                   </TableRow>
                 ))}

@@ -3,7 +3,7 @@ import { useState } from "react";
 import http_request from '.././../../../http-request'
 import { ToastMessage } from "@/app/components/common/Toastify";
 import { Toaster } from "react-hot-toast";
-export default function SparePartsForm({ sparepart ,RefreshData,onClose,brands,centers}) {
+export default function SparePartsForm({ sparepart,userData ,RefreshData,onClose,brands,centers}) {
 
 const [loading,setLoading]=useState(false)
 
@@ -32,6 +32,7 @@ const [loading,setLoading]=useState(false)
 
   // Watch selected spare parts to prevent duplicates
   const selectedSpareParts = watch("spareParts").map(part => part.sparePartId);
+  
  
 
   const onSubmit = async (data) => {
@@ -44,12 +45,17 @@ const [loading,setLoading]=useState(false)
       formData.append("brandName", data.brandName);
       formData.append("serviceCenterId", data.serviceCenterId);
       formData.append("serviceCenter", data.serviceCenter);
+     if(userData?.user?.role==="ADMIN"){
+      formData.append("brandApproval","APPROVED");
+     }else{
+      formData.append("brandApproval","DISAPPROVED");
+     } 
       formData.append("docketNo", data.docketNo);
       formData.append("trackLink", data.trackLink);
       formData.append("chalanImage", data.chalanImage[0]); 
       formData.append("spareParts", JSON.stringify(data.spareParts));
-
-      const response = await http_request.post("/addOrder", formData, {
+    const req=userData?.user?.role==="ADMIN"?"/addOrder":"/addCenterOrder"
+      const response = await http_request.post(req, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       

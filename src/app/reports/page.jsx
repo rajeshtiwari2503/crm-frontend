@@ -18,6 +18,7 @@ import dynamic from 'next/dynamic';
 import DealerReport from './DealerReport';
 import BrandReport from './BrandReport';
 import { useUser } from '../components/UserContext';
+import ServiceCenterRepot from './ServiceCenterReport';
 
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
@@ -221,11 +222,16 @@ const { user } = useUser();
   // console.log(reportData);
   return (
     <Sidenav>
-     {value?.user?.role==="DEALER" ? 
+     {value?.user?.role==="DEALER" ?
      <DealerReport  userData={value?.user}/>
      :value?.user?.role==="BRAND"|| value?.user?.role==="BRAND EMPLOYEE"? 
-     <BrandReport userData={value?.user}/>
-     : <div className="container mx-auto p-2">
+     <BrandReport userData={value?.user}/>:
+     value?.user?.role==="SERVICE"? 
+     <ServiceCenterRepot userData={value?.user}/>
+     : 
+     <>
+     {value?.user?.role==="ADMIN"?
+     <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
         <div className="mb-4 grid grid-cols-1 gap-2">
 
@@ -315,6 +321,8 @@ const { user } = useUser();
           : ""}
         {/* <ReportDisplayArea reportData={reportData} /> */}
       </div>
+      :""}
+      </>
 }
     </Sidenav>
   );

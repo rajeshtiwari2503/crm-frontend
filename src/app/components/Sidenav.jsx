@@ -988,7 +988,7 @@ function Sidenav(props) {
                 </ListItemButton>
               </ListItem>
             }
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ||value?.user?.role=== "BRAND EMPLOYEE"|| value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ||value?.user?.role=== "BRAND EMPLOYEE"|| value?.user?.role === "SERVICE"|| value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
               ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
               }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>

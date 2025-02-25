@@ -455,91 +455,94 @@ const ServiceDashboard = (props) => {
 
         <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           {/* Example count display with CountUp */}
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+          <div onClick={()=>router.push("/complaint/pending")}className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
               </div>
-              <div className='text-center mt-2'>Total Service  </div>
+              <div className='text-center mt-2'>Pending  </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Close  </div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Assigned  </div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div>
+          <div onClick={()=>router.push("/complaint/inprogress")}className='justify-center flex items-center'>
+            <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
               </div>
               <div className='text-center mt-2'>In Progress </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+          <div onClick={()=>router.push("/complaint/partpending")}className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-yellow-300  rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
               </div>
               <div className='text-center mt-2'>Part Pending  </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
+          <div onClick={()=>router.push("/complaint/assign")}className='justify-center flex items-center'>
+            <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Assigned  </div>
+            </div>
+          </div>
+         
+          <div onClick={()=>router.push("/complaint/cancel")}className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
               </div>
               <div className='text-center mt-2'>Cancel </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+         
+          <div onClick={()=>router.push("/complaint/close")} className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
               </div>
-              <div className='text-center mt-2'>Pending  </div>
+              <div className='text-center mt-2'>Close  </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+          <div onClick={()=>router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-blue-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Total Service  </div>
+            </div>
+          </div>
+         
+          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
               </div>
               <div className='text-center mt-2'> 0-1 days service </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
+          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+            <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
               </div>
               <div className='text-center mt-2'> 2-5 days service </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-red-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
               </div>
-              <div className='text-center mt-2'> More than Five Days  Service</div>
+              <div className='text-center mt-2'> More than 5 days  </div>
             </div>
           </div>
           {/* Continue with other statistics like assigned, pending, etc. */}
           {/* Include average TAT, CT, RT, and their percentages */}
           {/* Example for average closing time (CT) */}
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={averageClosingTime} delay={1} /> {"%"}
               </div>
@@ -558,7 +561,7 @@ const ServiceDashboard = (props) => {
           {/* Continue with other statistics like RT, TAT, etc. */}
           {/* Example for average response time (RT) */}
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={averageResponseTime} delay={1} /> {"%"}
               </div>
@@ -577,7 +580,7 @@ const ServiceDashboard = (props) => {
           {/* Continue with other statistics like TAT, etc. */}
           {/* Example for average TAT */}
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={averageTAT} delay={1} /> {"%"}
               </div>
@@ -605,7 +608,7 @@ const ServiceDashboard = (props) => {
           </div> */}
           {/* Continue with other statistics like RT, CT, etc. */}
           <div className='justify-center flex items-center'>
-            <div>
+            <div className='w-full'>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={0} delay={1} />
               </div>               <div className='text-center mt-2'>Wallet Amount</div>

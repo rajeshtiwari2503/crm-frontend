@@ -199,7 +199,7 @@ const OutOfWarrantyList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
+      const reqdata = assign === true ? { empId: userData._id, empName: userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status, empId: userData._id, empName: userData.name }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -441,6 +441,15 @@ const OutOfWarrantyList = (props) => {
                                   </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -489,6 +498,7 @@ const OutOfWarrantyList = (props) => {
                                     <TableCell>{row?.assignTechnician}</TableCell>
                                     <TableCell>{row?.technicianContact}</TableCell>
                                     <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">

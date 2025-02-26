@@ -73,8 +73,8 @@ const InProgressComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq);
       let { data: responseData } = response;
       // setUpdateCommm(false)
@@ -86,7 +86,7 @@ const InProgressComplaintList = (props) => {
     }
   };
   const onSubmit = async (data) => {
-   const dataReq= {...data,empId:userData._id ,empName:userData.name,}
+    const dataReq = { ...data, empId: userData._id, empName: userData.name, }
     try {
       let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
       if (data.comments) {
@@ -329,6 +329,15 @@ const InProgressComplaintList = (props) => {
                                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -377,6 +386,7 @@ const InProgressComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -400,9 +410,9 @@ const InProgressComplaintList = (props) => {
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
-                             className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                           <SystemSecurityUpdate />
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
                         <div

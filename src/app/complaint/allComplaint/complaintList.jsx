@@ -29,12 +29,12 @@ const ComplaintList = (props) => {
 
   const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-    : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-          : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-            : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-              : []
+      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+                : []
 
   const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm();
   const router = useRouter()
@@ -202,9 +202,9 @@ const ComplaintList = (props) => {
     setSelectedService(selectedId);
 
     // if (selectedServiceCenter?.serviceCenterType  === "Independent") {
-      setValue('status', "ASSIGN");
+    setValue('status', "ASSIGN");
     // } 
-    
+
     setValue('assignServiceCenterId', selectedServiceCenter?._id);
     setValue('assignServiceCenter', selectedServiceCenter?.serviceCenterName);
     setValue('serviceCenterContact', selectedServiceCenter?.contact);
@@ -217,7 +217,7 @@ const ComplaintList = (props) => {
       const data = getValues();
       setLoading(true);
 
-      const reqdata = {empId:userData._id ,empName:userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId,serviceCenterContact:data?.serviceCenterContact, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
+      const reqdata = { empId: userData._id, empName: userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, serviceCenterContact: data?.serviceCenterContact, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -242,7 +242,7 @@ const ComplaintList = (props) => {
       setLoading(true);
 
 
-      const reqdata = assign === true ? {empId:userData._id ,empName:userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter,serviceCenterContact:data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status,empId:userData._id ,empName:userData.name }
+      const reqdata = assign === true ? { empId: userData._id, empName: userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, serviceCenterContact: data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status, empId: userData._id, empName: userData.name }
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
@@ -283,8 +283,8 @@ const ComplaintList = (props) => {
     try {
       setLoading(true);
 
-      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
       let { data: responseData } = response;
@@ -308,7 +308,7 @@ const ComplaintList = (props) => {
         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
           ""
           :
-          <div onClick={handleAdd}   className="flex cursor-pointer rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+          <div onClick={handleAdd} className="flex cursor-pointer rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Service Request</div>
           </div>
@@ -515,6 +515,15 @@ const ComplaintList = (props) => {
                                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -563,6 +572,7 @@ const ComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -572,7 +582,7 @@ const ComplaintList = (props) => {
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            <SystemSecurityUpdate   />
+                            <SystemSecurityUpdate />
                           </div>
                           : ""}
 
@@ -589,7 +599,7 @@ const ComplaintList = (props) => {
                             onClick={() => handleAssignServiceCenter(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                           <AssignmentTurnedIn  />
+                            <AssignmentTurnedIn />
                           </div>
                           : ""}
                         {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
@@ -601,7 +611,7 @@ const ComplaintList = (props) => {
                             }}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                             <Comment  />
+                            <Comment />
                           </div>
                         ) : null}
 
@@ -610,17 +620,17 @@ const ComplaintList = (props) => {
                         
                         </IconButton> */}
                         <div
-                           onClick={() => handleDetails(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                          >
-                          <Visibility  />
-                          </div>
+                          onClick={() => handleDetails(row?._id)}
+                          className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                        >
+                          <Visibility />
+                        </div>
                         {userData?.role === "ADMIN" ?
                           <>
                             <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                               <EditIcon color="success" />
                             </IconButton>
-                            
+
                             <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                               <DeleteIcon color="error" />
                             </IconButton>
@@ -745,8 +755,8 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-                          
-            <button type="submit" disabled={loading}   className="rounded-md p-2 cursor-pointer bg-[#09090b] text-white hover:bg-[#ffffff] hover:text-black" >Submit</button>
+
+            <button type="submit" disabled={loading} className="rounded-md p-2 cursor-pointer bg-[#09090b] text-white hover:bg-[#ffffff] hover:text-black" >Submit</button>
 
           </form>
 
@@ -782,7 +792,7 @@ const ComplaintList = (props) => {
               {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
             </div> */}
 
-            <button type="submit" disabled={loading}     className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" >Submit Comments</button>
+            <button type="submit" disabled={loading} className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" >Submit Comments</button>
 
           </form>
 
@@ -826,7 +836,7 @@ const ComplaintList = (props) => {
 
             </div>
 
-            <button type="submit" disabled={loading} onClick={() => asignCenter()}   className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
+            <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
 
             {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#09090b] hover:text-white' color="success" type="submit">
               Assign   Service Center
@@ -877,7 +887,7 @@ const ComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit" disabled={loading}   className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit" disabled={loading} className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>

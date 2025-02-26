@@ -230,7 +230,7 @@ const { user } = useUser();
      <ServiceCenterRepot userData={value?.user}/>
      : 
      <>
-     {value?.user?.role==="ADMIN"?
+     {value?.user?.role==="ADMIN"|| value?.user?.role==="EMPLOYEE"? 
      <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
         <div className="mb-4 grid grid-cols-1 gap-2">

@@ -511,7 +511,7 @@ const AdminDashboard = (props) => {
               <div className='flex items-center justify-between'>
                 <PendingActions fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Schedule Align Today</div>
+                  <div className='text-blue-500 font-semibold'>Schedule   Today</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.scheduleUpcomming} delay={1} />
                   </div>

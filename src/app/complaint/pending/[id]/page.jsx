@@ -39,15 +39,15 @@ const Pending = () => {
   const fetchPendingComplaints = async () => {
     try {
       const response = await http_request.get(`/getPendingComplaints/${daysRange}`);
-      setComplaint(response.data.data);
+      setComplaint(response.data);
     } catch (err) {
       console.error("Error fetching complaints:", err);
     }
   };
 
-   
+   const datacc=daysRange==="schedule"?complaint?.scheduleToday:complaint?.data
 
-  const data =  complaint?.map((item, index) => ({
+  const data =  datacc?.map((item, index) => ({
     ...item,
     i: index + 1,
   }));

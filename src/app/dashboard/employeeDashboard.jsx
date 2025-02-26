@@ -1,113 +1,108 @@
 import React from 'react'
 import { Typography } from '@mui/material'
-import { PeopleAlt } from '@mui/icons-material'
+import { Assignment, AssignmentTurnedIn, FactCheck, PendingActions, PeopleAlt, Settings } from '@mui/icons-material'
 
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
 import dynamic from 'next/dynamic'
 import HighPriorityComplaintList from '../complaint/HighPriorityComplaints';
+import { useRouter } from 'next/navigation';
 
-const AreaChart=dynamic(()=>import("../analytics/charts/areaChart"),{
-    loading: ()=><p>Chart loading.........</p>
-  });
-  const PieChart=dynamic(()=>import("../analytics/charts/pieChart"),{
-    loading: ()=><p>Chart loading.........</p>
-  });
-const  EmployeeDashboard = () => {
+ 
+const EmployeeDashboard = (props) => {
+const router=useRouter()
+  const data=props?.dashData;
   return (
     <>
-    {/* <div className='grid grid-cols-4 gap-4'>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-        <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
-          <div className='flex justify-between'>
-            <div className='ml-5 mt-5'>
-              <PeopleAlt fontSize='large' />
-            </div>
-            <div className='mr-7 mt-5 roundProgress'>
-             
-              <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
-            </div>
-          </div>
-          <div className='pl-5 py-5'>
-            <div className='text-blue-600 font-semibold'>Total users</div>
-            <div className='text-3xl font-semibold'>
-              <CountUp start={0} end={100} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-        <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
-          <div className='flex justify-between'>
-            <div className='ml-5 mt-5'>
-              <PeopleAlt fontSize='large' />
-            </div>
-            <div className='mr-7 mt-5 roundProgress'>
-              
-              <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
-            </div>
-          </div>
-          <div className='pl-5 py-5'>
-            <div className='text-blue-600 font-semibold'>New</div>
-            <div className='text-3xl font-semibold'>
-              <CountUp start={0} end={100} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-        <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
-          <div className='flex justify-between'>
-            <div className='ml-5 mt-5'>
-              <PeopleAlt fontSize='large' />
-            </div>
-            <div className='mr-7 mt-5 roundProgress'>
-              
-              <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
-            </div>
-          </div>
-          <div className='pl-5 py-5'>
-            <div className='text-blue-600 font-semibold'>In Progress</div>
-            <div className='text-3xl font-semibold'>
-              <CountUp start={0} end={100} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-        <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150'>
-          <div className='flex justify-between'>
-            <div className='ml-5 mt-5'>
-              <PeopleAlt fontSize='large' />
-            </div>
-            <div className='mr-7 mt-5 roundProgress'>
-           
-              <Circle percent={70} strokeWidth={10} trailWidth={8} strokeColor="rgb(2, 132, 190)" />
-            </div>
-          </div>
-          <div className='pl-5 py-5'>
-            <div className='text-blue-600 font-semibold'>Part Request</div>
-            <div className='text-3xl font-semibold'>
-              <CountUp start={0} end={100} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div className='grid grid-cols-12 gap-4 my-8'>
-      <div className='col-span-5 rounded-lg shadow px-4 py-4 bg-white'>
-        <AreaChart />
-      </div>
-      <div className='col-span-7 rounded-lg shadow px-4 py-4 bg-white'>
-        <PieChart />
+      <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
+      <div className='grid grid-cols-5 gap-4 mb-10'>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center justify-between'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>0-1 day</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.zeroToOneDays} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>2-5 Days</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.twoToFiveDays} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>more than week</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center justify-between'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Schedule   Today</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.scheduleUpcomming} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Today completed</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div> */}
-    <div> 
-      <HighPriorityComplaintList />
-    </div>
-  </>
+      <div>
+        <HighPriorityComplaintList />
+      </div>
+    </>
   )
 }
 
-export default  EmployeeDashboard
+export default EmployeeDashboard

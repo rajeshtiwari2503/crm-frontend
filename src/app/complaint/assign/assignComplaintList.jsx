@@ -93,8 +93,8 @@ const AssignComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
       let { data: responseData } = response;
@@ -106,13 +106,14 @@ const AssignComplaintList = (props) => {
       console.log(err);
     }
   };
-  
+
   const onSubmit = async (data) => {
     try {
-      const reqdata = assignTech === true ? {empId:userData._id ,empName:userData.name,
+      const reqdata = assignTech === true ? {
+        empId: userData._id, empName: userData.name,
         status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
         assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
-      } : { status: data?.status,empId:userData._id ,empName:userData.name, }
+      } : { status: data?.status, empId: userData._id, empName: userData.name, }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       if (data.comments) {
@@ -398,6 +399,15 @@ const AssignComplaintList = (props) => {
                                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -446,6 +456,7 @@ const AssignComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -457,7 +468,7 @@ const AssignComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN"|| userData?.role === "EMPLOYEE"|| userData?.role === "BRAND EMPLOYEE" ?
+                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND EMPLOYEE" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -558,7 +569,7 @@ const AssignComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
             <div>
-              <button type="submit"   className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit" className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>
@@ -612,7 +623,7 @@ const AssignComplaintList = (props) => {
               </div>
 
             </div>
-            <Button onClick={handleSubmit(onSubmit)} className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"color="success" type="submit">
+            <Button onClick={handleSubmit(onSubmit)} className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed" color="success" type="submit">
               Assign  Technician
             </Button>
           </form>

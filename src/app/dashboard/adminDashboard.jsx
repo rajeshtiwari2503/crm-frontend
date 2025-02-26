@@ -25,7 +25,7 @@ const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
 const AdminDashboard = (props) => {
 
   const data = props?.dashData;
-  // console.log(data);
+  console.log(data);
   const router = useRouter();
 
 
@@ -234,6 +234,63 @@ const AdminDashboard = (props) => {
           </div>
         </div>
       </div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Independent Service  Payment</div>
+
+<div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
+
+  
+  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+      <div className='flex justify-between'>
+      </div>
+      <div className='pl-5 py-1 flex justify-between items-center'>
+        <div className='flex items-center'>
+          <PeopleAlt fontSize='medium' />
+          <div className='ml-2'>
+            <div className='text-blue-500 font-semibold'>Paid Payment</div>
+            <div className=' text-2xl font-semibold'>
+              <CountUp start={0} end={data?.centerPaidPayment} delay={1} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+      <div className='flex justify-between'>
+      </div>
+      <div className='pl-5 py-1 flex justify-between items-center'>
+        <div className='flex items-center'>
+          <PeopleAlt fontSize='medium' />
+          <div className='ml-2'>
+            <div className='text-blue-500 font-semibold'>UnPaid Payment</div>
+            <div className=' text-2xl font-semibold'>
+              <CountUp start={0} end={data?.centerUnPaidPayment} delay={1} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+      <div className='flex justify-between'>
+      </div>
+      <div className='pl-5 py-1 flex justify-between items-center'>
+        <div className='flex items-center'>
+          <PeopleAlt fontSize='medium' />
+          <div className='ml-2'>
+            <div className='text-blue-500 font-semibold '>Total Payments</div>
+            <div className=' text-2xl font-semibold'>
+              <CountUp start={0} end={data?.centerPayment} delay={1} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
@@ -441,6 +498,22 @@ const AdminDashboard = (props) => {
                   <div className='text-blue-500 font-semibold'>more than week</div>
                   <div className=' text-2xl font-semibold'>
                     <CountUp start={0} end={data?.complaints?.moreThanFiveDays} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center justify-between'>
+                <PendingActions fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Schedule   Today</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.scheduleUpcomming} delay={1} />
                   </div>
                 </div>
               </div>

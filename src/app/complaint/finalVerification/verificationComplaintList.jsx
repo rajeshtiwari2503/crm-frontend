@@ -170,6 +170,8 @@ const VerificationComplaintList = (props) => {
     setId(row?._id)
 
     const servicePincode = serviceCenter?.find((f1) => f1?._id === row?.assignServiceCenterId)
+     
+    
     handleCalculate(row?.pincode, servicePincode?.postalCode)
     setStatus(true)
   }
@@ -345,6 +347,7 @@ const VerificationComplaintList = (props) => {
       if (coord1 && coord2) {
         const calculatedDistance = calculateDistance(coord1, coord2);
         setDistance(calculatedDistance.toFixed(2)); // Round to 2 decimal places
+        setValue("kilometer", calculatedDistance.toFixed(2));
         setLoading(false)
 
       } else {

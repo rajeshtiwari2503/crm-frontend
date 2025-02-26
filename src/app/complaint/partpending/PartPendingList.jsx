@@ -73,8 +73,8 @@ const PartPendingComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatusReq = {sndStatus:data.comments,empId:userData._id ,empName:userData.name}
-      const response = await http_request.patch(`/updateComplaintComments/${id}`, 
+      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
       let { data: responseData } = response;
@@ -88,7 +88,7 @@ const PartPendingComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const dataReq= {...data,empId:userData._id ,empName:userData.name,}
+      const dataReq = { ...data, empId: userData._id, empName: userData.name, }
       let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
       if (data.comments) {
         updateComment({ comments: data?.comments })
@@ -330,6 +330,15 @@ const PartPendingComplaintList = (props) => {
                                   </TableCell> */}
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'assignServiceCenter'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('assignServiceCenter')}
+                    >
+                      Service Center
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'status'}
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
@@ -378,6 +387,7 @@ const PartPendingComplaintList = (props) => {
                                     <TableCell>{row?.assignTechnician}</TableCell>
                                     <TableCell>{row?.technicianContact}</TableCell>
                                     <TableCell>{row?.comments}</TableCell> */}
+                    <TableCell>{row?.assignServiceCenter}</TableCell>
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">

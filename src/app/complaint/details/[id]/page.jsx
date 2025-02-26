@@ -54,7 +54,7 @@ const ComplaintDetails = ({ params }) => {
     };
 
 
-    const userComp = userComplaint?.filter((f) => f?.userId === complaint?.userId)
+    const userComp = userComplaint?.filter((f) => f?.phoneNumber === complaint?.phoneNumber)
     // console.log(complaint);
 
 

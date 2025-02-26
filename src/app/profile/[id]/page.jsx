@@ -18,6 +18,7 @@ import DealerProfile from '@/app/components/DealerProfile';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useForm } from 'react-hook-form';
 import Recharge from '@/app/recharge/page';
+import EmployeeProfile from '@/app/components/EmployeeProfile';
 
 const Profile = ({ params }) => {
 
@@ -49,7 +50,7 @@ const Profile = ({ params }) => {
             console.error('Failed to fetch user data:', err);
         }
     };
-    const userData = users?.user?.role ? (users?.user) : users?.service?.role ? (users?.service) : users?.technician?.role ? (users?.technician) : users?.dealer?.role ? (users?.dealer) : users?.brand
+    const userData = users?.user?.role ? (users?.user) : users?.service?.role ? (users?.service) : users?.technician?.role ? (users?.technician) : users?.dealer?.role ? (users?.dealer): users?.emp?.role ? (users?.emp): users?.brand
     const handleEdit = () => {
         if (userData?.role === "SERVICE") {
             setEditService(!editService)
@@ -195,6 +196,7 @@ const Profile = ({ params }) => {
                                                  <Recharge sidebar={false} brandData={userData} />
                                                 </div>
                                                 : userData?.role === "DEALER" ? <DealerProfile userData={userData} />
+                                                : userData?.role === "EMPLOYEE" ? <EmployeeProfile userData={userData} />
                                                     : ""
                                     }
                                 </>

@@ -32,7 +32,7 @@ const Dashboard = () => {
     
     try {
     
-      const endPoint=user?.user.role==="ADMIN"? "/dashboardDetails"
+      const endPoint=user?.user.role==="ADMIN"||user?.user.role==="EMPLOYEE"? "/dashboardDetails"
       :user?.user.role==="DEALER"?`/dashboardDetailsByDealerId/${user?.user?._id}`
       :user?.user.role==="BRAND"?`/dashboardDetailsByBrandId/${user?.user?._id}`
       :user?.user.role==="BRAND EMPLOYEE"?`/dashboardDetailsByBrandId/${user?.user?.brandId}`

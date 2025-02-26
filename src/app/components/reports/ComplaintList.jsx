@@ -17,8 +17,10 @@ const ComplaintList = (props) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
   const router = useRouter()
-
-  const data = props?.data;
+  const sortData = props?.userData?.user?.role==="EMPLOYEE"?props?.data?.filter((f1) => props?.userData?.user?.stateZone?.includes(f1?.state)):props?.data;
+ 
+  const data = sortData;
+     
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);

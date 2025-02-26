@@ -106,7 +106,8 @@ const Report = () => {
   
       const response = await http_request.post('/filterData', payload);
       // console.log(response.data);
-      setReportData(response.data);
+     
+      setReportData(response?.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -210,8 +211,10 @@ const { user } = useUser();
         return complaintDate >= startDate && complaintDate <= endDate;
       });
     }
-    console.log(filtered,"dghghgd");
-    setFilteredComplaints(filtered);
+    
+  const sortData = user?.user?.role==="EMPLOYEE"?filtered?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):filtered;
+  console.log(sortData,"sortData");
+    setFilteredComplaints(sortData);
   };
   const getAllUserAndProducts = async () => {
     let response = await http_request.get("/getUserAndProduct")
@@ -219,7 +222,8 @@ const { user } = useUser();
 
     setUserData(data)
   }
-  // console.log(reportData);
+
+  
   return (
     <Sidenav>
      {value?.user?.role==="DEALER" ?
@@ -259,7 +263,7 @@ const { user } = useUser();
                 <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /> : ""}
               </>
               : <>
-                {reportData?.complaints?.length > 0 ? <DownloadExcel   data={reportData?.complaints} fileName="ComplaintsList" 
+                {reportData?.complaints?.length > 0 ? <DownloadExcel  userData={user} data={reportData?.complaints} fileName="ComplaintsList" 
                 fieldsToInclude={[ 
                   "complaintId",
                   "productBrand",   
@@ -305,7 +309,7 @@ const { user } = useUser();
           }
         </div>
         {reportType === "COMPLAINT" && reportData?.complaints?.length > 0 ?
-          <ComplaintList data={reportData?.complaints} />
+          <ComplaintList userData={user}data={reportData?.complaints} />
           : ""}
         {reportType === "USER" && reportData?.data?.customers?.length > 0 ?
           <CustomerList data={reportData?.data?.customers} report={true} />

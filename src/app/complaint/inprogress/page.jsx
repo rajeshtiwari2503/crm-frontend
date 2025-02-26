@@ -39,8 +39,9 @@ const InProgress = () => {
       console.log(err);
     }
   }
-  // const sortData = complaint?.filter((f1) => f1?.status ==="IN PROGRESS")
-  const data = complaint?.map((item, index) => ({ ...item, i: index + 1 }));
+  const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+
+  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
 
 

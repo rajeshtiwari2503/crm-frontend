@@ -1,10 +1,12 @@
 import React from 'react';
 import { utils, writeFile } from 'xlsx';
 
-const DownloadExcel = ({ data, fileName, fieldsToInclude }) => {
+const DownloadExcel = ({ data,userData, fileName, fieldsToInclude }) => {
   // Helper function to filter data
-  const filterFields = (data, fields) => {
-    return data.map(item => {
+  const sortData =  userData?.user?.role==="EMPLOYEE"?data?.filter((f1) => userData?.user?.stateZone?.includes(f1?.state)):data;
+ 
+  const filterFields = (sortData, fields) => {
+    return sortData.map(item => {
       const filteredItem = {};
       fields.forEach(field => {
         filteredItem[field] = item[field];

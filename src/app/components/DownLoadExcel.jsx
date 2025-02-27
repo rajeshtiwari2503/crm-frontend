@@ -28,7 +28,7 @@ const DownloadExcel = ({ data,userData, fileName, fieldsToInclude }) => {
   };
 
   const handleDownload = () => {
-    const filteredData = filterFields(data, fieldsToInclude);
+    const filteredData = filterFields(sortData, fieldsToInclude);
     exportToExcel(filteredData, fileName);
   };
   // const handleDownload = () => {

@@ -68,8 +68,10 @@ const HighPriorityComplaintList = (props) => {
         }
     }
     const filtData = user?.user?.role === "BRAND EMPLOYEE" ? complaint?.filter((f) => f?.brandId === user?.user?.brandId) : complaint
+    const sortData = user?.user?.role==="EMPLOYEE"?filtData?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):filtData;
 
-    const data = filtData
+     
+    const data = sortData
         ?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
         .map((item, index) => ({ ...item, i: index + 1 }));
 

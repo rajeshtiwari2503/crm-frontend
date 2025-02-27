@@ -287,7 +287,7 @@ const router=useRouter()
                                                     </IconButton>
                                                 </TableCell> */}
                                             <TableCell>
-                                                {value?.role === "ADMIN" ?
+                                                {value?.role === "ADMIN" && row?.status === "UNPAID"?
                                                     <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
                                                         <Payments color='success' />
 

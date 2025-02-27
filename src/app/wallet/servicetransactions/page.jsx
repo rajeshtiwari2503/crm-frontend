@@ -32,11 +32,8 @@ const ServiceTransactions = ({ }) => {
    
   const getTransactions = async () => {
     try {
-      const endPoint = user?.user?.role === "ADMIN"||user?.user?.role === "EMPLOYEE" 
-        ? `/getAllServicePayment` 
-        : value?.user?.role === "BRAND" 
-        ? `/getTransactionByBrandId/${user?.user?._id}` 
-        : `/getTransactionByCenterId/${user?.user?._id}`;
+      const endPoint =  `/getAllServicePayment` 
+        
   
       // console.log("endPoint", endPoint);
       setLoading(true);
@@ -57,9 +54,10 @@ const ServiceTransactions = ({ }) => {
   const RefreshData = (data) => {
     setRefresh(data)
   }
+   
+  const tranData=user?.user?.role === "ADMIN"||user?.user?.role === "EMPLOYEE" ?transactions:transactions?.filter((f)=>f?.serviceCenterId===user?.user?._id)
 
-
-  const transData =   transactions?.map((item, index) => ({ ...item, i: index + 1 })) 
+  const transData =   tranData?.map((item, index) => ({ ...item, i: index + 1 })) 
 
 // console.log("transData",transData);
 

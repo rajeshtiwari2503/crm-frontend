@@ -23,10 +23,31 @@ const Dashboard = () => {
    
     if (user) {
       setValue(user);
-      getAllDashboard()
+      if(user?.user.role === "EMPLOYEE" ){
+        getAllEmpDashboard()
+      
+       } else{
+        getAllDashboard()
+       }
+       
+      
     }
     
   }, [user]);
+
+
+  const getAllEmpDashboard = async () => {
+    try {
+      
+      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone }); // ✅ Send POST request with body
+      let { data } = response;
+      console.log(data);
+  
+      setData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const getAllDashboard = async () => {
     

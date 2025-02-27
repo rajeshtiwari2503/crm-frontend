@@ -67,7 +67,13 @@ function Sidenav(props) {
     if(user){
       setValue(user)
       getAllNotification()
+     if(user?.user.role === "EMPLOYEE" ){
+      getAllEmpDashboard()
+    
+     } else{
       getAllDashboard()
+     }
+     
     }
   
   }, [refresh,user]);
@@ -76,7 +82,7 @@ function Sidenav(props) {
    
     try {
 
-      const endPoint = user?.user.role === "ADMIN" || user?.user.role === "EMPLOYEE" ? "/dashboardDetails"
+      const endPoint = user?.user.role === "ADMIN"  ? "/dashboardDetails"
         : user?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user?.user?._id}`
           : user?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user?.user?._id}`
           : user?.user.role === "BRAND EMPLOYEE" ? `/dashboardDetailsByBrandId/${user?.user?.brandId}`
@@ -94,6 +100,18 @@ function Sidenav(props) {
       console.log(err);
     }
   }
+  const getAllEmpDashboard = async () => {
+    try {
+      
+      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone }); // ✅ Send POST request with body
+      let { data } = response;
+      console.log(data);
+  
+      setData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   // console.log(dashData);
 
   const getAllNotification = async () => {

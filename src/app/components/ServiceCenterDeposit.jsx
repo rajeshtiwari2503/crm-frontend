@@ -22,7 +22,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [refresh, setRefresh] = useState(false);
 
-
+const  {user}=useState()
     useEffect(() => {
         const storedValue = localStorage.getItem("user");
         if (storedValue) {
@@ -138,6 +138,7 @@ const ServiceCenterDepositForm = ({ userData }) => {
                                         />
                                     </a>
                                 </td>
+                               {user?.user?.role==="ADMIN"?
                                 <td className="px-2 py-2 text-xs text-gray-600">
                                     <button
                                         onClick={() => handleEdit(item)}
@@ -146,6 +147,8 @@ const ServiceCenterDepositForm = ({ userData }) => {
                                         <Edit />
                                     </button>
                                 </td>
+                                :""
+                               }
                             </tr>
                         ))}
                     </tbody>

@@ -487,7 +487,22 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Assigned  </div>
             </div>
           </div>
-         
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div onClick={()=>router.push("/complaint/finalVerification")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Final Verification </div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div onClick={()=>router.push("/complaint/scheduleUpcomming")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Upcomming </div>
+            </div>
+          </div>
           <div onClick={()=>router.push("/complaint/cancel")}className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>

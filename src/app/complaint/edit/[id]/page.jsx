@@ -80,7 +80,7 @@ const Editservice = ({ params }) => {
 
     const Updateservice = async (reqD) => {
         try {
-            const reqdata={...reqD,status:"SCHEDULE UPCOMMING"}
+            const reqdata={...reqD}
             // console.log("reqdata",reqdata);
             
             setLoading(true)

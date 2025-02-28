@@ -13,7 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 
 
-const ComplaintList = (props) => {
+const ScheduleComplaintList = (props) => {
 
 
 
@@ -317,7 +317,7 @@ const ComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Service Information</div>
+        <div className='font-bold text-2xl'>Schedule Upcomming Service Information</div>
         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
           ""
           :
@@ -914,7 +914,7 @@ const ComplaintList = (props) => {
   );
 };
 
-export default ComplaintList;
+export default ScheduleComplaintList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

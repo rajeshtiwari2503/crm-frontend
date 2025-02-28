@@ -344,7 +344,7 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND"||value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Final Verification','Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
+  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign','Schedule', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND"||value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress','Schedule', 'Final Verification','Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending','Schedule', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending','Schedule', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending','Schedule', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign','Schedule', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer', 'Employee'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role=== "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
   const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND"|| value?.user?.role=== "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
@@ -573,6 +573,7 @@ function Sidenav(props) {
                       text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                          text === "Schedule" ? (pathname === "/complaint/scheduleUpcomming" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                             text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                               text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                                 text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
@@ -582,6 +583,7 @@ function Sidenav(props) {
 
                       text === "All Service" ? router.push(`/complaint/allComplaint`) :
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
+                          text === "Schedule" ? router.push(`/complaint/scheduleUpcomming`) :
                           text === "In Progress" ? router.push(`/complaint/inprogress`) :
                             text === "Part Pending" ? router.push(`/complaint/partpending`) :
                               text === "Out of Warranty" ? router.push(`/complaint/outOfWarranty`) :
@@ -594,6 +596,7 @@ function Sidenav(props) {
                         className={
                           text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                              text === "Schedule" ? (pathname === "/complaint/scheduleUpcomming" ? 'text-sky-600  ' : 'text-slate-700  ') :
                               text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
                                 text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
                                   text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600  ' : 'text-slate-700 ') :
@@ -614,6 +617,10 @@ function Sidenav(props) {
                                 ? pathname === "/complaint/inprogress"
                                   ? '#007BFF' // text-sky-600
                                   : '#64748b' // text-slate-700
+                                  : text === "In Progress"
+                                  ? pathname === "/complaint/scheduleUpcomming"
+                                    ? '#007BFF' // text-sky-600
+                                    : '#64748b' // text-slate-700
                                 : text === "Final Verification"
                                   ? pathname === "/complaint/finalVerification"
                                     ? '#007BFF' // text-sky-600
@@ -636,6 +643,7 @@ function Sidenav(props) {
                       {text === "Pending" ? dashData?.complaints?.pending
                         : text === "Assign" ? dashData?.complaints?.assign
                           : text === "In Progress" ? dashData?.complaints?.inProgress
+                          : text === "Schedule" ? dashData?.complaints?.schedule
                             : text === "Final Verification" ? dashData?.complaints?.finalVerification
                               : text === "Part Pending" ? dashData?.complaints?.partPending
                                 : text === "Cancel" ? dashData?.complaints?.cancel

@@ -23,34 +23,43 @@ const Editservice = ({ params }) => {
         getAllProducts()
         getServiceById()
         if (service) {
-            setValue('fullName', service.fullName);
-            setValue('phoneNumber', service.phoneNumber);
-            setValue('emailAddress', service.emailAddress);
-            setValue('serviceAddress', service.serviceAddress);
-            setValue('errorMessages', service.errorMessages);
-            setValue('issueType', service.issueType);
-            setValue('modelNo', service.modelNo);
+            // setValue('fullName', service.fullName);
+            // setValue('phoneNumber', service.phoneNumber);
+            // setValue('emailAddress', service.emailAddress);
+            // setValue('serviceAddress', service.serviceAddress);
+            // setValue('errorMessages', service.errorMessages);
+            // setValue('issueType', service.issueType);
+            // setValue('modelNo', service.modelNo);
+
+
+
             //   setValue('preferredServiceDate', service.preferredServiceDate);
             //   setValue('preferredServiceTime', service.preferredServiceTime);
             //   setValue('purchaseDate',  service.purchaseDate );
-            setValue('productName', service.productName);
-            setValue('productBrand', service.productBrand);
-            setValue('categoryName', service.categoryName);
+
+
+            // setValue('productName', service.productName);
+            // setValue('productBrand', service.productBrand);
+            // setValue('categoryName', service.categoryName);
+
+
+
+
             //   setValue('purchaseDate', new Date(service.purchaseDate).toLocaleDateString());
 
-            setValue('serialNo', service.serialNo);
-            setValue('serviceLocation', service.serviceLocation);
-            setValue('detailedDescription', service.detailedDescription);
-            setValue('alternateContactInfo', service.alternateContactInfo);
+            // setValue('serialNo', service.serialNo);
+            // setValue('serviceLocation', service.serviceLocation);
+            // setValue('detailedDescription', service.detailedDescription);
+            // setValue('alternateContactInfo', service.alternateContactInfo);
             if (service.preferredServiceDate) {
                 setValue('preferredServiceDate', new Date(service.preferredServiceDate).toISOString().split('T')[0]);
             }
-            if (service.preferredServiceTime) {
-                setValue('preferredServiceTime', service.preferredServiceTime);
-            }
-            if (service.purchaseDate) {
-                setValue('purchaseDate', new Date(service.purchaseDate).toISOString().split('T')[0]);
-            }
+            // if (service.preferredServiceTime) {
+            //     setValue('preferredServiceTime', service.preferredServiceTime);
+            // }
+            // if (service.purchaseDate) {
+            //     setValue('purchaseDate', new Date(service.purchaseDate).toISOString().split('T')[0]);
+            // }
         }
     }, [id])
 
@@ -69,8 +78,11 @@ const Editservice = ({ params }) => {
     }
 
 
-    const Updateservice = async (reqdata) => {
+    const Updateservice = async (reqD) => {
         try {
+            const reqdata={...reqD,status:"SCHEDULE UPCOMMING"}
+            // console.log("reqdata",reqdata);
+            
             setLoading(true)
             let response = await http_request.patch(`/editComplaint/${id}`, reqdata)
             const { data } = response
@@ -145,7 +157,7 @@ const Editservice = ({ params }) => {
                         </h2>
 
                         <form className="mt-3 grid md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 gap-3" onSubmit={handleSubmit(onSubmit)}>
-                            <div>
+                            {/* <div>
                                 <label htmlFor="productName" className="block text-sm font-medium leading-6 text-gray-900">
                                     Product Name
                                 </label>
@@ -194,7 +206,7 @@ const Editservice = ({ params }) => {
                                     className={`block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
                                 />
                                 {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
-                            </div>
+                            </div> */}
 
                             {/* <div className=''>
                 <label htmlFor="productDescription" className="block text-sm font-medium leading-6 text-gray-900">
@@ -216,7 +228,7 @@ const Editservice = ({ params }) => {
 
 
 
-                            <div className=' '>
+                            {/* <div className=' '>
                                 <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
                                     Serial No
                                 </label>
@@ -258,7 +270,7 @@ const Editservice = ({ params }) => {
                                         // onChange={(e) => setSelectedYear(parseInt(e.target.value))}
                                         className={` block mt-1 p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
                                     >
-                                        {/* Generate year options dynamically */}
+                                        
                                         {Array.from({ length: 10 }, (_, index) => new Date().getFullYear() + index).map((year) => (
                                             <option key={year} value={year}>
                                                 {year}
@@ -332,7 +344,7 @@ const Editservice = ({ params }) => {
                                     />
                                     {errors.errorMessages && <p className="text-red-500 text-sm mt-1">{errors.errorMessages.message}</p>}
                                 </div>
-                            </div>
+                            </div> */}
 
                             <div>
                                 <label htmlFor="preferredServiceDate" className="block text-sm font-medium leading-6 text-gray-900">
@@ -349,7 +361,7 @@ const Editservice = ({ params }) => {
                                 />
                                 {errors.preferredServiceDate && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceDate.message}</p>}
                             </div>
-                            <div>
+                            {/* <div>
                                 <label htmlFor="preferredServiceTime" className="block text-sm font-medium leading-6 text-gray-900">
                                     Preferred Service Time
                                 </label>
@@ -515,7 +527,7 @@ const Editservice = ({ params }) => {
                                         />
 
                                 }
-                            </div>
+                            </div> */}
                         </form>
 
                         <div className='mt-5  '>

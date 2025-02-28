@@ -226,10 +226,18 @@ const router=useRouter()
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
+              <div onClick={()=>router.push(`/complaint/pending/${"schedule"}`)}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.scheduleUpcomming} delay={1} />
+              </div>
+              <div className='text-center mt-2'>  Schedule Today</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
               <div onClick={()=>router.push("/complaint/scheduleUpcomming")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
               </div>
-              <div className='text-center mt-2'>Upcomming </div>
+              <div className='text-center mt-2'>Upcomming Schedule</div>
             </div>
           </div>
           <div className='justify-center flex items-center'>

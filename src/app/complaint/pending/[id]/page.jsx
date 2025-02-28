@@ -5,6 +5,7 @@ import http_request from "../../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import PendingParamComplaintList from './PendingListByParam';
+import { useUser } from '@/app/components/UserContext';
 
 const Pending = () => {
   const [complaint, setComplaint] = useState([]);
@@ -16,15 +17,20 @@ const Pending = () => {
   const params = useParams(); // Extract dynamic param from route
   const daysRange = params?.id; // Get "2-5", "0-1", or "more-than-week"
  
-  
-  useEffect(() => {
+ const { user } = useUser();
+     // console.log("usercancel",user,value);
+     
+     
+       useEffect(() => {
+     
+         if (user) {
+           setValue(user)
+         }
     fetchPendingComplaints();
     getAllTechnician();
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
-    }
-  }, [refresh]);
+    
+     
+  }, [refresh,user]);
 
   const getAllTechnician = async () => {
     try {
@@ -47,7 +53,10 @@ const Pending = () => {
 
    const datacc=daysRange==="schedule"?complaint?.scheduleToday:complaint?.data
 
-  const data =  datacc?.map((item, index) => ({
+   const sortData = user?.user?.role==="EMPLOYEE"?datacc?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):datacc;
+
+    
+  const data =  sortData?.map((item, index) => ({
     ...item,
     i: index + 1,
   }));

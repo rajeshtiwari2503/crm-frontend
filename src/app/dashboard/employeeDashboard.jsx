@@ -103,7 +103,7 @@ const EmployeeDashboard = (props) => {
           </div>
         </div>
         <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-          <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>

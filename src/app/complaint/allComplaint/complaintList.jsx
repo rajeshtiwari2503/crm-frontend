@@ -144,18 +144,19 @@ const ComplaintList = (props) => {
     //   return false;
     // });
     const serviceCenter1 = props?.serviceCenter?.filter((center) => {
-      // Ensure pincodeSupported is an array and check for alternative field names
-      const pincodeList = center?.pincodeSupported || center?.postalCode || [];
-  
-      if (Array.isArray(pincodeList)) {
-        return pincodeList.some((pincodeString) => {
-          const supportedPincodes = pincodeString.split(',').map(p => p.trim());
-          return supportedPincodes.includes(targetPincode);
-        });
-      }
-  
-      return false;
+      // Convert postalCode (string) into an array and merge with pincodeSupported (if it's an array)
+      const pincodeList = [
+        ...(Array.isArray(center?.pincodeSupported) ? center.pincodeSupported : []),
+        ...(center?.postalCode ? center.postalCode.split(',').map(p => p.trim()) : [])
+      ];
+    
+      console.log(pincodeList);
+    
+      // Check if targetPincode exists in the merged list
+      return pincodeList.includes(targetPincode);
     });
+    
+    
     setFilterSer(serviceCenter1)
     // console.log(serviceCenter1, "Filtered service centers with matching pincode");
 

@@ -345,7 +345,7 @@ function Sidenav(props) {
   const secondaryText = "#007BFF"
 
   const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign','Upcomming', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND"||value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress','Upcomming', 'Final Verification','Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending','Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending','Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending','Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign','Upcomming', 'Close', 'All Service']
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer', 'Employee'] : []
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] :(value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")?['Service', 'Dealer', 'Customer', 'Employee']: value?.user?.role === "BRAND" ? [ 'Dealer', 'Customer',  ] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role=== "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
   const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND"|| value?.user?.role=== "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
@@ -523,7 +523,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")
+            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")||value?.user?.role === "BRAND"
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>

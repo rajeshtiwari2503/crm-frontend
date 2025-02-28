@@ -418,11 +418,11 @@ const ServiceDashboard = (props) => {
       ['PartPending', timeframeData?.partPending],
     ];
   };
-  const handleWallet = async()=> {
+  const handleWallet = async () => {
     try {
-      const resData ={serviceCenterId:userData?._id,serviceCenterName:userData?.serviceCenterName}
-     
-        let response = await http_request.post("/addWallet", resData)
+      const resData = { serviceCenterId: userData?._id, serviceCenterName: userData?.serviceCenterName }
+
+      let response = await http_request.post("/addWallet", resData)
       let { data } = response
       ToastMessage(data)
       setRefresh(data)
@@ -431,10 +431,10 @@ const ServiceDashboard = (props) => {
       console.log(err);
     }
   }
-  
+
   return (
     <>
-    <Toaster/>
+      <Toaster />
       {/* Render additional content or sections as needed */}
 
       {/* Display summary statistics */}
@@ -445,7 +445,7 @@ const ServiceDashboard = (props) => {
             <div className='text-sm  ms-3'>{wallet?.dueAmount} {"INR"}</div>
           </div>
 
-          : <div onClick={()=>handleWallet()} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
+          : <div onClick={() => handleWallet()} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
             <Wallet fontSize='large' color='secondary' />
             <div className='text-sm  ms-3'>{wallet?.dueAmount ? wallet?.dueAmount : "Activate Wallet"}  </div>
           </div>
@@ -455,7 +455,7 @@ const ServiceDashboard = (props) => {
 
         <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           {/* Example count display with CountUp */}
-          <div onClick={()=>router.push("/complaint/pending")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/pending")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
@@ -463,7 +463,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Pending  </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/inprogress")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/inprogress")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
@@ -471,7 +471,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>In Progress </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/partpending")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/partpending")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-yellow-300  rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
@@ -479,7 +479,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Part Pending  </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/assign")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/assign")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
@@ -489,7 +489,7 @@ const ServiceDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div onClick={()=>router.push("/complaint/finalVerification")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={() => router.push("/complaint/finalVerification")} className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
               </div>
               <div className='text-center mt-2'>Final Verification </div>
@@ -497,13 +497,21 @@ const ServiceDashboard = (props) => {
           </div>
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div onClick={()=>router.push("/complaint/scheduleUpcomming")}className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+              <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
               </div>
               <div className='text-center mt-2'>Upcomming </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/cancel")}className='justify-center flex items-center'>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.scheduleUpcomming} delay={1} />
+              </div>
+              <div className='text-center mt-2'>Schedule Today </div>
+            </div>
+          </div>
+          <div onClick={() => router.push("/complaint/cancel")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
@@ -511,8 +519,8 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Cancel </div>
             </div>
           </div>
-         
-          <div onClick={()=>router.push("/complaint/close")} className='justify-center flex items-center'>
+
+          <div onClick={() => router.push("/complaint/close")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
@@ -520,7 +528,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Close  </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-blue-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
@@ -528,8 +536,8 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'>Total Service  </div>
             </div>
           </div>
-         
-          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+
+          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
@@ -537,7 +545,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'> 0-1 days service </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
@@ -545,7 +553,7 @@ const ServiceDashboard = (props) => {
               <div className='text-center mt-2'> 2-5 days service </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/allComplaint")}className='justify-center flex items-center'>
+          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
             <div className='w-full'>
               <div className='bg-red-300 rounded-md mt-3 cursor-pointer p-4'>
                 <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
@@ -624,9 +632,16 @@ const ServiceDashboard = (props) => {
           {/* Continue with other statistics like RT, CT, etc. */}
           <div className='justify-center flex items-center'>
             <div className='w-full'>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={0} delay={1} />
+              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.walletAmount} delay={1} />
               </div>               <div className='text-center mt-2'>Wallet Amount</div>
+            </div>
+          </div>
+          <div className='justify-center flex items-center'>
+            <div className='w-full'>
+              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
+                <CountUp start={0} end={dashData?.complaints?.totalAmount} delay={1} />
+              </div>               <div className='text-center mt-2'>Pay Amount</div>
             </div>
           </div>
         </div>

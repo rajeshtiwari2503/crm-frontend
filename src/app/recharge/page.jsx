@@ -43,14 +43,14 @@ const Recharge = (props) => {
   const RefreshData = (data) => {
     setRefresh(data)
   }
-console.log("page ",filterData);
+// console.log("page ",filterData);
 
   return (
     <>
       {props?.sidebar === false ?
 
 
-        <RechargeList data={data} brandData={props?.brandData} product={product} RefreshData={RefreshData} />
+        <RechargeList data={data} userData={userData?.user} brandData={props?.brandData} product={product} RefreshData={RefreshData} />
 
         :
         <Sidenav>

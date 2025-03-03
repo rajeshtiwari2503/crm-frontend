@@ -14,6 +14,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '@/app/components/common/Loading';
 
 import RechargeForm from './addRecharge';
+import AddMonthlyPayment from './addMonthlyPayment';
 
 const RechargeList = (props) => {
 
@@ -25,6 +26,7 @@ const RechargeList = (props) => {
     f?.brandId === (props?.brandData ? props?.brandData?._id : props?.userData?._id)
   );
 
+// console.log("propd",props);
 
 
   const data = filterBrandData?.map((item, index) => ({ ...item, i: index + 1 }));
@@ -39,6 +41,7 @@ const RechargeList = (props) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
   const [userData, setUserData] = React.useState(null);
+  const [editModalPayOpen, setEditModalPayOpen] = React.useState(false);
 
   useEffect(() => {
     const storedValue = localStorage.getItem("user");
@@ -70,6 +73,10 @@ const RechargeList = (props) => {
   const handleEditModalClose = () => {
     setEditModalOpen(false);
   };
+  const handleEditModalPayClose = () => {
+    setEditModalPayOpen(false);
+  };
+
   const handleWarrantyClose = () => {
     setIsWarranty(false);
   };
@@ -77,6 +84,10 @@ const RechargeList = (props) => {
   const handleAdd = (row) => {
     setEditData(row)
     setEditModalOpen(true);
+  }
+  const handleAddMonthlyPayment = (row) => {
+   
+    setEditModalPayOpen(true);
   }
   const handleEdit = (id) => {
     router.push(`/product/sparepart/edit/${id}`)
@@ -101,6 +112,7 @@ const RechargeList = (props) => {
   }
   const totalAmount = data?.reduce((total, item) => total + Number(item.amount), 0);
 
+ console.log("totalAmount",totalAmount);
  
 
   return (
@@ -111,15 +123,21 @@ const RechargeList = (props) => {
         <div className='flex items-center'>
           {props?.brandData?.brandName === "Candes" ?
             <div className='me-5 font-bold'>
-              Wallet : {((totalAmount - 25000) * 1.18).toFixed(2)} INR (included 18% GST)
+              Wallet : {((totalAmount ) * 1.18).toFixed(2)} INR (included 18% GST)
             </div>
             : <div className='me-5 font-bold'>Wallet : {((totalAmount) * 1.18).toFixed(2)} INR (included 18% GST) </div>
          }
 
-          <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+          <div onClick={handleAdd} className='flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Balance </div>
           </div>
+        {props?.userData?.role==="ADMIN"?
+          <div onClick={handleAddMonthlyPayment} className='ms-3 flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '> CRM  Monthly Pay </div>
+          </div>
+          :""}
         </div>
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -234,7 +252,25 @@ const RechargeList = (props) => {
         </DialogContent>
 
       </Dialog>
+      <Dialog open={editModalPayOpen} onClose={handleEditModalPayClose}>
+        <DialogTitle>{  "Add Balance"}</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleEditModalPayClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <AddMonthlyPayment userData={userData?.user} brandData={props.brandData} product={props?.product} existingRecharge={editData} RefreshData={props?.RefreshData} onClose={handleEditModalPayClose} />
+        </DialogContent>
 
+      </Dialog>
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
 

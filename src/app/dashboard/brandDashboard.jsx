@@ -511,7 +511,7 @@ const BrandDashboard = (props) => {
           <div className='justify-center flex items-center'>
             <div className='w-full' onClick={() => router.push(`/profile/${userData?._id}`)}>
               <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={walletAmnt} delay={1} />
+                <CountUp start={0} end= {((walletAmnt ) * 1.18).toFixed(2)} delay={1} />
               </div>
               <div className='text-center mt-2'>Wallet Amount</div>
             </div>

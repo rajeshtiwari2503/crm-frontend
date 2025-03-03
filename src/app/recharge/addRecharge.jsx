@@ -35,34 +35,57 @@ const RechargeForm = ({ userData, brandData, existingRecharge, RefreshData, onCl
     }
   };
   const AddBrandRecharge = async (data) => {
-
     try {
       setLoading(true);
-      const endpoint = existingRecharge?._id ? `/editProductWarranty/${existingRecharge._id}` : '/addRecharge';
-      const reqData = {
-        amount: data?.amount,
-        brandName: brandData ? brandData?.brandName : userData?.brandName,
-        brandId: brandData ? brandData?._id : userData?._id,
-        description: "Recharge Added "
-      };
-
-      const response = existingRecharge?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, reqData);
-      const { data: responseData } = response;
-      ToastMessage(responseData);
-      setLoading(false);
-      RefreshData(responseData);
-      onClose(true);
+      const endpoint = "/addRechargeByBrand";
+      const formData = new FormData();
+  
+      // GST Calculation (Assuming 18%)
+      const gstPercentage = 18;
+      const gstAmount = (data?.amount * gstPercentage) / 100;
+      const amountWithoutGST = data?.amount - gstAmount;
+  
+      // Description with amount & GST details
+      const description = `Recharge Added | Amount: ₹${amountWithoutGST.toFixed(2)}, GST: ₹${gstAmount.toFixed(2)}`;
+  
+      // Append data to FormData
+      formData.append("amount", amountWithoutGST.toFixed(2)); // Store amount after GST deduction
+      formData.append("gstAmount", gstAmount.toFixed(2)); // Store GST separately
+      formData.append("brandName", brandData ? brandData?.brandName : userData?.brandName);
+      formData.append("brandId", brandData ? brandData?._id : userData?._id);
+      formData.append("description", description); // Store updated description
+  
+      // Append file (payment screenshot)
+      if (data?.paymentImage?.[0]) {
+        formData.append("paymentImage", data.paymentImage[0]);
+      }
+  console.log("amountWithoutGST",amountWithoutGST);
+  console.log("gstAmount",gstAmount);
+  console.log("description",description);
+  
+  
+      // const response = await http_request.post(endpoint, formData, {
+      //   headers: { "Content-Type": "multipart/form-data" },
+      // });
+  
+      // const { data: responseData } = response;
+      // ToastMessage(responseData);
+      // setLoading(false);
+      // RefreshData(responseData);
+      // onClose(true);
     } catch (err) {
       setLoading(false);
       ToastMessage(err?._message);
-      // onClose(true);
       console.log(err);
     }
   };
+  
+  
 
   const onSubmit = (data) => {
     if (userData?.role === "BRAND") {
-      brandPayment(data)
+      // brandPayment(data)
+      AddBrandRecharge(data)
     } else {
       AddRecharge(data)
     }
@@ -171,19 +194,19 @@ const RechargeForm = ({ userData, brandData, existingRecharge, RefreshData, onCl
     // </div>
     <div className="max-w-4xl mx-auto">
       <form onSubmit={handleSubmit(onSubmit)} className="">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-2">
 
 
           {/* UPI Payment Section */}
-          <div className="border p-2 rounded-md shadow-md">
-            <p className="text-lg font-semibold text-gray-700">Scan & Pay via UPI</p>
+          <div className=" ">
+            {/* <p className="text-lg font-semibold text-gray-700">Scan & Pay via UPI</p> */}
 
             {/* QR Code Image */}
             <div className="flex justify-center items-center  ">
               <img
                 src="/qrImageServsy.jpeg"
                 alt="QR Code"
-                className="w-[90%] max-w-md h-auto rounded-lg shadow-xl border-4 border-gray-300 bg-white p-2"
+                className="w-[50%] h-[50%] rounded-lg shadow-xl border-4 border-gray-300 bg-white p-2"
               />
             </div>
 

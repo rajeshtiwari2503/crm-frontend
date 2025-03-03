@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CloseIcon from '@mui/icons-material/Close';
-import { Add, Visibility } from '@mui/icons-material';
+import { Add, PictureAsPdf, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import http_request from '.././../../http-request'
@@ -14,6 +14,9 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '@/app/components/common/Loading';
 
 import RechargeForm from './addRecharge';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 import AddMonthlyPayment from './addMonthlyPayment';
 
 const RechargeList = (props) => {
@@ -26,11 +29,11 @@ const RechargeList = (props) => {
     f?.brandId === (props?.brandData ? props?.brandData?._id : props?.userData?._id)
   );
 
-// console.log("propd",props);
+  // console.log("propd",props);
 
 
   const data = filterBrandData?.map((item, index) => ({ ...item, i: index + 1 }));
-  
+
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
 
@@ -86,7 +89,7 @@ const RechargeList = (props) => {
     setEditModalOpen(true);
   }
   const handleAddMonthlyPayment = (row) => {
-   
+
     setEditModalPayOpen(true);
   }
   const handleEdit = (id) => {
@@ -112,32 +115,70 @@ const RechargeList = (props) => {
   }
   const totalAmount = data?.reduce((total, item) => total + Number(item.amount), 0);
 
- console.log("totalAmount",totalAmount);
- 
+  
+
+
+  // Function to download all service centers as a single PDF
+  const downloadAllPDF = () => {
+    const doc = new jsPDF();
+    doc.text("Brand_Payment Report", 10, 10);
+  
+    // Table Header
+    doc.autoTable({
+      startY: 20,
+      head: [["S.No", "Complaint ID", "Brand Name", "Amount", "Description", "Created At"]],
+      body: data.map((item, index) => [
+        index + 1, // Serial Number
+        item.complaintId || "N/A", // Complaint ID
+        item.brandName, // Brand Name
+        item.amount, // Amount
+        item.description, // Description
+        new Date(item.createdAt).toLocaleDateString(), // Format Date
+      ]),
+    });
+  
+    // Calculate Total Amount
+    const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount), 0);
+    const gst = totalAmount * 0.18; // Assuming 18% GST
+    const grandTotal = totalAmount + gst;
+  
+    // Display Total and GST
+    doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 10);
+    doc.text(`GST (18%): ₹${gst.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 20);
+    doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 30);
+  
+    // Save PDF
+    doc.save("Brand_Payment_Report.pdf");
+  };
+  
 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Recharge Information</div>
+        <div className='font-bold text-2xl'>Recharge Information </div>
+        <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+            <PictureAsPdf className="mr-2" />
+          </button>
         <div className='flex items-center'>
+
           {props?.brandData?.brandName === "Candes" ?
             <div className='me-5 font-bold'>
-              Wallet : {((totalAmount ) * 1.18).toFixed(2)} INR (included 18% GST)
+              Wallet : {((totalAmount) * 1.18).toFixed(2)} INR (included 18% GST)
             </div>
             : <div className='me-5 font-bold'>Wallet : {((totalAmount) * 1.18).toFixed(2)} INR (included 18% GST) </div>
-         }
+          }
 
           <div onClick={handleAdd} className='flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Balance </div>
           </div>
-        {props?.userData?.role==="ADMIN"?
-          <div onClick={handleAddMonthlyPayment} className='ms-3 flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
-            <Add style={{ color: "white" }} />
-            <div className=' ml-2 '> CRM  Monthly Pay </div>
-          </div>
-          :""}
+          {props?.userData?.role === "ADMIN" ?
+            <div onClick={handleAddMonthlyPayment} className='ms-3 flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+              <Add style={{ color: "white" }} />
+              <div className=' ml-2 '> CRM  Monthly Pay </div>
+            </div>
+            : ""}
         </div>
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -253,7 +294,7 @@ const RechargeList = (props) => {
 
       </Dialog>
       <Dialog open={editModalPayOpen} onClose={handleEditModalPayClose}>
-        <DialogTitle>{  "Add Balance"}</DialogTitle>
+        <DialogTitle>{"Add Balance"}</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleEditModalPayClose}

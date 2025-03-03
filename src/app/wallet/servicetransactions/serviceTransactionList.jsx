@@ -362,12 +362,12 @@ const router=useRouter()
 
                             <button
                                 type="submit"
-                                className={`border border-green-500 text-green-500 hover:bg-[#2e7d32] hover:text-white py-2 px-4 rounded ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+                                className={`border border-green-500 text-green-500 hover:bg-[#2e7d32] hover:text-white py-2 px-4 rounded ${uploading ? 'cursor-not-allowed opacity-50' : ''}`}
                                 disabled={uploading}
                                 style={{ pointerEvents: uploading ? 'none' : 'auto' }}
                                 onClick={UpdateStatus}
                             >
-                                Update
+                              { uploading?"Updating....": "Update"}
                             </button>
 
                         </div>

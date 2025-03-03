@@ -10,9 +10,9 @@ import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import http_request from '.././../../http-request'
 import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
- 
+
 import { ReactLoader } from '@/app/components/common/Loading';
- 
+
 import RechargeForm from './addRecharge';
 
 const RechargeList = (props) => {
@@ -20,17 +20,18 @@ const RechargeList = (props) => {
 
   const router = useRouter()
 
- 
-  const filterBrandData = props?.data?.filter((f) => 
-    f?.brandId === (props?.brandData  ? props?.brandData?._id : props?.userData?._id)
+
+  const filterBrandData = props?.data?.filter((f) =>
+    f?.brandId === (props?.brandData ? props?.brandData?._id : props?.userData?._id)
   );
+
+
+
+  const data = filterBrandData?.map((item, index) => ({ ...item, i: index + 1 }));
   
- 
-  
-  const data =filterBrandData;
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
@@ -44,8 +45,8 @@ const RechargeList = (props) => {
     if (storedValue) {
       setUserData(JSON.parse(storedValue));
     }
-    
-  }, [ ])
+
+  }, [])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -64,7 +65,7 @@ const RechargeList = (props) => {
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
- 
+
 
   const handleEditModalClose = () => {
     setEditModalOpen(false);
@@ -99,113 +100,122 @@ const RechargeList = (props) => {
     setConfirmBoxView(true);
   }
   const totalAmount = data?.reduce((total, item) => total + Number(item.amount), 0);
+
+ 
+
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Recharge Information</div>
         <div className='flex items-center'>
-          <div className='me-5 font-bold'>Wallet :{totalAmount} INR</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Balance </div>
-        </div>
+          {props?.brandData?.brandName === "Candes" ?
+            <div className='me-5 font-bold'>
+              Wallet : {((totalAmount - 25000) * 1.18).toFixed(2)} INR (included 18% GST)
+            </div>
+            : <div className='me-5 font-bold'>Wallet : {((totalAmount) * 1.18).toFixed(2)} INR (included 18% GST) </div>
+         }
+
+          <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 '>Add Balance </div>
+          </div>
         </div>
       </div>
-      {!data.length>0 ?  <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
-   : 
-   <>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'id'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('id')}
-                >
-                  ID
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                  Brand Name
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                 Amount
-                </TableSortLabel>
-              </TableCell> 
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'name'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('name')}
-                >
-                 Description
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={sortBy === 'createdAt'}
-                  direction={sortDirection}
-                  onClick={() => handleSort('createdAt')}
-                >
-                  CreatedAt
-                </TableSortLabel>
-              </TableCell>
-              <TableCell>Actions</TableCell>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+        :
+        <>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'id'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('id')}
+                    >
+                      ID
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'name'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('name')}
+                    >
+                      Brand Name
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'name'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('name')}
+                    >
+                      Amount
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'name'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('name')}
+                    >
+                      Description
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'createdAt'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('createdAt')}
+                    >
+                      CreatedAt
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>Actions</TableCell>
 
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedData?.map((row) => (
-              <TableRow key={row?.i} hover>
-                <TableCell>{row?.i}</TableCell>
-                <TableCell>{row?.brandName}</TableCell>
-                <TableCell>{row?.amount}</TableCell>
-                <TableCell>{row?.description}</TableCell>
-                 
-                <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
-                <TableCell className='flex'>
-                  {/* <IconButton aria-label="view" onClick={() => handleDetails(row._id)} >
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {sortedData?.map((row) => (
+                  <TableRow key={row?.i} hover>
+                    <TableCell>{row?.i}</TableCell>
+                    <TableCell>{row?.brandName}</TableCell>
+                    <TableCell>{row?.amount}</TableCell>
+                    <TableCell>{row?.description}</TableCell>
+
+                    <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
+                    <TableCell className='flex'>
+                      {/* <IconButton aria-label="view" onClick={() => handleDetails(row._id)} >
                     <Visibility color='primary' />
                   </IconButton> */}
-                  {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
+                      {/* <IconButton aria-label="edit" onClick={() => handleEdit(row._id)}>
                     <EditIcon color='success' />
                   </IconButton>
                   <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                     <DeleteIcon color='error' />
                   </IconButton> */}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={data?.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-</>}
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data?.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>}
 
-<Dialog open={editModalOpen} onClose={handleEditModalClose}>
+      <Dialog open={editModalOpen} onClose={handleEditModalClose}>
         <DialogTitle>{editData?._id ? "Edit Recharge" : "Add Balance"}</DialogTitle>
         <IconButton
           aria-label="close"
@@ -220,7 +230,7 @@ const RechargeList = (props) => {
           <CloseIcon />
         </IconButton>
         <DialogContent>
-          <RechargeForm   userData={userData?.user}brandData={props.brandData} product={props?.product} existingRecharge={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
+          <RechargeForm userData={userData?.user} brandData={props.brandData} product={props?.product} existingRecharge={editData} RefreshData={props?.RefreshData} onClose={handleEditModalClose} />
         </DialogContent>
 
       </Dialog>

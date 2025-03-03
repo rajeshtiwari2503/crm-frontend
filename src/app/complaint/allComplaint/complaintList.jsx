@@ -260,9 +260,9 @@ const ComplaintList = (props) => {
       // console.log(reqdata);
 
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
-      if (data?.comments) {
-        updateComment({ comments: data?.comments })
-      }
+      // if (data?.comments) {
+      //   updateComment({ comments: data?.comments })
+      // }
       let { data: responseData } = response;
 
       setAssign(false)
@@ -297,7 +297,21 @@ const ComplaintList = (props) => {
     try {
       setLoading(true);
 
-      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const sndStatusReq = {
+        sndStatus: data.comments,
+        empId: userData._id,
+        empName: userData.name,
+        ...(userData?.role === "SERVICE" || userData?.role === "TECHNICIAN"
+          ? {
+              serviceCenterResponseTime: new Date(),
+              serviceCenterResponseComment: data.comments
+            }
+          : {
+              empResponseTime: new Date(),
+              empResponseComment: data.comments
+            })
+      };
+      
       const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
@@ -617,7 +631,7 @@ const ComplaintList = (props) => {
                           </div>
                           : ""}
                         {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
-                          (row?.status === "PENDING" || row?.status === "ASIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
+                          (row?.status === "PENDING" || row?.status === "ASSIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
                           <div
                             onClick={() => {
                               // Debugging

@@ -80,7 +80,7 @@ const Editservice = ({ params }) => {
 
     const Updateservice = async (reqD) => {
         try {
-            const reqdata={...reqD}
+            const reqdata={...reqD,cspStatus:"YES"}
             // console.log("reqdata",reqdata);
             
             setLoading(true)

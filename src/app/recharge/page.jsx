@@ -38,11 +38,12 @@ const Recharge = (props) => {
   }
   const filterData = userData?.user?.role === "ADMIN" ? recharge : recharge?.filter((f) => f?.brandId === userData?.user?._id)
 
-  const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
+  const data = filterData;
 
   const RefreshData = (data) => {
     setRefresh(data)
   }
+console.log("page ",filterData);
 
   return (
     <>

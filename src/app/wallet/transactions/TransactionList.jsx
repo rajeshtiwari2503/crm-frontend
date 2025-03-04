@@ -365,7 +365,7 @@ const TransactionList = ({ data, RefreshData, wallet, bankDetails, loading, valu
                                                 {wallet?.dueAmount} </div>
                                         </div>
                                         <div>
-                                            <div className='font-bold text-sm mb-3 '>Total Commissions    </div>
+                                            <div className='font-bold text-sm mb-3 '>Total Balance    </div>
                                             <div className='font-bold text-md mr-5 ml-5 flex justify-center bg-green-500 rounded-md p-2'>
                                                 {wallet?.totalCommission} </div>
                                         </div>

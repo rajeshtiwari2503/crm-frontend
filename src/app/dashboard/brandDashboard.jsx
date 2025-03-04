@@ -5,7 +5,7 @@ import http_request from '../../../http-request';
 
 import CountUp from 'react-countup';
 
-import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings, ShoppingBag } from '@mui/icons-material'
+import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, ProductionQuantityLimits, Settings, ShoppingBag, Wallet } from '@mui/icons-material'
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
@@ -793,7 +793,61 @@ const BrandDashboard = (props) => {
               </div>
             </div>
           </div>
+        <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Brand other details</div>
 
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div onClick={() => router.push("/user/brand/stickers")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <ProductionQuantityLimits fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Product Stickers </div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={warranty?.totalNumberOfGenerate} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+         
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Wallet fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Wallet Amount</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={((walletAmnt ) * 1.18).toFixed(2)} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>C T</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageCT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -817,6 +871,7 @@ const BrandDashboard = (props) => {
             height={"400px"}
           />
         </div>
+       
       </div>
 
       <div>

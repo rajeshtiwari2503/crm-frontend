@@ -140,7 +140,7 @@ const ServiceList = (props) => {
           {!props?.report && (
             <div
               onClick={() => router.push("/user/service/add")}
-              className="ml-3 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white items-center"
+              className="ml-3 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-black items-center"
             >
               <Add style={{ color: "white" }} />
               <div className="ml-2">Add Service</div>

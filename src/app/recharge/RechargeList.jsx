@@ -115,14 +115,14 @@ const RechargeList = (props) => {
   }
   const totalAmount = data?.reduce((total, item) => total + Number(item.amount), 0);
 
-  
+
 
 
   // Function to download all service centers as a single PDF
   const downloadAllPDF = () => {
     const doc = new jsPDF();
     doc.text("Brand_Payment Report", 10, 10);
-  
+
     // Table Header
     doc.autoTable({
       startY: 20,
@@ -136,21 +136,45 @@ const RechargeList = (props) => {
         new Date(item.createdAt).toLocaleDateString(), // Format Date
       ]),
     });
-  
+
     // Calculate Total Amount
     const totalAmount = data.reduce((sum, item) => sum + parseFloat(item.amount), 0);
     const gst = totalAmount * 0.18; // Assuming 18% GST
     const grandTotal = totalAmount + gst;
-  
+
     // Display Total and GST
     doc.text(`Total Amount: ₹${totalAmount.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 10);
     doc.text(`GST (18%): ₹${gst.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 20);
     doc.text(`Grand Total: ₹${grandTotal.toFixed(2)}`, 14, doc.autoTable.previous.finalY + 30);
-  
+
     // Save PDF
     doc.save("Brand_Payment_Report.pdf");
   };
-  
+
+  const ImagePopup = ({ src, alt }) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <>
+        {/* Small Image (Click to Open) */}
+        <img
+          src={src}
+          alt={alt}
+          width={50}
+          height={30}
+          className="rounded-md cursor-pointer border border-gray-300"
+          onClick={() => setOpen(true)}
+        />
+
+        {/* Modal Popup */}
+        <Dialog open={open} onClose={() => setOpen(false)}>
+          <div className="p-2">
+            <img src={src} alt={alt} className="w-[400px] h-[500px] rounded-md" />
+          </div>
+        </Dialog>
+      </>
+    );
+  };
 
   return (
     <div>
@@ -158,8 +182,8 @@ const RechargeList = (props) => {
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Recharge Information </div>
         <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
-            <PictureAsPdf className="mr-2" />
-          </button>
+          <PictureAsPdf className="mr-2" />
+        </button>
         <div className='flex items-center'>
 
           {props?.brandData?.brandName === "Candes" ?
@@ -226,6 +250,15 @@ const RechargeList = (props) => {
                   </TableCell>
                   <TableCell>
                     <TableSortLabel
+                      active={sortBy === 'name'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('name')}
+                    >
+                      Payment Screenshot
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
                       active={sortBy === 'createdAt'}
                       direction={sortDirection}
                       onClick={() => handleSort('createdAt')}
@@ -244,6 +277,9 @@ const RechargeList = (props) => {
                     <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{row?.amount}</TableCell>
                     <TableCell>{row?.description}</TableCell>
+                    <TableCell>
+                      {row.paymentImage ? <ImagePopup src={row.paymentImage} alt="Payment Screenshot" /> : "No Image"}
+                    </TableCell>
 
                     <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                     <TableCell className='flex'>

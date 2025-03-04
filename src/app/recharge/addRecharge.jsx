@@ -46,7 +46,7 @@ const RechargeForm = ({ userData, brandData, existingRecharge, RefreshData, onCl
       const amountWithoutGST = data?.amount - gstAmount;
   
       // Description with amount & GST details
-      const description = `Recharge Added | Amount: ₹${amountWithoutGST.toFixed(2)}, GST: ₹${gstAmount.toFixed(2)}`;
+      const description = `Recharge Added | Amount Total :₹${data?.amount} , Add in wallet Amount : ₹${amountWithoutGST.toFixed(2)}, GST: ₹${gstAmount.toFixed(2)}`;
   
       // Append data to FormData
       formData.append("amount", amountWithoutGST.toFixed(2)); // Store amount after GST deduction
@@ -59,20 +59,20 @@ const RechargeForm = ({ userData, brandData, existingRecharge, RefreshData, onCl
       if (data?.paymentImage?.[0]) {
         formData.append("paymentImage", data.paymentImage[0]);
       }
-  console.log("amountWithoutGST",amountWithoutGST);
-  console.log("gstAmount",gstAmount);
-  console.log("description",description);
+  // console.log("amountWithoutGST",amountWithoutGST);
+  // console.log("gstAmount",gstAmount);
+  // console.log("description",description);
   
   
-      // const response = await http_request.post(endpoint, formData, {
-      //   headers: { "Content-Type": "multipart/form-data" },
-      // });
+      const response = await http_request.post(endpoint, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
   
-      // const { data: responseData } = response;
-      // ToastMessage(responseData);
-      // setLoading(false);
-      // RefreshData(responseData);
-      // onClose(true);
+      const { data: responseData } = response;
+      ToastMessage(responseData);
+      setLoading(false);
+      RefreshData(responseData);
+      onClose(true);
     } catch (err) {
       setLoading(false);
       ToastMessage(err?._message);
@@ -244,7 +244,7 @@ const RechargeForm = ({ userData, brandData, existingRecharge, RefreshData, onCl
         {/* Submit Button */}
         <div className="mt-4">
           <button type="submit" disabled={loadind} className="px-4 py-2 bg-indigo-600 text-white rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            Submit
+            {loadind?"Submiting....": "Submit"}
           </button>
         </div>
       </form>

@@ -334,7 +334,7 @@ const EditBrandProfile = (props) => {
           </div>
 
           <div className="mb-1">
-            <label className="text-sm block mb-1">CRM Price</label>
+            <label className="text-sm block mb-1">CRM Price as per plan</label>
             <input
               type="number"
               {...register('crmPrice', { required: true })}

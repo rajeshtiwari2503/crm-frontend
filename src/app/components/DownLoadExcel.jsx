@@ -15,18 +15,36 @@ const DownloadExcel = ({ data,userData, fileName, fieldsToInclude }) => {
     });
   };
 
+  // const exportToExcel = (filteredData, fileName) => {
+  //   // Convert the filtered data to a worksheet
+  //   const worksheet = utils.json_to_sheet(filteredData);
+
+  //   // Create a new workbook and append the worksheet
+  //   const workbook = utils.book_new();
+  //   utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+  //   // Write the workbook to a binary string
+  //   writeFile(workbook, `${fileName}.xlsx`);
+  // };
+
   const exportToExcel = (filteredData, fileName) => {
-    // Convert the filtered data to a worksheet
     const worksheet = utils.json_to_sheet(filteredData);
 
-    // Create a new workbook and append the worksheet
-    const workbook = utils.book_new();
-    utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    // Auto-adjust column width based on max content length
+    const columnWidths = Object.keys(filteredData[0] || {}).map((key) => ({
+      wch: Math.max(
+        10,
+        key.length + 5,
+        ...filteredData.map((row) => (row[key] ? row[key].toString().length : 0))
+      ),
+    }));
+    worksheet["!cols"] = columnWidths;
 
-    // Write the workbook to a binary string
+    const workbook = utils.book_new();
+    utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
     writeFile(workbook, `${fileName}.xlsx`);
   };
-
   const handleDownload = () => {
     const filteredData = filterFields(sortData, fieldsToInclude);
     exportToExcel(filteredData, fileName);

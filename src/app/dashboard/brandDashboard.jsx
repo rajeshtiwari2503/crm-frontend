@@ -87,39 +87,101 @@ const BrandDashboard = (props) => {
     }
   }
   // console.log("jgjgjjg",warranty);
-
-  const calculateTAT = (createdAt, updatedAt) => {
-    const created = new Date(createdAt);
-    const updated = new Date(updatedAt);
-    return (updated - created) / (1000 * 60 * 60); // Convert milliseconds to hours
-  };
+ 
 
 
+   
 
-  const calculateBusinessHours = (startDate, endDate) => {
-    if (!startDate || !endDate) return 0;
-
-    let start = new Date(startDate);
-    let end = new Date(endDate);
-    let totalHours = 0;
-
-    const businessStartHour = 8;
-    const businessEndHour = 18;
-
-    while (start < end) {
-      const day = start.getDay(); // 0 = Sunday, 6 = Saturday
-      const hour = start.getHours();
-
-      if (day !== 0 && day !== 6 && hour >= businessStartHour && hour < businessEndHour) {
-        totalHours++;
-      }
-
-      start.setHours(start.getHours() + 1);
-    }
-
-    return totalHours;
-  };
-
+  // const getAllComplaint = async () => {
+  //   try {
+  //     let response = await http_request.get("/getAllComplaint");
+  //     let { data } = response;
+  
+  //     // Filter complaints for the brand and required statuses
+  //     const filteredComplaints = data.filter(
+  //       (item) => item?.brandId === userData._id &&
+  //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)
+  //     );
+  
+  //     // Function to safely calculate time difference (in hours)
+  //     const getTimeDifference = (start, end) =>
+  //       start && end ? Math.max((new Date(end) - new Date(start)) / (1000 * 60 * 60), 0) : 0;
+  
+  //     // Function to adjust complaint date
+  //     const adjustDate = (date) => {
+  //       let newDate = new Date(date);
+  //       if (newDate.getHours() > 12) {
+  //         newDate.setDate(newDate.getDate() + 1);
+  //         newDate.setHours(0, 0, 0, 0);
+  //       }
+  //       return newDate;
+  //     };
+  
+  //     // Function to calculate percentage
+  //     const calculatePercentage = (count, total) => total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
+  
+  //     // Process complaints using reduce for better performance
+  //     const { monthlyReport, yearlyReport, totalTATCount, totalComplaints } = filteredComplaints.reduce((acc, c) => {
+  //       const complaintDate = adjustDate(c.createdAt);
+  //       const complaintCloseDate = c.complaintCloseTime ? new Date(c.complaintCloseTime) : null;
+  
+  //       const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
+  //       const year = complaintDate.getFullYear();
+  
+  //       // Calculate TAT (Total Turnaround Time)
+  //       let tat = getTimeDifference(complaintDate, complaintCloseDate);
+  
+  //       // Update total complaints count
+  //       acc.totalComplaints++;
+  
+  //       // Count TAT within the allowed limit (≤ 24 hours)
+  //       if (tat <= 24) acc.totalTATCount++;
+  
+  //       // Update Monthly Report
+  //       if (!acc.monthlyReport[monthYear]) {
+  //         acc.monthlyReport[monthYear] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+  //       }
+  //       acc.monthlyReport[monthYear].complaints.push(c);
+  //       acc.monthlyReport[monthYear].totalComplaints++;
+  //       if (tat <= 24) acc.monthlyReport[monthYear].tatCount++;
+  
+  //       // Update Yearly Report
+  //       if (!acc.yearlyReport[year]) {
+  //         acc.yearlyReport[year] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+  //       }
+  //       acc.yearlyReport[year].complaints.push(c);
+  //       acc.yearlyReport[year].totalComplaints++;
+  //       if (tat <= 24) acc.yearlyReport[year].tatCount++;
+  
+  //       return acc;
+  //     }, { monthlyReport: {}, yearlyReport: {}, totalTATCount: 0, totalComplaints: 0 });
+  
+  //     // Calculate Overall TAT Percentage
+  //     let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
+  
+  //     // Process final reports
+  //     const processReport = (report) => Object.keys(report).map((key) => {
+  //       let { complaints, tatCount, totalComplaints } = report[key];
+  
+  //       return {
+  //         period: key,
+  //         tatPercentage: calculatePercentage(tatCount, totalComplaints),
+  //         complaints,
+  //       };
+  //     });
+  
+  //     let finalMonthlyReport = processReport(monthlyReport);
+  //     let finalYearlyReport = processReport(yearlyReport);
+  
+  //     console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
+  //     console.log("📊 Monthly Report:", finalMonthlyReport);
+  //     console.log("📊 Yearly Report:", finalYearlyReport);
+  //   } catch (err) {
+  //     console.log("Error fetching complaints:", err);
+  //   }
+  // };
+  
+  
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint");
@@ -131,11 +193,11 @@ const BrandDashboard = (props) => {
           ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)
       );
   
-      // Function to safely calculate time difference (in hours)
+      // Function to calculate time difference in hours
       const getTimeDifference = (start, end) =>
         start && end ? Math.max((new Date(end) - new Date(start)) / (1000 * 60 * 60), 0) : 0;
   
-      // Function to adjust complaint date
+      // Function to adjust complaint date if needed
       const adjustDate = (date) => {
         let newDate = new Date(date);
         if (newDate.getHours() > 12) {
@@ -148,53 +210,65 @@ const BrandDashboard = (props) => {
       // Function to calculate percentage
       const calculatePercentage = (count, total) => total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
   
-      // Process complaints using reduce for better performance
-      const { monthlyReport, yearlyReport, totalTATCount, totalComplaints } = filteredComplaints.reduce((acc, c) => {
+      let totalTATCount = 0;
+      let totalComplaints = filteredComplaints.length;
+      let monthlyReport = {};
+      let yearlyReport = {};
+  
+      // Process complaints
+      const complaintsWithTAT = filteredComplaints.map((c) => {
         const complaintDate = adjustDate(c.createdAt);
         const complaintCloseDate = c.complaintCloseTime ? new Date(c.complaintCloseTime) : null;
+        const assignTime = c.assignServiceCenterTime ? new Date(c.assignServiceCenterTime) : null;
+        const responseTime = c.empResponseTime ? new Date(c.empResponseTime) : null;
   
         const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
         const year = complaintDate.getFullYear();
   
-        // Calculate TAT (Total Turnaround Time)
+        // Calculate CT, RT, and TAT
         let tat = getTimeDifference(complaintDate, complaintCloseDate);
+        let ct = getTimeDifference(complaintDate, complaintCloseDate);
+        let rt = getTimeDifference(complaintDate, complaintCloseDate);
   
-        // Update total complaints count
-        acc.totalComplaints++;
-  
-        // Count TAT within the allowed limit (≤ 24 hours)
-        if (tat <= 24) acc.totalTATCount++;
+        // Check if TAT ≤ 24 hours
+        if (tat <= 24) totalTATCount++;
   
         // Update Monthly Report
-        if (!acc.monthlyReport[monthYear]) {
-          acc.monthlyReport[monthYear] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+        if (!monthlyReport[monthYear]) {
+          monthlyReport[monthYear] = { complaints: [], tatCount: 0, totalComplaints: 0, totalCT: 0, totalRT: 0 };
         }
-        acc.monthlyReport[monthYear].complaints.push(c);
-        acc.monthlyReport[monthYear].totalComplaints++;
-        if (tat <= 24) acc.monthlyReport[monthYear].tatCount++;
+        monthlyReport[monthYear].complaints.push({ complaintId: c._id, ct, rt, tat });
+        monthlyReport[monthYear].totalComplaints++;
+        monthlyReport[monthYear].totalCT += ct;
+        monthlyReport[monthYear].totalRT += rt;
+        if (tat <= 24) monthlyReport[monthYear].tatCount++;
   
         // Update Yearly Report
-        if (!acc.yearlyReport[year]) {
-          acc.yearlyReport[year] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+        if (!yearlyReport[year]) {
+          yearlyReport[year] = { complaints: [], tatCount: 0, totalComplaints: 0, totalCT: 0, totalRT: 0 };
         }
-        acc.yearlyReport[year].complaints.push(c);
-        acc.yearlyReport[year].totalComplaints++;
-        if (tat <= 24) acc.yearlyReport[year].tatCount++;
+        yearlyReport[year].complaints.push({ c,complaintId: c._id, ct, rt, tat });
+        yearlyReport[year].totalComplaints++;
+        yearlyReport[year].totalCT += ct;
+        yearlyReport[year].totalRT += rt;
+        if (tat <= 24) yearlyReport[year].tatCount++;
   
-        return acc;
-      }, { monthlyReport: {}, yearlyReport: {}, totalTATCount: 0, totalComplaints: 0 });
+        return { c,complaintId: c._id, ct, rt, tat };
+      });
   
       // Calculate Overall TAT Percentage
       let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
   
-      // Process final reports
+      // Process final reports with TAT%, CT, RT averages
       const processReport = (report) => Object.keys(report).map((key) => {
-        let { complaints, tatCount, totalComplaints } = report[key];
+        let { complaints, tatCount, totalComplaints, totalCT, totalRT } = report[key];
   
         return {
           period: key,
           tatPercentage: calculatePercentage(tatCount, totalComplaints),
-          complaints,
+          avgCT: (totalComplaints > 0 ? (totalCT / totalComplaints).toFixed(2) : "0.00") + " hrs",
+          avgRT: (totalComplaints > 0 ? (totalRT / totalComplaints).toFixed(2) : "0.00") + " hrs",
+          complaints, // Includes per-complaint CT, RT, TAT
         };
       });
   
@@ -202,6 +276,7 @@ const BrandDashboard = (props) => {
       let finalYearlyReport = processReport(yearlyReport);
   
       console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
+      console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithTAT);
       console.log("📊 Monthly Report:", finalMonthlyReport);
       console.log("📊 Yearly Report:", finalYearlyReport);
     } catch (err) {
@@ -210,220 +285,7 @@ const BrandDashboard = (props) => {
   };
   
   
-  
-
-  // const getAllComplaint = async () => {
-  //   try {
-  //     let response = await http_request.get("/getAllComplaint");
-  //     let { data } = response;
-  
-  //     const techComp = data.filter((item) => item?.brandId === userData._id);
-  //     const filteredComplaints = techComp.filter(c =>
-  //       ["COMPLETED", "FINAL VERIFICATION"].includes(c.status)
-  //     );
-  
-  //     let monthlyReport = {};
-  //     let yearlyReport = {};
-  //     let complaintsData = [];
-  
-  //     const adjustDate = (date) => {
-  //       let newDate = new Date(date);
-  //       if (newDate.getHours() > 12) {
-  //         newDate.setDate(newDate.getDate() + 1);
-  //         newDate.setHours(0, 0, 0, 0);
-  //       }
-  //       return newDate;
-  //     };
-  
-  //     filteredComplaints.forEach((c) => {
-  //       const complaintDate = adjustDate(c.createdAt);
-  //       const updatedDate = new Date(c.updatedAt);
-  //       const assignServiceDate = c.assignServiceCenterTime ? new Date(c.assignServiceCenterTime) : null;
-  
-  //       const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
-  //       const year = complaintDate.getFullYear();
-  
-  //       if (!monthlyReport[monthYear]) {
-  //         monthlyReport[monthYear] = { complaints: [], tatCount: 0, ctCount: 0, rtCount: 0 };
-  //       }
-  //       if (!yearlyReport[year]) {
-  //         yearlyReport[year] = { complaints: [], tatCount: 0, ctCount: 0, rtCount: 0 };
-  //       }
-  
-  //       let tat = (updatedDate - complaintDate) / (1000 * 60 * 60); // Convert to hours
-  //       let ct = (updatedDate - new Date(c.createdAt)) / (1000 * 60 * 60);
-  //       let rt = assignServiceDate ? (assignServiceDate - complaintDate) / (1000 * 60 * 60) : 0;
-  
-  //       tat = tat < 0 ? 0 : tat;
-  //       ct = ct < 0 ? 0 : ct;
-  //       rt = rt < 0 ? 0 : rt;
-  
-  //       if (rt > 2) rt = 0;
-  
-  //       const complaintDetails = {
-  //         complaintId: c.complaintId,
-  //         brandName: c.productBrand,
-  //         serviceCenter: c.assignServiceCenter || "Not Assigned",
-  //         status: c.status,
-  //         tat: tat,
-  //         ct: ct,
-  //         rt: rt,
-  //       };
-  
-  //       monthlyReport[monthYear].complaints.push(complaintDetails);
-  //       yearlyReport[year].complaints.push(complaintDetails);
-  //       complaintsData.push(complaintDetails);
-  
-  //       // **Count complaints that meet TAT and CT criteria**
-  //       if (tat <= 24) monthlyReport[monthYear].tatCount++;
-  //       if (ct <= 24) monthlyReport[monthYear].ctCount++;
-  //       if (rt > 0) monthlyReport[monthYear].rtCount++;
-  
-  //       if (tat <= 24) yearlyReport[year].tatCount++;
-  //       if (ct <= 24) yearlyReport[year].ctCount++;
-  //       if (rt > 0) yearlyReport[year].rtCount++;
-  //     });
-  
-  //     const calculatePercentage = (count, total) => {
-  //       return total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-  //     };
-  
-  //     const processReport = (report) => {
-  //       return Object.keys(report).map((key) => {
-  //         let complaints = report[key].complaints;
-  //         let totalComplaints = complaints.length;
-  //         let tatCount = report[key].tatCount;
-  //         let ctCount = report[key].ctCount;
-  //         let rtCount = report[key].rtCount;
-  
-  //         return {
-  //           period: key,
-  //           tatPercentage: calculatePercentage(tatCount, totalComplaints),
-  //           ctPercentage: calculatePercentage(ctCount, totalComplaints),
-  //           rtPercentage: calculatePercentage(rtCount, totalComplaints),
-  //           complaints
-  //         };
-  //       });
-  //     };
-  
-  //     let finalMonthlyReport = processReport(monthlyReport);
-  //     let finalYearlyReport = processReport(yearlyReport);
-  
-  //     console.log("📊 Monthly Report:", finalMonthlyReport);
-  //     console.log("📊 Yearly Report:", finalYearlyReport);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-  
-
-
-
-  // const getAllComplaint = async () => {
-  //   try {
-  //     let response = await http_request.get("/getAllComplaint");
-  //     let { data } = response;
-
-  //     const techComp = data.filter((item) => item?.brandId === userData._id);
-
-  //     const filteredComplaints = techComp.filter(c =>
-  //       ["COMPLETED", "FINAL VERIFICATION"].includes(c.status)
-  //     );
-
-  //     let monthlyReport = {};
-  //     let yearlyReport = {};
-  //     let totalTAT = [], totalCT = [], totalRT = [];
-  //     let complaintsData = [];
-
-  //     filteredComplaints.forEach((c) => {
-  //       const complaintDate = new Date(c.createdAt);
-  //       const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
-  //       const year = complaintDate.getFullYear();
-
-  //       if (!monthlyReport[monthYear]) {
-  //         monthlyReport[monthYear] = { complaints: [] };
-  //       }
-  //       if (!yearlyReport[year]) {
-  //         yearlyReport[year] = { complaints: [] };
-  //       }
-
-  //       const tat = calculateBusinessHours(c.createdAt, c.updatedAt);
-  //       const ct = calculateBusinessHours(c.assignServiceCenterTime, c.updatedAt);
-  //       const rt = calculateBusinessHours(c.createdAt, c.assignServiceCenterTime);
-  //       const finalRT = rt || 5;
-
-  //       const complaintDetails = {
-  //         complaintId: c.complaintId,
-  //         brandName: c.productBrand,
-  //         serviceCenter: c.assignServiceCenter || "Not Assigned",
-  //         status: c.status,
-  //         tat,
-  //         ct,
-  //         rt: finalRT, // Use corrected RT
-  //       };
-  //       // const complaintDetails = {
-  //       //   _id: c._id,
-  //       //   complaintId: c.complaintId,
-  //       //   brandName: c.productBrand,
-  //       //   serviceCenter: c.assignServiceCenter,
-  //       //   status: c.status,
-  //       //   tat,
-  //       //   ct,
-  //       //   rt
-  //       // };
-
-  //       monthlyReport[monthYear].complaints.push(complaintDetails);
-  //       yearlyReport[year].complaints.push(complaintDetails);
-  //       complaintsData.push(complaintDetails);
-
-  //       totalTAT.push(tat);
-  //       totalCT.push(ct);
-  //       totalRT.push(rt);
-  //     });
-
-  //     const processReport = (report) => {
-  //       return Object.keys(report).map((key) => {
-  //         let complaints = report[key].complaints;
-  //         let TATData = complaints.map(c => c.tat);
-  //         let CTData = complaints.map(c => c.ct);
-  //         let RTData = complaints.map(c => c.rt);
-
-  //         let avgTAT = TATData.length ? (TATData.reduce((sum, tat) => sum + tat, 0) / TATData.length).toFixed(2) : 0;
-  //         let avgCT = CTData.length ? (CTData.reduce((sum, ct) => sum + ct, 0) / CTData.length).toFixed(2) : 0;
-  //         let avgRT = RTData.length ? (RTData.reduce((sum, rt) => sum + rt, 0) / RTData.length).toFixed(2) : 0;
-
-  //         return {
-  //           period: key,
-  //           avgTAT: calculatePercentage(avgTAT),
-  //           avgCT: calculatePercentage(avgCT),
-  //           avgRT: calculatePercentage(avgRT),
-  //           complaints
-  //         };
-  //       });
-  //     };
-
-  //     let finalMonthlyReport = processReport(monthlyReport);
-  //     let finalYearlyReport = processReport(yearlyReport);
-
-  //     let totalAvgTAT = totalTAT.length ? (totalTAT.reduce((sum, tat) => sum + tat, 0) / totalTAT.length).toFixed(2) : 0;
-  //     let totalAvgCT = totalCT.length ? (totalCT.reduce((sum, ct) => sum + ct, 0) / totalCT.length).toFixed(2) : 0;
-  //     let totalAvgRT = totalRT.length ? (totalRT.reduce((sum, rt) => sum + rt, 0) / totalRT.length).toFixed(2) : 0;
-
-  //     let totalAverageReport = {
-  //       avgTAT: calculatePercentage(totalAvgTAT),
-  //       avgCT: calculatePercentage(totalAvgCT),
-  //       avgRT: calculatePercentage(totalAvgRT),
-  //       complaints: complaintsData
-  //     };
-
-  //     console.log("📊 Monthly Report:", finalMonthlyReport);
-  //     console.log("📊 Yearly Report:", finalYearlyReport);
-  //     console.log("📊 Total Average Report:", totalAverageReport);
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
-
+ 
   
   const filterData = userData?.role === "ADMIN" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)

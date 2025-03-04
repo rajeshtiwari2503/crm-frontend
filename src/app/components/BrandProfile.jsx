@@ -180,7 +180,7 @@ const BrandProfile = (props) => {
         {[
           { label: "Base Price", value: userData?.basePrice },
           { label: "Per KM Price", value: userData?.kmPrice },
-          { label: "CRM Price", value: userData?.crmPrice },
+          { label: "CRM Price as per plan", value: userData?.crmPrice },
          
           { label: "In-City Price", value: userData?.inCityPrice },
           { label: "Out-City Price", value: userData?.outCityPrice },

@@ -263,7 +263,13 @@ const { user } = useUser();
                 <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /> : ""}
               </>
               : <>
-                {reportData?.complaints?.length > 0 ? <DownloadExcel  userData={user} data={reportData?.complaints} fileName="ComplaintsList" 
+                {reportData?.complaints?.length > 0 ? <DownloadExcel  userData={user}   fileName="ComplaintsList" 
+                data={filteredComplaints.map(complaint => ({
+                  ...complaint,
+                  sndStatus: complaint.updateComments?.map(comment => 
+                    `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+                  ).join(", ") || "" // Join all statuses with timestamps, separated by a comma
+                }))} 
                 fieldsToInclude={[ 
                   "complaintId",
                   "productBrand",   
@@ -289,6 +295,7 @@ const { user } = useUser();
                   "paymentBrand", 
                   "updatedAt",
                   "createdAt",
+                  "sndStatus", // Include concatenated status with timestamps 
                   ]}
                 /> : ""
                 }

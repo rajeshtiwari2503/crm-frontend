@@ -5,7 +5,7 @@ import http_request from '../../../http-request';
 
 import CountUp from 'react-countup';
 
-import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, ProductionQuantityLimits, Settings, ShoppingBag, Wallet } from '@mui/icons-material'
+import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, ProductionQuantityLimits, QrCodeScanner, Settings, ShoppingBag, Wallet } from '@mui/icons-material'
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
@@ -18,11 +18,14 @@ const BrandDashboard = (props) => {
   const userData = props?.userData;
   const dashData = props?.dashData;
   console.log("dashData",dashData);
+ 
   
   const [complaint, setComplaint] = useState([]);
   const [warranty, setWarranty] = useState(0);
   const [refresh, setRefresh] = useState("");
   const [averageCT, setAverageCT] = useState(0);
+  const [averageRT, setAverageRT] = useState(0);
+  const [averageTAT, setAverageTAT] = useState(0);
   const [walletAmnt, setWalletAmnt] = useState(0);
 
   useEffect(() => {
@@ -91,214 +94,381 @@ const BrandDashboard = (props) => {
   // console.log("jgjgjjg",warranty);
 
 
-
-
-
+ 
+ 
+  
   // const getAllComplaint = async () => {
   //   try {
   //     let response = await http_request.get("/getAllComplaint");
   //     let { data } = response;
+  //     setComplaint(data);
 
   //     // Filter complaints for the brand and required statuses
   //     const filteredComplaints = data.filter(
-  //       (item) => item?.brandId === userData._id &&
+  //       (item) =>
+  //         item?.brandId === userData._id &&
   //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)
   //     );
 
-  //     // Function to safely calculate time difference (in hours)
-  //     const getTimeDifference = (start, end) =>
-  //       start && end ? Math.max((new Date(end) - new Date(start)) / (1000 * 60 * 60), 0) : 0;
-
-  //     // Function to adjust complaint date
-  //     const adjustDate = (date) => {
-  //       let newDate = new Date(date);
-  //       if (newDate.getHours() > 12) {
-  //         newDate.setDate(newDate.getDate() + 1);
-  //         newDate.setHours(0, 0, 0, 0);
-  //       }
-  //       return newDate;
+  //     // Function to calculate time difference in hours and days
+  //     const getTimeDifference = (start, end) => {
+  //       if (!start || !end) return { days: 0, hours: 0 };
+  //       let diffMs = new Date(end) - new Date(start);
+  //       let totalHours = Math.max(diffMs / (1000 * 60 * 60), 0);
+  //       let days = Math.floor(totalHours / 24);
+  //       let hours = Math.round(totalHours % 24);
+  //       return { days, hours };
   //     };
 
   //     // Function to calculate percentage
-  //     const calculatePercentage = (count, total) => total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
+  //     const calculatePercentage = (count, total) =>
+  //       total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
 
-  //     // Process complaints using reduce for better performance
-  //     const { monthlyReport, yearlyReport, totalTATCount, totalComplaints } = filteredComplaints.reduce((acc, c) => {
-  //       const complaintDate = adjustDate(c.createdAt);
-  //       const complaintCloseDate = c.complaintCloseTime ? new Date(c.complaintCloseTime) : null;
+  //     let totalTATCount = 0;
+  //     let totalRTCount = 0;
+  //     let totalCTCount = 0;
+  //     let totalComplaints = filteredComplaints.length;
 
-  //       const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
+  //     let monthlyReport = {};
+  //     let yearlyReport = {};
+
+  //     // Process complaints
+  //     const complaintsWithMetrics = filteredComplaints.map((c) => {
+  //       const complaintDate = new Date(c.createdAt);
+  //       const complaintCloseDate = c.complaintCloseTime
+  //         ? new Date(c.complaintCloseTime)
+  //         : null;
+  //       const responseTime = c.empResponseTime
+  //         ? new Date(c.empResponseTime)
+  //         : null;
+  //       const serviceStartTime = c.assignServiceCenterTime
+  //         ? new Date(c.assignServiceCenterTime)
+  //         : null;
+  //       const serviceCompletionTime = c.complaintCloseTime
+  //         ? new Date(c.complaintCloseTime)
+  //         : null;
+
+  //       const monthYear = complaintDate.toLocaleString("default", {
+  //         month: "long",
+  //         year: "numeric",
+  //       });
   //       const year = complaintDate.getFullYear();
 
-  //       // Calculate TAT (Total Turnaround Time)
+  //       // Calculate TAT, RT, and CT
   //       let tat = getTimeDifference(complaintDate, complaintCloseDate);
+  //       let rt = getTimeDifference(complaintDate, responseTime);
+  //       let ct = getTimeDifference(serviceStartTime, serviceCompletionTime);
 
-  //       // Update total complaints count
-  //       acc.totalComplaints++;
-
-  //       // Count TAT within the allowed limit (≤ 24 hours)
-  //       if (tat <= 24) acc.totalTATCount++;
+  //       // Check if TAT, RT, and CT ≤ 24 hours
+  //       if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
+  //       if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
+  //       if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
 
   //       // Update Monthly Report
-  //       if (!acc.monthlyReport[monthYear]) {
-  //         acc.monthlyReport[monthYear] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+  //       if (!monthlyReport[monthYear]) {
+  //         monthlyReport[monthYear] = {
+  //           complaints: [],
+  //           tatCount: 0,
+  //           rtCount: 0,
+  //           ctCount: 0,
+  //           totalComplaints: 0,
+  //           totalCT: 0,
+  //           totalRT: 0,
+  //         };
   //       }
-  //       acc.monthlyReport[monthYear].complaints.push(c);
-  //       acc.monthlyReport[monthYear].totalComplaints++;
-  //       if (tat <= 24) acc.monthlyReport[monthYear].tatCount++;
+  //       monthlyReport[monthYear].complaints.push({
+  //         complaintId: c._id,
+  //         ct,
+  //         rt,
+  //         tat,
+  //       });
+  //       monthlyReport[monthYear].totalComplaints++;
+  //       monthlyReport[monthYear].totalCT += ct.days * 24 + ct.hours;
+  //       monthlyReport[monthYear].totalRT += rt.days * 24 + rt.hours;
+  //       if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
+  //       if (rt.days === 0 && rt.hours <= 24) monthlyReport[monthYear].rtCount++;
+  //       if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
 
   //       // Update Yearly Report
-  //       if (!acc.yearlyReport[year]) {
-  //         acc.yearlyReport[year] = { complaints: [], tatCount: 0, totalComplaints: 0 };
+  //       if (!yearlyReport[year]) {
+  //         yearlyReport[year] = {
+  //           complaints: [],
+  //           tatCount: 0,
+  //           rtCount: 0,
+  //           ctCount: 0,
+  //           totalComplaints: 0,
+  //           totalCT: 0,
+  //           totalRT: 0,
+  //         };
   //       }
-  //       acc.yearlyReport[year].complaints.push(c);
-  //       acc.yearlyReport[year].totalComplaints++;
-  //       if (tat <= 24) acc.yearlyReport[year].tatCount++;
+  //       yearlyReport[year].complaints.push({
+  //         complaintId: c._id,
+  //         ct,
+  //         rt,
+  //         tat,
+  //       });
+  //       yearlyReport[year].totalComplaints++;
+  //       yearlyReport[year].totalCT += ct.days * 24 + ct.hours;
+  //       yearlyReport[year].totalRT += rt.days * 24 + rt.hours;
+  //       if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
+  //       if (rt.days === 0 && rt.hours <= 24) yearlyReport[year].rtCount++;
+  //       if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
 
-  //       return acc;
-  //     }, { monthlyReport: {}, yearlyReport: {}, totalTATCount: 0, totalComplaints: 0 });
-
-  //     // Calculate Overall TAT Percentage
-  //     let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
-
-  //     // Process final reports
-  //     const processReport = (report) => Object.keys(report).map((key) => {
-  //       let { complaints, tatCount, totalComplaints } = report[key];
-
-  //       return {
-  //         period: key,
-  //         tatPercentage: calculatePercentage(tatCount, totalComplaints),
-  //         complaints,
-  //       };
+  //       return { complaintId: c._id, ct, rt, tat };
   //     });
+
+  //     // Calculate Overall Percentages
+  //     let overallTATPercentage = calculatePercentage(
+  //       totalTATCount,
+  //       totalComplaints
+  //     );
+  //     let overallRTPercentage = calculatePercentage(
+  //       totalRTCount,
+  //       totalComplaints
+  //     );
+  //     let overallCTPercentage = calculatePercentage(
+  //       totalCTCount,
+  //       totalComplaints
+  //     );
+
+  //     // Process final reports with TAT%, CT, RT averages
+  //     const processReport = (report) =>
+  //       Object.keys(report).map((key) => {
+  //         let {
+  //           complaints,
+  //           tatCount,
+  //           rtCount,
+  //           ctCount,
+  //           totalComplaints,
+  //           totalCT,
+  //           totalRT,
+  //         } = report[key];
+
+  //         return {
+  //           period: key,
+  //           tatPercentage: calculatePercentage(tatCount, totalComplaints),
+  //           rtPercentage: calculatePercentage(rtCount, totalComplaints),
+  //           ctPercentage: calculatePercentage(ctCount, totalComplaints),
+  //           avgCT:
+  //             (totalComplaints > 0 ? (totalCT / totalComplaints).toFixed(2) : "0.00") +
+  //             " hrs",
+  //           avgRT:
+  //             (totalComplaints > 0 ? (totalRT / totalComplaints).toFixed(2) : "0.00") +
+  //             " hrs",
+  //           complaints, // Includes per-complaint CT, RT, TAT
+  //         };
+  //       });
 
   //     let finalMonthlyReport = processReport(monthlyReport);
   //     let finalYearlyReport = processReport(yearlyReport);
 
   //     console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
+  //     console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
+  //     console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
+  //     console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithMetrics);
   //     console.log("📊 Monthly Report:", finalMonthlyReport);
   //     console.log("📊 Yearly Report:", finalYearlyReport);
   //   } catch (err) {
   //     console.log("Error fetching complaints:", err);
   //   }
   // };
-
+  
 
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
-
+      setComplaint(data);
+  
       // Filter complaints for the brand and required statuses
       const filteredComplaints = data.filter(
-        (item) => item?.brandId === userData._id &&
-          ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)
+        (item) =>
+          item?.brandId === userData._id &&
+          ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
+                item?.cspStatus === "NO"
       );
-
-      // Function to calculate time difference in hours
-      const getTimeDifference = (start, end) =>
-        start && end ? Math.max((new Date(end) - new Date(start)) / (1000 * 60 * 60), 0) : 0;
-
-      // Function to adjust complaint date if needed
-      const adjustDate = (date) => {
-        let newDate = new Date(date);
-        if (newDate.getHours() > 12) {
-          newDate.setDate(newDate.getDate() + 1);
-          newDate.setHours(0, 0, 0, 0);
-        }
-        return newDate;
+  
+      // Function to calculate time difference in hours and days
+      const getTimeDifference = (start, end) => {
+        if (!start || !end) return { days: 0, hours: 0 };
+        let diffMs = new Date(end) - new Date(start);
+        let totalHours = Math.max(diffMs / (1000 * 60 * 60), 0);
+        let days = Math.floor(totalHours / 24);
+        let hours = Math.round(totalHours % 24);
+        return { days, hours };
       };
-
+  
       // Function to calculate percentage
-      const calculatePercentage = (count, total) => total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-
+      const calculatePercentage = (count, total) =>
+        total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
+  
       let totalTATCount = 0;
+      let totalRTCount = 0;
+      let totalCTCount = 0;
       let totalComplaints = filteredComplaints.length;
+  
       let monthlyReport = {};
       let yearlyReport = {};
-
+  
       // Process complaints
-      const complaintsWithTAT = filteredComplaints.map((c) => {
-        const complaintDate = adjustDate(c.createdAt);
-        const complaintCloseDate = c.complaintCloseTime ? new Date(c.complaintCloseTime) : null;
-        const assignTime = c.assignServiceCenterTime ? new Date(c.assignServiceCenterTime) : null;
-        const responseTime = c.empResponseTime ? new Date(c.empResponseTime) : null;
-
-        const monthYear = complaintDate.toLocaleString("default", { month: "long", year: "numeric" });
+      const complaintsWithMetrics = filteredComplaints.map((c) => {
+        const complaintDate = new Date(c.createdAt);
+        const complaintCloseDate = c.complaintCloseTime
+          ? new Date(c.complaintCloseTime)
+          : null;
+        const responseTime = c.empResponseTime
+          ? new Date(c.empResponseTime)
+          : null;
+        const serviceStartTime = c.assignServiceCenterTime
+          ? new Date(c.assignServiceCenterTime)
+          : null;
+        const serviceCompletionTime = c.complaintCloseTime
+          ? new Date(c.complaintCloseTime)
+          : null;
+  
+        // ** Debugging logs **
+        console.log("📝 Complaint ID:", c._id);
+        console.log("Created At:", complaintDate.toISOString());
+        console.log(
+          "Response Time:",
+          responseTime ? responseTime.toISOString() : "N/A"
+        );
+  
+        const monthYear = complaintDate.toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        });
         const year = complaintDate.getFullYear();
-
-        // Calculate CT, RT, and TAT
+  
+        // Calculate TAT, RT, and CT
         let tat = getTimeDifference(complaintDate, complaintCloseDate);
+        let rt = getTimeDifference(complaintDate, responseTime);
         let ct = getTimeDifference(complaintDate, complaintCloseDate);
-        let rt = getTimeDifference(complaintDate, complaintCloseDate);
-
-        // Check if TAT ≤ 24 hours
-        if (tat <= 24) totalTATCount++;
-
+  
+        console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
+  
+        // Check if TAT, RT, and CT ≤ threshold
+        if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
+        if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
+        if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
+  
         // Update Monthly Report
         if (!monthlyReport[monthYear]) {
-          monthlyReport[monthYear] = { complaints: [], tatCount: 0, totalComplaints: 0, totalCT: 0, totalRT: 0 };
+          monthlyReport[monthYear] = {
+            complaints: [],
+            tatCount: 0,
+            rtCount: 0,
+            ctCount: 0,
+            totalComplaints: 0,
+            totalCT: 0,
+            totalRT: 0,
+          };
         }
-        monthlyReport[monthYear].complaints.push({ complaintId: c._id, ct, rt, tat });
+        monthlyReport[monthYear].complaints.push({
+          complaintId: c._id,
+          ct,
+          rt,
+          tat,
+        });
         monthlyReport[monthYear].totalComplaints++;
-        monthlyReport[monthYear].totalCT += ct;
-        monthlyReport[monthYear].totalRT += rt;
-        if (tat <= 24) monthlyReport[monthYear].tatCount++;
-
+        monthlyReport[monthYear].totalCT += ct.days * 24 + ct.hours;
+        monthlyReport[monthYear].totalRT += rt.days * 24 + rt.hours;
+        if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
+        if (rt.days === 0 && rt.hours <= 2) monthlyReport[monthYear].rtCount++;
+        if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
+  
         // Update Yearly Report
         if (!yearlyReport[year]) {
-          yearlyReport[year] = { complaints: [], tatCount: 0, totalComplaints: 0, totalCT: 0, totalRT: 0 };
+          yearlyReport[year] = {
+            complaints: [],
+            tatCount: 0,
+            rtCount: 0,
+            ctCount: 0,
+            totalComplaints: 0,
+            totalCT: 0,
+            totalRT: 0,
+          };
         }
-        yearlyReport[year].complaints.push({ c, complaintId: c._id, ct, rt, tat });
+        yearlyReport[year].complaints.push({
+          complaintId: c._id,
+          ct,
+          rt,
+          tat,
+        });
         yearlyReport[year].totalComplaints++;
-        yearlyReport[year].totalCT += ct;
-        yearlyReport[year].totalRT += rt;
-        if (tat <= 24) yearlyReport[year].tatCount++;
-
-        return { c, complaintId: c._id, ct, rt, tat };
+        yearlyReport[year].totalCT += ct.days * 24 + ct.hours;
+        yearlyReport[year].totalRT += rt.days * 24 + rt.hours;
+        if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
+        if (rt.days === 0 && rt.hours <= 2) yearlyReport[year].rtCount++;
+        if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
+  
+        return { complaintId: c._id, ct, rt, tat };
       });
-
-      // Calculate Overall TAT Percentage
+  
+      // Calculate Overall Percentages
       let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
-
+      let overallRTPercentage = calculatePercentage(totalRTCount, totalComplaints);
+      let overallCTPercentage = calculatePercentage(totalCTCount, totalComplaints);
+  
       // Process final reports with TAT%, CT, RT averages
-      const processReport = (report) => Object.keys(report).map((key) => {
-        let { complaints, tatCount, totalComplaints, totalCT, totalRT } = report[key];
-
-        return {
-          period: key,
-          tatPercentage: calculatePercentage(tatCount, totalComplaints),
-          avgCT: (totalComplaints > 0 ? (totalCT / totalComplaints).toFixed(2) : "0.00") + " hrs",
-          avgRT: (totalComplaints > 0 ? (totalRT / totalComplaints).toFixed(2) : "0.00") + " hrs",
-          complaints, // Includes per-complaint CT, RT, TAT
-        };
-      });
-
+      const processReport = (report) =>
+        Object.keys(report).map((key) => {
+          let {
+            complaints,
+            tatCount,
+            rtCount,
+            ctCount,
+            totalComplaints,
+            totalCT,
+            totalRT,
+          } = report[key];
+  
+          return {
+            period: key,
+            tatPercentage: calculatePercentage(tatCount, totalComplaints),
+            rtPercentage: calculatePercentage(rtCount, totalComplaints),
+            ctPercentage: calculatePercentage(ctCount, totalComplaints),
+            avgCT:
+              (totalComplaints > 0 ? (totalCT / totalComplaints).toFixed(2) : "0.00") +
+              " hrs",
+            avgRT:
+              (totalComplaints > 0 ? (totalRT / totalComplaints).toFixed(2) : "0.00") +
+              " hrs",
+            complaints, // Includes per-complaint CT, RT, TAT
+          };
+        });
+  
       let finalMonthlyReport = processReport(monthlyReport);
       let finalYearlyReport = processReport(yearlyReport);
-
+  setAverageTAT(overallTATPercentage)
+  setAverageRT(overallRTPercentage)
+  setAverageCT(overallCTPercentage)
       console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
-      console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithTAT);
+      console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
+      console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
+      console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithMetrics);
       console.log("📊 Monthly Report:", finalMonthlyReport);
       console.log("📊 Yearly Report:", finalYearlyReport);
     } catch (err) {
       console.log("Error fetching complaints:", err);
     }
   };
+  
 
 
 
 
   const filterData = userData?.role === "ADMIN" ? complaint
-    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-      : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-        : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+    : userData?.role === "BRAND" ? complaint?.filter((item) => item?.brandId === userData?._id)
+      : userData?.role === "USER" ? complaint?.filter((item) => item?.userId === userData?._id)
+        : userData?.role === "BRAND EMPLOYEE" ? complaint?.filter((item) => item?.brandId === userData.brandId)
+          : userData?.role === "SERVICE" ? complaint?.filter((item) => item?.assignServiceCenterId === userData._id)
+            : userData?.role === "TECHNICIAN" ? complaint?.filter((item) => item?.technicianId === userData._id)
+              : userData?.role === "DEALER" ? complaint?.filter((item) => item?.dealerId === userData._id)
                 : complaint;
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
+// console.log("fil",filterData);
 
   const RefreshData = (data) => {
     setRefresh(data);
@@ -793,7 +963,7 @@ const BrandDashboard = (props) => {
               </div>
             </div>
           </div>
-        <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Brand other details</div>
+        <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>  Other details</div>
 
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
             <div onClick={() => router.push("/user/brand/stickers")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
@@ -801,7 +971,7 @@ const BrandDashboard = (props) => {
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center'>
-                  <ProductionQuantityLimits fontSize='medium' />
+                  <QrCodeScanner fontSize='medium' />
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Product Stickers </div>
                     <div className=' text-2xl font-semibold'>
@@ -837,11 +1007,45 @@ const BrandDashboard = (props) => {
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center'>
-                  <Settings fontSize='medium' />
+                  <AccessTime fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>R T</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageRT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AccessTime fontSize='medium' />
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>C T</div>
                     <div className=' text-2xl font-semibold'>
                       <CountUp start={0} end={averageCT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AccessTime fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>TAT</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageTAT} delay={1} />
                     </div>
                   </div>
                 </div>

@@ -176,7 +176,10 @@ const BrandReport = (props) => {
                           ...complaint,
                           sndStatus: complaint.updateComments?.map(comment => 
                             `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
-                          ).join(", ") || "" // Join all statuses with timestamps, separated by a comma
+                          ).join(", ") || "" ,// Join all statuses with timestamps, separated by a comma
+                          comments: complaint.updateHistory?.map(update => 
+                            update.changes?.comments ? `${update.changes.comments} (${update.updatedAt})` : ""
+                          ).filter(comment => comment !== "").join(" | ") || "" // Concatenate non-empty comments with timestamps
                         }))} 
                         fileName="ComplaintsList" 
                         fieldsToInclude={[ 
@@ -204,6 +207,7 @@ const BrandReport = (props) => {
                           "updatedAt",
                           "createdAt",
                           "sndStatus", // Include concatenated status with timestamps  
+                            "comments",
                          
                         ]}
                       />

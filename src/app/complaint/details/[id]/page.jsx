@@ -116,11 +116,16 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='text-lg font-medium'>{complaint?.district}</div>
                                 <div className='text-md font-semibold'>State : </div>
                                 <div className='text-lg font-medium'>{complaint?.state}</div>
-                            
+
                                 <div className='text-md font-semibold'>AssignServiceCenter : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignServiceCenter}</div>
-                                <div className='text-md font-semibold'>AssignServiceCenter contact : </div>
-                                <div className='text-lg font-medium'>{complaint?.serviceCenterContact}</div>
+                                {value?.user?.role === "BRAND" ? ""
+                                    : <>
+                                        <div className='text-md font-semibold'>AssignServiceCenter contact : </div>
+                                        <div className='text-lg font-medium'>{complaint?.serviceCenterContact}</div>
+                                    </>
+
+                                }
                                 <div className='text-md font-semibold'>AssignTechnician : </div>
                                 <div className='text-lg font-medium'>{complaint?.assignTechnician}</div>
 
@@ -151,7 +156,7 @@ const ComplaintDetails = ({ params }) => {
                                     </div>
                                 ))}
                                 </div> */}
-                              
+
                                 <div className='text-md font-semibold'>Image : </div>
                                 <div>
                                     <img
@@ -163,8 +168,8 @@ const ComplaintDetails = ({ params }) => {
                                         alt='image'
                                     />
                                 </div>
-                             
-                            <div className='text-md font-semibold'>Replace Part Image : </div>
+
+                                <div className='text-md font-semibold'>Replace Part Image : </div>
                                 <div>
                                     <img
 
@@ -176,9 +181,9 @@ const ComplaintDetails = ({ params }) => {
                                     />
                                 </div>
                             </div>
-                           
+
                         </div>
-                        
+
                         <div className="p-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 {/* Update Comments Section */}
@@ -203,7 +208,7 @@ const ComplaintDetails = ({ params }) => {
                                 {/* Update History Section */}
                                 <div className="border p-4 rounded-lg">
                                     <h2 className="text-xl font-bold mb-2">Update History</h2>
-                                    <div className="space-y-3">
+                                    {/* <div className="space-y-3">
                                         {complaint?.updateHistory?.map((history) => (
                                             <div key={history._id} className="border-b pb-2">
                                                 <p className="text-sm text-gray-500">
@@ -213,6 +218,22 @@ const ComplaintDetails = ({ params }) => {
                                                     <p key={key} className="text-sm">
                                                         <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
                                                     </p>
+                                                ))}
+                                            </div>
+                                        ))}
+                                    </div> */}
+                                    <div className="space-y-3">
+                                        {complaint?.updateHistory?.map((history) => (
+                                            <div key={history._id} className="border-b pb-2">
+                                                <p className="text-sm text-gray-500">
+                                                    <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
+                                                </p>
+                                                {Object.entries(history.changes).map(([key, value]) => (
+                                                    key !== "serviceCenterContact" && ( // Exclude serviceCenterContact
+                                                        <p key={key} className="text-sm">
+                                                            <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
+                                                        </p>
+                                                    )
                                                 ))}
                                             </div>
                                         ))}

@@ -614,185 +614,18 @@ const ServiceDashboard = (props) => {
       console.log(err);
     }
   }
-console.log("dashData",dashData);
+// console.log("dashData",dashData);
 
   return (
-    <>
+    <div className='   '>
+       
       <Toaster />
 
-      {/* <div className=' font-bold text-xl  flex items-center justify-end'  >
-        {wallet ?
-          <div onClick={() => router.push("/wallet/transactions")} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
-            <Wallet fontSize='large' color='secondary' />
-            <div className='text-sm  ms-3'>{wallet?.dueAmount} {"INR"}</div>
-          </div>
-
-          : <div onClick={() => handleWallet()} className='w-36 bg-green-400 cursor-pointer border flex items-center p-2 rounded-md'>
-            <Wallet fontSize='large' color='secondary' />
-            <div className='text-sm  ms-3'>{wallet?.dueAmount ? wallet?.dueAmount : "Activate Wallet"}  </div>
-          </div>
-        }
-      </div>
-      <div className='my-8'>
-
-        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
-          
-          <div onClick={() => router.push("/complaint/pending")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Pending  </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/inprogress")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
-              </div>
-              <div className='text-center mt-2'>In Progress </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/partpending")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-yellow-300  rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Part Pending  </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/assign")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Assigned  </div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div onClick={() => router.push("/complaint/finalVerification")} className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Final Verification </div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Upcomming </div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.scheduleUpcomming} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Schedule Today </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/cancel")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-red-400  rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Cancel </div>
-            </div>
-          </div>
-
-          <div onClick={() => router.push("/complaint/close")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Close  </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-blue-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
-              </div>
-              <div className='text-center mt-2'>Total Service  </div>
-            </div>
-          </div>
-
-          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
-              </div>
-              <div className='text-center mt-2'> 0-1 days service </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
-              </div>
-              <div className='text-center mt-2'> 2-5 days service </div>
-            </div>
-          </div>
-          <div onClick={() => router.push("/complaint/allComplaint")} className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-red-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
-              </div>
-              <div className='text-center mt-2'> More than 5 days  </div>
-            </div>
-          </div>
-         
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageClosingTime} delay={1} /> {"%"}
-              </div>
-              <div className='text-center mt-2'>CT</div>
-            </div>
-          </div>
-           
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageResponseTime} delay={1} /> {"%"}
-              </div>
-              <div className='text-center mt-2'>RT</div>
-            </div>
-          </div>
-         
-        
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageTAT} delay={1} /> {"%"}
-              </div>
-              <div className='text-center mt-2'>TAT</div>
-            </div>
-          </div>
-         
-         
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.walletAmount} delay={1} />
-              </div>               <div className='text-center mt-2'>Wallet Amount</div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.totalAmount} delay={1} />
-              </div>               <div className='text-center mt-2'>Pay Amount</div>
-            </div>
-          </div>
-        </div>
-      </div> */}
+     
       <div className='mb-10'>
         <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
-        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        <div className='grid md:grid-cols-5 grid-cols-1 gap-4  '>
           <div className=' '>
             <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
@@ -1201,7 +1034,7 @@ console.log("dashData",dashData);
        
 
       {/* Display charts for visualization */}
-      <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-4'>
+      <div className='grid md:grid-cols-2 grid-cols-1 md:gap-4'>
         {/* Example: Pie Chart */}
         <div className='bg-gray-200 rounded-xl shadow-lg p-5 mb-8'>
           <Chart
@@ -1227,7 +1060,7 @@ console.log("dashData",dashData);
         </div>
 
       </div>
-      <div className=' grid md:grid-cols-2 sm:grid-cols-1  gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
+      <div className=' grid md:grid-cols-2 grid-cols-1  gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 md:p-5'>
         <div>
           <h2 className='mb-5'>Monthly Complaints</h2>
           <Chart
@@ -1258,12 +1091,12 @@ console.log("dashData",dashData);
         </div>
       </div>
       {/* Display recent services list */}
-      <div className="mt-8 md:w-full w-[325px] ">
+      <div className="mt-8 flex justify-center">
         <RecentServicesList data={data} />
       </div>
 
       {/* Include other components or sections as required */}
-    </>
+    </div>
   );
 };
 

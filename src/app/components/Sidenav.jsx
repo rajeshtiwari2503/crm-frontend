@@ -1098,7 +1098,7 @@ function Sidenav(props) {
                       )}
                     </div>
                     {isOpen && (
-                      <div className='absolute right-0 mt-2 w-[420px] bg-white rounded-md shadow-lg z-20'>
+                      <div className='absolute right-0 mt-2  w-[300px] bg-white rounded-md shadow-lg z-20'>
                         <div className='p-2  '>
                           {currentNotifications.length > 0 ? (
                             currentNotifications.map((notification, i) => (
@@ -1108,7 +1108,7 @@ function Sidenav(props) {
                                     {i + 1 + currentPage * notificationsPerPage}
                                   </div>
                                 </div>
-                                <div className='flex  border-b'>
+                                <div className='flex text-black border-b'>
                                   <div>
                                     {notification?.message}
                                   </div>
@@ -1121,7 +1121,7 @@ function Sidenav(props) {
                                               : ""
                                   ) && (
                                       <div>
-                                        <button onClick={() => handleReadMark(notification?._id)} className="bg-green-500 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
+                                        <button onClick={() => handleReadMark(notification?._id)} className=" rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
                                           Mark_Read
                                         </button>
                                       </div>

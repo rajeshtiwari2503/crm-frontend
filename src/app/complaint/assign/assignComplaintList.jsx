@@ -211,7 +211,8 @@ const AssignComplaintList = (props) => {
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
-        <>
+        <div className='flex justify-center'>
+          <div className=' md:w-full w-[260px]'>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -525,7 +526,9 @@ const AssignComplaintList = (props) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-        </>}
+        </div>
+        </div>
+        }
       <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton

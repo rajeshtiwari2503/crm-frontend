@@ -152,7 +152,7 @@ const Profile = ({ params }) => {
                                                             </select>
                                                             {errors.liveStatus && <p className="text-red-500 text-xs italic">Please select a status.</p>}
                                                         </div>
-                                                        <div className="flex items-center ms-8 justify-between">
+                                                        <div className="flex items-center mt-8 md:ms-8 justify-between">
                                                             <button
                                                                 type="submit"
                                                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
@@ -164,7 +164,7 @@ const Profile = ({ params }) => {
                                                 </div>
                                                 :""
                                                             }
-                                            <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4">
+                                            <div className="m-5 grid md:grid-cols-4 grid-cols-2  mt-5 gap-4">
                                                 
                                                 <div className='text-1xl font-bold'>Availability</div>
                                                 <div className='text-1xl font-bold'> {userData?.liveStatus}</div>
@@ -175,8 +175,8 @@ const Profile = ({ params }) => {
                                                 <div className='text-1xl font-bold'>{new Date(userData?.updatedAt).toLocaleString()}</div>
                                                 <div className='text-1xl font-semibold'>User Name :</div>
                                                 <div className='text-lg font-medium'>{userData?.name}</div>
-                                                <div className='text-1xl font-semibold'>Email :</div>
-                                                <div className='text-lg font-medium'>{userData?.email}</div>
+                                                <div className='text-1xl font-semibold col-span-2'>Email :</div>
+                                                <div className='text-lg font-medium col-span-2'>{userData?.email}</div>
                                                 <div className='text-1xl font-semibold'>Contact :</div>
                                                 <div className='text-lg font-medium'>{userData?.contact}</div>
                                                 <div className='text-1xl font-semibold'>Password :</div>

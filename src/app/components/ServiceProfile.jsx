@@ -94,17 +94,19 @@ const ServiceProfile = (props) => {
     <div className=' '>
       {loading === true ? <ReactLoader />
         :
-        <div className="md:m-5 m-0 grid md:grid-cols-4   xs:grid-cols-2 mt-5 gap-1">
-          <div className=' md:text-1xl text-sm font-bold'>Created :</div>
+        <div className="md:m-5 m-0 grid md:grid-cols-4 sm:grid-cols-2 grid-cols-2 mt-5 gap-1">
+
+          <div className=' md:text-1xl text-sm font-bold'>Created : </div>
           <div className=' md:text-1xl text-sm  '>{new Date(userData?.createdAt).toLocaleString()}</div>
           <div className=' md:text-1xl text-sm font-bold'>Updated :</div>
           <div className=' md:text-1xl text-sm  '>{new Date(userData?.updatedAt).toLocaleString()}</div>
           <div className=' md:text-1xl text-sm font-semibold'>Service Center Name :</div>
           <div className='md:text-1xl text-sm  '>{userData?.serviceCenterName}</div>
-          <div className=' md:text-1xl text-sm font-semibold'>Email :</div>
-          <div className='md:text-1xl text-sm  '>{userData?.email}</div>
+         
           <div className=' md:text-1xl text-sm font-semibold'>Contact :</div>
           <div className='md:text-1xl text-sm  '>{userData?.contact}</div>
+          <div className=' md:text-1xl text-sm font-semibold  '>Email :</div>
+          <div className='md:text-1xl text-sm md:col-span-1 col-span-2 '>{userData?.email}</div>
           <div className=' md:text-1xl text-sm font-semibold'>Password :</div>
           <div className='md:text-1xl text-sm '>{userData?.password}</div>
           <div className=' md:text-1xl text-sm font-semibold'>Address :</div>
@@ -280,44 +282,39 @@ const ServiceProfile = (props) => {
               Upload Document Certificate
             </button>
           </div>
-          <div className=' md:text-1xl text-sm font-semibold'>ServiceCategories :</div>
-          <div className=' md:text-1xl text-sm   '>
+          <div className=' md:text-1xl text-sm font-semibold mt-5'>ServiceCategories :</div>
+          <div className=' md:text-1xl text-sm  mt-5 '>
             {
               userData?.serviceCategories?.map((item, i) =>
                 <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
           </div>
-          <div className=' md:text-1xl text-sm font-semibold'>BrandsSupported :</div>
-          <div className=' md:text-1xl text-sm   '>
+          <div className=' md:text-1xl text-sm font-semibold mt-5'>BrandsSupported :</div>
+          <div className=' md:text-1xl text-sm  mt-5 '>
             {
               userData?.brandsSupported?.map((item, i) =>
                 <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
           </div>
-          <div className=' md:col-span-2 col-span-1'>
+          <div className=' md:col-span-2 col-span-2'>
             {props?.admin?.user?.role === "ADMIN" ? <AddCategory serviceCenterId={userData?._id} existingCategories={userData?.serviceCategories} RefreshData={props?.RefreshData} />
 
               : ""
             }
           </div>
-          <div className=' md:col-span-2 col-span-1'>
+          <div className=' md:col-span-2 col-span-2'>
             {props?.admin?.user?.role === "ADMIN" ?
               <AddSupportedBrands serviceCenterId={userData?._id} existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
 
               : ""
             }
           </div>
-          <div className=' md:col-span-2 col-span-1'  >
+          <div className=' md:col-span-2 col-span-2 mt-5 mb-5'  >
             <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
           </div>
-
-        </div>
-
-      }
-
-      <div className='md:col-span-2 col-span-1 md:m-5 border p-4 mt-5 mb-5 '>
+          <div className='md:col-span-2 col-span-2 md:m-5 border p-4  mb-5 '>
         <div className='text-md font-bold mb-4'>Pincodes Supported</div>
         <div className="  overflow-x-auto whitespace-nowrap">
           {userData?.pincodeSupported?.map((item, i) =>
@@ -329,7 +326,12 @@ const ServiceProfile = (props) => {
         </div>
 
       </div>
-      <div className=' md:col-span-2 col-span-1'  >
+        </div>
+
+      }
+
+      
+      <div className=' md:col-span-2 col-span-2'  >
         <ServiceCenterDepositForm userData={userData} RefreshData={props?.RefreshData} />
       </div>
 

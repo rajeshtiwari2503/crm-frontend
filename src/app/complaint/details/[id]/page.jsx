@@ -64,9 +64,9 @@ const ComplaintDetails = ({ params }) => {
             <Sidenav >
                 {!complaint ? <div className='h-[500px] flex justify-center items-center'> <ReactLoader /></div>
                     : <div className=" ">
-                        <div className='flex justify-between items-center' >
+                        <div className='flex justify-between items-center mb-5' >
                             <div className='' >
-                                <h2 className="mb-5  text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                                <h2 className="   text-2xl font-bold leading-9 tracking-tight text-gray-900">
                                     Complaint Details
                                 </h2>
                             </div>
@@ -76,72 +76,72 @@ const ComplaintDetails = ({ params }) => {
                         </div>
                         <hr />
                         <div  >
-                            <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4" >
-                                <div className='text-md font-bold'>Created :  </div>
-                                <div className='text-md  '> {new Date(complaint?.createdAt).toLocaleString()} </div>
-                                <div className='text-md  '> {new Date(complaint?.assignServiceCenterTime).toLocaleString()} </div>
-                                <div className='text-md  '> {new Date(complaint?.empResponseTime).toLocaleString()} </div>
-                                <div className='text-md font-bold'>Last Updated :  </div>
-                                <div className='text-md  '> {new Date(complaint?.updatedAt).toLocaleString()} </div>
+                            <div className="md:m-5 grid md:grid-cols-4   grid-cols-2 mt-5 md:gap-4 gap-2" >
+                                <div className='md:text-xl text-sm font-bold'>Created :  </div>
+                                <div className='md:text-xl text-sm  '> {new Date(complaint?.createdAt).toLocaleString()} </div>
+                                {/* <div className='md:text-xl text-sm  '> {new Date(complaint?.assignServiceCenterTime).toLocaleString()} </div>
+                                <div className='md:text-xl text-sm  '> {new Date(complaint?.empResponseTime).toLocaleString()} </div> */}
+                                <div className='md:text-xl text-sm font-bold'>Last Updated :  </div>
+                                <div className='md:text-xl text-sm  '> {new Date(complaint?.updatedAt).toLocaleString()} </div>
 
-                                <div className='text-md font-semibold'>Brand : </div>
-                                <div className='text-md font-medium'>{complaint?.productBrand}</div>
-                                <div className='text-md font-semibold'>Product Name : </div>
-                                <div className='text-lg font-medium'>{complaint?.productName}</div>
-                                <div className='text-md font-semibold'>Category Name : </div>
-                                <div className='text-lg font-medium'>{complaint?.categoryName}</div>
-                                <div className='text-md font-semibold'>Status: </div>
-                                <div className='text-lg font-medium'>{complaint?.status}</div>
-                                <div className='text-md font-semibold'>Issue Type : </div>
-                                <div className='text-lg font-medium'>{complaint?.issueType}</div>
-                                <div className='text-md font-semibold'>Detailed Description : </div>
-                                <div className='text-lg font-medium'>{complaint?.detailedDescription}</div>
-                                <div className='text-md font-semibold'>Error Messages : </div>
-                                <div className='text-lg font-medium'>{complaint?.errorMessages}</div>
-                                <div className='text-md font-semibold'>Preferred ServiceDate : </div>
-                                <div className='text-lg font-medium'>{new Date(complaint?.preferredServiceDate).toLocaleString()}</div>
-                                <div className='text-md font-semibold'>Preferred ServiceTime   : </div>
-                                <div className='text-lg font-medium'>{complaint?.preferredServiceTime}</div>
-                                <div className='text-md font-semibold'>Service Location  : </div>
-                                <div className='text-lg font-medium'>{complaint?.serviceLocation}</div>
-                                <div className='text-md font-semibold'>Customer Name : </div>
-                                <div className='text-lg font-medium'>{complaint?.fullName}</div>
-                                <div className='text-md font-semibold'>Customer Email : </div>
-                                <div className='text-lg font-medium'>{complaint?.emailAddress}</div>
-                                <div className='text-md font-semibold'>Customer Contact : </div>
-                                <div className='text-lg font-medium'>{complaint?.phoneNumber}</div>
-                                <div className='text-md font-semibold'>Service Address : </div>
-                                <div className='text-lg font-medium'>{complaint?.serviceAddress}</div>
-                                <div className='text-md font-semibold'>Pincode : </div>
-                                <div className='text-lg font-medium'>{complaint?.pincode}</div>
-                                <div className='text-md font-semibold'>District : </div>
-                                <div className='text-lg font-medium'>{complaint?.district}</div>
-                                <div className='text-md font-semibold'>State : </div>
-                                <div className='text-lg font-medium'>{complaint?.state}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Brand : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.productBrand}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Product Name : </div>
+                                <div className='md:text-xl text-sm  '>{complaint?.productName}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Category Name : </div>
+                                <div className='md:text-xl text-sm  '>{complaint?.categoryName}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Status: </div>
+                                <div className='md:text-xl text-sm '>{complaint?.status}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Issue Type : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.issueType}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Detailed Description : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.detailedDescription}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Error Messages : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.errorMessages}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Preferred ServiceDate : </div>
+                                <div className='md:text-xl text-sm '>{new Date(complaint?.preferredServiceDate).toLocaleString()}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Preferred ServiceTime   : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.preferredServiceTime}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Service Location  : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.serviceLocation}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Customer Name : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.fullName}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Customer Email : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.emailAddress}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Customer Contact : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.phoneNumber}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Service Address : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.serviceAddress}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Pincode : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.pincode}</div>
+                                <div className='md:text-xl text-sm font-semibold'>District : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.district}</div>
+                                <div className='md:text-xl text-sm font-semibold'>State : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.state}</div>
 
-                                <div className='text-md font-semibold'>AssignServiceCenter : </div>
-                                <div className='text-lg font-medium'>{complaint?.assignServiceCenter}</div>
+                                <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.assignServiceCenter}</div>
                                 {value?.user?.role === "BRAND" ? ""
                                     : <>
-                                        <div className='text-md font-semibold'>AssignServiceCenter contact : </div>
-                                        <div className='text-lg font-medium'>{complaint?.serviceCenterContact}</div>
+                                        <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter contact : </div>
+                                        <div className='md:text-xl text-sm '>{complaint?.serviceCenterContact}</div>
                                     </>
 
                                 }
-                                <div className='text-md font-semibold'>AssignTechnician : </div>
-                                <div className='text-lg font-medium'>{complaint?.assignTechnician}</div>
+                                <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.assignTechnician}</div>
 
-                                <div className='text-md font-semibold'>Brand Payments : </div>
-                                <div className='text-lg font-medium'>{complaint?.paymentBrand}</div>
-                                <div className='text-md font-semibold'>Final Comments : </div>
-                                <div className='text-lg font-medium'>{complaint?.finalComments}</div>
-                                <div className='text-md font-semibold'>Kilometer : </div>
-                                <div className='text-lg font-medium'>{complaint?.kilometer}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Brand Payments : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.paymentBrand}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Final Comments : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.finalComments}</div>
+                                <div className='md:text-xl text-sm font-semibold'>Kilometer : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.kilometer}</div>
 
 
-                                {/* <div className='text-md font-bold mb-5'>Task Updated :  </div>
+                                {/* <div className='md:text-xl text-sm font-bold mb-5'>Task Updated :  </div>
                                 {complaint?.updateHistory?.map((item, i) => (
-                                    <div key={i} className='text-md font-bold'>
+                                    <div key={i} className='md:text-xl text-sm font-bold'>
                                         <div> {item?.changes?.status} </div>
                                         <div>{new Date(item?.updatedAt).toLocaleString()} </div>
 
@@ -149,9 +149,9 @@ const ComplaintDetails = ({ params }) => {
                                 ))}
                                 </div>
                                   <div> */}
-                                {/* <div className='text-md font-bold mb-5'>Updated  Comments :  </div>
+                                {/* <div className='md:text-xl text-sm font-bold mb-5'>Updated  Comments :  </div>
                                 {complaint?.updateComments?.map((item, i) => (
-                                    <div key={i} className='text-md font-bold'>
+                                    <div key={i} className='md:text-xl text-sm font-bold'>
                                         
                                         <div> {item?.changes?.sndStatus} </div>
                                         <div>{new Date(item?.updatedAt).toLocaleString()}  </div>
@@ -159,7 +159,7 @@ const ComplaintDetails = ({ params }) => {
                                 ))}
                                 </div> */}
 
-                                <div className='text-md font-semibold'>Image : </div>
+                                <div className='md:text-xl text-sm font-semibold'>Image : </div>
                                 <div>
                                     <img
 
@@ -171,7 +171,7 @@ const ComplaintDetails = ({ params }) => {
                                     />
                                 </div>
 
-                                <div className='text-md font-semibold'>Replace Part Image : </div>
+                                <div className='md:text-xl text-sm font-semibold'>Replace Part Image : </div>
                                 <div>
                                     <img
 
@@ -224,7 +224,7 @@ const ComplaintDetails = ({ params }) => {
                                             </div>
                                         ))}
                                     </div> */}
-                                    <div className="space-y-3">
+                                    <div className="space-y-3 ">
                                         {complaint?.updateHistory?.map((history) => (
                                             <div key={history._id} className="border-b pb-2">
                                                 <p className="text-sm text-gray-500">
@@ -247,8 +247,9 @@ const ComplaintDetails = ({ params }) => {
 
                     </div>
                 }
-                <UserAllServicesList data={userComp} />
-
+                <div className='md:w-full w-[325px] '>
+                    <UserAllServicesList data={userComp} />
+                </div>
             </Sidenav>
         </>
 

@@ -42,7 +42,7 @@ const StatewisePendingComplaints = () => {
       console.error("Error fetching data:", error);
     }
   };
-console.log("locationwiseData",locationwiseData)
+// console.log("locationwiseData",locationwiseData)
   // Prepare the data for the Pie Chart (converting statewiseData into the correct format)
   const chartData = [
     ["State", "Pending Complaints"],
@@ -80,6 +80,8 @@ const filteredComplaints = complaints.filter((complaint) => {
     (endDate ? complaintDate <= new Date(endDate) : true)
   );
 });
+
+console.log("filteredComplaints",filteredComplaints);
 
 // Generate chart data
 const generateChartData = () => {

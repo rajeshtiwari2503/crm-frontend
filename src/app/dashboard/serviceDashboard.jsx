@@ -524,12 +524,12 @@ const ServiceDashboard = (props) => {
   setAverageTAT(overallTATPercentage)
   setAverageRT(overallRTPercentage)
   setAverageCT(overallCTPercentage)
-      // console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
-      // console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
-      // console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
-      // console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithMetrics);
-      // console.log("📊 Monthly Report:", finalMonthlyReport);
-      // console.log("📊 Yearly Report:", finalYearlyReport);
+      console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
+      console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
+      console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
+      console.log("📊 Per-Complaint TAT, CT, RT:complaintsWithMetrics", complaintsWithMetrics);
+      console.log("📊 Monthly Report:", finalMonthlyReport);
+      console.log("📊 Yearly Report:", finalYearlyReport);
     } catch (err) {
       console.log("Error fetching complaints:", err);
     }
@@ -1258,7 +1258,7 @@ console.log("dashData",dashData);
         </div>
       </div>
       {/* Display recent services list */}
-      <div className="mt-8  ">
+      <div className="mt-8 md:w-full w-[325px] ">
         <RecentServicesList data={data} />
       </div>
 

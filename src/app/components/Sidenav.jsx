@@ -164,7 +164,7 @@ function Sidenav(props) {
     
     try {
 
-      const status = (userType?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
+      const status = (user?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
         : (user?.user?.role) === "USER" ? { userStatus: "READ" }
           : (user?.user?.role) === "BRAND" ? { brandStatus: "READ" }
             : (user?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }

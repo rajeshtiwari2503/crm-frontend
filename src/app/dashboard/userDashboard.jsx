@@ -76,82 +76,187 @@ const UserDashboard = (props) => {
         {/* Additional Content */}
       </div>
 
-      <div className='my-8'>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+      <div className='mb-10'>
+        <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
+
+        <div className='grid md:grid-cols-5 grid-cols-1 gap-4  '>
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Total Service  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Close  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Pending fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>In Progress</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Assigned  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AssignmentTurnedIn fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Assign</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Pending  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Part Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> 0-1 days service </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Total Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> 2-5 days service </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>  Upcomming Schedule</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> More than Five Days  Service</div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Cancel fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Cancel</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div className='w-full text-center'>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>TAT</div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <FactCheck fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Final Verification</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div onClick={()=>router.push("/complaint/create")} className=' bg-yellow-400 rounded-md mt-3 cursor-pointer p-4'>
-                Add Service Request
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div onClick={()=>router.push("/product")}className='bg-green-400 rounded-md mt-3 cursor-pointer p-4'>
-                Add Product
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AssignmentTurnedIn fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Close</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
+                    </div>
+                  </div>
+                </div>
               </div>
-      
+            </div>
+          </div>
+
+
+
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Assignment fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Total Complaints</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        
-      </div>
+        </div>
+
+         
 
       <div className='grid grid-cols-2 gap-4 my-8'>
         {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>

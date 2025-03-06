@@ -93,65 +93,66 @@ const ServiceProfile = (props) => {
 
     <div className=' '>
       {loading === true ? <ReactLoader />
-        : <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4">
-          <div className='text-1xl font-bold'>Created :</div>
-          <div className='text-1xl font-bold'>{new Date(userData?.createdAt).toLocaleString()}</div>
-          <div className='text-1xl font-bold'>Updated :</div>
-          <div className='text-1xl font-bold'>{new Date(userData?.updatedAt).toLocaleString()}</div>
-          <div className='text-1xl font-semibold'>Service Center Name :</div>
-          <div className='text-lg font-medium'>{userData?.serviceCenterName}</div>
-          <div className='text-1xl font-semibold'>Email :</div>
-          <div className='text-lg font-medium'>{userData?.email}</div>
-          <div className='text-1xl font-semibold'>Contact :</div>
-          <div className='text-lg font-medium'>{userData?.contact}</div>
-          <div className='text-1xl font-semibold'>Password :</div>
-          <div className='text-lg font-medium'>{userData?.password}</div>
-          <div className='text-1xl font-semibold'>Address :</div>
-          <div className='text-lg font-medium'>{userData?.streetAddress}</div>
-          <div className='text-1xl font-semibold'>City :</div>
-          <div className='text-lg font-medium'>{userData?.city}</div>
-          <div className='text-1xl font-semibold'>State :</div>
-          <div className='text-lg font-medium'>{userData?.state}</div>
-          <div className='text-1xl font-semibold'>country :</div>
-          <div className='text-lg font-medium'>{userData?.country}</div>
-          <div className='text-1xl font-semibold'>postalCode :</div>
-          <div className='text-lg font-medium'>{userData?.postalCode}</div>
-          <div className='text-1xl font-semibold'>Tin :</div>
-          <div className='text-lg font-medium'>{userData?.tin}</div>
-          <div className='text-1xl font-semibold'>contactPersonName :</div>
-          <div className='text-lg font-medium'>{userData?.contactPersonName}</div>
-          <div className='text-1xl font-semibold'>contactPersonPosition :</div>
-          <div className='text-lg font-medium'>{userData?.contactPersonPosition}</div>
-          <div className='text-1xl font-semibold'>insuranceCoverage :</div>
-          <div className='text-lg font-medium'>{userData?.insuranceCoverage}</div>
-          <div className='text-1xl font-semibold'>numberOfTechnicians :</div>
-          <div className='text-lg font-medium'>{userData?.numberOfTechnicians}</div>
-          <div className='text-1xl font-semibold'>operatingHours :</div>
-          <div className='text-lg font-medium'>{userData?.operatingHours}</div>
-          <div className='text-1xl font-semibold'>serviceCenterType :</div>
-          <div className='text-lg font-medium'>{userData?.serviceCenterType}</div>
-         
-         
-          <div className='text-1xl font-semibold'>Status :</div>
-          <div className='text-lg font-medium'>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
-          <div className='text-1xl font-semibold'>insuranceCoverage :</div>
-          <div className='text-lg font-medium'>{userData?.insuranceCoverage === true ? "TRUE" : "FALSE"}</div>
-          <div className='text-1xl font-semibold'>agreement :</div>
-          <div className='text-lg font-medium col-span-3'>{userData?.agreement === true ? "TRUE" : "FALSE"}</div>
-          {/* <div className='md:col-span-2'>
+        :
+        <div className="md:m-5 m-0 grid md:grid-cols-4   xs:grid-cols-2 mt-5 gap-1">
+          <div className=' md:text-1xl text-sm font-bold'>Created :</div>
+          <div className=' md:text-1xl text-sm  '>{new Date(userData?.createdAt).toLocaleString()}</div>
+          <div className=' md:text-1xl text-sm font-bold'>Updated :</div>
+          <div className=' md:text-1xl text-sm  '>{new Date(userData?.updatedAt).toLocaleString()}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Service Center Name :</div>
+          <div className='md:text-1xl text-sm  '>{userData?.serviceCenterName}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Email :</div>
+          <div className='md:text-1xl text-sm  '>{userData?.email}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Contact :</div>
+          <div className='md:text-1xl text-sm  '>{userData?.contact}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Password :</div>
+          <div className='md:text-1xl text-sm '>{userData?.password}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Address :</div>
+          <div className='md:text-1xl text-sm   '>{userData?.streetAddress}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>City :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.city}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>State :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.state}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>country :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.country}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>postalCode :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.postalCode}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>Tin :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.tin}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>contactPersonName :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.contactPersonName}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>contactPersonPosition :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.contactPersonPosition}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>insuranceCoverage :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.insuranceCoverage}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>numberOfTechnicians :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.numberOfTechnicians}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>operatingHours :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.operatingHours}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>serviceCenterType :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.serviceCenterType}</div>
+
+
+          <div className=' md:text-1xl text-sm font-semibold'>Status :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.status === 'ACTIVE' ? "ACTIVE" : "INACTIVE"}</div>
+          <div className=' md:text-1xl text-sm font-semibold'>insuranceCoverage :</div>
+          <div className=' md:text-1xl text-sm   '>{userData?.insuranceCoverage === true ? "TRUE" : "FALSE"}</div>
+          <div className=' md:text-1xl text-sm font-semibold '>agreement :</div>
+          <div className=' md:text-1xl text-sm    md:col-span-3'>{userData?.agreement === true ? "TRUE" : "FALSE"}</div>
+          {/* <div className='md: md:col-span-2 col-span-1'>
                 <label className="text-sm">Upload GST CERTIFICATE</label>
                 <input type="file" {...register('businessLicense')} />
             </div>
-            <div className='md:col-span-2'>
+            <div className='md: md:col-span-2 col-span-1'>
                 <label className="text-sm">Upload Identity Proof</label>
                 <input type="file" {...register('taxDocument')} />
             </div>
-            <div className='md:col-span-2'>
+            <div className='md: md:col-span-2 col-span-1'>
                 <label className="text-sm">Upload Certification Documents</label>
                 <input type="file" {...register('certificationDocuments')} />
             </div> */}
-          <div className='text-1xl font-semibold'>Gst Certificate :</div>
-          <div className='text-lg font-medium'>
+          <div className=' md:text-1xl text-sm font-semibold'>Gst Certificate :</div>
+          <div className=' md:text-1xl text-sm   '>
             <img
               src={userData?.gstCertificate}
               height="100px"
@@ -162,7 +163,7 @@ const ServiceProfile = (props) => {
           </div>
           <div className='dz-message flex items-center justify-center'>
 
-            <div>
+            <div className=''>
               {
                 uploadedGstImage ?
                   <img
@@ -184,7 +185,7 @@ const ServiceProfile = (props) => {
               />
             </div>
           </div>
-          <div className="flex items-center ms-8 justify-between">
+          <div className="flex items-center  md:ms-8  justify-center">
             <button
               onClick={uploadGst}
               type="submit"
@@ -193,8 +194,8 @@ const ServiceProfile = (props) => {
               Upload Gst Certificate
             </button>
           </div>
-          <div className='text-1xl font-semibold'>Identity Proof :</div>
-          <div className='text-lg font-medium'>
+          <div className=' md:text-1xl text-sm font-semibold'>Identity Proof :</div>
+          <div className=' md:text-1xl text-sm   '>
             <img
               src={userData?.identityProof}
               height="100px"
@@ -227,7 +228,7 @@ const ServiceProfile = (props) => {
               />
             </div>
           </div>
-          <div className="flex items-center ms-8 justify-between">
+          <div className="flex items-center  md:ms-8  justify-center">
             <button
               onClick={uploadProof}
               type="submit"
@@ -236,8 +237,8 @@ const ServiceProfile = (props) => {
               Upload Identity Proof
             </button>
           </div>
-          <div className='text-1xl font-semibold'> Document Certificate :</div>
-          <div className='text-lg font-medium'>
+          <div className=' md:text-1xl text-sm font-semibold'> Document Certificate :</div>
+          <div className=' md:text-1xl text-sm   '>
             <img
               src={userData?.certificationDocuments}
               height="100px"
@@ -270,7 +271,7 @@ const ServiceProfile = (props) => {
               />
             </div>
           </div>
-          <div className="flex items-center ms-8 justify-between">
+          <div className="flex items-center  md:ms-8  justify-center">
             <button
               onClick={uploadDoc}
               type="submit"
@@ -279,57 +280,59 @@ const ServiceProfile = (props) => {
               Upload Document Certificate
             </button>
           </div>
-          <div className='text-1xl font-semibold'>ServiceCategories :</div>
-          <div className='text-lg font-medium'>
+          <div className=' md:text-1xl text-sm font-semibold'>ServiceCategories :</div>
+          <div className=' md:text-1xl text-sm   '>
             {
               userData?.serviceCategories?.map((item, i) =>
                 <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
           </div>
-          <div className='text-1xl font-semibold'>BrandsSupported :</div>
-          <div className='text-lg font-medium'>
+          <div className=' md:text-1xl text-sm font-semibold'>BrandsSupported :</div>
+          <div className=' md:text-1xl text-sm   '>
             {
               userData?.brandsSupported?.map((item, i) =>
                 <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
           </div>
-          <div className='col-span-2'>
-          {props?.admin?.user?.role==="ADMIN"? <AddCategory serviceCenterId={userData?._id}existingCategories={userData?.serviceCategories} RefreshData={props?.RefreshData} />
-        
-        :""
-          }
+          <div className=' md:col-span-2 col-span-1'>
+            {props?.admin?.user?.role === "ADMIN" ? <AddCategory serviceCenterId={userData?._id} existingCategories={userData?.serviceCategories} RefreshData={props?.RefreshData} />
+
+              : ""
+            }
           </div>
-           <div className='col-span-2'>
-         {props?.admin?.user?.role==="ADMIN"? <AddSupportedBrands serviceCenterId={userData?._id}existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
-        
-        :""
-          }
+          <div className=' md:col-span-2 col-span-1'>
+            {props?.admin?.user?.role === "ADMIN" ?
+              <AddSupportedBrands serviceCenterId={userData?._id} existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
+
+              : ""
+            }
           </div>
-          <div className='col-span-2'  >
-        <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
-      </div>
-      <div className='col-span-2'  >
-        <ServiceCenterDepositForm userData={userData}  RefreshData={props?.RefreshData} />
-      </div>
+          <div className=' md:col-span-2 col-span-1'  >
+            <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
+          </div>
+
         </div>
 
       }
-    
-       <div className=' m-5 border p-4 '>
-                        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
-                        <div className="w-100 grid grid-cols-3 md:grid-cols-10 overflow-x-auto whitespace-nowrap">
-                            {userData?.pincodeSupported?.map((item, i) =>
 
-                                <div key={i} className=' '>
-                                    <div >{item}</div>
-                                </div>
-                            )}
-                        </div>
-                       
-                    </div>  
-     
+      <div className='md:col-span-2 col-span-1 md:m-5 border p-4 mt-5 mb-5 '>
+        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
+        <div className="  overflow-x-auto whitespace-nowrap">
+          {userData?.pincodeSupported?.map((item, i) =>
+
+            <div key={i} className=' '>
+              <div >{item}</div>
+            </div>
+          )}
+        </div>
+
+      </div>
+      <div className=' md:col-span-2 col-span-1'  >
+        <ServiceCenterDepositForm userData={userData} RefreshData={props?.RefreshData} />
+      </div>
+
     </div>
 
 

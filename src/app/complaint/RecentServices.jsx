@@ -138,7 +138,7 @@ const RecentServicesList = (props) => {
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <>
-          <TableContainer component={Paper}>
+          <TableContainer component={Paper}  >
             <Table>
               <TableHead sx={{ backgroundColor: "#09090b" }}>
                 <TableRow >

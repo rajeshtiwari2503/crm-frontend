@@ -91,7 +91,7 @@
 //       </div>
 
 //       <div className='my-8'>
-//       <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
+//       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
 //           <div className='justify-center flex items-center'>
 //             <div>
 //               <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
@@ -199,7 +199,7 @@
 //         </div>
 
 //           </div>
-//           <div className='grid grid-cols-3 gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
+//           <div className=' grid md:grid-cols-5 sm:grid-cols-1 gap-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
 //           <div>
 //             <h2 className='mb-5'>Monthly Complaints</h2>
 //             <Chart
@@ -397,8 +397,8 @@ const ServiceDashboard = (props) => {
         const complaintCloseDate = c.complaintCloseTime
           ? new Date(c.complaintCloseTime)
           : null;
-        const responseTime = c.empResponseTime
-          ? new Date(c.empResponseTime)
+        const responseTime = c.serviceCenterResponseTime
+          ? new Date(c.serviceCenterResponseTime)
           : null;
         const serviceStartTime = c.assignServiceCenterTime
           ? new Date(c.assignServiceCenterTime)
@@ -423,7 +423,7 @@ const ServiceDashboard = (props) => {
   
         // Calculate TAT, RT, and CT
         let tat = getTimeDifference(complaintDate, complaintCloseDate);
-        let rt = getTimeDifference(complaintDate, serviceStartTime);
+        let rt = getTimeDifference(serviceStartTime,  responseTime);
         let ct = getTimeDifference(complaintDate, complaintCloseDate);
   
         // console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
@@ -635,7 +635,7 @@ console.log("dashData",dashData);
       </div>
       <div className='my-8'>
 
-        <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
+        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
           
           <div onClick={() => router.push("/complaint/pending")} className='justify-center flex items-center'>
             <div className='w-full'>
@@ -789,11 +789,11 @@ console.log("dashData",dashData);
           </div>
         </div>
       </div> */}
-      <div className=''>
+      <div className='mb-10'>
         <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
         <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -810,7 +810,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -827,7 +827,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -844,7 +844,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -861,7 +861,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -878,7 +878,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -895,7 +895,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -912,7 +912,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -929,7 +929,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -949,7 +949,7 @@ console.log("dashData",dashData);
 
 
 
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -968,10 +968,10 @@ console.log("dashData",dashData);
           </div>
         </div>
 
-        <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
+        <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
-        <div className='grid grid-cols-5 gap-4'>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -987,7 +987,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -1003,7 +1003,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -1019,7 +1019,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -1035,7 +1035,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -1052,10 +1052,11 @@ console.log("dashData",dashData);
             </div>
           </div>
         </div>
-        <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
+        <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
-        <div className='grid grid-cols-5 gap-4'>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1072,7 +1073,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/partpending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1089,7 +1090,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1106,11 +1107,11 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other details</div>
+          <div className=' h-8  md:col-span-5 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other details</div>
 
            
-
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            
+          <div className=' '>
             <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1127,7 +1128,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4 mb-10'>
+          <div className=' '>
             <div  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1144,7 +1145,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1161,7 +1162,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1178,7 +1179,7 @@ console.log("dashData",dashData);
               </div>
             </div>
           </div>
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+          <div className=' '>
             <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -1196,10 +1197,11 @@ console.log("dashData",dashData);
             </div>
           </div>
         </div>
-      </div>
+        </div>
+       
 
       {/* Display charts for visualization */}
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-4'>
         {/* Example: Pie Chart */}
         <div className='bg-gray-200 rounded-xl shadow-lg p-5 mb-8'>
           <Chart
@@ -1225,7 +1227,7 @@ console.log("dashData",dashData);
         </div>
 
       </div>
-      <div className='grid grid-cols-3 gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
+      <div className=' grid md:grid-cols-2 sm:grid-cols-1  gap-4 items-center bg-sky-100 rounded-xl shadow-lg mb-8 p-5'>
         <div>
           <h2 className='mb-5'>Monthly Complaints</h2>
           <Chart
@@ -1256,7 +1258,7 @@ console.log("dashData",dashData);
         </div>
       </div>
       {/* Display recent services list */}
-      <div className='mt-8'>
+      <div className="mt-8  ">
         <RecentServicesList data={data} />
       </div>
 

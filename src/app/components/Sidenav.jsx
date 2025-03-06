@@ -1068,7 +1068,7 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                   <div className='font-bold text-xl'  >
+                   <div className='font-bold md:text-xl sm:text-sm'  >
                     Dashboard
                   </div>
                    
@@ -1078,7 +1078,7 @@ function Sidenav(props) {
                   </div> */}
                 </div>
                 <div className='flex items-center'>
-                  <div className='font-semibold'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>
+                  <div className='font-semibold md:text-xl text-sm md:block hidden'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>
                   <div onClick={() => {
                     router.push(`/profile/${value?.user?._id}`)
                   }}

@@ -148,7 +148,7 @@ const AdminDashboard = (props) => {
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
 
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/user/customer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -165,7 +165,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/user/brand")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -182,7 +182,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/user/dealer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -199,7 +199,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/user/service")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -216,7 +216,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/user/technician")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -239,7 +239,7 @@ const AdminDashboard = (props) => {
 <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
 
   
-  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+  <div className=''>
     <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
       <div className='flex justify-between'>
       </div>
@@ -256,7 +256,7 @@ const AdminDashboard = (props) => {
       </div>
     </div>
   </div>
-  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+  <div className=''>
     <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
       <div className='flex justify-between'>
       </div>
@@ -273,7 +273,7 @@ const AdminDashboard = (props) => {
       </div>
     </div>
   </div>
-  <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+  <div className=''>
     <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
       <div className='flex justify-between'>
       </div>
@@ -294,7 +294,7 @@ const AdminDashboard = (props) => {
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -311,7 +311,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -328,7 +328,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -345,7 +345,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -362,7 +362,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -379,7 +379,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -396,7 +396,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -413,7 +413,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -430,7 +430,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -450,7 +450,7 @@ const AdminDashboard = (props) => {
 
 
 
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -471,8 +471,8 @@ const AdminDashboard = (props) => {
 
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
-      <div className='grid grid-cols-5 gap-4'>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -488,7 +488,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -504,7 +504,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -520,7 +520,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -536,7 +536,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -555,8 +555,8 @@ const AdminDashboard = (props) => {
       </div>
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
-      <div className='grid grid-cols-5 gap-4'>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -573,7 +573,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/partpending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -590,7 +590,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -610,8 +610,8 @@ const AdminDashboard = (props) => {
 
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Order </div>
-      <div className='grid grid-cols-4 gap-4'>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -628,7 +628,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -645,7 +645,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -662,7 +662,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -679,7 +679,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -699,7 +699,7 @@ const AdminDashboard = (props) => {
 
       </div>
 
-      <div className='grid grid-cols-2 gap-4 my-8'>
+      <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-4 my-8'>
         <div className='rounded-lg shadow   bg-white'>
           <Chart
             chartType="PieChart"
@@ -727,15 +727,7 @@ const AdminDashboard = (props) => {
             height={"100%"}
           />
         </div>
-        {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
-          <Chart
-            chartType="BarChart"
-            data={barChartData}
-            options={options}
-            width={"100%"}
-            height={"400px"}
-          />
-        </div> */}
+        
         <div>
           <BrandWiseComplaintList brandData={brandData}/>
         </div>

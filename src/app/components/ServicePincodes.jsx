@@ -134,80 +134,101 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 
 
     return (
-        <div className=" w-full    bg-white rounded-lg shadow-md  p-4">
-            <Toaster />
-            {loading === true ? <div className='mt-[-200px]'> <ReactLoader /></div>
-                : <div className='w-full'>
-
-                    <h1 className="text-xl font-bold mb-4">Add Area Pincodes</h1>
-                    <div className="p-4">
-                        <h2 className="text-lg font-bold mb-2">Select State, District, and Area</h2>
-
-
-                        {/* State Dropdown */}
-                        {Object.keys(jsonData).length > 0 && (
-                            <select value={selectedState} onChange={handleStateChange} className="border p-2 rounded mt-4 block">
-                                <option value="">Select State</option>
-                                {Object.keys(jsonData).map((state) => (
-                                    <option key={state} value={state}>
-                                        {state}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-
-                        {/* District Dropdown */}
-                        {selectedState && jsonData[selectedState] && (
-                            <select value={selectedDistrict} onChange={handleDistrictChange} className="border p-2 rounded mt-4 block">
-                                <option value="">Select District</option>
-                                {Object.keys(jsonData[selectedState]).map((district) => (
-                                    <option key={district} value={district}>
-                                        {district}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-
-                        {/* Area Dropdown */}
-                        {selectedDistrict && jsonData[selectedState][selectedDistrict] && (
-                            <select value={selectedArea} onChange={handleAreaChange} className="border p-2 rounded mt-4 block">
-                                <option value=" ">Select Area</option> {/* Include All Option */}
-                                <option value="All">All</option> {/* Include All Option */}
-                                {jsonData[selectedState][selectedDistrict].map((area, index) => (
-                                    <option key={index} value={area.pincode}>
-                                        {area.pincode}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                        <button
-                            onClick={onSubmit}
-                            disabled={loading}
-                            className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 disabled:bg-gray-400"
-                        >
-                            {loading ? "Processing..." : "Add Pincode "}
-                        </button>
-
-
+        <div className="w-full bg-white rounded-lg shadow-md p-4">
+        <Toaster />
+        
+        {loading ? (
+          <div className="flex justify-center items-center min-h-[200px]">
+            <ReactLoader />
+          </div>
+        ) : (
+          <div className="w-full">
+            <h1 className="text-lg md:text-xl font-bold mb-4">Add Area Pincodes</h1>
+      
+            <div className="p-4">
+              <h2 className="text-md md:text-lg font-bold mb-2">Select State, District, and Area</h2>
+      
+              {/* State Dropdown */}
+              {Object.keys(jsonData).length > 0 && (
+                <select
+                  value={selectedState}
+                  onChange={handleStateChange}
+                  className="w-full border p-2 rounded mt-2"
+                >
+                  <option value="">Select State</option>
+                  {Object.keys(jsonData).map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              )}
+      
+              {/* District Dropdown */}
+              {selectedState && jsonData[selectedState] && (
+                <select
+                  value={selectedDistrict}
+                  onChange={handleDistrictChange}
+                  className="w-full border p-2 rounded mt-2"
+                >
+                  <option value="">Select District</option>
+                  {Object.keys(jsonData[selectedState]).map((district) => (
+                    <option key={district} value={district}>
+                      {district}
+                    </option>
+                  ))}
+                </select>
+              )}
+      
+              {/* Area Dropdown */}
+              {selectedDistrict && jsonData[selectedState][selectedDistrict] && (
+                <select
+                  value={selectedArea}
+                  onChange={handleAreaChange}
+                  className="w-full border p-2 rounded mt-2"
+                >
+                  <option value="">Select Area</option>
+                  <option value="All">All</option> {/* Include All Option */}
+                  {jsonData[selectedState][selectedDistrict].map((area, index) => (
+                    <option key={index} value={area.pincode}>
+                      {area.pincode}
+                    </option>
+                  ))}
+                </select>
+              )}
+      
+              {/* Submit Button */}
+              <button
+                onClick={onSubmit}
+                disabled={loading}
+                className="mt-4 w-full px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md 
+                           hover:bg-blue-700 transition duration-300 ease-in-out 
+                           focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 
+                           disabled:bg-gray-400"
+              >
+                {loading ? "Processing..." : "Add Pincode"}
+              </button>
+            </div>
+      
+            {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+      
+            {/* Pincode List */}
+            {pincode?.length > 0 && (
+              <div className="p-4">
+                <div className="text-md font-bold mb-2">Pincodes Supported</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                  {pincode.map((item, i) => (
+                    <div key={i} className="bg-gray-100 p-2 text-center rounded shadow-sm">
+                      {item}
                     </div>
-
-                    {error && <p className="text-red-500">{error}</p>}
-                    {/* <div className='   p-4 '>
-                        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
-                        <div className="w-100 grid grid-cols-3 md:grid-cols-10 overflow-x-auto whitespace-nowrap">
-                            {pincode?.map((item, i) =>
-
-                                <div key={i} className=' '>
-                                    <div >{item}</div>
-                                </div>
-                            )}
-                        </div>
-                       
-                    </div> */}
-
+                  ))}
                 </div>
-            }
-        </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      
     );
 };
 

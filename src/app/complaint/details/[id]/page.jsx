@@ -79,6 +79,8 @@ const ComplaintDetails = ({ params }) => {
                             <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4" >
                                 <div className='text-md font-bold'>Created :  </div>
                                 <div className='text-md  '> {new Date(complaint?.createdAt).toLocaleString()} </div>
+                                <div className='text-md  '> {new Date(complaint?.assignServiceCenterTime).toLocaleString()} </div>
+                                <div className='text-md  '> {new Date(complaint?.empResponseTime).toLocaleString()} </div>
                                 <div className='text-md font-bold'>Last Updated :  </div>
                                 <div className='text-md  '> {new Date(complaint?.updatedAt).toLocaleString()} </div>
 

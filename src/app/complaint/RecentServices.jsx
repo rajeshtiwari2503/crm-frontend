@@ -123,9 +123,9 @@ const RecentServicesList = (props) => {
   }
 
   return (
-    <div>
+    <div className=''>
       <Toaster />
-      <div className='flex justify-between items-center mb-3'>
+      <div className='flex justify-between items-center mb-3 md:w-full w-[220px]'>
         <div className='font-bold text-2xl'> Recent Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
@@ -137,8 +137,8 @@ const RecentServicesList = (props) => {
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
-        <>
-          <TableContainer component={Paper}  >
+        <div className='md:w-full w-[250px]'>
+          <TableContainer component={Paper}   >
             <Table>
               <TableHead sx={{ backgroundColor: "#09090b" }}>
                 <TableRow >
@@ -227,7 +227,7 @@ const RecentServicesList = (props) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-        </>}
+        </div>}
 
     </div>
   );

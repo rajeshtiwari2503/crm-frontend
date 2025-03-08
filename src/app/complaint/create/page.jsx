@@ -191,6 +191,7 @@ const AddComplaint = () => {
       }
       else {
         // setError('Please enter a valid pincode.');
+        setLoading(false);
         return;
 
       }
@@ -428,7 +429,7 @@ const AddComplaint = () => {
     <>
 
       <Sidenav >
-        {value?.user?.role === "USER" || value?.user?.role === "DEALER" ?
+        {value?.user?.role === "USER1" || value?.user?.role === "DEALER1" ?
           <AddDealerComplaint nature={nature} subCategory={subCategory} />
           : <div className=" ">
 
@@ -731,9 +732,39 @@ const AddComplaint = () => {
                       multiple
                       accept="image/*, video/*"
                       // {...register('issueImages', { required: 'Images/Videos are required' })}
-                      className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.issueImages ? 'border-red-500' : ''}`}
+                      className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
                     />
-                    {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""}
+                    {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
+                  </div>
+                  <div>
+                    <label htmlFor="preferredServiceDate" className="block text-sm font-medium leading-6 text-gray-900">
+                      Preferred Service Date
+                    </label>
+                    <input
+                      id="preferredServiceDate"
+                      name="preferredServiceDate"
+                      type="date"
+                      autoComplete="preferredServiceDate"
+                      required
+                      {...register('preferredServiceDate', { required: 'Preferred Service Date is required' })}
+                      className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceDate ? 'border-red-500' : ''}`}
+                    />
+                    {errors.preferredServiceDate && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceDate.message}</p>}
+                  </div>
+                  <div>
+                    <label htmlFor="preferredServiceTime" className="block text-sm font-medium leading-6 text-gray-900">
+                      Preferred Service Time
+                    </label>
+                    <input
+                      id="preferredServiceTime"
+                      name="preferredServiceTime"
+                      type="time"
+                      autoComplete="preferredServiceTime"
+                      required
+                      {...register('preferredServiceTime', { required: 'Preferred Service Time is required' })}
+                      className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceTime ? 'border-red-500' : ''}`}
+                    />
+                    {errors.preferredServiceTime && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceTime.message}</p>}
                   </div>
                   <div className=' flex md:col-span-3 gap-4'>
                     <div className=' w-full'>
@@ -766,37 +797,8 @@ const AddComplaint = () => {
                     </div>
                   </div>
 
-                  <div>
-                    <label htmlFor="preferredServiceDate" className="block text-sm font-medium leading-6 text-gray-900">
-                      Preferred Service Date
-                    </label>
-                    <input
-                      id="preferredServiceDate"
-                      name="preferredServiceDate"
-                      type="date"
-                      autoComplete="preferredServiceDate"
-                      required
-                      {...register('preferredServiceDate', { required: 'Preferred Service Date is required' })}
-                      className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceDate ? 'border-red-500' : ''}`}
-                    />
-                    {errors.preferredServiceDate && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceDate.message}</p>}
-                  </div>
-                  <div>
-                    <label htmlFor="preferredServiceTime" className="block text-sm font-medium leading-6 text-gray-900">
-                      Preferred Service Time
-                    </label>
-                    <input
-                      id="preferredServiceTime"
-                      name="preferredServiceTime"
-                      type="time"
-                      autoComplete="preferredServiceTime"
-                      required
-                      {...register('preferredServiceTime', { required: 'Preferred Service Time is required' })}
-                      className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.preferredServiceTime ? 'border-red-500' : ''}`}
-                    />
-                    {errors.preferredServiceTime && <p className="text-red-500 text-sm mt-1">{errors.preferredServiceTime.message}</p>}
-                  </div>
-                  <div>
+                 
+                  {/* <div>
                     <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
                       Service Location
                     </label>
@@ -809,8 +811,8 @@ const AddComplaint = () => {
                       {...register('serviceLocation')}
                       className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceLocation ? 'border-red-500' : ''}`}
                     />
-                    {/* {errors.serviceLocation && <p className="text-red-500 text-sm mt-1">{errors.serviceLocation.message}</p>} */}
-                  </div>
+ 
+                  </div> */}
                   <div>
                     <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
                       Service Pincode
@@ -945,7 +947,7 @@ const AddComplaint = () => {
                     />
                     {/* {errors.emailAddress && <p className="text-red-500 text-sm mt-1">{errors.emailAddress.message}</p>} */}
                   </div>
-                  <div className='md:col-span-2'>
+                  <div className=' '>
                     <label htmlFor="serviceAddress" className="block text-sm font-medium leading-6 text-gray-900">
                       Service Address
                     </label>
@@ -967,7 +969,7 @@ const AddComplaint = () => {
                     onClick={handleSubmit(onSubmit)}
                     className="flex   justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
-                    Save
+                    {loading ?"Submitting....":"Submit"}
                   </button>
                 </div>
               </div>

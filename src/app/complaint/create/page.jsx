@@ -826,6 +826,36 @@ const AddComplaint = () => {
                     />
                     {error && <p className="text-red-500 mt-1">{error}</p>}
                   </div>
+                  <div className=' '>
+                    <label htmlFor="district" className="block text-sm font-medium leading-6 text-gray-900">
+                    District
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="district"
+                        name="district"
+                        type="text"
+                        autoComplete="off"
+                        {...register('district')}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                      />
+                    </div>
+                  </div>
+                  <div className=' '>
+                    <label htmlFor="state" className="block text-sm font-medium leading-6 text-gray-900">
+                    State
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="state"
+                        name="state"
+                        type="text"
+                        autoComplete="off"
+                        {...register('state')}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
+                      />
+                    </div>
+                  </div>
                   <div>
                     <label htmlFor="alternateContactInfo" className="block text-sm font-medium leading-6 text-gray-900">
                       Alternate Contact Info
@@ -836,10 +866,25 @@ const AddComplaint = () => {
                       type="text"
                       autoComplete="alternateContactInfo"
                       required
-                      {...register('alternateContactInfo', { required: 'Alternate Contact Info is required' })}
+                      {...register('alternateContactInfo' )}
                       className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.alternateContactInfo ? 'border-red-500' : ''}`}
                     />
-                    {errors.alternateContactInfo && <p className="text-red-500 text-sm mt-1">{errors.alternateContactInfo.message}</p>}
+                    
+                  </div>
+                  <div className=' '>
+                    <label htmlFor="orderId" className="block text-sm font-medium leading-6 text-gray-900">
+                    Order Id
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="orderId"
+                        name="orderId"
+                        type="text"
+                        autoComplete="off"
+                        {...register('orderId')}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serialNo ? 'border-red-500' : ''}`}
+                      />
+                    </div>
                   </div>
                   <div>
                     <label htmlFor="fullName" className="block text-sm font-medium leading-6 text-gray-900">
@@ -887,16 +932,18 @@ const AddComplaint = () => {
                       type="email"
                       autoComplete="emailAddress"
                       required
-                      {...register('emailAddress', {
-                        required: 'Email Address is required',
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Please enter a valid email address',
-                        },
-                      })}
+                      {...register('emailAddress'
+                      //   , {
+                      //   required: 'Email Address is required',
+                      //   pattern: {
+                      //     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      //     message: 'Please enter a valid email address',
+                      //   },
+                      // }
+                    )}
                       className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.emailAddress ? 'border-red-500' : ''}`}
                     />
-                    {errors.emailAddress && <p className="text-red-500 text-sm mt-1">{errors.emailAddress.message}</p>}
+                    {/* {errors.emailAddress && <p className="text-red-500 text-sm mt-1">{errors.emailAddress.message}</p>} */}
                   </div>
                   <div className='md:col-span-2'>
                     <label htmlFor="serviceAddress" className="block text-sm font-medium leading-6 text-gray-900">

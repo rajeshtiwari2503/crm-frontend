@@ -432,10 +432,16 @@ const ActivateWarrantyButton = () => {
 
 
   const getAllProduct = async () => {
+    try{
     let response = await http_request.get("/getAllProduct")
     let { data } = response;
 
     setProduct(data)
+    }
+    catch(err){
+      console.log(err);
+      
+    }
   }
   // console.log(filterWarranty);
 

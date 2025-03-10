@@ -45,10 +45,11 @@ const RecentServicesList = (props) => {
 
 
   const userData = props?.userData;
-  // console.log("userData",userData);
+  
 
-  const data11 = props?.data;
-  const sortedData1 = data11.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  const data11 = props?.data?.data;
+  // console.log("data11",data11);
+  const sortedData1 = data11?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
   const sortData = sortedData1?.map((item, index) => ({ ...item, i: index + 1 }));
   const data1 = sortData;
 

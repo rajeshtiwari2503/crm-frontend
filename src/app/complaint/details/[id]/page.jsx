@@ -63,7 +63,7 @@ const ComplaintDetails = ({ params }) => {
 
             <Sidenav >
                 {!complaint ? <div className='h-[500px] flex justify-center items-center'> <ReactLoader /></div>
-                    : <div className=" ">
+                    : <div className="  ">
                         <div className='flex justify-between items-center mb-5' >
                             <div className='' >
                                 <h2 className="   text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -186,8 +186,8 @@ const ComplaintDetails = ({ params }) => {
 
                         </div>
 
-                        <div className="p-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="md:p-4 p-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 gap-2">
                                 {/* Update Comments Section */}
                                 <div className="border p-4 rounded-lg">
                                     <h2 className="text-xl font-bold mb-2">Update Comments</h2>
@@ -244,12 +244,12 @@ const ComplaintDetails = ({ params }) => {
                             </div>
                         </div>
 
-
-                    </div>
-                }
-                <div className='md:w-full w-[325px] '>
+                        <div className='  '>
                     <UserAllServicesList data={userComp} />
                 </div>
+                    </div>
+                }
+               
             </Sidenav>
         </>
 

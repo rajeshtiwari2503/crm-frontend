@@ -76,7 +76,7 @@ const ComplaintList = (props) => {
   };
 
   const data = filteredData?.filter((item) => {
-    const complaintId = item?.complaintId?.toLowerCase();
+    const complaintId = item?._id?.toLowerCase();
     const search = searchTerm.toLowerCase();
 
     // Handle the complaint ID format and general search terms
@@ -577,7 +577,7 @@ const ComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.complaintId}</TableCell>
+                    <TableCell>{row?._id}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     {/* <TableCell>{row?.emailAddress}</TableCell> */}
                     <TableCell>{row?.district}</TableCell>

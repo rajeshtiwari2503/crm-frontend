@@ -676,7 +676,7 @@ const ComplaintList = (props) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={data.length}
+            count={props?.totalPage}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

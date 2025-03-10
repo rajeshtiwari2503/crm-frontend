@@ -29,7 +29,7 @@ const UserDashboard = (props) => {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
 
-      setComplaint(data);
+      setComplaint(data?.data);
     } catch (err) {
       console.log(err);
     }

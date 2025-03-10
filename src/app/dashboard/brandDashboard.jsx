@@ -278,10 +278,10 @@ const BrandDashboard = (props) => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
-      setComplaint(data);
+      setComplaint(data?.data);
   
       // Filter complaints for the brand and required statuses
-      const filteredComplaints = data.filter(
+      const filteredComplaints = data?.data?.filter(
         (item) =>
           item?.brandId === userData._id &&
           ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
@@ -1079,7 +1079,7 @@ const BrandDashboard = (props) => {
       </div>
 
       <div className='flex justify-center'>
-        <RecentServicesList data={filterData} userData={userData} />
+        <RecentServicesList data={data} userData={userData} />
       </div>
     </>
   );

@@ -42,7 +42,7 @@ const ComplaintDetails = ({ params }) => {
         try {
             let response = await http_request.get(`/getAllComplaint`)
             let { data } = response;
-            setUserComplaint(data)
+            setUserComplaint(data?.data)
 
         }
         catch (err) {

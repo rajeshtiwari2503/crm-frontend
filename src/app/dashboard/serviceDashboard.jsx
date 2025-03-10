@@ -359,10 +359,10 @@ const ServiceDashboard = (props) => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
-      setComplaint(data);
+      setComplaint(data?.data);
   
       // Filter complaints for the brand and required statuses
-      const filteredComplaints = data.filter(
+      const filteredComplaints = data?.data?.filter(
         (item) =>
           item?.assignServiceCenterId === userData._id &&
           ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
@@ -534,6 +534,8 @@ const ServiceDashboard = (props) => {
       console.log("Error fetching complaints:", err);
     }
   };
+  // console.log("complaint",complaint);
+  
   // Filter complaints based on user role for displaying in the list
   const filterData = userData?.role === "ADMIN" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
@@ -545,7 +547,6 @@ const ServiceDashboard = (props) => {
 
   // Add index to filtered data for rendering purposes
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
-
   // Function to trigger data refresh
   const RefreshData = (data) => {
     setRefresh(data);

@@ -15,6 +15,7 @@ const Service = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
+  const [totalPages, setTotalPages] = React.useState(null);
   const {user}=useUser()
   useEffect(() => {
     getAllComplaint()
@@ -29,7 +30,7 @@ const Service = () => {
     try {
       let response = await http_request.get("/getAllComplaint")
       let { data } = response;
-
+      setTotalPages(data?.totalComplaints || 0);
       setComplaint(data?.data)
     }
     catch (err) {
@@ -60,7 +61,7 @@ const Service = () => {
     <Sidenav>
       <Toaster />
       <>
-        <ComplaintList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
+        <ComplaintList data={data} serviceCenter={serviceCenter} totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

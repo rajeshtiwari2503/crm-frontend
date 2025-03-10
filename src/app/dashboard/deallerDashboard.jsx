@@ -58,7 +58,7 @@ const DealerDashboard = (props) => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
-     const techComp= data.filter((item) => item?.technicianId === userData._id)
+     const techComp= data?.data?.filter((item) => item?.technicianId === userData._id)
    
       const completedComplaints1 = techComp.filter(c => c.status === 'COMPLETED');
       const tatData = completedComplaints1.map(c => calculateTAT(c.createdAt, c.updatedAt));
@@ -83,7 +83,7 @@ const DealerDashboard = (props) => {
       setAverageClosingTime(avgCT)
 
       setAverageResponseTime(avgCT)
-      setComplaint(data);
+      setComplaint(data?.data);
     } catch (err) {
       console.log(err);
     }
@@ -280,7 +280,7 @@ const DealerDashboard = (props) => {
       </div>
 
       <div>
-      <RecentServicesList data={data} userData={userData} />
+      <RecentServicesList data={filteredComplaints} userData={userData} />
       </div>
     </>
   );

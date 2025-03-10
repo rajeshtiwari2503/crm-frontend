@@ -112,7 +112,7 @@ const AdminDashboard = (props) => {
     try {
       let response = await http_request.get("/getAllComplaint");
       let { data } = response;
-      setComplaints(data);
+      setComplaints(data?.data);
     } catch (err) {
       console.log(err);
     }

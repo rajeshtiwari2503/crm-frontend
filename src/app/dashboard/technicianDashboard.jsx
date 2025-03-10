@@ -52,7 +52,7 @@ const TechnicianDashboard = (props) => {
       let { data } = response;
 
       // Filter complaints assigned to this technician
-      const techComp = data.filter((item) => item?.technicianId === userData._id);
+      const techComp = data?.data?.filter((item) => item?.technicianId === userData._id);
 
       // Filter completed complaints for TAT calculation
       const completedComplaints1 = techComp.filter(c => c.status === 'COMPLETED');
@@ -93,7 +93,7 @@ const TechnicianDashboard = (props) => {
       const rtPercent = completedComplaints.length ? (avgCT / targetRT) * 100 : 0;
       setRtPercentage(rtPercent.toFixed(2));
 
-      setComplaint(data); // Store all fetched complaints
+      setComplaint(data?.data); // Store all fetched complaints
     } catch (err) {
       console.log(err); // Handle errors if any
     }

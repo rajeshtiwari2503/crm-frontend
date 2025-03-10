@@ -62,7 +62,7 @@ const PendingComplaintList = (props) => {
     setSortBy(property);
   };
   const dataSearch = data?.filter((item) => {
-    const complaintId = item?.complaintId?.toLowerCase();
+    const complaintId = item?._id?.toLowerCase();
     const search = searchTerm.toLowerCase();
 
     // Handle the complaint ID format and general search terms
@@ -453,7 +453,7 @@ const PendingComplaintList = (props) => {
                   {sortedData.map((row) => (
                     <TableRow key={row?.i} hover>
                       <TableCell>{row?.i}</TableCell>
-                      <TableCell>{row?.complaintId}</TableCell>
+                      <TableCell>{row?._id}</TableCell>
                       <TableCell>{row?.fullName}</TableCell>
                       {/* <TableCell>{row?.emailAddress}</TableCell> */}
                       <TableCell>{row?.district}</TableCell>

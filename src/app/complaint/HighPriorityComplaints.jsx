@@ -153,7 +153,7 @@ const HighPriorityComplaintList = (props) => {
                                 {sortedData.map((row) => (
                                     <TableRow key={row?.i} hover>
                                         <TableCell>{row?.i}</TableCell>
-                                        <TableCell>{row?.complaintId}</TableCell>
+                                        <TableCell>{row?._id}</TableCell>
                                         <TableCell>{row?.fullName}</TableCell>
 
                                         <TableCell>{row?.district}</TableCell>

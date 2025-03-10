@@ -58,6 +58,7 @@ const ServiceCenterWiseComplaintList = () => {
     <Typography variant="h6" sx={{ fontSize: 14, fontWeight: "bold", textAlign: "center" }} gutterBottom>
       Service Center wise Complaint  
     </Typography>
+    <div className='md:w-full w-[260px]'>
     <TableContainer component={Paper} sx={{ maxHeight: 350 }}>
       <Table size="small">
         <TableHead sx={{ backgroundColor: "#09090b" }}>
@@ -130,6 +131,7 @@ const ServiceCenterWiseComplaintList = () => {
       onRowsPerPageChange={handleChangeRowsPerPage}
       sx={{ fontSize: 12 }}
     />
+    </div>
   </Paper>
 );
 };

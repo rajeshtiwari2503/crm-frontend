@@ -332,7 +332,7 @@ const EmployeeDashboard = (props) => {
         </div>
 
       </div>
-      <div className='mt-10'>
+      <div className='mt-10  justify-center'>
         <HighPriorityComplaintList />
       </div>
     </>

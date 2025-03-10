@@ -259,7 +259,7 @@ const UserDashboard = (props) => {
 
          
 
-      <div className='grid grid-cols-2 gap-4 my-8'>
+      <div className='grid md:grid-cols-2 grid-cols-1 gap-4 my-8'>
         {/* <div className='rounded-lg shadow px-4 py-4 bg-white'>
           <AreaChart />
         </div> */}
@@ -283,7 +283,7 @@ const UserDashboard = (props) => {
         </div>
       </div>
 
-      <div>
+      <div className='flex justify-center'>
         <RecentServicesList data={filterData} userData={userData} />
       </div>
     </>

@@ -654,7 +654,7 @@ const ComplaintList = (props) => {
                         >
                           <Visibility />
                         </div>
-                        {userData?.role === "ADMIN" ?
+                        {userData?.role === "ADMIN" ||userData?.role === "BRAND"?
                           <>
                             <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                               <EditIcon color="success" />

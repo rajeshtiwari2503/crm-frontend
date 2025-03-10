@@ -114,7 +114,7 @@ const HighPriorityComplaintList = (props) => {
 
             {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
                 :
-                <>
+                <div className='md:w-full w-[260px]'>
                     <TableContainer component={Paper}>
                         <Table>
                             <TableHead sx={{ backgroundColor: "#09090b" }}>
@@ -197,7 +197,7 @@ const HighPriorityComplaintList = (props) => {
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                     />
-                </>}
+                </div>}
 
         </div>
     );

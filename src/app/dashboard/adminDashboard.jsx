@@ -146,7 +146,7 @@ const AdminDashboard = (props) => {
     <>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Users</div>
 
-      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4 mb-5'>
 
         <div className=''>
           <div onClick={() => router.push("/user/customer")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
@@ -236,7 +236,7 @@ const AdminDashboard = (props) => {
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Independent Service  Payment</div>
 
-<div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5'>
+<div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4 mb-5'>
 
   
   <div className=''>
@@ -471,7 +471,7 @@ const AdminDashboard = (props) => {
 
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
 
-      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4'>
         <div className=''>
           <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
@@ -555,7 +555,7 @@ const AdminDashboard = (props) => {
       </div>
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
-      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4'>
         <div className=''>
           <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
@@ -728,28 +728,29 @@ const AdminDashboard = (props) => {
           />
         </div>
         
-        <div>
+        <div className='  md:w-full w-[260px]   '>
+      
           <BrandWiseComplaintList brandData={brandData}/>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
-        <div>
+        <div className=' md:w-full w-[260px]  '>
           <ServiceCenterWiseComplaintList />
         </div>
      
-      <div>
+      <div className='md:w-full w-[260px]'>
         <CityWiseComplaintList />
       </div>
       </div>
-      <div>
+      <div className='md:w-full w-[260px]'>
         <HighPriorityComplaintList data={complaints} />
       </div>
-      <div>
+      <div className='   md:w-full w-[260px] '>
         <UnAssignComplaintList />
       </div>
      
 
-      <div>
+      <div className='md:w-full w-[260px]'>
         <RecentServicesList data={complaints} />
         <div>
           {/* <UploadApk /> */}

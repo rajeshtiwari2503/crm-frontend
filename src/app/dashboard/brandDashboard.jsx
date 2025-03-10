@@ -1078,7 +1078,7 @@ const BrandDashboard = (props) => {
        
       </div>
 
-      <div>
+      <div className='flex justify-center'>
         <RecentServicesList data={filterData} userData={userData} />
       </div>
     </>

@@ -34,7 +34,7 @@ const StatewisePendingComplaints = () => {
       setLoading(true)
       const response = await http_request.get("/getAllComplaint"); // Adjust the API path if needed
       let { data } = response;
-      setLocationwiseData(data);
+      // setLocationwiseData(data);
       setLoading(false)
     } catch (error) {
       setLoading(false)

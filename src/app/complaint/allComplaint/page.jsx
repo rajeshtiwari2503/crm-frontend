@@ -15,28 +15,99 @@ const Service = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
-  const [totalPages, setTotalPages] = React.useState(null);
-  const {user}=useUser()
+  const [page, setPage] = useState(1); // Default page
+  const [limit, setLimit] = useState(5); // Items per page
+
+  const [totalPages, setTotalPages] = React.useState(0);
+  const { user } = useUser()
   useEffect(() => {
     getAllComplaint()
     getAllServiceCenter()
-    
+
     if (user) {
       setValue(user);
     }
-  }, [refresh,user])
+  }, [refresh, user, page, limit])
+
+  // const getAllComplaint = async () => {
+  //   try {
+  //     let response = await http_request.get("/getAllComplaint")
+  //     let { data } = response;
+  //     setTotalPages(data?.totalComplaints || 0);
+  //     setComplaint(data?.data)
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //   }
+  // }
+
+
+  // const getAllComplaint = async () => {
+  //   try {
+  //     if (!user?.user?.role || !user?.user?._id) return; // Ensure role & ID exist
+
+  //     let role = user.user.role;
+  //     let id = user.user._id;
+
+  //     // Construct query parameters based on role
+  //     let queryParams = new URLSearchParams();
+
+  //     if (role === "BRAND") queryParams.append("brandId", id);
+  //     else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
+  //     else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
+  //     else if (role === "CUSTOMER") queryParams.append("userId", id);
+  //     else if (role === "DEALER") queryParams.append("dealerId", id);
+
+  //     let response = role==="ADMIN"||role==="EMPLOYEE"  ?await http_request.get("/getAllComplaint"):await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
+  //     let { data } = response;
+
+  //     setTotalPages(data?.totalComplaints || 0);
+  //     setComplaint(data?.data);
+  //   } catch (err) {
+  //     console.error("Error fetching complaints:", err);
+  //   }
+  // };
+
+
 
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      if (!user?.user?.role || !user?.user?._id) return;
+
+      let role = user.user.role;
+      let id = user.user._id;
+
+      let queryParams = new URLSearchParams();
+      queryParams.append("page", page);
+      queryParams.append("limit", limit);
+
+      if (role === "BRAND") queryParams.append("brandId", id);
+      else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
+      else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
+      else if (role === "CUSTOMER") queryParams.append("userId", id);
+      else if (role === "DEALER") queryParams.append("dealerId", id);
+
+      let response =
+        role === "ADMIN" || role === "EMPLOYEE"
+          ? await http_request.get(`/getAllComplaint?page=${page}&limit=${limit}`)
+          : await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
+
       let { data } = response;
-      setTotalPages(data?.totalComplaints || 0);
-      setComplaint(data?.data)
+      // console.log("data",data?.data);
+
+      setTotalPages(Math.ceil((data?.totalComplaints || 0) / limit));
+      setComplaint(data?.data);
+    } catch (err) {
+      console.error("Error fetching complaints:", err);
     }
-    catch (err) {
-      console.log(err);
-    }
-  }
+  };
+
+
+
+
+
+
+
   const getAllServiceCenter = async () => {
     try {
       let response = await http_request.get("/getAllService")
@@ -49,7 +120,8 @@ const Service = () => {
     }
   }
 
-  const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+  // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+  const sortData = complaint;
 
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
@@ -61,7 +133,12 @@ const Service = () => {
     <Sidenav>
       <Toaster />
       <>
-        <ComplaintList data={data} serviceCenter={serviceCenter} totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
+        <ComplaintList data={data} serviceCenter={serviceCenter}
+          page={page}
+          setPage={setPage}
+          limit={limit}
+          setLimit={setLimit}
+          totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

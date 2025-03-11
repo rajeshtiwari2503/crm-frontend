@@ -177,7 +177,7 @@ const NoServiceableAreaComplaints = () => {
                 <tbody>
                   {filteredData.map((item) => (
                     <tr key={item._id} className="hover:bg-gray-100">
-                      <td className="border px-4 py-2">{item.userName}</td>
+                      <td className="border px-4 py-2">{item.fullName}</td>
                       <td className="border px-4 py-2">{item.phoneNumber}</td>
                       <td className="border px-4 py-2">{item.district}</td>
                       <td className="border px-4 py-2">{item.state}</td>

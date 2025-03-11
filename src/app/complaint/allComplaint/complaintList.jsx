@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, Select, MenuItem, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -26,15 +26,15 @@ const ComplaintList = (props) => {
   const complaint = props?.data;
   const userData = props?.userData
 
-
-  const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
-    : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-      : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-        : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-          : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-            : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-              : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-                : []
+  const filteredData=complaint
+  // const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+  //   : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
+  //     : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
+  //       : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
+  //         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
+  //           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
+  //             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
+  //               : []
 
   const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm();
   const router = useRouter()
@@ -53,14 +53,27 @@ const ComplaintList = (props) => {
   const [sortBy, setSortBy] = useState('id');
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
+  const [filterComp, setFilteredComp] = useState([]);
 
+  // const handleChangePage = (event, newPage) => {
+  //   setPage(newPage);
+  // };
+  // const handleChangePage = (newPage) => {
+  //   if (newPage >= 1 && newPage <= totalPage) {
+  //     props?.setPage(newPage);
+  //   }
+  // };
+  // const handleChangeRowsPerPage = (event) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    props?.setPage(newPage + 1); // MUI pages are zero-based, so add 1
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    props?.setLimit(parseInt(event.target.value, 5));
+    props?.setPage(1); // Reset to first page after changing rows per page
   };
 
   const handleSort = (property) => {
@@ -75,16 +88,35 @@ const ComplaintList = (props) => {
 
   };
 
-  const data = filteredData?.filter((item) => {
-    const complaintId = item?._id?.toLowerCase();
-    const search = searchTerm.toLowerCase();
+  // const data = filteredData
+  // const data = filteredData?.filter((item) => {
+  //   const complaintId = item?._id?.toLowerCase();
+  //   const search = searchTerm.toLowerCase();
 
-    // Handle the complaint ID format and general search terms
-    return complaintId?.includes(search) ||
-      item?._id.toLowerCase().includes(search) ||
-      item?.phoneNumber?.includes(searchTerm);
-  });
+    
+  //   return complaintId?.includes(search) ||
+  //     item?._id.toLowerCase().includes(search) ||
+  //     item?.phoneNumber?.includes(searchTerm);
+  // });
+ 
+  useEffect(() => {
+    if (searchTerm.trim() !== "") {
+      fetchFilteredData();
+    }
+  }, [searchTerm]);
 
+
+  const fetchFilteredData = async () => {
+    try {
+      const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
+      const {data} =  response;
+      setFilteredComp(data);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+  const data = searchTerm ? filterComp : filteredData;
+  
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -676,9 +708,9 @@ const ComplaintList = (props) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={props?.totalPage}
-            rowsPerPage={rowsPerPage}
-            page={page}
+            count={props?.totalPage * props?.limit}
+            rowsPerPage={props?.limit}
+            page={props?.page -1}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />

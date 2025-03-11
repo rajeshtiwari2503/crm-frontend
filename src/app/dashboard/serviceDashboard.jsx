@@ -1093,7 +1093,7 @@ const ServiceDashboard = (props) => {
       </div>
       {/* Display recent services list */}
       <div className="mt-8 flex justify-center">
-        <RecentServicesList data={data} />
+        <RecentServicesList data={data} userData={props?.userData}/>
       </div>
 
       {/* Include other components or sections as required */}

@@ -17,7 +17,7 @@ const BrandDashboard = (props) => {
 
   const userData = props?.userData;
   const dashData = props?.dashData;
-  console.log("dashData",dashData);
+  // console.log("userData",userData);
  
   
   const [complaint, setComplaint] = useState([]);
@@ -97,19 +97,23 @@ const BrandDashboard = (props) => {
  
  
   
+ 
+  
+
   // const getAllComplaint = async () => {
   //   try {
   //     let response = await http_request.get("/getAllComplaint");
   //     let { data } = response;
-  //     setComplaint(data);
-
+  //     setComplaint(data?.data);
+  
   //     // Filter complaints for the brand and required statuses
-  //     const filteredComplaints = data.filter(
+  //     const filteredComplaints = data?.data?.filter(
   //       (item) =>
   //         item?.brandId === userData._id &&
-  //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)
+  //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
+  //               item?.cspStatus === "NO"
   //     );
-
+  
   //     // Function to calculate time difference in hours and days
   //     const getTimeDifference = (start, end) => {
   //       if (!start || !end) return { days: 0, hours: 0 };
@@ -119,19 +123,19 @@ const BrandDashboard = (props) => {
   //       let hours = Math.round(totalHours % 24);
   //       return { days, hours };
   //     };
-
+  
   //     // Function to calculate percentage
   //     const calculatePercentage = (count, total) =>
   //       total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-
+  
   //     let totalTATCount = 0;
   //     let totalRTCount = 0;
   //     let totalCTCount = 0;
   //     let totalComplaints = filteredComplaints.length;
-
+  
   //     let monthlyReport = {};
   //     let yearlyReport = {};
-
+  
   //     // Process complaints
   //     const complaintsWithMetrics = filteredComplaints.map((c) => {
   //       const complaintDate = new Date(c.createdAt);
@@ -147,23 +151,33 @@ const BrandDashboard = (props) => {
   //       const serviceCompletionTime = c.complaintCloseTime
   //         ? new Date(c.complaintCloseTime)
   //         : null;
-
+  
+  //       // ** Debugging logs **
+  //       console.log("📝 Complaint ID:", c._id);
+  //       console.log("Created At:", complaintDate.toISOString());
+  //       console.log(
+  //         "Response Time:",
+  //         responseTime ? responseTime.toISOString() : "N/A"
+  //       );
+  
   //       const monthYear = complaintDate.toLocaleString("default", {
   //         month: "long",
   //         year: "numeric",
   //       });
   //       const year = complaintDate.getFullYear();
-
+  
   //       // Calculate TAT, RT, and CT
   //       let tat = getTimeDifference(complaintDate, complaintCloseDate);
   //       let rt = getTimeDifference(complaintDate, responseTime);
-  //       let ct = getTimeDifference(serviceStartTime, serviceCompletionTime);
-
-  //       // Check if TAT, RT, and CT ≤ 24 hours
+  //       let ct = getTimeDifference(complaintDate, complaintCloseDate);
+  
+  //       console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
+  
+  //       // Check if TAT, RT, and CT ≤ threshold
   //       if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
   //       if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
   //       if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
-
+  
   //       // Update Monthly Report
   //       if (!monthlyReport[monthYear]) {
   //         monthlyReport[monthYear] = {
@@ -186,9 +200,9 @@ const BrandDashboard = (props) => {
   //       monthlyReport[monthYear].totalCT += ct.days * 24 + ct.hours;
   //       monthlyReport[monthYear].totalRT += rt.days * 24 + rt.hours;
   //       if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
-  //       if (rt.days === 0 && rt.hours <= 24) monthlyReport[monthYear].rtCount++;
+  //       if (rt.days === 0 && rt.hours <= 2) monthlyReport[monthYear].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
-
+  
   //       // Update Yearly Report
   //       if (!yearlyReport[year]) {
   //         yearlyReport[year] = {
@@ -211,26 +225,17 @@ const BrandDashboard = (props) => {
   //       yearlyReport[year].totalCT += ct.days * 24 + ct.hours;
   //       yearlyReport[year].totalRT += rt.days * 24 + rt.hours;
   //       if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
-  //       if (rt.days === 0 && rt.hours <= 24) yearlyReport[year].rtCount++;
+  //       if (rt.days === 0 && rt.hours <= 2) yearlyReport[year].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
-
+  
   //       return { complaintId: c._id, ct, rt, tat };
   //     });
-
+  
   //     // Calculate Overall Percentages
-  //     let overallTATPercentage = calculatePercentage(
-  //       totalTATCount,
-  //       totalComplaints
-  //     );
-  //     let overallRTPercentage = calculatePercentage(
-  //       totalRTCount,
-  //       totalComplaints
-  //     );
-  //     let overallCTPercentage = calculatePercentage(
-  //       totalCTCount,
-  //       totalComplaints
-  //     );
-
+  //     let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
+  //     let overallRTPercentage = calculatePercentage(totalRTCount, totalComplaints);
+  //     let overallCTPercentage = calculatePercentage(totalCTCount, totalComplaints);
+  
   //     // Process final reports with TAT%, CT, RT averages
   //     const processReport = (report) =>
   //       Object.keys(report).map((key) => {
@@ -243,7 +248,7 @@ const BrandDashboard = (props) => {
   //           totalCT,
   //           totalRT,
   //         } = report[key];
-
+  
   //         return {
   //           period: key,
   //           tatPercentage: calculatePercentage(tatCount, totalComplaints),
@@ -258,10 +263,12 @@ const BrandDashboard = (props) => {
   //           complaints, // Includes per-complaint CT, RT, TAT
   //         };
   //       });
-
+  
   //     let finalMonthlyReport = processReport(monthlyReport);
   //     let finalYearlyReport = processReport(yearlyReport);
-
+  // setAverageTAT(overallTATPercentage)
+  // setAverageRT(overallRTPercentage)
+  // setAverageCT(overallCTPercentage)
   //     console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
   //     console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
   //     console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
@@ -273,188 +280,20 @@ const BrandDashboard = (props) => {
   //   }
   // };
   
-
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint");
+      let response = await http_request.get(`/getAllTatByBrand?brandId=${userData?._id}`);
       let { data } = response;
-      setComplaint(data?.data);
-  
-      // Filter complaints for the brand and required statuses
-      const filteredComplaints = data?.data?.filter(
-        (item) =>
-          item?.brandId === userData._id &&
-          ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
-                item?.cspStatus === "NO"
-      );
-  
-      // Function to calculate time difference in hours and days
-      const getTimeDifference = (start, end) => {
-        if (!start || !end) return { days: 0, hours: 0 };
-        let diffMs = new Date(end) - new Date(start);
-        let totalHours = Math.max(diffMs / (1000 * 60 * 60), 0);
-        let days = Math.floor(totalHours / 24);
-        let hours = Math.round(totalHours % 24);
-        return { days, hours };
-      };
-  
-      // Function to calculate percentage
-      const calculatePercentage = (count, total) =>
-        total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-  
-      let totalTATCount = 0;
-      let totalRTCount = 0;
-      let totalCTCount = 0;
-      let totalComplaints = filteredComplaints.length;
-  
-      let monthlyReport = {};
-      let yearlyReport = {};
-  
-      // Process complaints
-      const complaintsWithMetrics = filteredComplaints.map((c) => {
-        const complaintDate = new Date(c.createdAt);
-        const complaintCloseDate = c.complaintCloseTime
-          ? new Date(c.complaintCloseTime)
-          : null;
-        const responseTime = c.empResponseTime
-          ? new Date(c.empResponseTime)
-          : null;
-        const serviceStartTime = c.assignServiceCenterTime
-          ? new Date(c.assignServiceCenterTime)
-          : null;
-        const serviceCompletionTime = c.complaintCloseTime
-          ? new Date(c.complaintCloseTime)
-          : null;
-  
-        // ** Debugging logs **
-        console.log("📝 Complaint ID:", c._id);
-        console.log("Created At:", complaintDate.toISOString());
-        console.log(
-          "Response Time:",
-          responseTime ? responseTime.toISOString() : "N/A"
-        );
-  
-        const monthYear = complaintDate.toLocaleString("default", {
-          month: "long",
-          year: "numeric",
-        });
-        const year = complaintDate.getFullYear();
-  
-        // Calculate TAT, RT, and CT
-        let tat = getTimeDifference(complaintDate, complaintCloseDate);
-        let rt = getTimeDifference(complaintDate, responseTime);
-        let ct = getTimeDifference(complaintDate, complaintCloseDate);
-  
-        console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
-  
-        // Check if TAT, RT, and CT ≤ threshold
-        if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
-        if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
-        if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
-  
-        // Update Monthly Report
-        if (!monthlyReport[monthYear]) {
-          monthlyReport[monthYear] = {
-            complaints: [],
-            tatCount: 0,
-            rtCount: 0,
-            ctCount: 0,
-            totalComplaints: 0,
-            totalCT: 0,
-            totalRT: 0,
-          };
-        }
-        monthlyReport[monthYear].complaints.push({
-          complaintId: c._id,
-          ct,
-          rt,
-          tat,
-        });
-        monthlyReport[monthYear].totalComplaints++;
-        monthlyReport[monthYear].totalCT += ct.days * 24 + ct.hours;
-        monthlyReport[monthYear].totalRT += rt.days * 24 + rt.hours;
-        if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
-        if (rt.days === 0 && rt.hours <= 2) monthlyReport[monthYear].rtCount++;
-        if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
-  
-        // Update Yearly Report
-        if (!yearlyReport[year]) {
-          yearlyReport[year] = {
-            complaints: [],
-            tatCount: 0,
-            rtCount: 0,
-            ctCount: 0,
-            totalComplaints: 0,
-            totalCT: 0,
-            totalRT: 0,
-          };
-        }
-        yearlyReport[year].complaints.push({
-          complaintId: c._id,
-          ct,
-          rt,
-          tat,
-        });
-        yearlyReport[year].totalComplaints++;
-        yearlyReport[year].totalCT += ct.days * 24 + ct.hours;
-        yearlyReport[year].totalRT += rt.days * 24 + rt.hours;
-        if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
-        if (rt.days === 0 && rt.hours <= 2) yearlyReport[year].rtCount++;
-        if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
-  
-        return { complaintId: c._id, ct, rt, tat };
-      });
-  
-      // Calculate Overall Percentages
-      let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
-      let overallRTPercentage = calculatePercentage(totalRTCount, totalComplaints);
-      let overallCTPercentage = calculatePercentage(totalCTCount, totalComplaints);
-  
-      // Process final reports with TAT%, CT, RT averages
-      const processReport = (report) =>
-        Object.keys(report).map((key) => {
-          let {
-            complaints,
-            tatCount,
-            rtCount,
-            ctCount,
-            totalComplaints,
-            totalCT,
-            totalRT,
-          } = report[key];
-  
-          return {
-            period: key,
-            tatPercentage: calculatePercentage(tatCount, totalComplaints),
-            rtPercentage: calculatePercentage(rtCount, totalComplaints),
-            ctPercentage: calculatePercentage(ctCount, totalComplaints),
-            avgCT:
-              (totalComplaints > 0 ? (totalCT / totalComplaints).toFixed(2) : "0.00") +
-              " hrs",
-            avgRT:
-              (totalComplaints > 0 ? (totalRT / totalComplaints).toFixed(2) : "0.00") +
-              " hrs",
-            complaints, // Includes per-complaint CT, RT, TAT
-          };
-        });
-  
-      let finalMonthlyReport = processReport(monthlyReport);
-      let finalYearlyReport = processReport(yearlyReport);
-  setAverageTAT(overallTATPercentage)
-  setAverageRT(overallRTPercentage)
-  setAverageCT(overallCTPercentage)
-      console.log("📊 Overall TAT Percentage:", overallTATPercentage + "%");
-      console.log("📊 Overall RT Percentage:", overallRTPercentage + "%");
-      console.log("📊 Overall CT Percentage:", overallCTPercentage + "%");
-      console.log("📊 Per-Complaint TAT, CT, RT:", complaintsWithMetrics);
-      console.log("📊 Monthly Report:", finalMonthlyReport);
-      console.log("📊 Yearly Report:", finalYearlyReport);
+      // console.log("data",data);
+      
+  setAverageTAT(data?.overallTATPercentage)
+  setAverageRT(data?.overallRTPercentage)
+  setAverageCT(data?.overallCTPercentage)
+      
     } catch (err) {
       console.log("Error fetching complaints:", err);
     }
   };
-  
-
 
 
 

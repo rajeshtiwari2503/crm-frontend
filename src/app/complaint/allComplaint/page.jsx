@@ -95,7 +95,7 @@ const Service = () => {
       let { data } = response;
       // console.log("data",data?.data);
 
-      setTotalPages(Math.ceil((data?.totalComplaints || 0) / limit));
+      setTotalPages(Math.ceil((data?.totalComplaints || 0)  ));
       setComplaint(data?.data);
     } catch (err) {
       console.error("Error fetching complaints:", err);

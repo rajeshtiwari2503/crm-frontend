@@ -34,7 +34,7 @@ const AdminDashboard = (props) => {
   const [brandData, setBrandData] = useState([]);
 
   React.useEffect(() => {
-    getAllComplaint()
+    // getAllComplaint()
     getAllOrder()
     fetchComplaintData();
   }, []);
@@ -108,15 +108,15 @@ const AdminDashboard = (props) => {
     }
   };
 
-  const getAllComplaint = async () => {
-    try {
-      let response = await http_request.get("/getAllComplaint");
-      let { data } = response;
-      setComplaints(data?.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  // const getAllComplaint = async () => {
+  //   try {
+  //     let response = await http_request.get("/getAllComplaint");
+  //     let { data } = response;
+  //     setComplaints(data?.data);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const getAllOrder = async () => {
 
@@ -751,7 +751,7 @@ const AdminDashboard = (props) => {
      
 
       <div className='md:w-full w-[260px]'>
-        <RecentServicesList data={complaints} />
+        <RecentServicesList data={complaints} userData={props?.userData}/>
         <div>
           {/* <UploadApk /> */}
         </div>

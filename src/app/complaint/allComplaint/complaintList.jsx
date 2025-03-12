@@ -155,7 +155,7 @@ const ComplaintList = (props) => {
     setId(id);
 
     const filterCom = complaint?.find((f) => f?._id === id);
-
+    setAssign(true);
     if (!filterCom?.pincode) {
       console.log("Pincode not found in the complaint");
       return;
@@ -196,7 +196,7 @@ const ComplaintList = (props) => {
       console.log("No service centers found for the given pincode.");
     }
 
-    setAssign(true);
+   
   };
 
 

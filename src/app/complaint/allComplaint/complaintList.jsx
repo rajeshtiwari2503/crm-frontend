@@ -183,7 +183,7 @@ const ComplaintList = (props) => {
   const handleAssignServiceCenter = async (id) => {
     setId(id);
 
-    const filterCom = complaint?.find((f) => f?._id === id);
+    const filterCom = data?.find((f) => f?._id === id);
     setAssign(true);
     if (!filterCom?.pincode) {
       console.log("Pincode not found in the complaint");
@@ -211,7 +211,7 @@ const ComplaintList = (props) => {
         ...(center?.postalCode ? center.postalCode.split(',').map(p => p.trim()) : [])
       ];
 
-      console.log(pincodeList);
+      console.log(pincodeList,"pincodeList");
 
       // Check if targetPincode exists in the merged list
       return pincodeList.includes(targetPincode);

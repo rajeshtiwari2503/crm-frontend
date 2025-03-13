@@ -115,8 +115,15 @@ const ComplaintList = (props) => {
       console.error("Error fetching search results:", error);
     }
   };
-  const data = searchTerm ? filterComp : filteredData;
-  
+  const dataSearch = searchTerm ? filterComp : filteredData;
+  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? dataSearch
+  : userData?.role === "BRAND" ? dataSearch?.filter((item) => item?.brandId === userData._id)
+    : userData?.role === "BRAND EMPLOYEE" ? dataSearch?.filter((item) => item?.brandId === userData.brandId)
+      : userData?.role === "USER" ? dataSearch?.filter((item) => item?.userId === userData._id)
+        : userData?.role === "SERVICE" ? dataSearch?.filter((item) => item?.assignServiceCenterId === userData._id)
+          : userData?.role === "TECHNICIAN" ? dataSearch?.filter((item) => item?.technicianId === userData._id)
+            : userData?.role === "DEALER" ? dataSearch?.filter((item) => item?.dealerId === userData._id)
+              : []
 
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

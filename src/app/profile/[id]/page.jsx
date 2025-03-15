@@ -23,7 +23,7 @@ import EmployeeProfile from '@/app/components/EmployeeProfile';
 const Profile = ({ params }) => {
 
     const [users, setUsers] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+    const [refresh, setRefresh] = useState("");
     const [status, setStatus] = useState("");
     const [editModelOpen, setEditModalOpen] = useState(false);
     const [editService, setEditService] = useState(false);
@@ -39,6 +39,13 @@ const Profile = ({ params }) => {
         getUserById();
 
     }, [refresh,status]);
+    useEffect(() => {
+
+        getUserById();
+
+    }, [refresh ]);
+    
+    
 
     const getUserById = async () => {
         try {

@@ -47,6 +47,7 @@ const ServicePincodes = ({ userId, RefreshData, pincode }) => {
 
         const { data } = response;
         ToastMessage(data);
+        window.location.reload();
         RefreshData(pincodes+data); // Refresh data after successful update
 
         setLoading(false);

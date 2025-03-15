@@ -22,6 +22,7 @@ const ServiceProfile = (props) => {
       let response = await http_request.patch(`/uploadCenterGstCertificate/${userData?._id}`, formData);
       let { data } = response;
       props?.RefreshData(data)
+      window.location.reload();
       ToastMessage(data);
       setUploadedGstImage(null)
       setLoading(false)
@@ -47,6 +48,7 @@ const ServiceProfile = (props) => {
       let response = await http_request.patch(`/uploadCenterIdentityProof/${userData?._id}`, formData);
       let { data } = response;
       props?.RefreshData(data)
+      window.location.reload();
       ToastMessage(data);
       setUploadedProofImage(null)
       setLoading(false)
@@ -72,6 +74,7 @@ const ServiceProfile = (props) => {
       let response = await http_request.patch(`/uploadCenterCertificationDocuments/${userData?._id}`, formData);
       let { data } = response;
       props?.RefreshData(data)
+      window.location.reload();
       ToastMessage(data);
       setUploadedDocImage(null)
       setLoading(false)
@@ -102,7 +105,7 @@ const ServiceProfile = (props) => {
           <div className=' md:text-1xl text-sm  '>{new Date(userData?.updatedAt).toLocaleString()}</div>
           <div className=' md:text-1xl text-sm font-semibold'>Service Center Name :</div>
           <div className='md:text-1xl text-sm  '>{userData?.serviceCenterName}</div>
-         
+
           <div className=' md:text-1xl text-sm font-semibold'>Contact :</div>
           <div className='md:text-1xl text-sm  '>{userData?.contact}</div>
           <div className=' md:text-1xl text-sm font-semibold  '>Email :</div>
@@ -314,23 +317,23 @@ const ServiceProfile = (props) => {
           <div className=' md:col-span-2 col-span-2 mt-5 mb-5'  >
             <ServicePincodes userId={userData?._id} pincode={userData?.pincodeSupported} RefreshData={props?.RefreshData} />
           </div>
-          <div className='md:col-span-2 col-span-2 md:m-5 border p-4  mb-5 '>
-        <div className='text-md font-bold mb-4'>Pincodes Supported</div>
-        <div className="  overflow-x-auto whitespace-nowrap">
-          {userData?.pincodeSupported?.map((item, i) =>
+          {/* <div className='md:col-span-2 col-span-2 md:m-5 border p-4  mb-5 '>
+            <div className='text-md font-bold mb-4'>Pincodes Supported</div>
+            <div className="  overflow-x-auto whitespace-nowrap">
+              {userData?.pincodeSupported?.map((item, i) =>
 
-            <div key={i} className=' '>
-              <div >{item}</div>
+                <div key={i} className=' '>
+                  <div >{item}</div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-      </div>
+          </div> */}
         </div>
 
       }
 
-      
+
       <div className=' md:col-span-2 col-span-2'  >
         <ServiceCenterDepositForm userData={userData} RefreshData={props?.RefreshData} />
       </div>

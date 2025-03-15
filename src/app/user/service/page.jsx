@@ -7,7 +7,7 @@ import Sidenav from '@/app/components/Sidenav'
 import { ReactLoader } from '@/app/components/common/Loading';
 import ServiceList from './serviceList';
 import { useUser } from '@/app/components/UserContext';
- 
+
 
 
 const Service = () => {
@@ -18,16 +18,16 @@ const Service = () => {
   const [value, setValue] = React.useState(null);
 
   const { user } = useUser();
-    
-   
-    useEffect(() => {
-     
-      if (user) {
-          setValue(user);
-      }
+
+
+  useEffect(() => {
+
+    if (user) {
+      setValue(user);
+    }
     getAllService()
 
-  }, [refresh,user])
+  }, [refresh, user])
 
   const getAllService = async () => {
     try {
@@ -40,7 +40,9 @@ const Service = () => {
       console.log(err);
     }
   }
-const filData=value?.user?.role==="BRAND"?service?.filter((f)=>f?.brandId===value?.user?._id):service
+  const filData = value?.user?.role === "BRAND" ? service?.filter((f) => f?.brandId === value?.user?._id) :
+    value?.user?.role === "EMPLOYEE" ? service?.filter((f1) => user?.user?.stateZone?.includes(f1?.state))
+      : service
   const data = filData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
@@ -51,8 +53,8 @@ const filData=value?.user?.role==="BRAND"?service?.filter((f)=>f?.brandId===valu
     <Sidenav>
       <Toaster />
       <>
-        <ServiceList data={data} user={value?.user}  RefreshData={RefreshData} />
-     
+        <ServiceList data={data} user={value?.user} RefreshData={RefreshData} />
+
       </>
     </Sidenav>
   )

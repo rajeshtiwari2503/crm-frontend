@@ -27,6 +27,7 @@ import { usePathname } from 'next/navigation';
 import { ReactLoader } from './common/Loading';
 import http_request from "../../../http-request"
 import { useUser } from './UserContext';
+import OneSignal from "react-onesignal";
 
 const drawerWidth = 240;
 
@@ -113,6 +114,47 @@ function Sidenav(props) {
     }
   };
   // console.log(dashData);
+//   React.useEffect(() => {
+//     const initializeOneSignal = async () => {
+//         await OneSignal.init({
+//             appId: "76885bff-4272-407d-88b2-87fd195a9130",
+//             allowLocalhostAsSecureOrigin: true,
+//         });
+
+//         // Ask user permission for notifications
+//         OneSignal.Slidedown.promptPush();
+//     };
+
+//     initializeOneSignal();
+// }, []);
+// React.useEffect(() => {
+//   if (Notification.permission !== "granted") {
+//     Notification.requestPermission().then((permission) => {
+//       console.log("Notification permission:", permission);
+//       if (permission === "granted") {
+//         new Notification("Notifications Enabled!", {
+//           body: "You will receive updates in your browser.",
+//           icon: "Logo.png", // Replace with your logo
+//         });
+//       } else {
+//         console.warn("User denied notifications.");
+//       }
+//     });
+//   }
+// }, []);
+
+// const sendBrowserNotification = (notification) => {
+//   // console.log("Notification data:", notification);
+  
+//   if (Notification.permission === "granted") {
+//     new Notification(notification.title, {
+//       body: notification.message,
+//       icon: "https://your-website.com/logo.png", // Replace with your logo URL
+//     });
+//   } else {
+//     console.warn("Notification permission not granted.");
+//   }
+// };
 
   const getAllNotification = async () => {
    
@@ -127,6 +169,14 @@ function Sidenav(props) {
                 : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
+      // if(user?.user?.role=== "TECHNICIAN"){
+      //   data.forEach(notification => {
+      //     if (notification.adminStatus === "UNREAD") {
+      //       sendBrowserNotification(notification);
+      //     }
+      // });
+      // }   
+     
       setNotifications(data)
     }
     catch (err) {
@@ -345,7 +395,7 @@ function Sidenav(props) {
   const secondaryText = "#007BFF"
 
   const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign','Upcomming', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND"||value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress','Upcomming', 'Final Verification','Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending','Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending','Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending','Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign','Upcomming', 'Close', 'All Service']
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] :(value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")?['Service', 'Dealer', 'Customer', 'Employee']: value?.user?.role === "BRAND" ? [ 'Dealer', 'Customer',  ] : []
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] :(value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")?['Service', 'Dealer', 'Customer', 'Employee']: value?.user?.role === "BRAND" ? [ 'Dealer', 'Customer',  ] :value?.user?.role === "EMPLOYEE"?['Service'] :[]
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role=== "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
   const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND"|| value?.user?.role=== "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
@@ -523,7 +573,7 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")||value?.user?.role === "BRAND"
+            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")||value?.user?.role === "BRAND" ||value?.user?.role === "EMPLOYEE"
               ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
                   <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>

@@ -249,12 +249,14 @@ const ServiceList = (props) => {
                       {props?.report === true ? ""
                         :
                         <div className='flex'>
-                          <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                          {props?.user?.role === "ADMIN" && <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
                             <EditIcon color='success' />
                           </IconButton>
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                          }
+                          {props?.user?.role === "ADMIN" && <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>
+                          }
                           {props?.user?.role === "ADMIN" && <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
                             <PictureAsPdf color="error" />
                           </IconButton>

@@ -85,7 +85,7 @@ const StatewisePendingComplaints = () => {
   });
   
 
-  console.log("filteredComplaints", filteredComplaints);
+  // console.log("filteredComplaints", filteredComplaints);
 
   // Generate chart data
   const generateChartData = () => {
@@ -159,7 +159,7 @@ const StatewisePendingComplaints = () => {
         {chartData.length > 1 ? (
           <Chart chartType="PieChart" width="100%" height="400px" data={chartDataLoc} options={optionsLoc} />
         ) : (
-          <p className="text-gray-600 text-center mt-4">No complaints found for the selected filters.</p>
+          <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>
         )}
       </div>
       {loading ? <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>

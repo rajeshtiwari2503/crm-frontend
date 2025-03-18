@@ -28,6 +28,7 @@ import { Toaster } from 'react-hot-toast';
 import { ReactLoader } from '../../components/common/Loading';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
+import DownloadExcel from '@/app/components/DownLoadExcel';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
@@ -101,7 +102,7 @@ const router=useRouter()
         }
     };
 
-    // console.log(wallet);
+    // console.log(sortedData.length);
 
     const ImagePopup = ({ src, alt }) => {
         const [open, setOpen] = useState(false);
@@ -137,6 +138,28 @@ const router=useRouter()
 
                 <div className="flex justify-between mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
+                      <div className="ml-5">
+                              {sortedData.length > 0 && (
+                                <DownloadExcel
+                                  data={data }
+                                  fileName="ServiceCenterPaymentList"
+                                  fieldsToInclude={[
+                                    "_id",
+                                    "complaintId",
+                                    "serviceCenterId",
+                                    "serviceCenterName",
+                                    "payment",
+                                    "description",
+                                    "contactNo",                                
+                                    "city",
+                                    "address",   
+                                    "status",
+                                    "createdAt",
+                                    "updatedAt",
+                                  ]}
+                                />
+                              )}
+                            </div>
 
                 </div>
 

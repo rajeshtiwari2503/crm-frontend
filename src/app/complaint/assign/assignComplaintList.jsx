@@ -111,9 +111,10 @@ const AssignComplaintList = (props) => {
     try {
       const reqdata = assignTech === true ? {
         empId: userData._id, empName: userData.name,
+        comments:data?.comments,
         status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
         assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
-      } : { status: data?.status, empId: userData._id, empName: userData.name, }
+      } : { status: data?.status, empId: userData._id, empName: userData.name,comments:data?.comments, }
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       let { data: responseData } = response;
       if (data.comments) {

@@ -336,13 +336,15 @@ const BrandReport = (props) => {
       </div>
 
       {/* Apply Filters */}
-      <div className="flex">
+      <div className="flex justify-between items-center">
+        <div>
         <button
           className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
           onClick={fetchComplaints}
         >
          {loading?"Filtering.....": "Apply Filters"}
         </button>
+        </div>
         <div className="ml-5">
           {filteredComplaints.length > 0 && (
             <DownloadExcel

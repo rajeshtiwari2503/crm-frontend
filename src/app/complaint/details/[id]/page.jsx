@@ -55,7 +55,7 @@ const ComplaintDetails = ({ params }) => {
 
 
     const userComp = userComplaint?.filter((f) => f?.phoneNumber === complaint?.phoneNumber)
-    // console.log(complaint);
+    console.log(value);
 
 
     return (
@@ -126,6 +126,13 @@ const ComplaintDetails = ({ params }) => {
                                         <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter contact : </div>
                                         <div className='md:text-xl text-sm '>{complaint?.serviceCenterContact}</div>
                                     </>
+
+                                }
+                                {value?.user?.role === "ADMIN" ? 
+                                      <>
+                                        <div className='md:text-xl text-sm font-semibold'> Service Center Payment : </div>
+                                        <div className='md:text-xl text-sm '>{complaint?.paymentServiceCenter}</div>
+                                    </>:""
 
                                 }
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>
@@ -245,11 +252,11 @@ const ComplaintDetails = ({ params }) => {
                         </div>
 
                         <div className='  '>
-                    <UserAllServicesList data={userComp} />
-                </div>
+                            <UserAllServicesList data={userComp} />
+                        </div>
                     </div>
                 }
-               
+
             </Sidenav>
         </>
 

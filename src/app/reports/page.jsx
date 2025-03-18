@@ -249,7 +249,8 @@ const { user } = useUser();
           <FilterOptions userData={userData} userValue={value}filters={filters} setFilters={setFilters} />
           <VisualizationOptions includeCharts={includeCharts} setIncludeCharts={setIncludeCharts} />
 
-          <div className='flex mt-2'>
+          <div className='flex justify-between items-center mt-2'>
+            <div>
             <button
               className="px-4 py-2 me-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
               onClick={handleGenerateReport}
@@ -257,12 +258,16 @@ const { user } = useUser();
             >
               {loading ? 'Generating...' : 'Generate Report'}
             </button>
-
+            </div>
             {reportType === "USER" ?
               <>{reportData?.data?.brands?.length > 0 || reportData?.data?.customers?.length > 0 || reportData?.data?.serviceCenters?.length > 0 || reportData?.data?.technicians?.length > 0 ?
-                <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /> : ""}
+               <div> 
+                <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /></div>
+                 : ""}
+               
               </>
               : <>
+              <div> 
                 {reportData?.complaints?.length > 0 ? 
                 <DownloadExcel  userData={user} 
                 // data={reportData?.complaints} 
@@ -270,7 +275,10 @@ const { user } = useUser();
                   ...complaint,
                   sndStatus: complaint.updateComments?.map(comment => 
                     `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
-                  ).join(", ") || "" // Join all statuses with timestamps, separated by a comma
+                  ).join(", ") || "", // Join all statuses with timestamps, separated by a comma
+                  technicianComment: complaint.updateComments?.find(comment => comment.changes?.status === "FINAL VERIFICATION") 
+                  ? complaint.updateComments.find(comment => comment.changes?.status === "FINAL VERIFICATION").changes?.comments 
+                  : "" // Extracts comments for "FINAL VERIFICATION" status
                 }))} 
                 fileName="ComplaintsList" 
                 fieldsToInclude={[ 
@@ -294,14 +302,17 @@ const { user } = useUser();
                   "purchaseDate",
                   "assignServiceCenter", 
                   "serviceCenterContact", 
-                  "assignTechnician",               
+                  "assignTechnician", 
+                  "paymentServiceCenter",              
                   "paymentBrand", 
                   "updatedAt",
                   "createdAt",
+                  "technicianComment",
                   "sndStatus", // Include concatenated status with timestamps 
                   ]}
                 /> : ""
                 }
+               </div>
               </>
             }
 

@@ -15,6 +15,8 @@ import UnAssignComplaintList from '../complaint/UnAssignComplaints';
 import CityWiseComplaintList from '../complaint/CityWiseComplaints';
 import ServiceCenterWiseComplaintList from '../complaint/ServiceCenterWiseComplaint';
 import BrandWiseComplaintList from '../complaint/BrandWiseComplaint';
+import PartPendingTodayUpadteComplaintList from '../complaint/PartPendingTodayUpdated';
+import PartPendingTodayNotUpadteComplaintList from '../complaint/PartPendingTodayNotUpdated';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -742,13 +744,22 @@ const AdminDashboard = (props) => {
         <CityWiseComplaintList />
       </div>
       </div>
+
       <div className='md:w-full w-[260px]'>
         <HighPriorityComplaintList data={complaints} />
       </div>
       <div className='   md:w-full w-[260px] '>
         <UnAssignComplaintList />
       </div>
+     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+        <div className=' md:w-full w-[260px]  '>
+          <PartPendingTodayUpadteComplaintList />
+        </div>
      
+      <div className='md:w-full w-[260px]'>
+        <PartPendingTodayNotUpadteComplaintList />
+      </div>
+      </div>
 
       <div className='md:w-full w-[260px]'>
         <RecentServicesList data={complaints} userData={props?.userData}/>

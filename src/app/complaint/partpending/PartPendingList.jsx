@@ -73,7 +73,7 @@ const PartPendingComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const sndStatusReq = userData?.role === "BRAND"?{ sndStatus: data.comments, brandId: userData._id, brandName: userData.brandName }:{ sndStatus: data.comments, empId: userData._id, empName: userData.name }
       const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
@@ -88,7 +88,7 @@ const PartPendingComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const dataReq = { ...data, empId: userData._id, empName: userData.name, }
+      const dataReq = userData?.role === "BRAND"?{ comments:data?.comments, brandId: userData._id, brandName: userData.brandName, }: { ...data, empId: userData._id, empName: userData.name, }
       let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
       if (data.comments) {
         updateComment({ comments: data?.comments })
@@ -401,12 +401,12 @@ const PartPendingComplaintList = (props) => {
                             >
                               Give Feedback
                             </div>
-                            <div
+                            {/* <div
                               onClick={() => handleUpdateStatus(row)}
                               className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
                             >
                               Pay
-                            </div>
+                            </div> */}
                           </>
                           : ""}
                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
@@ -417,7 +417,16 @@ const PartPendingComplaintList = (props) => {
                             <SystemSecurityUpdate />
                           </div>
                           : ""}
+                           {userData?.role === "BRAND"   ?
+                          <div
+                            onClick={() => handleUpdateStatus(row?._id)}
+                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          >
+                            <SystemSecurityUpdate />
+                          </div>
+                          : ""}
                         <div
+                        
                           onClick={() => handleDetails(row?._id)}
                           className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                         >
@@ -471,7 +480,9 @@ const PartPendingComplaintList = (props) => {
           {/* <AddFeedback  complaints={id}  onClose={handleUpdateClose}/> */}
 
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='w-[350px] mb-5'>
+          {userData?.role === "BRAND"? ""
+           :<div className='w-[350px] mb-5'>
+            
               <label className="block text-sm font-medium text-gray-700">Status</label>
               <select
                 {...register('status')}
@@ -485,6 +496,7 @@ const PartPendingComplaintList = (props) => {
                 <option value="CANCELED">Canceled</option>
               </select>
             </div>
+            }
             <div className='mb-6'>
               <label className="block text-gray-700">Comments/Notes</label>
               <textarea

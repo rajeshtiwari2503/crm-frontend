@@ -55,8 +55,26 @@ const ComplaintDetails = ({ params }) => {
 
 
     const userComp = userComplaint?.filter((f) => f?.phoneNumber === complaint?.phoneNumber)
-    console.log(value);
+    // console.log(value);
 
+    const makeLinksClickable = (text) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.split(urlRegex).map((part, index) =>
+            urlRegex.test(part) ? (
+                <a
+                    key={index}
+                    href={part}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                >
+                    {part}
+                </a>
+            ) : (
+                part
+            )
+        );
+    };
 
     return (
         <>
@@ -128,11 +146,11 @@ const ComplaintDetails = ({ params }) => {
                                     </>
 
                                 }
-                                {value?.user?.role === "ADMIN" ? 
-                                      <>
+                                {value?.user?.role === "ADMIN" ?
+                                    <>
                                         <div className='md:text-xl text-sm font-semibold'> Service Center Payment : </div>
                                         <div className='md:text-xl text-sm '>{complaint?.paymentServiceCenter}</div>
-                                    </>:""
+                                    </> : ""
 
                                 }
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>
@@ -206,7 +224,8 @@ const ComplaintDetails = ({ params }) => {
                                                 </p>
                                                 {Object.entries(comment.changes).map(([key, value]) => (
                                                     <p key={key} className="text-sm">
-                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
+                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong>{" "}
+                                                        {typeof value === "string" ? makeLinksClickable(value) : value}
                                                     </p>
                                                 ))}
                                             </div>
@@ -231,7 +250,24 @@ const ComplaintDetails = ({ params }) => {
                                             </div>
                                         ))}
                                     </div> */}
-                                    <div className="space-y-3 ">
+                                    <div className="space-y-3">
+                                        {complaint?.updateHistory?.map((history) => (
+                                            <div key={history._id} className="border-b pb-2">
+                                                <p className="text-sm text-gray-500">
+                                                    <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
+                                                </p>
+                                                {Object.entries(history.changes).map(([key, value]) =>
+                                                    key !== "serviceCenterContact" ? ( // Exclude serviceCenterContact
+                                                        <p key={key} className="text-sm">
+                                                            <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong>{" "}
+                                                            {typeof value === "string" ? makeLinksClickable(value) : value}
+                                                        </p>
+                                                    ) : null
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {/* <div className="space-y-3 ">
                                         {complaint?.updateHistory?.map((history) => (
                                             <div key={history._id} className="border-b pb-2">
                                                 <p className="text-sm text-gray-500">
@@ -246,7 +282,7 @@ const ComplaintDetails = ({ params }) => {
                                                 ))}
                                             </div>
                                         ))}
-                                    </div>
+                                    </div> */}
                                 </div>
                             </div>
                         </div>

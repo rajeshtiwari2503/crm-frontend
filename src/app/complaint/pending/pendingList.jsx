@@ -67,7 +67,7 @@ const PendingComplaintList = (props) => {
 
     // Handle the complaint ID format and general search terms
     return complaintId?.includes(search) ||
-      item?._id.toLowerCase().includes(search) ||
+      item?.complaintId.toLowerCase().includes(search) ||
       item?.phoneNumber?.includes(searchTerm);
   });
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -453,7 +453,7 @@ const PendingComplaintList = (props) => {
                   {sortedData.map((row) => (
                     <TableRow key={row?.i} hover>
                       <TableCell>{row?.i}</TableCell>
-                      <TableCell>{row?._id}</TableCell>
+                      <TableCell>{row?.complaintId}</TableCell>
                       <TableCell>{row?.fullName}</TableCell>
                       {/* <TableCell>{row?.emailAddress}</TableCell> */}
                       <TableCell>{row?.district}</TableCell>

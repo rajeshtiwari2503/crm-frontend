@@ -19,7 +19,10 @@ const ComplaintList = (props) => {
   const router = useRouter()
   const sortData = props?.userData?.user?.role==="EMPLOYEE"?props?.data?.filter((f1) => props?.userData?.user?.stateZone?.includes(f1?.state)):props?.data;
  
-  const data = sortData;
+  const data = sortData?.map((item, index) => ({
+    ...item,
+    i: index + 1,
+  }));;
      
   const [status, setStatus] = useState(false);
 
@@ -314,7 +317,7 @@ const ComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.serviceAddress}</TableCell>

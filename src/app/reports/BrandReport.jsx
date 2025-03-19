@@ -366,7 +366,7 @@ const BrandReport = (props) => {
               }))}
               fileName="ComplaintsList"
               fieldsToInclude={[
-                "_id",
+                "complaintId",
                 "productBrand",
                 "categoryName",
                 "subCategoryName",

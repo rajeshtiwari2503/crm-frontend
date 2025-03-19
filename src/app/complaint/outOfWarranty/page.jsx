@@ -31,7 +31,7 @@ const OutOfWarranty = () => {
 
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      let response = await http_request.get("/getAllBrandComplaint")
       let { data } = response;
 
       setComplaint(data)

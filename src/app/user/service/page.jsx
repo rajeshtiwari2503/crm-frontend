@@ -40,9 +40,22 @@ const Service = () => {
       console.log(err);
     }
   }
-  const filData = value?.user?.role === "BRAND" ? service?.filter((f) => f?.brandId === value?.user?._id) :
-    value?.user?.role === "EMPLOYEE" ? service?.filter((f1) => user?.user?.stateZone?.includes(f1?.state))
-      : service
+  // const filData = value?.user?.role === "BRAND" ? service?.filter((f) => f?.brandId === value?.user?._id) :
+  //   value?.user?.role === "EMPLOYEE" ? service?.filter((f1) => user?.user?.stateZone?.includes(f1?.state))
+  //     : service
+ 
+  const filData = value?.user?.role === "BRAND" 
+  ? service?.filter((f) => f?.brandId === value?.user?._id) 
+  : value?.user?.role === "EMPLOYEE" 
+    ? service?.filter((f1) => 
+        user?.user?.stateZone
+          ?.map(state => state?.trim().toLowerCase()) // Normalize stateZone values
+          ?.includes(f1?.state?.trim().toLowerCase()) // Compare with normalized state
+      )
+    : service;
+
+
+
   const data = filData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {

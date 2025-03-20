@@ -276,9 +276,10 @@ const { user } = useUser();
                   sndStatus: complaint.updateComments?.map(comment => 
                     `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
                   ).join(", ") || "", // Join all statuses with timestamps, separated by a comma
-                  technicianComment: complaint.updateComments?.find(comment => comment.changes?.status === "FINAL VERIFICATION") 
-                  ? complaint.updateComments.find(comment => comment.changes?.status === "FINAL VERIFICATION").changes?.comments 
-                  : "" // Extracts comments for "FINAL VERIFICATION" status
+                  // Find "FINAL VERIFICATION" status and extract its comment
+  closerComment: complaint.updateHistory?.find(entry => 
+    entry.changes?.status === "FINAL VERIFICATION"
+  )?.changes?.comments || " "
                 }))} 
                 fileName="ComplaintsList" 
                 fieldsToInclude={[ 
@@ -305,9 +306,10 @@ const { user } = useUser();
                   "assignTechnician", 
                   "paymentServiceCenter",              
                   "paymentBrand", 
+                  "closerComment",
                   "updatedAt",
                   "createdAt",
-                  "technicianComment",
+                 
                   "sndStatus", // Include concatenated status with timestamps 
                   ]}
                 /> : ""

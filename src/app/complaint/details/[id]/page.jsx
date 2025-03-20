@@ -189,8 +189,8 @@ const ComplaintDetails = ({ params }) => {
                                     <img
 
                                         src={complaint?.issueImages}
-                                        height="100px"
-                                        width="100px"
+                                          height="200px"
+                                        width="200px"
                                         className='m-2'
                                         alt='image'
                                     />
@@ -201,8 +201,19 @@ const ComplaintDetails = ({ params }) => {
                                     <img
 
                                         src={complaint?.partImage}
-                                        height="100px"
-                                        width="100px"
+                                          height="200px"
+                                        width="200px"
+                                        className='m-2'
+                                        alt='image'
+                                    />
+                                </div>
+                                <div className='md:text-xl text-sm font-semibold'> Part Pending Image : </div>
+                                <div>
+                                    <img
+
+                                        src={complaint?.partPendingImage}
+                                        height="200px"
+                                        width="200px"
                                         className='m-2'
                                         alt='image'
                                     />

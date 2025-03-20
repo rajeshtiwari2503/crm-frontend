@@ -43,7 +43,7 @@ const AdminDashboard = (props) => {
 
   const pieChartData = [
     ["Task", "Hours per Day"],
-    ["AllComplaints", data?.complaints?.allComplaints],
+    // ["AllComplaints", data?.complaints?.allComplaints],
     ["Assign", data?.complaints?.assign],
     ["Pending", data?.complaints?.pending],
     ["Complete", data?.complaints?.complete],
@@ -91,7 +91,7 @@ const AdminDashboard = (props) => {
   ];
 
   const options = {
-    title: "Complaints Summary",
+    title: `Complaints Summary All Complaints ${data?.complaints?.allComplaints}`,
     pieHole: 0.4, // Makes it a donut chart (optional)
     is3D: true,
     slices: { 0: { offset: 0.1 }, 1: { offset: 0.1 } },

@@ -1007,7 +1007,7 @@ function Sidenav(props) {
             {value?.user?.role === "SERVICE"
               ? <ListItem onClick={handleCollapseTechnician} disablePadding className={`pl-2 ${pathname.startsWith("/user/technician")
                 ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
-                : pathname.startsWith("/feedback")
+                : pathname.startsWith("/user/technician")
                   ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
                   : "text-slate-700"
                 }`}>

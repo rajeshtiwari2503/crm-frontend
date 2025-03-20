@@ -98,9 +98,11 @@ const {user}=useUser()
   return (
     <Sidenav>
       <Toaster />
-      <>
+      <div className='flex justify-center'>
+            <div className='md:w-full w-[260px]'>
         <OrderList data={data} userData={value} brand={brands} serviceCenter={serviceCenter} sparepart={filterSparepart} RefreshData={RefreshData} />
-      </>
+        </div>
+        </div>
     </Sidenav>
   )
 }

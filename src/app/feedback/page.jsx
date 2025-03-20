@@ -48,9 +48,12 @@ const Feedback = () => {
     <Sidenav>
         <>
       <Toaster />
-    
+      <div className='flex justify-center'>
+      <div className='md:w-full w-[260px]'>
      <FeedbackList data={data}   RefreshData={RefreshData}/>
        {/* <Thankyou /> */}
+       </div>
+       </div>
        </>
     </Sidenav>
   )

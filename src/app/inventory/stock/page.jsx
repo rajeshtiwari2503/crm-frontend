@@ -56,8 +56,11 @@ const {user}=useUser()
     return (
         <>
             <Sidenav>
-               
+            <div className='flex justify-center'>
+            <div className='md:w-full w-[260px]'>
                 <StockList data={data} products={filterProduct} userData={user}  RefreshData={RefreshData}/>
+                </div>
+                </div>
             </Sidenav>
         </>
     )

@@ -48,9 +48,11 @@ const Notification = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
+      <div className='flex justify-center'>
+      <div className='md:w-full w-[260px]'>
         <NotificationList data={data} RefreshData={RefreshData} />
-      </>
+      </div>
+      </div>
     </Sidenav>
   )
 }

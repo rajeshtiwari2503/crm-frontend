@@ -588,8 +588,10 @@ const TechnicianDashboard = (props) => {
 
       {/* Display recent services list */}
       {props?.performance === true ? ""
-        : <div className='mt-8 flex justify-center'>
+        :   <div className="mt-8 flex justify-center ">
+      <div className="  md:w-full w-[260px] ">
           <RecentServicesList data={data} userData={props?.userData}/>
+        </div>
         </div>
       }
       {/* Include other components or sections as required */}

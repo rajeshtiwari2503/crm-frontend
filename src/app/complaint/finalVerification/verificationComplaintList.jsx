@@ -129,7 +129,7 @@ const VerificationComplaintList = (props) => {
       setLoading(true);
 
       const formData = new FormData();
-      formData.append("status", data.status);
+      formData.append("status", "COMPLETED");
       formData.append("kilometer", data.kilometer);
       formData.append("paymentBrand", data.paymentBrand);
       formData.append("finalComments", data.finalComments);

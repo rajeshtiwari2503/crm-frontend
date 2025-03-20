@@ -758,7 +758,7 @@ const VerificationComplaintList = (props) => {
               {/* Payment Field */}
 
               <div className="w-[350px] mb-5">
-                <label className="block text-sm font-medium text-gray-700">Payment</label>
+                <label className="block text-sm font-medium text-gray-700">Brand Payment</label>
                 <input
                   type="number"
                   {...register('paymentBrand', {
@@ -775,6 +775,24 @@ const VerificationComplaintList = (props) => {
                   <p className="text-red-500 text-sm mt-1">{errors.paymentBrand.message}</p>
                 )}
               </div>
+              {/* <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Center Payment</label>
+                <input
+                  type="number"
+                  {...register('paymentServiceCenter', {
+                    required: 'Payment is required',
+                    min: {
+                      value: 1,
+                      message: 'Payment must be at least 1',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter payment amount"
+                />
+                {errors.paymentServiceCenter && (
+                  <p className="text-red-500 text-sm mt-1">{errors.paymentServiceCenter.message}</p>
+                )}
+              </div> */}
               {/* Final Comments Field */}
               <div className="w-[350px] mb-5">
                 <label className="block text-sm font-medium text-gray-700">Final Comments</label>

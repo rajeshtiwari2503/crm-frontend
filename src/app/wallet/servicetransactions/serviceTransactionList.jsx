@@ -32,7 +32,7 @@ import DownloadExcel from '@/app/components/DownLoadExcel';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
-const router=useRouter()
+    const router = useRouter()
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
@@ -44,6 +44,8 @@ const router=useRouter()
     const [payLoading, setPayLoading] = useState(false);
     const [uploading, setLoading] = useState(false);
     const [image, setImage] = useState("")
+
+    const [filterStatus, setFilterStatus] = useState("all");
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
 
@@ -63,7 +65,12 @@ const router=useRouter()
         setSortBy(property);
     };
 
-    const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const filteredData = data?.filter((item) => {
+        if (filterStatus === "all") return true;
+        return item.status === filterStatus;
+    });
+
+    const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
     const handleUpdateModalOpen = (id) => {
@@ -133,33 +140,52 @@ const router=useRouter()
         <div className="body d-flex py-lg-3 py-md-2">
             <Toaster />
             <div className="container-xxl">
-
+                <div className="mb-4">
+                    <button
+                        className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
+                        onClick={() => setFilterStatus("all")}
+                    >
+                        All
+                    </button>
+                    <button
+                        className={`px-4 py-2 mr-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}
+                        onClick={() => setFilterStatus("PAID")}
+                    >
+                        Paid
+                    </button>
+                    <button
+                        className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}
+                        onClick={() => setFilterStatus("UNPAID")}
+                    >
+                        Unpaid
+                    </button>
+                </div>
 
 
                 <div className="flex justify-between mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
-                      <div className="ml-5">
-                              {sortedData.length > 0 && (
-                                <DownloadExcel
-                                  data={data }
-                                  fileName="ServiceCenterPaymentList"
-                                  fieldsToInclude={[
+                    <div className="ml-5">
+                        {sortedData.length > 0 && (
+                            <DownloadExcel
+                                data={data}
+                                fileName="ServiceCenterPaymentList"
+                                fieldsToInclude={[
                                     "_id",
                                     "complaintId",
                                     "serviceCenterId",
                                     "serviceCenterName",
                                     "payment",
                                     "description",
-                                    "contactNo",                                
+                                    "contactNo",
                                     "city",
-                                    "address",   
+                                    "address",
                                     "status",
                                     "createdAt",
                                     "updatedAt",
-                                  ]}
-                                />
-                              )}
-                            </div>
+                                ]}
+                            />
+                        )}
+                    </div>
 
                 </div>
 
@@ -270,14 +296,14 @@ const router=useRouter()
                                                 Pay_Date
                                             </TableSortLabel>
                                         </TableCell>
-                                        {value?.role === "ADMIN"   ? <TableCell>Actions</TableCell> : null}
+                                        {value?.role === "ADMIN" ? <TableCell>Actions</TableCell> : null}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {sortedData?.map((row, index) => (
-                                        <TableRow  key={index} hover>
-                                            <TableCell onClick={()=>router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
-                                            <TableCell onClick={()=>router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell>
+                                        <TableRow key={index} hover>
+                                            <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
+                                            <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell>
                                             <TableCell>{row?.city}</TableCell>
                                             <TableCell>{row?.address}</TableCell>
                                             <TableCell>{row?.description}</TableCell>
@@ -310,7 +336,7 @@ const router=useRouter()
                                                     </IconButton>
                                                 </TableCell> */}
                                             <TableCell>
-                                                {value?.role === "ADMIN" && row?.status === "UNPAID"?
+                                                {value?.role === "ADMIN" && row?.status === "UNPAID" ?
                                                     <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
                                                         <Payments color='success' />
 
@@ -327,7 +353,7 @@ const router=useRouter()
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             component="div"
-                            count={data.length}
+                            count={filteredData.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             onPageChange={handleChangePage}
@@ -390,7 +416,7 @@ const router=useRouter()
                                 style={{ pointerEvents: uploading ? 'none' : 'auto' }}
                                 onClick={UpdateStatus}
                             >
-                              { uploading?"Updating....": "Update"}
+                                {uploading ? "Updating...." : "Update"}
                             </button>
 
                         </div>

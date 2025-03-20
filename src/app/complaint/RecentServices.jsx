@@ -403,7 +403,7 @@ const RecentServicesList = ({ userData }) => {
               {sortedComplaints.map((row, index) => (
                 <TableRow key={index} hover>
                   <TableCell>{index + 1 + page * limit}</TableCell>
-                  <TableCell>{row._id}</TableCell>
+                  <TableCell>{row.complaintId}</TableCell>
                   <TableCell>{row.fullName}</TableCell>
                   <TableCell>{row.district}</TableCell>
                   <TableCell>{row.phoneNumber}</TableCell>

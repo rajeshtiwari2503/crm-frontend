@@ -127,7 +127,7 @@ const PartPendingTodayUpadteComplaintList = (props) => {
                                         { label: "Contact", key: "customerMobile" },
                                         { label: "Product_Brand", key: "productBrand" },
                                         { label: "Status", key: "status" },
-                                        { label: "Created_At", key: "createdAt" },
+                                        { label: "Updated_At", key: "updatedAt" },
                                     ].map(({ label, key }) => (
                                         <TableCell key={key} sx={{ color: "white" }}>
                                             <TableSortLabel
@@ -172,7 +172,7 @@ const PartPendingTodayUpadteComplaintList = (props) => {
                                             <StatusComponent row={row} />
                                         </TableCell>
 
-                                        <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                                        <TableCell>{new Date(row?.updatedAt).toLocaleString()}</TableCell>
                                         <TableCell className="p-0">
                                             <div className="flex items-center space-x-2">
 

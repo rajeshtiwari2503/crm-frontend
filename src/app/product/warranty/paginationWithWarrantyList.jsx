@@ -35,7 +35,7 @@ const ProductWarrantyPage = (props) => {
      
       
        
-      const reqData=user?.user?.role==="ADMIN"? `/getAllProductWarrantyWithPage?page=${page + 1}&limit=${rowsPerPage}`  : user?.user?.role==="BRAND EMPLOYEE"? `/getAllProductWarrantyByIdWithPage/${user?.user?.brandId}?page=${page}&limit=${rowsPerPage}`:`/getAllProductWarrantyByIdWithPage/${user?.user?._id}?page=${page}&limit=${rowsPerPage}`
+      const reqData=user?.user?.role==="ADMIN"? `/getAllProductWarrantyWithPage?page=${page + 1}&limit=${rowsPerPage}`  : user?.user?.role==="BRAND EMPLOYEE"? `/getAllProductWarrantyByIdWithPage/${user?.user?.brandId}?page=${page + 1}&limit=${rowsPerPage}`:`/getAllProductWarrantyByIdWithPage/${user?.user?._id}?page=${page + 1}&limit=${rowsPerPage}`
       try {
         setLoading(true);
         const response = await http_request.get(

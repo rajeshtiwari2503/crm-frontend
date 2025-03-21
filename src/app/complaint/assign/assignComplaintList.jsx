@@ -115,7 +115,22 @@ const AssignComplaintList = (props) => {
         status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
         assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
       } : { status: data?.status, empId: userData._id, empName: userData.name,comments:data?.comments, }
-      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+      // let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+       const formData = new FormData();
+            Object.entries(reqdata).forEach(([key, value]) => {
+              if (value !== undefined && value !== null) {
+                formData.append(key, value);
+              }
+            });
+      
+            // If there is an image, append it (example: "partPendingImage")
+            if (data?.partPendingImage && data.partPendingImage[0]) {
+              formData.append("partPendingImage", data.partPendingImage[0]); // Assuming file input
+            }
+      
+            // Send the request using FormData
+            let response = await http_request.patch(`/updateComplaintWithImage/${id}`, formData 
+              );
       let { data: responseData } = response;
       if (data.comments) {
         updateComment({ comments: data?.comments })
@@ -571,6 +586,28 @@ const AssignComplaintList = (props) => {
                 className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
               ></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            </div>
+            <div className="w-[350px] mb-5">
+              <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                {...register('partPendingImage'
+                  // , {
+                  // required: "Image is required",
+                  // validate: {
+                  //   isImage: (value) =>
+                  //     value[0]?.type.startsWith("image/") || "Only image files are allowed",
+                  //   fileSize: (value) =>
+                  //     value[0]?.size < 2 * 1024 * 1024 || "File size must be under 2MB",
+                  // },
+                // }
+              )}
+                className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+              />
+              {/* {errors.partPendingImage && (
+                <p className="text-red-500 text-sm mt-1">{errors.partPendingImage.message}</p>
+              )} */}
             </div>
             <div>
               <button type="submit" className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">

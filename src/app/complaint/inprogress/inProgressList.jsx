@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
+import { Add, Close, Print, Search, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -37,6 +37,7 @@ const InProgressComplaintList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -53,7 +54,17 @@ const InProgressComplaintList = (props) => {
     setSortBy(property);
   };
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const dataSearch = data?.filter((item) => {
+    const complaintId = item?._id?.toLowerCase();
+    const search = searchTerm.toLowerCase();
+
+    // Handle the complaint ID format and general search terms
+    return complaintId?.includes(search) ||
+      item?.complaintId.toLowerCase().includes(search) ||
+      item?.phoneNumber?.includes(searchTerm);
+  });
+
+  const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -90,7 +101,7 @@ const InProgressComplaintList = (props) => {
     // try {
     //   let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
     try {
-      const reqdata = { comments: data?.comments ,status:data?.status, empId: userData._id, empName: userData.name, }
+      const reqdata = { comments: data?.comments, status: data?.status, empId: userData._id, empName: userData.name, }
       const formData = new FormData();
       Object.entries(reqdata).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -143,6 +154,11 @@ const InProgressComplaintList = (props) => {
 
     setStatus(false)
   }
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    console.log(event.target.value);
+
+  };
   return (
     <div>
       <Toaster />
@@ -154,6 +170,16 @@ const InProgressComplaintList = (props) => {
           <div className=' ml-2 '>Add Complaint</div>
         </div>
         } */}
+        <div className="flex items-center mb-3">
+          <Search className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search by ID"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
       </div>
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
@@ -526,8 +552,8 @@ const InProgressComplaintList = (props) => {
                   //   fileSize: (value) =>
                   //     value[0]?.size < 2 * 1024 * 1024 || "File size must be under 2MB",
                   // },
-                // }
-              )}
+                  // }
+                )}
                 className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
               />
               {/* {errors.partPendingImage && (

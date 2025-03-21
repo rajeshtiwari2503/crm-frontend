@@ -56,6 +56,10 @@ const CloseComplaintList = (props) => {
     setSortBy(property);
   };
 
+  // const fitData = data
+  // ?.filter(f => f) // ✅ Filters out any falsy values
+  // .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
   const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 

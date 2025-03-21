@@ -153,6 +153,8 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
+                                  <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
+                                  <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.assignTechnician}</div>
 

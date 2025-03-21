@@ -139,6 +139,7 @@ const PendingComplaintList = (props) => {
         }
         : {
           status: data?.status,
+          comments:data?.comments,
           empId: userData._id,
           empName: userData.name,
         };
@@ -628,20 +629,22 @@ const PendingComplaintList = (props) => {
               <input
                 type="file"
                 accept="image/*"
-                {...register('partPendingImage', {
-                  required: "Image is required",
-                  validate: {
-                    isImage: (value) =>
-                      value[0]?.type.startsWith("image/") || "Only image files are allowed",
-                    // fileSize: (value) =>
-                    //   value[0]?.size < 2 * 1024 * 1024 || "File size must be under 2MB",
-                  },
-                })}
+                {...register('partPendingImage'
+                  // , {
+                  // required: "Image is required",
+                  // validate: {
+                  //   isImage: (value) =>
+                  //     value[0]?.type.startsWith("image/") || "Only image files are allowed",
+                  //   fileSize: (value) =>
+                  //     value[0]?.size < 2 * 1024 * 1024 || "File size must be under 2MB",
+                  // },
+                // }
+              )}
                 className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
               />
-              {errors.partPendingImage && (
+              {/* {errors.partPendingImage && (
                 <p className="text-red-500 text-sm mt-1">{errors.partPendingImage.message}</p>
-              )}
+              )} */}
             </div>
 
             <div>

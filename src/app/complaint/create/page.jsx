@@ -44,7 +44,7 @@ const AddComplaint = () => {
   const handleChange = async (event) => {
     const value = event.target.value;
     setSearchValue(value);
-    if (value?.length === 6) {
+    if (value?.length>=6 ) {
       try {
         setLoading(true);
         // console.log("qrCode", qrCode);

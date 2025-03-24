@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, GppGood, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, GppGood, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, RequestPage, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -1063,6 +1063,22 @@ function Sidenav(props) {
                   {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
                 </ListItemButton>
               </ListItem>
+            }
+             {value?.user?.role === "ADMIN"  ? 
+            <ListItem disablePadding
+                onClick={(event) => {
+                  router.push(`/websiteServiceRequest`)
+                }}
+                className={pathname.startsWith("/websiteServiceRequest") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+                  <ListItemIcon className={pathname.startsWith("/websiteServiceRequest") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <RequestPage style={{ color: pathname.startsWith("/websiteServiceRequest") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Service Request"} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+              :""
             }
             {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ||value?.user?.role=== "BRAND EMPLOYEE"|| value?.user?.role === "SERVICE"|| value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
               ? <ListItem onClick={(event) => {

@@ -12,7 +12,7 @@ const WarrantyDetails = ({ params }) => {
 
     const [warranty, setWarranty] = useState({})
     const [brand, setBrand] = useState({})
-    const [loading, setLoading] = useState( );
+    const [loading, setLoading] = useState();
 
     const [search, setSearch] = useState([]);
 
@@ -35,15 +35,15 @@ const WarrantyDetails = ({ params }) => {
             const response = await http_request.get(
                 `/getProductWarrantyByUniqueId/${uniqueId}`
             );
-            const {data}=response;
-            
+            const { data } = response;
+
             const filterWarranty = data?.records?.filter((f) => f?.uniqueId === uniqueId)
             // console.log("filterWarranty",filterWarranty);
             setSearch(data)
             setResult(filterWarranty);
-           if(data){
-            getBrandById(data?.brandId)
-           } 
+            if (data) {
+                getBrandById(filterWarranty?.brandId)
+            }
             // setWarranty(data)
         } catch (err) {
             if (err.response && err.response.status === 404) {
@@ -58,7 +58,7 @@ const WarrantyDetails = ({ params }) => {
 
 
     // console.log("result" ,result);
-    
+
     useEffect(() => {
         getWarranty()
 
@@ -66,6 +66,8 @@ const WarrantyDetails = ({ params }) => {
     useEffect(() => {
 
         if (warranty) {
+
+
             getBrandById(warranty?.brandId)
         }
     }, [warranty]);
@@ -95,16 +97,19 @@ const WarrantyDetails = ({ params }) => {
     }
 
     // console.log("search",search);
- const filtRecord =search?.records?.length>0?{records:result,brandId:search?.brandId
-    ,brandName:search?.brandName,numberOfGenerate:search?.numberOfGenerate,warrantyInDays:search?.warrantyInDays,createdAt:search?.createdAt,
-    updatedAt:search?.updatedAt,
- }:warranty
-//  console.log("filtRecord",filtRecord);
+    const filtRecord = search?.records?.length > 0 ? {
+        records: result, brandId: search?.brandId
+        , brandName: search?.brandName, numberOfGenerate: search?.numberOfGenerate, warrantyInDays: search?.warrantyInDays, createdAt: search?.createdAt,
+        updatedAt: search?.updatedAt,
+    } : warranty
+    //  console.log("filtRecord",filtRecord);
     // console.log(brand);
 
     const handleEdit = (id) => {
         router.push(`/product/sparepart/edit/${id}`)
     }
+
+
     const printA4Records = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
@@ -167,7 +172,7 @@ const WarrantyDetails = ({ params }) => {
         printWindow.document.write('</style></head><body>');
 
         const records = warranty?.records || [];
-        const itemsPerPage = 6; // Three rows * three columns
+        const itemsPerPage = 9; // Three rows * three columns
 
         for (let i = 0; i < records.length; i += itemsPerPage) {
             printWindow.document.write('<div class="container">');
@@ -195,6 +200,7 @@ const WarrantyDetails = ({ params }) => {
                         <div class="text-12">Address & Pincode</div>
                         <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
                     </div>
+                      <!-- 
                     <div class="item2">
                         
                         
@@ -204,6 +210,7 @@ const WarrantyDetails = ({ params }) => {
                         
                         <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
                     </div>
+                       -->
                     </div>
                 `);
             }
@@ -219,6 +226,8 @@ const WarrantyDetails = ({ params }) => {
         printWindow.focus();
         printWindow.print();
     };
+
+
     const print5_11CmRecords1 = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
@@ -550,9 +559,9 @@ body {
                                     onChange={(e) => setUniqueId(e.target.value)}
                                     placeholder="Enter Unique ID"
                                 />
-                                 {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+                                {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
                             </div>
-                           
+
                             <button
                                 onClick={handleSearch}
                                 disabled={loading}
@@ -571,28 +580,34 @@ body {
                     </div>
                     <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-5'>
                         <div className='font-bold mt-5'>Brand Name</div>
-                        <div>{filtRecord?.brandName?filtRecord?.brandName:warranty?.brandName}</div>
+                        <div>{filtRecord?.brandName ? filtRecord?.brandName : warranty?.brandName}</div>
                         {/* <div className='font-bold'>Part Name</div>
                         <div> 
                         {filtRecord?.productName?filtRecord?.productName:warranty?.productName}
                         </div> */}
                         <div className='font-bold'>Warranty In Days</div>
-                        <div> 
-                        {filtRecord?.warrantyInDays?filtRecord?.warrantyInDays:warranty?.warrantyInDays}
+                        <div>
+                            {filtRecord?.warrantyInDays ? filtRecord?.warrantyInDays : warranty?.warrantyInDays}
 
                         </div>
                         <div className='font-bold'>Year</div>
-                        <div> 
-                        {filtRecord?.year?filtRecord?.year:warranty?.year}
+                        <div>
+                            {filtRecord?.year ? filtRecord?.year : warranty?.year}
                         </div>
                         <div className='font-bold'>Created At</div>
-                        <div>{new Date(filtRecord?.createdAt?filtRecord?.createdAt:warranty?.createdAt).toLocaleString()}</div>
+                        <div>{new Date(filtRecord?.createdAt ? filtRecord?.createdAt : warranty?.createdAt).toLocaleString()}</div>
                         <div className='font-bold'>Updated At</div>
-                        <div>{new Date( filtRecord?.updatedAt?filtRecord?.updatedAt:warranty?.updatedAt).toLocaleString()}</div>
+                        <div>{new Date(filtRecord?.updatedAt ? filtRecord?.updatedAt : warranty?.updatedAt).toLocaleString()}</div>
                     </div>
-                    <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                        Print Records
-                    </button>
+                    {brand?._id === "67bd89f4ee5adb6d9ee17ce7" ?
+                        <button onClick={printA4Records} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print Records 
+                            {/* A4 */}
+                        </button>
+                        : <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print Records
+                        </button>
+                    }
                     <div className='font-bold mt-5'>Generated QR codes</div>
                     <div className=' grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
                         {filtRecord?.records?.map((item, i) => (

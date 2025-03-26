@@ -135,34 +135,70 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
             </>
         );
     };
+
+
+
+    const totals = data.reduce((acc, item) => {
+        const amount = parseFloat(item.payment); // Convert string to number
+        if (item.status === "PAID") {
+            acc.totalPaid += amount;
+        } else if (item.status === "UNPAID") {
+            acc.totalUnpaid += amount;
+        }
+        return acc;
+    }, { totalPaid: 0, totalUnpaid: 0 });
+
+    // console.log("Total Paid Amount:", totals.totalPaid);
+    // console.log("Total Unpaid Amount:", totals.totalUnpaid);
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">
             <Toaster />
-            <div className="container-xxl">
-                <div className="mb-4">
-                    <button
-                        className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
-                        onClick={() => setFilterStatus("all")}
-                    >
-                        All
-                    </button>
-                    <button
-                        className={`px-4 py-2 mr-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}
-                        onClick={() => setFilterStatus("PAID")}
-                    >
-                        Paid
-                    </button>
-                    <button
-                        className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}
-                        onClick={() => setFilterStatus("UNPAID")}
-                    >
-                        Unpaid
-                    </button>
+            <div className="container-xxl ">
+                <div className="flex justify-between items-center">
+                    <div className=" ">
+                        <div className="mb-4">
+                            <button
+                                className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
+                                onClick={() => setFilterStatus("all")}
+                            >
+                                All
+                            </button>
+                            <button
+                                className={`px-4 py-2 mr-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}
+                                onClick={() => setFilterStatus("PAID")}
+                            >
+                                Paid
+                            </button>
+                            <button
+                                className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}
+                                onClick={() => setFilterStatus("UNPAID")}
+                            >
+                                Unpaid
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center justify-center   bg-gray-100 p-1">
+                        <div className="bg-white shadow-lg rounded-lg p-2 w-full max-w-md">
+                            {/* <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">
+                                Payment Summary
+                            </h2> */}
+                            <div className='flex '>
+                            <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
+                                <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                <span className="text-lg font-bold text-green-700">₹{totals.totalPaid}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg ms-2">
+                                <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                <span className="text-lg font-bold text-red-700">₹{totals.totalUnpaid}</span>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
 
-                <div className="flex justify-between mb-5">
+                <div className="flex justify-between items-center mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
                     <div className="ml-5">
                         {sortedData.length > 0 && (

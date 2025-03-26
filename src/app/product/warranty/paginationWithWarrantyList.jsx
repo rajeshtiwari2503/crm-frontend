@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
@@ -28,10 +29,11 @@ const ProductWarrantyPage = (props) => {
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const [selectedBrand, setSelectedBrand] = useState("");
+  const [brandData, setBrandData] = useState([]);
 
 
   const { user } = useUser()
+
   useEffect(() => {
     fetchProductWarranty();
   }, [page, rowsPerPage, user]); // Fetch data when page or rowsPerPage changes
@@ -57,6 +59,24 @@ const ProductWarrantyPage = (props) => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+
+
+    getAllProductWarrantyByBrandStickers()
+  }, [])
+  const getAllProductWarrantyByBrandStickers = async () => {
+    try {
+      let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
+      let { data } = response;
+      console.log("data", data);
+
+      setBrandData(data?.data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage); // Update the page number when user clicks next or prev
@@ -105,15 +125,37 @@ const ProductWarrantyPage = (props) => {
     setConfirmBoxView(true);
   };
 
- 
+
 
   return (
     <div>
       <Toaster />
+      <div className=" rounded-xl bg-gray-100 flex flex-col items-center py-5 ">
+        <h1 className="text-3xl font-bold text-gray-800 mb-6">Brand Stickers Overview</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full p-4 ">
+          {brandData?.map((brand) => (
+            <div
+              key={brand.brandId}
+              onClick={() => router.push(`/product/warranty/byBrand/${brand?.brandId}`)}
+              className="bg-white cursor-pointer shadow-md rounded-xl p-4 border border-gray-200 transition-transform transform hover:scale-105"
+            >
+              <div className='flex justify-between items-center'>
+                <div className="text-xl font-semibold text-gray-800 text-center">
+                  {brand.brandName.length > 20 ? brand.brandName.substring(0, 10) + "..." : brand.brandName}
+                </div>
+
+                <div className="text-3xl font-bold text-blue-600">{brand.totalStickers}</div>
+
+
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
       <div className="flex justify-between items-center mb-3">
         <div className="font-bold text-2xl">Warranty Information</div>
-       
-          
+
+
         <div onClick={handleAdd} className="flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center">
           <Add style={{ color: "white" }} />
           <div className="ml-2">Add Warranty</div>
@@ -311,7 +353,7 @@ export default ProductWarrantyPage;
 //     }
 //   }
 //   const fetchProductWarranty = async () => {
-  
+
 // console.log("selectedBrand",selectedBrand);
 
 // let reqData = "";  // Declare reqData globally
@@ -371,7 +413,7 @@ export default ProductWarrantyPage;
 
 //   // Filter data based on selected brand
 //   const uniqueBrands = [...new Set(brands?.map((item) => item.brandName))];
-   
+
 
 //   return (
 //     <div>

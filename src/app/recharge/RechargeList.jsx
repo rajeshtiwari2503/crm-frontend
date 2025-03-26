@@ -18,6 +18,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 
 import AddMonthlyPayment from './addMonthlyPayment';
+import DownloadExcel from '../components/DownLoadExcel';
 
 const RechargeList = (props) => {
 
@@ -182,9 +183,9 @@ const RechargeList = (props) => {
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Recharge Information </div>
         <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
-          <PictureAsPdf className="mr-2" />
+          <PictureAsPdf className="mr-2 " />
         </button>
-        <div className='flex items-center'>
+        <div className='flex items-center ms-2'>
 
           {props?.brandData?.brandName === "Candes" ?
             <div className='me-5 font-bold'>
@@ -192,7 +193,25 @@ const RechargeList = (props) => {
             </div>
             : <div className='me-5 font-bold'>Wallet : {((totalAmount) * 1.18).toFixed(2)} INR (included 18% GST) </div>
           }
-
+ <div className="me-2">
+                  {data?.length > 0 && (
+                    <DownloadExcel
+                      data={data}
+                      fileName="Brandt Recharge "
+                      fieldsToInclude={[
+                        "complaintId",
+                        "brandName",
+                        "amount",
+                        
+                        "description",
+                       
+                        "updatedAt",
+                        "createdAt",
+                        
+                      ]}
+                    />
+                  )}
+                </div>
           <div onClick={handleAdd} className='flex cursor-pointer rounded-lg p-3   border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Balance </div>
@@ -204,6 +223,7 @@ const RechargeList = (props) => {
             </div>
             : ""}
         </div>
+        
       </div>
       {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :

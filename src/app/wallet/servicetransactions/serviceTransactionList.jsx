@@ -155,9 +155,9 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         <div className="body d-flex py-lg-3 py-md-2">
             <Toaster />
             <div className="container-xxl ">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mb-4">
                     <div className=" ">
-                        <div className="mb-4">
+                        <div className="">
                             <button
                                 className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
                                 onClick={() => setFilterStatus("all")}

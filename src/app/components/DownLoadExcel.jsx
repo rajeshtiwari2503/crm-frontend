@@ -1,3 +1,4 @@
+import { InsertDriveFile } from '@mui/icons-material';
 import React from 'react';
 import { utils, writeFile } from 'xlsx';
 
@@ -73,12 +74,19 @@ const DownloadExcel = ({ data,userData, fileName, fieldsToInclude }) => {
   
 
   return (
+    // <button
+    //   onClick={handleDownload}
+    //   className="rounded-lg p-3  w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+    // >
+    // <InsertDriveFile />  Download Excel
+    // </button>
     <button
-      onClick={handleDownload}
-      className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      Download Excel
-    </button>
+    onClick={handleDownload}
+    className="flex items-center justify-center gap-2 rounded-lg p-3 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    <InsertDriveFile className="text-green-500" />  
+    <span>Download Excel</span>
+  </button>
   );
 };
 

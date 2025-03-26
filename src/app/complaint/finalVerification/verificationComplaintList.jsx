@@ -666,7 +666,7 @@ const VerificationComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
-                          {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          {userData?.role === "ADMIN" ?
                             <div
                               onClick={() => handleUpdateStatus(row)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"

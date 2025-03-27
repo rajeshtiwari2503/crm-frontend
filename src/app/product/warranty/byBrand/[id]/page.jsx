@@ -135,6 +135,7 @@ const ProductWarrantyPage = ({ params }) => {
 const userBrand=brand?.find((f) => f?._id === params?.id)
   return (
     <Sidenav>
+   {user?.user?.role==="ADMIN"?
     <div>
       <Toaster />
       <div className="flex justify-between items-center mb-3">
@@ -277,6 +278,8 @@ const userBrand=brand?.find((f) => f?._id === params?.id)
 
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
+    :""
+}
     </Sidenav>
   );
 };

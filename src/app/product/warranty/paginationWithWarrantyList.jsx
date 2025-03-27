@@ -68,7 +68,7 @@ const ProductWarrantyPage = (props) => {
     try {
       let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
       let { data } = response;
-      console.log("data", data);
+      // console.log("data", data);
 
       setBrandData(data?.data)
     }
@@ -130,6 +130,7 @@ const ProductWarrantyPage = (props) => {
   return (
     <div>
       <Toaster />
+     {user.user?.role==="ADMIN"?
       <div className=" rounded-xl bg-gray-100 flex flex-col items-center py-5 ">
         <h1 className="text-3xl font-bold text-gray-800 mb-6">Brand Stickers Overview</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full p-4 ">
@@ -152,6 +153,7 @@ const ProductWarrantyPage = (props) => {
           ))}
         </div>
       </div>
+      :""}
       <div className="flex justify-between items-center mb-3">
         <div className="font-bold text-2xl">Warranty Information</div>
 

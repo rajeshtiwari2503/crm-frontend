@@ -279,8 +279,13 @@ const { user } = useUser();
                   // Find "FINAL VERIFICATION" status and extract its comment
   closerComment: complaint.updateHistory?.find(entry => 
     entry.changes?.status === "FINAL VERIFICATION"
-  )?.changes?.comments || " "
-                }))} 
+  )?.changes?.comments || " ",
+                
+                empName: complaint.updateHistory?.find(entry => 
+                  entry.changes?.status === "FINAL VERIFICATION"
+                )?.changes?.empName || " "
+                              })
+              )} 
                 fileName="ComplaintsList" 
                 fieldsToInclude={[ 
                   "complaintId",
@@ -296,6 +301,7 @@ const { user } = useUser();
                   "serviceAddress",
                   "detailedDescription",
                   "status",
+                  "empName",
                   "state",
                   "district",
                   "pincode",

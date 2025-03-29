@@ -126,6 +126,7 @@ const ProductWarrantyPage = (props) => {
   };
 
 
+console.log("brandData",brandData);
 
   return (
     <div>
@@ -146,6 +147,15 @@ const ProductWarrantyPage = (props) => {
                 </div>
 
                 <div className="text-3xl font-bold text-blue-600">{brand.totalStickers}</div>
+
+
+              </div>
+              <div className='flex justify-between items-center'>
+                <div className="text-xl font-semibold text-gray-800 text-center">
+                 Stickers
+                </div>
+
+                <div className="text-3xl font-bold text-blue-600">{brand.totalnumberOfGenerate}</div>
 
 
               </div>

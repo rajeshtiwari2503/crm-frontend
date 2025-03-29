@@ -18,25 +18,33 @@ const Feedback = () => {
 
   }, [refresh])
 
-  const getAllFeedback = async() => {
-    try{
+  const getAllFeedback = async () => {
+    try {
       let user = localStorage.getItem("user");
       let obj = JSON.parse(user);
-        const userDT=userDT?.user?.role==="ADMIN"?`/getAllFeedback`
-        :userDT?.user?.role==="BRAND"?`/getFeedbackByBrandId/${userDT?.user?._id}`
-       : userDT?.user?.role==="SERVICE"?`/getFeedbackByServiceCenterId/${userDT?.user?._id}`
-        :userDT?.user?.role==="TECHNICIAN"?`/getFeedbackByTechnicianId/${userDT?.user?._id}`
-        :`/getFeedbackByUserId/${userDT?.user?._id}`
-      let response = await http_request.get("/getAllFeedback")
+  
+      // Construct the correct API endpoint based on user role
+      const endpoint =
+        obj?.user?.role === "ADMIN"
+          ? `/getAllFeedback`
+          : obj?.user?.role === "BRAND"
+          ? `/getFeedbackByBrandId/${obj?.user?._id}`
+          : obj?.user?.role === "SERVICE"
+          ? `/getFeedbackByServiceCenterId/${obj?.user?._id}`
+          : obj?.user?.role === "TECHNICIAN"
+          ? `/getFeedbackByTechnicianId/${obj?.user?._id}`
+          : `/getFeedbackByUserId/${obj?.user?._id}`;
+  
+      // Make the API call with the correct endpoint
+      let response = await http_request.get(endpoint);
       let { data } = response;
   
-      setFeedbacks(data)
-    }
-    
-    catch(err){
+      setFeedbacks(data);
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
+  
  
   const data = feedbacks?.map((item, index) => ({ ...item, i: index + 1}));
 

@@ -201,7 +201,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
                     >
-                      Status
+                     Reply Status
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -350,8 +350,13 @@ const FeedbackList = (props) => {
                           <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                             <DeleteIcon color='error' />
                           </IconButton>
+                          <div className='flex justify-between'>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
+                        <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Contact Customer</Button>
+                        </div>
                         </>
-                        : value?.user?.role === "BRAND" ?
+                        : value?.user?.role === "BRAND"   ?
                         <div className='flex justify-between'>
                         <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
                         <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>

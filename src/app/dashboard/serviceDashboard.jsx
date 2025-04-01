@@ -941,7 +941,7 @@ const getTransactions = async () => {
                 <div className='flex items-center'>
                   <Wallet fontSize='medium' />
                   <div className='ml-2'>
-                    <div className='text-blue-500 font-semibold'>Pay Amount</div>
+                    <div className='text-blue-500 font-semibold'>Unpaid Amount</div>
                     <div className=' text-2xl font-semibold'>
                       <CountUp start={0} end={totals.totalUnpaid} delay={1} />
                     </div>

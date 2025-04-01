@@ -259,7 +259,7 @@ const ServiceDashboard = (props) => {
    const [averageCT, setAverageCT] = useState(0);
     const [averageRT, setAverageRT] = useState(0);
     const [averageTAT, setAverageTAT] = useState(0);
-  const [wallet, setWallet] = useState(null)
+  const [transactions, setTransactions] = useState([])
 
   const actualTAT = 12;
   const actualCT = 6;
@@ -270,19 +270,46 @@ const ServiceDashboard = (props) => {
   // Fetch data when component mounts or refresh state changes
   useEffect(() => {
     getAllComplaint();
-    getWalletById();
+    // getWalletById();
+    getTransactions()
   }, [refresh]);
-
-  const getWalletById = async () => {
+const getTransactions = async () => {
     try {
-      let response = await http_request.get(`/getWalletByCenterId/${userData?._id}`);
+      const endPoint =   `/getAllServicePaymentByCenterId/${userData?._id}` 
+ 
+      const response = await http_request.get(endPoint);
+      
       let { data } = response;
-      setWallet(data)
-
+      // console.log("data",data);
+      
+      setTransactions(data);
     } catch (err) {
-      console.log(err);
+      console.error("Error fetching transactions:", err);
+    } finally {
+      // setLoading(false);
     }
   };
+
+
+  const totals = transactions.reduce((acc, item) => {
+    const amount = parseFloat(item.payment); // Convert string to number
+    if (item.status === "PAID") {
+        acc.totalPaid += amount;
+    } else if (item.status === "UNPAID") {
+        acc.totalUnpaid += amount;
+    }
+    return acc;
+}, { totalPaid: 0, totalUnpaid: 0 });
+  // const getWalletById = async () => {
+  //   try {
+  //     let response = await http_request.get(`/getWalletByCenterId/${userData?._id}`);
+  //     let { data } = response;
+  //     setWallet(data)
+
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const getAllComplaint = async () => {
     try {
@@ -897,9 +924,9 @@ const ServiceDashboard = (props) => {
                 <div className='flex items-center'>
                   <Wallet fontSize='medium' />
                   <div className='ml-2'>
-                    <div className='text-blue-500 font-semibold'>Wallet Amount</div>
+                    <div className='text-blue-500 font-semibold'>Paid Amount</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.walletAmount} delay={1} />
+                      <CountUp start={0} end={totals.totalPaid} delay={1} />
                     </div>
                   </div>
                 </div>
@@ -916,7 +943,7 @@ const ServiceDashboard = (props) => {
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Pay Amount</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.totalAmount} delay={1} />
+                      <CountUp start={0} end={totals.totalUnpaid} delay={1} />
                     </div>
                   </div>
                 </div>

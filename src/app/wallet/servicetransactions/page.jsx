@@ -20,19 +20,21 @@ const ServiceTransactions = ({ }) => {
   useEffect(() => {
     if (user?.user?._id) {
       setValue(user);
-      getTransactions();
+     
      
     }
-     
+     if(value){
+      getTransactions();
+     }
   
    
-  }, [refresh, user ]);
+  }, [refresh, value,user ]);
 
   
    
   const getTransactions = async () => {
     try {
-      const endPoint =  `/getAllServicePayment` 
+      const endPoint =  user?.user?.role === "SERVICE" ? `/getAllServicePaymentByCenterId/${user?.user?._id}`: `/getAllServicePayment` 
         
   
       // console.log("endPoint", endPoint);
@@ -40,8 +42,10 @@ const ServiceTransactions = ({ }) => {
       
       // Use endPoint variable correctly here
       const response = await http_request.get(endPoint);
-      
       let { data } = response;
+     
+ 
+      // console.log("data",data);
       
       setTransactions(data);
     } catch (err) {

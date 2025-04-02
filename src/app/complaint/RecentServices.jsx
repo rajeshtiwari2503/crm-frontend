@@ -311,6 +311,7 @@ const RecentServicesList = ({ userData }) => {
       else if (userData.role === "TECHNICIAN") queryParams.append("technicianId", userData._id);
       else if (userData.role === "CUSTOMER") queryParams.append("userId", userData._id);
       else if (userData.role === "DEALER") queryParams.append("dealerId", userData._id);
+      else if (userData.role === "USER") queryParams.append("dealerId", userData._id);
 
       const response =
         userData.role === "ADMIN" || userData.role === "EMPLOYEE"

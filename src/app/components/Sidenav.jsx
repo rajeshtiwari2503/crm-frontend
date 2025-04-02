@@ -28,6 +28,7 @@ import { ReactLoader } from './common/Loading';
 import http_request from "../../../http-request"
 import { useUser } from './UserContext';
 import OneSignal from "react-onesignal";
+import ApkDownload from './AppAPK';
 
 const drawerWidth = 240;
 
@@ -401,7 +402,7 @@ function Sidenav(props) {
   const drawer = (
     <>
       {value ?
-        <>
+        <div >
           <div>
             <Toolbar sx={{ display: "flex", justifyContent: "space-between",bgcolor:"#09090b" ,color:"#fafafa",padding:"1px" }}>
               <div className='bg-white p-1  rounded-lg'>
@@ -1098,7 +1099,8 @@ function Sidenav(props) {
 
 
           </div>
-        </>
+          {/* <ApkDownload /> */}
+        </div>
         : <ReactLoader />
       }
     </>

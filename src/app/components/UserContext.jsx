@@ -1,10 +1,13 @@
  "use client";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import http_request from "../../../http-request";
+import { useRouter } from "next/navigation";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+
+    const router=useRouter()
     const [user, setUser] = useState(null);
     const [isReloaded, setIsReloaded] = useState(false);
 
@@ -28,7 +31,10 @@ export const UserProvider = ({ children }) => {
                 }
             } catch (error) {
                 console.error("Error parsing user data from localStorage", error);
+                router.push("/sign_in"); // Redirect to login if error occurs
             }
+        } else {
+            router.push("/sign_in"); // Redirect if no user data found
         }
     }, [isReloaded]); // Runs once when component mounts
 

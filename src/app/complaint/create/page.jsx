@@ -254,6 +254,7 @@ const AddComplaint = () => {
       setValue('serialNo', selectedProduct.serialNo);
       setValue('purchaseDate', selectedProduct.purchaseDate);
       setValue('subCategoryName', selectedProduct?.subCategory);
+      setValue('subCategoryId', selectedProduct?.subCategoryId);
 
       setWarrantyInDays(selectedProduct.warrantyInDays)
       setValue('warrantyYears', selectedProduct.warrantyInDays);

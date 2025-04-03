@@ -44,7 +44,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const [payLoading, setPayLoading] = useState(false);
     const [uploading, setLoading] = useState(false);
     const [image, setImage] = useState("")
-
+    const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
@@ -65,10 +65,21 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         setSortBy(property);
     };
 
-    const filteredData = data?.filter((item) => {
-        if (filterStatus === "all") return true;
-        return item.status === filterStatus;
-    });
+    const filteredData = data?.reduce((acc, item) => {
+        const matchesSearch =
+            item.serviceCenterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.complaintId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item.contactNo.toString().includes(searchTerm); // Now properly included
+
+        const matchesStatus = filterStatus === "all" || item.status === filterStatus;
+
+        if (matchesSearch && matchesStatus) {
+            acc.push(item);
+        }
+
+        return acc;
+    }, []);
 
     const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -138,7 +149,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
 
 
-    const totals = data.reduce((acc, item) => {
+    const totals = filteredData.reduce((acc, item) => {
         const amount = parseFloat(item.payment); // Convert string to number
         if (item.status === "PAID") {
             acc.totalPaid += amount;
@@ -148,15 +159,16 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         return acc;
     }, { totalPaid: 0, totalUnpaid: 0 });
 
+
     // console.log("Total Paid Amount:", totals.totalPaid);
     // console.log("Total Unpaid Amount:", totals.totalUnpaid);
     return (
 
         <div className="body d-flex py-lg-3 py-md-2">
             <Toaster />
-            <div className="container-xxl ">
-                <div className="flex justify-between items-center mb-4">
-                    <div className=" ">
+            <div className="  ">
+                <div className="grid grid-cols-1 md:grid-cols-4 justify-center items-center gap-2 mb-4 ">
+                    <div className="border-gray-300 rounded-md ">
                         <div className="">
                             <button
                                 className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
@@ -178,20 +190,29 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             </button>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center justify-center   bg-gray-100 p-1">
+                    <div className=" flex">
+                        <input
+                            type="text"
+                            placeholder="Search by Name , City,Contact, or Complaint ID"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="px-4 py-2 border border-gray-300 rounded-md w-full"
+                        />
+                    </div>
+                    <div className="col-span-2 flex flex-col items-center justify-center   p-1">
                         <div className="bg-white shadow-lg rounded-lg p-2 w-full max-w-md">
                             {/* <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">
                                 Payment Summary
                             </h2> */}
                             <div className='flex '>
-                            <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
-                                <span className="text-lg font-semibold text-green-600">Total Paid:</span>
-                                <span className="text-lg font-bold text-green-700">₹{totals.totalPaid}</span>
-                            </div>
-                            <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg ms-2">
-                                <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
-                                <span className="text-lg font-bold text-red-700">₹{totals.totalUnpaid}</span>
-                            </div>
+                                <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
+                                    <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                    <span className="text-lg font-bold text-green-700">₹{totals.totalPaid}</span>
+                                </div>
+                                <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg ms-2">
+                                    <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                    <span className="text-lg font-bold text-red-700">₹{totals.totalUnpaid}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +224,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                     <div className="ml-5">
                         {sortedData.length > 0 && (
                             <DownloadExcel
-                                data={data}
+                                data={filteredData}
                                 fileName="ServiceCenterPaymentList"
                                 fieldsToInclude={[
                                     "_id",
@@ -339,7 +360,13 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                     {sortedData?.map((row, index) => (
                                         <TableRow key={index} hover>
                                             <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
-                                            <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell>
+                                            {/* <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell> */}
+                                            <TableCell
+                                                style={{ color: "blue", cursor: "pointer" }}
+                                                onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}
+                                            >
+                                                {row?.serviceCenterName}
+                                            </TableCell>
                                             <TableCell>{row?.city}</TableCell>
                                             <TableCell>{row?.address}</TableCell>
                                             <TableCell>{row?.description}</TableCell>

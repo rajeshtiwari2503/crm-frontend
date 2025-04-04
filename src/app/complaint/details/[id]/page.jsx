@@ -153,6 +153,13 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
+                                 {value?.user?.role === "ADMIN" ||value?.user?.role === "EMPLOYEE"||value?.user?.role === "USER" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
+                                        <div className='md:text-xl bg-slate-400 text-center rounded-md text-sm '>{complaint?.otp}</div>
+                                    </> : ""
+
+                                }
                                   <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
                                   <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>

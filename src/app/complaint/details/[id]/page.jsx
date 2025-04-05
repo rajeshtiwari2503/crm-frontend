@@ -105,6 +105,8 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm font-bold'>Last Updated :  </div>
                                 <div className='md:text-xl text-sm  '> {new Date(complaint?.updatedAt).toLocaleString()} </div>
 
+                                <div className='md:text-xl text-sm font-semibold'>ComplaintId : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.complaintId}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Brand : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.productBrand}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Product Name : </div>

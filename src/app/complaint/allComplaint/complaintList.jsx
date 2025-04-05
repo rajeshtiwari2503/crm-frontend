@@ -288,18 +288,18 @@ const ComplaintList = (props) => {
   };
   const sendOTP = async (id) => {
     try {
-      const response = await http_request.post("/send-otp", { complaintId:id });
+      const response = await http_request.post("/send-otp", { complaintId: id });
 
       if (response.data.success) {
         console.log("OTP sent successfully!");
-       ToastMessage({status:true,msg:"OTP sent successfully!"})
+        ToastMessage({ status: true, msg: "OTP sent successfully!" })
       } else {
         console.log("Failed to send OTP. Please try again.");
-        ToastMessage({status:false,msg:"Failed to send OTP. Please try again."})
+        ToastMessage({ status: false, msg: "Failed to send OTP. Please try again." })
       }
     } catch (error) {
       console.log("Error sending OTP: " + error.response?.data?.message || error.message);
-    } 
+    }
   };
   const asignCenter = async () => {
     try {
@@ -682,7 +682,7 @@ const ComplaintList = (props) => {
                       <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                       <TableCell className="p-0">
                         <div className="flex items-center space-x-2">
-                          {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div
                               onClick={() => handleUpdateStatus(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -724,24 +724,28 @@ const ComplaintList = (props) => {
                           <Visibility color="primary" />
                         
                         </IconButton> */}
-                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                            <div
-                              onClick={() => handleOrderPart(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          {row?.status  !== "COMPLETED" && row?.status  !== "CANCELED" &&
+                            <>
+                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                <div
+                                  onClick={() => handleOrderPart(row?._id)}
+                                  className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
 
-                            >
-                              Add Video
-                            </div>
-                            : ""}
-                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                            <div
-                              onClick={() => sendOTP(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                >
+                                  Add Video
+                                </div>
+                                : ""}
+                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                <div
+                                  onClick={() => sendOTP(row?._id)}
+                                  className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
 
-                            >
-                              Send OTP
-                            </div>
-                            : ""}
+                                >
+                                  Send OTP
+                                </div>
+                                : ""}
+                            </>
+                          }
                           <div
                             onClick={() => handleDetails(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"

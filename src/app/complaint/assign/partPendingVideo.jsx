@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import http_request from '../../../../http-request'
 
-const EditComplaintForm = ({ complaintId }) => {
+const EditComplaintForm = ({ complaintId,  handleOrderClose }) => {
   const [formData, setFormData] = useState({
     
     videoUrl: "",
@@ -10,23 +10,8 @@ const EditComplaintForm = ({ complaintId }) => {
   const [video, setVideo] = useState(null);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    // Fetch existing complaint data
-    const fetchComplaint = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/complaint/${complaintId}`);
-        setFormData(response.data);
-      } catch (error) {
-        console.error("Error fetching complaint:", error);
-      }
-    };
-    fetchComplaint();
-  }, [complaintId]);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
+ 
+ 
   const handleVideoChange = (e) => {
     setVideo(e.target.files[0]);
   };
@@ -45,16 +30,19 @@ const EditComplaintForm = ({ complaintId }) => {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/updateComplaintWithVideo/${complaintId}`, formPayload, {
+      const response = await http_request.patch(`/updateComplaintWithVideo/${complaintId}`, formPayload, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       alert("Complaint updated successfully!");
-      console.log(response.data);
+      // console.log(response.data);
+    
     } catch (error) {
+      alert("Error updating complaint");
       console.error("Error updating complaint:", error);
     } finally {
       setUploading(false);
+      handleOrderClose()
     }
   };
 

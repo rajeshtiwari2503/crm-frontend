@@ -236,13 +236,14 @@ const AssignComplaintList = (props) => {
 
       if (response.data.success) {
         console.log("OTP sent successfully!");
-       
+       ToastMessage({status:true,msg:"OTP sent successfully!"})
       } else {
         console.log("Failed to send OTP. Please try again.");
+        ToastMessage({status:false,msg:"Failed to send OTP. Please try again."})
       }
     } catch (error) {
       console.log("Error sending OTP: " + error.response?.data?.message || error.message);
-    }
+    } 
   };
 
   return (
@@ -537,7 +538,7 @@ const AssignComplaintList = (props) => {
                             </div>
                             : ""}
 
-                          {/* {userData?.role === "SERVICE" || userData?.role === "ADMIN"  ?
+                          {userData?.role === "SERVICE" ||userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -545,8 +546,8 @@ const AssignComplaintList = (props) => {
                             >
                              Add Video
                             </div>
-                            : ""} */}
-                             {/* {userData?.role === "SERVICE" || userData?.role === "ADMIN"  ?
+                            : ""}
+                             {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
                             <div
                               onClick={() => sendOTP(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -554,7 +555,8 @@ const AssignComplaintList = (props) => {
                             >
                             Send OTP
                             </div>
-                            : ""} */}
+                            : ""}
+
                           {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                             <div
                               onClick={() => handleAssignTechnician(row?._id)}
@@ -839,7 +841,7 @@ const AssignComplaintList = (props) => {
             <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
           </form> */}
-          <EditComplaintForm complaintId={id} />
+          <EditComplaintForm handleOrderClose={handleOrderClose} complaintId={id} />
         </DialogContent>
 
       </Dialog>

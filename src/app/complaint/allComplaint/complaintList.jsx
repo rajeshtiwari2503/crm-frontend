@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import EditComplaintForm from '../assign/partPendingVideo';
 
 
 const ComplaintList = (props) => {
@@ -122,7 +123,7 @@ const ComplaintList = (props) => {
     if (searchTerm.trim() !== "") {
       fetchFilteredData();
     }
-    else{
+    else {
       props?.RefreshData(searchTerm)
     }
   }, [searchTerm]);
@@ -211,7 +212,7 @@ const ComplaintList = (props) => {
         ...(center?.postalCode ? center.postalCode.split(',').map(p => p.trim()) : [])
       ];
 
-      console.log(pincodeList,"pincodeList");
+      console.log(pincodeList, "pincodeList");
 
       // Check if targetPincode exists in the merged list
       return pincodeList.includes(targetPincode);
@@ -241,10 +242,10 @@ const ComplaintList = (props) => {
     setStatus(false)
   }
   const handleOrderPart = async (id) => {
-    // setId(id)
+    setId(id)
     // setValue("ticketID", id)
-    // setOrder(true)
-    router.push(`/inventory/order/request/${id}`);
+    setOrder(true)
+    // router.push(`/inventory/order/request/${id}`);
   }
   const handleAssignClose = () => {
 
@@ -285,7 +286,21 @@ const ComplaintList = (props) => {
     setValue('assignServiceCenterTime', new Date());
 
   };
+  const sendOTP = async (id) => {
+    try {
+      const response = await http_request.post("/send-otp", { complaintId:id });
 
+      if (response.data.success) {
+        console.log("OTP sent successfully!");
+       ToastMessage({status:true,msg:"OTP sent successfully!"})
+      } else {
+        console.log("Failed to send OTP. Please try again.");
+        ToastMessage({status:false,msg:"Failed to send OTP. Please try again."})
+      }
+    } catch (error) {
+      console.log("Error sending OTP: " + error.response?.data?.message || error.message);
+    } 
+  };
   const asignCenter = async () => {
     try {
       const data = getValues();
@@ -676,14 +691,14 @@ const ComplaintList = (props) => {
                             </div>
                             : ""}
 
-                          {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                          {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                             >
                               Order Part
                             </div>
-                            : ""}
+                            : ""} */}
                           {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                             <div
                               onClick={() => handleAssignServiceCenter(row?._id)}
@@ -709,6 +724,24 @@ const ComplaintList = (props) => {
                           <Visibility color="primary" />
                         
                         </IconButton> */}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div
+                              onClick={() => handleOrderPart(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                            >
+                              Add Video
+                            </div>
+                            : ""}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div
+                              onClick={() => sendOTP(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                            >
+                              Send OTP
+                            </div>
+                            : ""}
                           <div
                             onClick={() => handleDetails(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -772,7 +805,7 @@ const ComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+          {/* <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
 
             <div>
               <label className="block text-gray-700  ">Ticket ID</label>
@@ -852,17 +885,13 @@ const ComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
 
-            {/* <div>
-              <label className="block text-gray-700 ">Attachments</label>
-              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
-              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
-            </div> */}
+           
 
 
             <button type="submit" disabled={loading} className="rounded-md p-2 cursor-pointer bg-[#09090b] text-white hover:bg-[#ffffff] hover:text-black" >Submit</button>
 
-          </form>
-
+          </form> */}
+          <EditComplaintForm handleOrderClose={handleOrderClose} complaintId={id} />
         </DialogContent>
 
       </Dialog>

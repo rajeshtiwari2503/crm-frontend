@@ -75,7 +75,10 @@ const ComplaintDetails = ({ params }) => {
             )
         );
     };
-
+    const getGoogleDriveFileId = (url) => {
+        const match = url.match(/(?:id=|\/d\/)([\w-]+)/);
+        return match ? match[1] : null;
+      };
     return (
         <>
 
@@ -153,8 +156,15 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
-                                  <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
-                                  <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "USER" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
+                                        <div className='md:text-xl bg-slate-400 text-center rounded-md text-sm '>{complaint?.otp}</div>
+                                    </> : ""
+
+                                }
+                                <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.assignTechnician}</div>
 
@@ -191,7 +201,7 @@ const ComplaintDetails = ({ params }) => {
                                     <img
 
                                         src={complaint?.issueImages}
-                                          height="200px"
+                                        height="200px"
                                         width="200px"
                                         className='m-2'
                                         alt='image'
@@ -203,7 +213,7 @@ const ComplaintDetails = ({ params }) => {
                                     <img
 
                                         src={complaint?.partImage}
-                                          height="200px"
+                                        height="200px"
                                         width="200px"
                                         className='m-2'
                                         alt='image'
@@ -220,10 +230,28 @@ const ComplaintDetails = ({ params }) => {
                                         alt='image'
                                     />
                                 </div>
+                               
+
                             </div>
 
                         </div>
-
+                        <div className='md:p-4 p-2'>
+                        <div className='md:text-xl text-sm font-semibold'> Part Pending Video : </div>
+                                {complaint.partPendingVideo ? (
+                                    <div className="mt-4">
+                                        
+                                        <iframe
+                                            src={`https://drive.google.com/file/d/${getGoogleDriveFileId(complaint.partPendingVideo)}/preview`}
+                                            width="50%"
+                                            height="300px"
+                                            allow="autoplay"
+                                            allowFullScreen
+                                            className="rounded shadow"
+                                        />
+                                    </div>)
+                                    :"Part Pending Video not uploaded."
+                                }
+                                </div>
                         <div className="md:p-4 p-2">
                             <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4 gap-2">
                                 {/* Update Comments Section */}
@@ -263,7 +291,7 @@ const ComplaintDetails = ({ params }) => {
                                             </div>
                                         ))}
                                     </div> */}
-                                    <div className="space-y-3">
+                                    <div className="  w-full space-y-3">
                                         {complaint?.updateHistory?.map((history) => (
                                             <div key={history._id} className="border-b pb-2">
                                                 <p className="text-sm text-gray-500">

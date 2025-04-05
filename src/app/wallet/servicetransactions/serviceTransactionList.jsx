@@ -221,7 +221,8 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
                 <div className="flex justify-between items-center mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
-                    <div className="ml-5">
+                    {value?.role === "ADMIN" ?
+                     <div className="ml-5">
                         {sortedData.length > 0 && (
                             <DownloadExcel
                                 data={filteredData}
@@ -243,6 +244,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             />
                         )}
                     </div>
+                    :""}
 
                 </div>
 

@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import EditComplaintForm from './partPendingVideo';
 
 const AssignComplaintList = (props) => {
 
@@ -194,10 +195,10 @@ const AssignComplaintList = (props) => {
     setStatus(true)
   }
   const handleOrderPart = async (id) => {
-    // setId(id)
+    setId(id)
     // setValue("ticketID", id)
-    // setOrder(true)
-    router.push(`/inventory/order`);
+    setOrder(true)
+    // router.push(`/inventory/order`);
   }
   const handleOrderClose = () => {
 
@@ -228,6 +229,23 @@ const AssignComplaintList = (props) => {
     console.log(event.target.value);
 
   };
+
+  const sendOTP = async (id) => {
+    try {
+      const response = await http_request.post("/send-otp", { complaintId:id });
+
+      if (response.data.success) {
+        console.log("OTP sent successfully!");
+       ToastMessage({status:true,msg:"OTP sent successfully!"})
+      } else {
+        console.log("Failed to send OTP. Please try again.");
+        ToastMessage({status:false,msg:"Failed to send OTP. Please try again."})
+      }
+    } catch (error) {
+      console.log("Error sending OTP: " + error.response?.data?.message || error.message);
+    } 
+  };
+
   return (
     <div>
       <Toaster />
@@ -520,15 +538,25 @@ const AssignComplaintList = (props) => {
                             </div>
                             : ""}
 
-                          {userData?.role === "SERVICE" ?
+                          {userData?.role === "SERVICE" ||userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
 
                             >
-                              Order Part
+                             Add Video
                             </div>
                             : ""}
+                             {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
+                            <div
+                              onClick={() => sendOTP(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                            >
+                            Send OTP
+                            </div>
+                            : ""}
+
                           {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
                             <div
                               onClick={() => handleAssignTechnician(row?._id)}
@@ -635,6 +663,7 @@ const AssignComplaintList = (props) => {
                 <p className="text-red-500 text-sm mt-1">{errors.partPendingImage.message}</p>
               )} */}
             </div>
+
             <div>
               <button type="submit" className="rounded-lg p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
@@ -712,7 +741,7 @@ const AssignComplaintList = (props) => {
           <Close />
         </IconButton>
         <DialogContent>
-          <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
+          {/* <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-3 md:grid-cols-2  bg-white shadow-md rounded-md">
 
             <div>
               <label className="block text-gray-700  ">Ticket ID</label>
@@ -807,16 +836,12 @@ const AssignComplaintList = (props) => {
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
 
-            {/* <div>
-              <label className="block text-gray-700 ">Attachments</label>
-              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
-              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
-            </div> */}
+            
 
             <button type="submit" className="w-full py-2  px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
-          </form>
-
+          </form> */}
+          <EditComplaintForm handleOrderClose={handleOrderClose} complaintId={id} />
         </DialogContent>
 
       </Dialog>

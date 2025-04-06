@@ -9,6 +9,7 @@ import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShi
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
+import Service from '../complaint/allComplaint/page';
 
 
 const BrandDashboard = (props) => {
@@ -350,8 +351,9 @@ const BrandDashboard = (props) => {
 
   return (
     <>
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='mb-5 '>
         {/* Additional Content */}
+        {/* <Service  dashboard={true}/> */}
       </div>
 
       <div className=''>

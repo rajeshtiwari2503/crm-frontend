@@ -135,7 +135,8 @@ export const UserProvider = ({ children }) => {
                 router.push("/sign_in");
             }
         } else {
-            router.push("/sign_in");
+            console.log("other");
+            
         }
     }, [isReloaded]);
 

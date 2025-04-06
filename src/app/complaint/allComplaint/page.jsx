@@ -6,10 +6,11 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
 import { useUser } from '@/app/components/UserContext';
+import SearchComplaintList from './dashboardComplaint';
 
 
 
-const Service = () => {
+const Service = ({ dashboard }) => {
 
   const [complaint, setComplaint] = useState([])
   const [serviceCenter, setServiceCenter] = useState([])
@@ -95,7 +96,7 @@ const Service = () => {
       let { data } = response;
       // console.log("data",data?.data);
 
-      setTotalPages(Math.ceil((data?.totalComplaints || 0)  ));
+      setTotalPages(Math.ceil((data?.totalComplaints || 0)));
       setComplaint(data?.data);
     } catch (err) {
       console.error("Error fetching complaints:", err);
@@ -130,17 +131,35 @@ const Service = () => {
   }
 
   return (
-    <Sidenav>
-      <Toaster />
-      <>
-        <ComplaintList data={data} serviceCenter={serviceCenter}
-          page={page}
-          setPage={setPage}
-          limit={limit}
-          setLimit={setLimit}
-          totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
-      </>
-    </Sidenav>
+    <>
+      {dashboard === true ? 
+       <> 
+        <Toaster />
+       
+          <SearchComplaintList data={data} serviceCenter={serviceCenter}
+            page={page}
+            setPage={setPage}
+            limit={limit}
+            setLimit={setLimit}
+            dashboard={dashboard}
+            totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
+        </>
+      
+        :
+        <Sidenav>
+          <Toaster />
+          <>
+            <ComplaintList data={data} serviceCenter={serviceCenter}
+              page={page}
+              setPage={setPage}
+              limit={limit}
+              setLimit={setLimit}
+              dashboard={dashboard}
+              totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
+          </>
+        </Sidenav>
+      }
+    </>
   )
 }
 

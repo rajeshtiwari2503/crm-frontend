@@ -10,9 +10,9 @@ const OtpSender = () => {
   const sendOtp = async () => {
     try {
       // Setup reCAPTCHA (Invisible)
-      window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-      });
+      // window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+      //   size: "invisible",
+      // });
 
       const phoneNumber = `+91${phone}`; // Add country code
       const result = await signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);

@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import EditComplaintForm from '../assign/partPendingVideo';
 
 
-const ComplaintList = (props) => {
+const SearchComplaintList = (props) => {
 
 
 
@@ -104,7 +104,7 @@ const ComplaintList = (props) => {
   };
 
   const handleSearch = (event) => {
-    setVisible(true)
+    setVisible(false)
     setSearchTerm(event.target.value);
     console.log(event.target.value);
 
@@ -135,12 +135,17 @@ const ComplaintList = (props) => {
     try {
       const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
       const { data } = response;
-      setFilteredComp(data);
+      
+      if(data){
+        setFilteredComp(data);
+        setVisible(true)
+      }
     } catch (error) {
       console.error("Error fetching search results:", error);
+      setVisible(false)
     }
   };
-  const dataSearch = searchTerm ? filterComp : filteredData;
+  const dataSearch =   filterComp;
   const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? dataSearch
     : userData?.role === "BRAND" ? dataSearch?.filter((item) => item?.brandId === userData._id)
       : userData?.role === "BRAND EMPLOYEE" ? dataSearch?.filter((item) => item?.brandId === userData.brandId)
@@ -150,7 +155,7 @@ const ComplaintList = (props) => {
               : userData?.role === "DEALER" ? dataSearch?.filter((item) => item?.dealerId === userData._id)
                 : []
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -433,9 +438,9 @@ const ComplaintList = (props) => {
         }
       </div>
      
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
-        :
-        <div className='flex justify-center'>
+      
+       { visible===true ? 
+       <div className='flex justify-center'>
           <div className=' md:w-full w-[260px]'>
 
             <TableContainer component={Paper}>
@@ -798,7 +803,9 @@ const ComplaintList = (props) => {
 
           </div>
         </div>
-      }
+        :""
+       }
+       
       <Dialog open={order} onClose={handleOrderClose}>
         <DialogTitle> Part Order</DialogTitle>
         <IconButton
@@ -1042,7 +1049,7 @@ const ComplaintList = (props) => {
   );
 };
 
-export default ComplaintList;
+export default SearchComplaintList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

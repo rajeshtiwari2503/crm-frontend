@@ -238,11 +238,11 @@ const userBrand=brand?.find((f) => f?._id === params?.id)
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color="primary" />
                       </IconButton>
-                      { user?.role === "ADMIN" &&
+                      {/* { user?.user?.role==="ADMIN"  &&
                         <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                           <Delete color="error" />
                         </IconButton>
-                      }
+                      } */}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -49,7 +49,10 @@ const ProductWarrantyPage = (props) => {
         reqData
       );
       const { data } = response;
-      const dataPP = data?.data?.map((item, index) => ({ ...item, i: index + 1 }));
+      // console.log("data",data);
+
+      const activeData = user?.user?.role === "ADMIN" ? data?.data : data?.data?.filter((f) => f?.isDeleted === false)
+      const dataPP = activeData?.map((item, index) => ({ ...item, i: index + 1 }));
       setData(dataPP || []);
       setLoading(false);
       setTotalPages(data?.totalRecords || 0); // Total records for pagination
@@ -110,7 +113,7 @@ const ProductWarrantyPage = (props) => {
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteProductWarranty/${cateId}`);
+      let response = await http_request.patch(`/deleteProductWarranty/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       ToastMessage(data);
@@ -126,44 +129,44 @@ const ProductWarrantyPage = (props) => {
   };
 
 
-console.log("brandData",brandData);
+  // console.log("brandData",brandData);
 
   return (
     <div>
       <Toaster />
-     {user.user?.role==="ADMIN"?
-      <div className=" rounded-xl bg-gray-100 flex flex-col items-center py-5 ">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Brand Stickers Overview</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full p-4 ">
-          {brandData?.map((brand) => (
-            <div
-              key={brand.brandId}
-              onClick={() => router.push(`/product/warranty/byBrand/${brand?.brandId}`)}
-              className="bg-white cursor-pointer shadow-md rounded-xl p-4 border border-gray-200 transition-transform transform hover:scale-105"
-            >
-              <div className='flex justify-between items-center'>
-                <div className="text-xl font-semibold text-gray-800 text-center">
-                  {brand.brandName.length > 20 ? brand.brandName.substring(0, 10) + "..." : brand.brandName}
+      {user.user?.role === "ADMIN" ?
+        <div className=" rounded-xl bg-gray-100 flex flex-col items-center py-5 ">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">Brand Stickers Overview</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full p-4 ">
+            {brandData?.map((brand) => (
+              <div
+                key={brand.brandId}
+                onClick={() => router.push(`/product/warranty/byBrand/${brand?.brandId}`)}
+                className="bg-white cursor-pointer shadow-md rounded-xl p-4 border border-gray-200 transition-transform transform hover:scale-105"
+              >
+                <div className='flex justify-between items-center'>
+                  <div className="text-xl font-semibold text-gray-800 text-center">
+                    {brand.brandName.length > 20 ? brand.brandName.substring(0, 10) + "..." : brand.brandName}
+                  </div>
+
+                  <div className="text-3xl font-bold text-blue-600">{brand.totalStickers}</div>
+
+
                 </div>
+                <div className='flex justify-between items-center'>
+                  <div className="text-xl font-semibold text-gray-800 text-center">
+                    Stickers
+                  </div>
 
-                <div className="text-3xl font-bold text-blue-600">{brand.totalStickers}</div>
+                  <div className="text-3xl font-bold text-blue-600">{brand.totalnumberOfGenerate}</div>
 
 
-              </div>
-              <div className='flex justify-between items-center'>
-                <div className="text-xl font-semibold text-gray-800 text-center">
-                 Stickers
                 </div>
-
-                <div className="text-3xl font-bold text-blue-600">{brand.totalnumberOfGenerate}</div>
-
-
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-      :""}
+        : ""}
       <div className="flex justify-between items-center mb-3">
         <div className="font-bold text-2xl">Warranty Information</div>
 
@@ -238,6 +241,17 @@ console.log("brandData",brandData);
                       Batch No.
                     </TableSortLabel>
                   </TableCell>
+                  {props?.user?.role === "ADMIN" &&
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'year'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('year')}
+                      >
+                        Deleted
+                      </TableSortLabel>
+                    </TableCell>
+                  }
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -259,6 +273,9 @@ console.log("brandData",brandData);
                     <TableCell>{row.numberOfGenerate}</TableCell>
                     <TableCell>{row.warrantyInDays}</TableCell>
                     <TableCell>{row?.records[0]?.batchNo}</TableCell>
+                    {props?.user?.role === "ADMIN" &&
+                      <TableCell>{row.isDeleted===true? "Yes":"No"}</TableCell>
+                    }
                     <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
                     <TableCell className="flex">
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>

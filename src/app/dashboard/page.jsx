@@ -39,7 +39,7 @@ const Dashboard = () => {
   const getAllEmpDashboard = async () => {
     try {
       
-      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone }); // ✅ Send POST request with body
+      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone,brand:user?.user?.brand }); // ✅ Send POST request with body
       let { data } = response;
       console.log(data);
   

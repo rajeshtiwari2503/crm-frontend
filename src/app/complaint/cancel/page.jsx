@@ -41,7 +41,18 @@ const Cancel = () => {
       console.log(err);
     }
   }
-  const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+  // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+  const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = user?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+  
+  const sortData = user?.user?.role === "EMPLOYEE"
+    ? complaint?.filter(f1 => {
+        const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+        return matchState && matchBrand;
+      })
+    : complaint;
 
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 

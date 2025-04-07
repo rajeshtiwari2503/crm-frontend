@@ -23,19 +23,7 @@ const SearchComplaintList = (props) => {
 
   const serviceCenter = filterSer === "" ? props?.serviceCenter : filterSer
 
-
-  const complaint = props?.data;
-  const userData = props?.userData
-
-  const filteredData = complaint
-  // const filteredData = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
-  //   : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-  //     : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-  //       : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-  //         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-  //           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-  //             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-  //               : []
+ 
 
   const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm();
   const router = useRouter()
@@ -57,44 +45,15 @@ const SearchComplaintList = (props) => {
   const [visible, setVisible] = useState(false);
   const [filterComp, setFilteredComp] = useState([]);
 
-  // const handleChangePage = (event, newPage) => {
-  //   setPage(newPage);
-  // };
-  // const handleChangePage = (newPage) => {
-  //   if (newPage >= 1 && newPage <= totalPage) {
-  //     props?.setPage(newPage);
-  //   }
-  // };
-  // const handleChangeRowsPerPage = (event) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-  // const handleChangePage = (event, newPage) => {
-  //   props?.setPage(newPage + 1); // MUI pages are zero-based, so add 1
-  // };
-
-  // const handleChangeRowsPerPage = (event) => {
-  //   props?.setLimit(parseInt(event.target.value, 5));
-  //   props?.setPage(1); // Reset to first page after changing rows per page
-  // };
+  const userData = props?.userData
+  
   const handleChangePage = (event, newPage) => {
-    if (searchTerm) {
-      setPage(newPage);
-    } else {
-      props?.setPage(newPage + 1); // Convert zero-based index to 1-based for backend
-    }
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    const newRowsPerPage = parseInt(event.target.value, 10);
-
-    if (searchTerm) {
-      setRowsPerPage(newRowsPerPage);
-      setPage(0); // Reset to first page
-    } else {
-      props?.setLimit(newRowsPerPage);
-      props?.setPage(1); // Reset to first page (1-based for backend)
-    }
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleSort = (property) => {
@@ -104,58 +63,62 @@ const SearchComplaintList = (props) => {
   };
 
   const handleSearch = (event) => {
-    setVisible(false)
+    // setVisible(false)
     setSearchTerm(event.target.value);
     console.log(event.target.value);
 
   };
 
-  // const data = filteredData
-  // const data = filteredData?.filter((item) => {
-  //   const complaintId = item?._id?.toLowerCase();
-  //   const search = searchTerm.toLowerCase();
-
-
-  //   return complaintId?.includes(search) ||
-  //     item?._id.toLowerCase().includes(search) ||
-  //     item?.phoneNumber?.includes(searchTerm);
-  // });
+  
 
   useEffect(() => {
-    if (searchTerm.trim() !== "") {
-      fetchFilteredData();
+ 
+    if (searchTerm.trim() === "") {
+      setFilteredComp([]);
+      setVisible(false);
+      return;
+    }else{
+      fetchFilteredData()
     }
-    else {
-      props?.RefreshData(searchTerm)
-    }
+    
   }, [searchTerm]);
 
-
+  
   const fetchFilteredData = async () => {
+    const trimmed = searchTerm.trim();
+
+    // Only search if term is not empty and longer than 6 characters
+    if (!trimmed || trimmed.length <= 3) {
+      setFilteredComp([]);
+      setVisible(false);
+      return;
+    }
+  
     try {
       const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
       const { data } = response;
-      
-      if(data){
-        setFilteredComp(data);
-        setVisible(true)
+      // console.log("data", data);
+  
+      const filtData = data?.filter((f) => f?.brandId === userData?._id);
+  
+      if (filtData && filtData.length > 0) {
+        setFilteredComp(filtData);
+        setVisible(true);
+      } else {
+        setFilteredComp([]);
+        setVisible(false);
       }
     } catch (error) {
       console.error("Error fetching search results:", error);
-      setVisible(false)
+      setFilteredComp([]);
+      setVisible(false);
     }
   };
-  const dataSearch =   filterComp;
-  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? dataSearch
-    : userData?.role === "BRAND" ? dataSearch?.filter((item) => item?.brandId === userData._id)
-      : userData?.role === "BRAND EMPLOYEE" ? dataSearch?.filter((item) => item?.brandId === userData.brandId)
-        : userData?.role === "USER" ? dataSearch?.filter((item) => item?.userId === userData._id)
-          : userData?.role === "SERVICE" ? dataSearch?.filter((item) => item?.assignServiceCenterId === userData._id)
-            : userData?.role === "TECHNICIAN" ? dataSearch?.filter((item) => item?.technicianId === userData._id)
-              : userData?.role === "DEALER" ? dataSearch?.filter((item) => item?.dealerId === userData._id)
-                : []
+  
+ 
+  
 
-  const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const sortedData = stableSort(filterComp, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -200,18 +163,7 @@ const SearchComplaintList = (props) => {
 
     const targetPincode = filterCom?.pincode.trim(); // Trim the complaint pincode
 
-    // const serviceCenter1 = props?.serviceCenter?.filter((f) => {
-    //   if (Array.isArray(f?.pincodeSupported)) {
-
-    //     return f.pincodeSupported.some((pincodeString) => {
-
-    //       const supportedPincodes = pincodeString.split(',').map(p => p.trim());
-
-    //       return supportedPincodes.includes(targetPincode);
-    //     });
-    //   }
-    //   return false;
-    // });
+     
     const serviceCenter1 = props?.serviceCenter?.filter((center) => {
       // Convert postalCode (string) into an array and merge with pincodeSupported (if it's an array)
       const pincodeList = [
@@ -410,6 +362,9 @@ const SearchComplaintList = (props) => {
       console.log(err);
     }
   };
+
+  // console.log("sortedData",sortedData);
+  
   const preStatus = ["In Progress", "Part Pending", "Completed"]
   return (
     <div>
@@ -439,7 +394,7 @@ const SearchComplaintList = (props) => {
       </div>
      
       
-       { visible===true ? 
+       { sortedData.length>0 && visible===true ? 
        <div className='flex justify-center'>
           <div className=' md:w-full w-[260px]'>
 
@@ -794,9 +749,9 @@ const SearchComplaintList = (props) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={searchTerm ? data?.length : props?.totalPage}
-              rowsPerPage={searchTerm ? rowsPerPage : props?.limit}
-              page={searchTerm ? page : Math.max(props?.page - 1, 0)} // Ensure non-negative page index
+              count={filterComp?.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />

@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
 import { useUser } from '@/app/components/UserContext';
-import SearchComplaintList from './dashboardComplaint';
+ 
 
 
 
@@ -132,20 +132,7 @@ const Service = ({ dashboard }) => {
 
   return (
     <>
-      {dashboard === true ? 
-       <> 
-        <Toaster />
        
-          <SearchComplaintList data={data} serviceCenter={serviceCenter}
-            page={page}
-            setPage={setPage}
-            limit={limit}
-            setLimit={setLimit}
-            dashboard={dashboard}
-            totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
-        </>
-      
-        :
         <Sidenav>
           <Toaster />
           <>
@@ -158,7 +145,7 @@ const Service = ({ dashboard }) => {
               totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
           </>
         </Sidenav>
-      }
+    
     </>
   )
 }

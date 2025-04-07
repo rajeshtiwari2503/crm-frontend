@@ -53,9 +53,19 @@ const Pending = () => {
 
    const datacc=daysRange==="schedule"?complaint?.scheduleToday:complaint?.data
 
-   const sortData = user?.user?.role==="EMPLOYEE"?datacc?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):datacc;
+  //  const sortData = user?.user?.role==="EMPLOYEE"?datacc?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):datacc;
 
-    
+  const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = user?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+  
+  const sortData = user?.user?.role === "EMPLOYEE"
+    ? datacc?.filter(f1 => {
+        const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+        return matchState && matchBrand;
+      })
+    : datacc;
   const data =  sortData?.map((item, index) => ({
     ...item,
     i: index + 1,

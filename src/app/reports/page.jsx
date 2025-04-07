@@ -269,55 +269,127 @@ const { user } = useUser();
               : <>
               <div> 
                 {reportData?.complaints?.length > 0 ? 
-                <DownloadExcel  userData={user} 
-                // data={reportData?.complaints} 
-                data={reportData?.complaints?.map(complaint => ({
-                  ...complaint,
-                  sndStatus: complaint.updateComments?.map(comment => 
-                    `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
-                  ).join(", ") || "", // Join all statuses with timestamps, separated by a comma
-                  // Find "FINAL VERIFICATION" status and extract its comment
-  closerComment: complaint.updateHistory?.find(entry => 
-    entry.changes?.status === "FINAL VERIFICATION"
-  )?.changes?.comments || " ",
+  //               <DownloadExcel  userData={user} 
+  //               // data={reportData?.complaints} 
+  //               data={reportData?.complaints?.map(complaint => ({
+  //                 ...complaint,
+  //                 sndStatus: complaint.updateComments?.map(comment => 
+  //                   `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+  //                 ).join(", ") || "", // Join all statuses with timestamps, separated by a comma
+  //                 // Find "FINAL VERIFICATION" status and extract its comment
+  // closerComment: complaint.updateHistory?.find(entry => 
+  //   entry.changes?.status === "FINAL VERIFICATION"
+  // )?.changes?.comments || " ",
                 
-                empName: complaint.updateHistory?.find(entry => 
-                  entry.changes?.status === "FINAL VERIFICATION"
-                )?.changes?.empName || " "
-                              })
-              )} 
-                fileName="ComplaintsList" 
-                fieldsToInclude={[ 
-                  "complaintId",
-                  "productBrand",   
-                  "categoryName",
-                  "subCategoryName",
-                 "productName",
-                  "modelNo",
-                  "warrantyStatus",
-                  "userName",
-                  "fullName",
-                  "phoneNumber",
-                  "serviceAddress",
-                  "detailedDescription",
-                  "status",
-                  "empName",
-                  "state",
-                  "district",
-                  "pincode",
-                  "serialNo",
-                  "purchaseDate",
-                  "assignServiceCenter", 
-                  "serviceCenterContact", 
-                  "assignTechnician", 
-                  "paymentServiceCenter",              
-                  "paymentBrand", 
-                  "closerComment",
-                  "updatedAt",
-                  "createdAt",
+  //               empName: complaint.updateHistory?.find(entry => 
+  //                 entry.changes?.status === "FINAL VERIFICATION"
+  //               )?.changes?.empName || " "
+  //                             })
+  //             )} 
+  //               fileName="ComplaintsList" 
+  //               fieldsToInclude={[ 
+  //                 "complaintId",
+  //                 "productBrand",   
+  //                 "categoryName",
+  //                 "subCategoryName",
+  //                "productName",
+  //                 "modelNo",
+  //                 "warrantyStatus",
+  //                 "userName",
+  //                 "fullName",
+  //                 "phoneNumber",
+  //                 "serviceAddress",
+  //                 "detailedDescription",
+  //                 "status",
+  //                 "empName",
+  //                 "state",
+  //                 "district",
+  //                 "pincode",
+  //                 "serialNo",
+  //                 "purchaseDate",
+  //                 "assignServiceCenter", 
+  //                 "serviceCenterContact", 
+  //                 "assignTechnician", 
+  //                 "paymentServiceCenter",              
+  //                 "paymentBrand", 
+  //                 "closerComment",
+  //                 "updatedAt",
+  //                 "createdAt",
                  
-                  "sndStatus", // Include concatenated status with timestamps 
-                  ]}
+  //                 "sndStatus", // Include concatenated status with timestamps 
+  //                 ]}
+  <DownloadExcel 
+  userData={user}
+  data={reportData?.complaints?.map(complaint => {
+    const createdAt = new Date(complaint.createdAt);
+    const updatedAt = new Date(complaint.updatedAt);
+    const durationMs = updatedAt - createdAt;
+
+    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+    const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
+    const durationDays = Math.floor(durationHours / 24);
+
+    let edge = '';
+    if (durationDays > 0) {
+      edge = `${durationDays}d ${durationHours % 24}h ${durationMinutes}m`;
+    } else if (durationHours > 0) {
+      edge = `${durationHours}h ${durationMinutes}m`;
+    } else {
+      edge = `${durationMinutes}m`;
+    }
+
+    return {
+      ...complaint,
+      sndStatus: complaint.updateComments?.map(comment => 
+        `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+      ).join(", ") || "",
+
+      closerComment: complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "FINAL VERIFICATION"
+      )?.changes?.comments || " ",
+
+      empName: complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "FINAL VERIFICATION"
+      )?.changes?.empName || " ",
+
+      edge:edge // ⏳ Add the computed edge field to the exported row
+    };
+  })}
+  fileName="ComplaintsList"
+  fieldsToInclude={[ 
+    "complaintId",
+    "productBrand",   
+    "categoryName",
+    "subCategoryName",
+    "productName",
+    "modelNo",
+    "warrantyStatus",
+    "userName",
+    "fullName",
+    "phoneNumber",
+    "serviceAddress",
+    "detailedDescription",
+    "status",
+    "empName",
+    "state",
+    "district",
+    "pincode",
+    "serialNo",
+    "purchaseDate",
+    "edge" ,// ⏳ Include the edge (duration) field in Excel
+    "assignServiceCenter", 
+    "serviceCenterContact", 
+    "assignTechnician", 
+    "paymentServiceCenter",              
+    "paymentBrand", 
+    "closerComment",
+    "updatedAt",
+    "createdAt",
+    "sndStatus"
+   
+  ]}
+
+
                 /> : ""
                 }
                </div>

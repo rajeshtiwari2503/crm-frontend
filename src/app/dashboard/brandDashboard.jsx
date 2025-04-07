@@ -9,7 +9,8 @@ import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShi
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
-import Service from '../complaint/allComplaint/page';
+ 
+import SearchComplaintList from '../complaint/allComplaint/dashboardComplaint';
 
 
 const BrandDashboard = (props) => {
@@ -351,9 +352,9 @@ const BrandDashboard = (props) => {
 
   return (
     <>
-      <div className='mb-5 '>
+      <div className='mb-5 bg-[#e2e2e3] px-4 py-4 rounded-xl'>
         {/* Additional Content */}
-        {/* <Service  dashboard={true}/> */}
+        <SearchComplaintList userData={userData}/>
       </div>
 
       <div className=''>

@@ -14,11 +14,12 @@ const Editemployee = ({ params }) => {
     const [loading, setLoading] = useState(false);
 
     const [states, setStates] = useState([]);
+    const [brands, setBrands] = useState([]);
     const { register, handleSubmit, control, formState: { errors }, setValue, watch } = useForm();
 
     useEffect(() => {
         getEmployeeById();
-
+        getAllBrand()
     }, [id]);
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const Editemployee = ({ params }) => {
             // Fix: Store only the array of selected values, not objects
             const formattedStateZone = employee.stateZone || [];
             setValue("stateZone", formattedStateZone);
+            setValue("brand", employee.brand || []);
         }
     }, [employee, setValue]);
 
@@ -46,7 +48,20 @@ const Editemployee = ({ params }) => {
             console.log(err);
         }
     };
+    const getAllBrand = async () => {
+        try {
+            let response = await http_request.get(`/getAllBrand`);
+            let { data } = response;
+            const brands2 = data.map((brand) => ({
+                label: brand.brandName,  // this is what will be displayed in the dropdown
+                value: brand._id,        // this is the internal value (e.g., for form submission)
+            }));
+            setBrands(brands2);
 
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
 
     const UpdateEmployee = async (reqdata) => {
@@ -179,6 +194,34 @@ const Editemployee = ({ params }) => {
                             />
 
                         </div>
+                        <div className="mb-4 w-full">
+                            <label className="block text-gray-700 font-medium mb-2">Brands:</label>
+                            <Controller
+                                name="brand"
+                                control={control}
+                                render={({ field }) => (
+                                    <Select
+                                        {...field}
+                                        isMulti
+                                        options={brands} // must be [{label, value}] format
+                                        className="basic-multi-select"
+                                        classNamePrefix="select"
+                                        getOptionLabel={(e) => e.label}
+                                        getOptionValue={(e) => e.value}
+                                        value={field.value || []} // now storing full object
+                                        onChange={(selectedOptions) => {
+                                            field.onChange(selectedOptions); // store full object in form state
+                                            setValue("brand", selectedOptions); // optional, keep synced with RHF
+                                           
+                                        }}
+                                    />
+                                )}
+                            />
+
+
+
+                        </div>
+
 
 
 

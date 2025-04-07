@@ -81,7 +81,18 @@ const employeeDetails = ({ params }) => {
                             <div className="text-gray-500">No state zones assigned</div>
                         )}
                     </div>
-
+                    <div className='text-1xl font-semibold'>Brands:</div>
+                    <div className='text-lg font-medium'>
+                        {employee?.brand?.length > 0 ? (
+                            employee.brand.map((b, index) => (
+                                <div key={index} className="text-gray-700">
+                                    {b.label} {/* ✅ Now shows brand name */}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-gray-500"> Brand not assigned</div>
+                        )}
+                    </div>
                 </div>
 
 

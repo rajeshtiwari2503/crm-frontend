@@ -528,7 +528,7 @@ const ActivateWarrantyButton = () => {
 
       ToastMessage(data)
       localStorage.setItem('user', JSON.stringify(data));
-      window.location.href = "/complaint/pending"
+      window.location.href = "/dashboard"
     } catch (error) {
       ToastMessage(error?.response?.data)
       console.log(error);
@@ -728,7 +728,7 @@ const ActivateWarrantyButton = () => {
                     {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
                   </div>
                   <div>
-                    <label htmlFor="contact" className="block text-gray-700">Pincode:</label>
+                    <label htmlFor="pincode" className="block text-gray-700">Pincode:</label>
                     <input
                       id="pincode"
                       type="text"

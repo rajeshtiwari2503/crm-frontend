@@ -58,7 +58,7 @@ const WarrantyList = (props) => {
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteProductWarranty/${cateId}`);
+      let response = await http_request.patch(`/deleteProductWarranty/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       ToastMessage(data)

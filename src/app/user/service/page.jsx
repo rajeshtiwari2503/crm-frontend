@@ -46,7 +46,7 @@ const Service = () => {
  
   const filData = value?.user?.role === "BRAND" 
   ? service?.filter((f) => f?.brandId === value?.user?._id) 
-  : value?.user?.role === "EMPLOYEE" 
+  : value?.user?.role === "EMPLOYEE1" 
     ? service?.filter((f1) => 
         user?.user?.stateZone
           ?.map(state => state?.trim().toLowerCase()) // Normalize stateZone values

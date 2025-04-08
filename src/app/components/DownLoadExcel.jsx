@@ -4,8 +4,21 @@ import { utils, writeFile } from 'xlsx';
 
 const DownloadExcel = ({ data,userData, fileName, fieldsToInclude }) => {
   // Helper function to filter data
-  const sortData =  userData?.user?.role==="EMPLOYEE"?data?.filter((f1) => userData?.user?.stateZone?.includes(f1?.state)):data;
+  // const sortData =  userData?.user?.role==="EMPLOYEE"?data?.filter((f1) => userData?.user?.stateZone?.includes(f1?.state)):data;
  
+
+  const selectedBrandIds =  userData?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone =  userData?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+  const sortData =  userData?.user?.role === "EMPLOYEE"
+  ?  data?.filter(f1 => {
+      const matchState = hasStateZone ?  userData?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
+  :  data;
+
+
   const filterFields = (sortData, fields) => {
     return sortData.map(item => {
       const filteredItem = {};

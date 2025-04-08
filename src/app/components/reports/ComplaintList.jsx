@@ -17,8 +17,24 @@ const ComplaintList = (props) => {
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
   const router = useRouter()
-  const sortData = props?.userData?.user?.role==="EMPLOYEE"?props?.data?.filter((f1) => props?.userData?.user?.stateZone?.includes(f1?.state)):props?.data;
+
+
+
+  // const sortData = props?.userData?.user?.role==="EMPLOYEE"?props?.data?.filter((f1) => props?.userData?.user?.stateZone?.includes(f1?.state)):props?.data;
  
+  const selectedBrandIds = props?.userData?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = props?.userData?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+  
+  const sortData = props?.userData?.user?.role === "EMPLOYEE"
+    ? props?.data?.filter(f1 => {
+        const matchState = hasStateZone ? props?.userData?.user?.stateZone.includes(f1?.state) : true;
+        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+        return matchState && matchBrand;
+      })
+    : props?.data;
+
+    
   const data = sortData?.map((item, index) => ({
     ...item,
     i: index + 1,

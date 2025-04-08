@@ -29,6 +29,7 @@ import { ReactLoader } from '../../components/common/Loading';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import DownloadExcel from '@/app/components/DownLoadExcel';
+import { PaymentConfirmBox } from '@/app/components/common/ConfirmBoxPayment';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
@@ -46,6 +47,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const [image, setImage] = useState("")
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
+     const [confirmBoxView, setConfirmBoxView] = useState(false);
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
 
@@ -119,7 +121,32 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
             console.log(err);
         }
     };
+    const UpdatePaymentStatus = async () => {
+        try {
+           
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('sTatus', "PAID");
+            const response = await http_request.patch(`/editServicePayment/${isId}`, formData)
+            const { data: responseData } = response;
+            ToastMessage(responseData);
+            setLoading(false);
+            RefreshData(responseData);
+            setIsUpdateModalOpen(false)
+            setImage("")
+            setConfirmBoxView(false);
 
+        } catch (err) {
+            setLoading(false);
+            setConfirmBoxView(false);
+            console.log(err);
+        }
+    };
+
+    const handlePaidStatus = (id) => {
+        setConfirmBoxView(true);
+        setId(id)
+      }
     // console.log(sortedData.length);
 
     const ImagePopup = ({ src, alt }) => {
@@ -383,8 +410,10 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                             <TableCell>
                                                 {row.payScreenshot ? <ImagePopup src={row.payScreenshot} alt="Payment Screenshot" /> : "No Image"}
                                             </TableCell>
-                                            <TableCell style={{ textAlign: "center" }} >
-                                                <div className={row?.status === "UNPAID" ? 'bg-red-400   text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
+                                            <TableCell style={{ textAlign: "center" }}  >
+                                                <div 
+                                                 onClick={row?.status === "UNPAID" ? () => handlePaidStatus(row?._id) : undefined}
+                                                className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
                                                     <div>{row.status}</div>
                                                 </div>
                                             </TableCell>
@@ -489,7 +518,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                 </DialogContent>
             </Dialog>
 
-
+ <PaymentConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={UpdatePaymentStatus} />
         </div>
 
     );

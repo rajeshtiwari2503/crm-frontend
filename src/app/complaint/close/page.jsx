@@ -15,7 +15,7 @@ const Close = () => {
   const [refresh, setRefresh] = useState("")
 
   const [value, setValue] = React.useState(null);
-
+const [transactions, setTransactions] = useState([]);
  const { user } = useUser();
  
  
@@ -25,9 +25,26 @@ const Close = () => {
        setValue(user)
      }
     getAllComplaint()
-    
+    getTransactions()
   }, [refresh,user])
 
+  const getTransactions = async () => {
+    try {
+      const endPoint = user?.user?.role === "ADMIN"||user?.user?.role === "EMPLOYEE" 
+        ? `/getAllServicePayment` 
+        : value?.user?.role === "BRAND" 
+        ? `/getTransactionByBrandId/${user?.user?._id}` 
+        : `/getTransactionByCenterId/${user?.user?._id}`;
+   
+      const response = await http_request.get(endPoint);
+      
+      let { data } = response;
+      
+      setTransactions(data);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+    }  
+  };
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get("/getComplaintsByComplete")
@@ -65,7 +82,7 @@ const Close = () => {
     <Sidenav>
       <Toaster />
       <>
-        <CloseComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
+        <CloseComplaintList data={data}userData={value?.user}transactions={transactions} RefreshData={RefreshData} />
       </>
     </Sidenav>
   )

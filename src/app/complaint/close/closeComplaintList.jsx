@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Close, Print, Visibility } from '@mui/icons-material';
+import { Add, Close, Payment, Print, Search, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
@@ -18,7 +18,7 @@ import axios from 'axios';
 
 const CloseComplaintList = (props) => {
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset, getValues,setValue } = useForm();
 
   const router = useRouter()
   const complaint = props?.data;
@@ -40,7 +40,10 @@ const CloseComplaintList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [paymentStatus, setPaymentStatus] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const [searchTerm, setSearchTerm] = useState('');
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -59,8 +62,17 @@ const CloseComplaintList = (props) => {
   // const fitData = data
   // ?.filter(f => f) // ✅ Filters out any falsy values
   // .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+  const dataSearch = data?.filter((item) => {
+    const complaintId = item?._id?.toLowerCase();
+    const search = searchTerm.toLowerCase();
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    // Handle the complaint ID format and general search terms
+    return complaintId?.includes(search) ||
+      item?.complaintId.toLowerCase().includes(search) ||
+      item?.assignServiceCenterId?.includes(search) ||
+      item?.phoneNumber?.includes(searchTerm);
+  });
+  const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -161,6 +173,107 @@ const CloseComplaintList = (props) => {
     }
   }
 
+  const handlePaymentStatus = async (row) => {
+    setId(row?._id)
+    // console.log("row",row);
+
+    if (row) {
+      setValue("complaintId", row?._id)
+      setValue("serviceCenterName", row?.assignServiceCenter)
+      setValue("serviceCenterId", row?.assignServiceCenterId)
+      setValue("contactNo", row?.serviceCenterContact)
+      setValue("city", row?.district);
+      setValue("address", (row?.serviceAddress, row?.serviceLocation));
+    }
+    setPaymentStatus(true)
+  }
+  const handlePaymentClose = () => {
+
+    setPaymentStatus(false)
+  }
+  const handlePayment = async () => {
+    const data = getValues(); // Get all form values
+    if (!data.serviceCenterName) {
+      alert("Service Center Name is required");
+      return;
+    }
+
+    if (!data.payment || isNaN(data.payment) || Number(data.payment) <= 0) {
+      alert("Please enter a valid payment amount");
+      return;
+    }
+
+    if (!data.description) {
+      alert("Description is required");
+      return;
+    }
+
+    if (!data.contactNo || !/^\d{10}$/.test(data.contactNo)) {
+      alert("Please enter a valid 10-digit contact number");
+      return;
+    }
+
+    if (!data.complaintId) {
+      alert("Complaint ID is required");
+      return;
+    }
+
+    if (!data.city) {
+      alert("City is required");
+      return;
+    }
+    if (!data.qrCode) {
+      alert("QR code is required");
+      return;
+    }
+
+    if (data.qrCode && data.qrCode.length > 0) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedTypes.includes(data.qrCode[0].type)) {
+        alert("Invalid QR Code format. Please upload a JPEG or PNG image.");
+        return;
+      }
+    }
+    // Create FormData
+    const formData = new FormData();
+    formData.append("serviceCenterName", data.serviceCenterName);
+    formData.append("serviceCenterId", data.serviceCenterId);
+    formData.append("payment", data.payment);
+    formData.append("description", data.description);
+    formData.append("contactNo", data.contactNo);
+    formData.append("complaintId", data.complaintId);
+    formData.append("city", data.city);
+    formData.append("address", data.address);
+
+    // Append QR code if exists
+    if (data.qrCode && data.qrCode.length > 0) {
+      formData.append("qrCode", data.qrCode[0]);
+    }
+
+    setLoading(true);
+    try {
+      const response = await http_request.post("/addServicePayment", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      reset(); // Reset form on success
+      ToastMessage(response?.data)
+      props?.RefreshData(response?.data)
+      setPaymentStatus(false)
+    } catch (error) {
+      console.error("Error processing payment", error);
+      setPaymentStatus(false)
+      alert("There was an error processing the payment. Please try again.");
+    } finally {
+      setPaymentStatus(false)
+      setLoading(false);
+    }
+  };
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+    console.log(event.target.value);
+
+  };
   return (
     <div>
 
@@ -173,44 +286,54 @@ const CloseComplaintList = (props) => {
           <div className=' ml-2 '>Add Complaint</div>
         </div>
         } */}
+        <div className="flex items-center mb-3">
+          <Search className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search by ID"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
       </div>
 
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <div className='flex justify-center'>
           <div className=' md:w-full w-[260px]'>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      Complaint Id
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'fullName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('fullName')}
-                    >
-                      Customer Name
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === '_id'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('_id')}
+                      >
+                        ID
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === '_id'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('_id')}
+                      >
+                        Complaint Id
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'fullName'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('fullName')}
+                      >
+                        Customer Name
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'emailAddress'}
                                      direction={sortDirection}
@@ -219,16 +342,16 @@ const CloseComplaintList = (props) => {
                                      Customer Email
                                    </TableSortLabel>
                                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'district'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('district')}
-                    >
-                      City
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'district'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('district')}
+                      >
+                        City
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'serviceAddress'}
                                      direction={sortDirection}
@@ -237,7 +360,7 @@ const CloseComplaintList = (props) => {
                                      Service_Address
                                    </TableSortLabel>
                                  </TableCell> */}
-                  {/* <TableCell>
+                    {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'city'}
                                      direction={sortDirection}
@@ -255,16 +378,16 @@ const CloseComplaintList = (props) => {
                                     State
                                    </TableSortLabel>
                                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'customerMobile'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('customerMobile')}
-                    >
-                      Contact No.
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'customerMobile'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('customerMobile')}
+                      >
+                        Contact No.
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'categoryName'}
                                      direction={sortDirection}
@@ -273,16 +396,16 @@ const CloseComplaintList = (props) => {
                                      Category Name
                                    </TableSortLabel>
                                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productBrand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productBrand')}
-                    >
-                      Product Brand
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'productBrand'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('productBrand')}
+                      >
+                        Product Brand
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'modelNo'}
                                      direction={sortDirection}
@@ -364,47 +487,65 @@ const CloseComplaintList = (props) => {
                                      Technician Comments
                                    </TableSortLabel>
                                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      Created_At
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
-
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.complaintId}</TableCell>
-                    <TableCell>{row?.fullName}</TableCell>
-                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
-                    <TableCell>{row?.district}</TableCell>
-                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
-                    {/* <TableCell>{row?.state}</TableCell> */}
-                    <TableCell>{row?.phoneNumber}</TableCell>
-                    {/* <TableCell>{row?.categoryName}</TableCell> */}
                     <TableCell>
-                      {String(row?.productBrand || "").length > 15
-                        ? String(row?.productBrand).substring(0, 15) + "..."
-                        : row?.productBrand}
+                      <TableSortLabel
+                        active={sortBy === 'assignServiceCenter'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('assignServiceCenter')}
+                      >
+                        Service Center
+                      </TableSortLabel>
                     </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'status'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('status')}
+                      >
+                        Status
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'createdAt'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('createdAt')}
+                      >
+                        Created_At
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'updatedAt'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('updatedAt')}
+                      >
+                        Updated_At
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>Actions</TableCell>
 
-                    {/* <TableCell>{row?.modelNo}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sortedData.map((row) => (
+                    <TableRow key={row?.i} hover>
+                      <TableCell>{row?.i}</TableCell>
+                      <TableCell>{row?.complaintId}</TableCell>
+                      <TableCell>{row?.fullName}</TableCell>
+                      {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                      <TableCell>{row?.district}</TableCell>
+                      {/* <TableCell>{row?.serviceAddress}</TableCell> */}
+                      {/* <TableCell>{row?.state}</TableCell> */}
+                      <TableCell>{row?.phoneNumber}</TableCell>
+                      {/* <TableCell>{row?.categoryName}</TableCell> */}
+                      <TableCell>
+                        {String(row?.productBrand || "").length > 15
+                          ? String(row?.productBrand).substring(0, 15) + "..."
+                          : row?.productBrand}
+                      </TableCell>
+
+                      {/* <TableCell>{row?.modelNo}</TableCell>
                                    <TableCell>{row?.serialNo}</TableCell>
                
                                    <TableCell>{row?.issueType}</TableCell>
@@ -414,34 +555,47 @@ const CloseComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
-                    <TableCell>{row?.status}</TableCell>
-                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell className="p-0">
-                      <div className="flex items-center space-x-2">
-                        {userData?.role === "USER" ?
-                          <>
-                            <div
-                              onClick={() => handleUpdateStatus(row)}
-                              className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                            >
-                              Give Feedback
-                            </div>
-                            {row?.payment === 0 ?
+                      <TableCell>{row?.assignServiceCenter}</TableCell>
+                      <TableCell>{row?.status}</TableCell>
+                      <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                      <TableCell>{new Date(row?.updatedAt).toLocaleString()}</TableCell>
+                      <TableCell className="p-0">
+                        <div className="flex items-center space-x-2">
+                          {userData?.role === "USER" ?
+                            <>
                               <div
-                                onClick={() => userPayment(row)}
-                                className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
+                                onClick={() => handleUpdateStatus(row)}
+                                className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
                               >
-                                Pay
+                                Give Feedback
                               </div>
-                              : ""
-                            }
-                          </>
-                          : ""}
-                        <div
-                          onClick={() => handleDetails(row?._id)}
-                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                        >
-                          <Visibility />
+                              {row?.payment === 0 ?
+                                <div
+                                  onClick={() => userPayment(row)}
+                                  className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
+                                >
+                                  Pay
+                                </div>
+                                : ""
+                              }
+                            </>
+                            : ""}
+                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
+                            <div> {!props?.transactions.some(transaction => transaction.complaintId === row?._id) && (
+                              <div
+                                onClick={() => handlePaymentStatus(row)}
+                                className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                              >
+                                <Payment color="success" />
+                              </div>
+                            )}
+                            </div>
+                            : ""}
+                          <div
+                            onClick={() => handleDetails(row?._id)}
+                            className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                          >
+                            <Visibility />
                           </div>
                           {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
@@ -453,25 +607,25 @@ const CloseComplaintList = (props) => {
                           <DeleteIcon color="error" />
                         </IconButton> */}
                         </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={dataSearch?.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </div>
         </div>
-        </div>
-        }
+      }
       <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  ADD Feedback</DialogTitle>
         <IconButton
@@ -492,6 +646,188 @@ const CloseComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
+
+      <Dialog open={paymentStatus} onClose={handlePaymentClose}>
+        <DialogTitle>Service Center Payment</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handlePaymentClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <Close />
+        </IconButton>
+        <DialogContent>
+          {loading ? (
+            <div className='w-[400px] h-[400px] flex justify-center items-center'>
+              <ReactLoader />
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit(handlePayment)} >
+              {/* Service Center Name */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Service Center Name</label>
+                <input
+                  type="text"
+                  {...register('serviceCenterName', {
+                    required: 'Service Center Name is required',
+                  })}
+                  readOnly
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter service center name"
+                />
+                {errors.serviceCenterName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.serviceCenterName.message}</p>
+                )}
+              </div>
+
+              {/* Payment */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Payment</label>
+                <input
+                  type="text"
+                  {...register('payment', {
+                    required: 'Payment is required',
+                    pattern: {
+                      value: /^\d+(\.\d{1,2})?$/,
+                      message: 'Invalid payment amount',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter payment amount"
+                />
+                {errors.payment && (
+                  <p className="text-red-500 text-sm mt-1">{errors.payment.message}</p>
+                )}
+              </div>
+
+              {/* Description */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <input
+                  {...register('description', {
+                    required: 'Description is required',
+                    minLength: {
+                      value: 10,
+                      message: 'Description must be at least 10 characters long',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter description"
+
+                />
+                {errors.description && (
+                  <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                )}
+              </div>
+
+              {/* Contact Number */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Contact Number</label>
+                <input
+                  type="text"
+                  {...register('contactNo', {
+                    required: 'Contact number is required',
+                    pattern: {
+                      value: /^[0-9]{10}$/,
+                      message: 'Invalid phone number',
+                    },
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter contact number"
+                />
+                {errors.contactNo && (
+                  <p className="text-red-500 text-sm mt-1">{errors.contactNo.message}</p>
+                )}
+              </div>
+
+              {/* Complaint ID */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Complaint ID</label>
+                <input
+                  type="text"
+                  {...register('complaintId', {
+                    required: 'Complaint ID is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter complaint ID"
+                  readOnly
+                />
+                {errors.complaintId && (
+                  <p className="text-red-500 text-sm mt-1">{errors.complaintId.message}</p>
+                )}
+              </div>
+
+              {/* City */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">City</label>
+                <input
+                  type="text"
+                  {...register('city', {
+                    required: 'City is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter city"
+                />
+                {errors.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.city.message}</p>
+                )}
+              </div>
+
+              {/* Address */}
+              <div className='w-[350px] mb-5'>
+                <label className="block text-sm font-medium text-gray-700">Address</label>
+                <input
+                  {...register('address', {
+                    required: 'Address is required',
+                  })}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  placeholder="Enter address"
+
+                />
+                {/* {errors.address && (
+                  <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>
+                )} */}
+              </div>
+
+
+
+              {/* QR Code Upload */}
+              <div className="w-[350px] mb-5">
+                <label className="block text-sm font-medium text-gray-700">Upload QR Code</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  {...register('qrCode', {
+                    required: 'QR Code is required',
+                  })}
+                  className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+                />
+                {errors.qrCode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.qrCode.message}</p>
+                )}
+              </div>
+
+              <div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  onClick={() => handlePayment()}
+                  className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? "Submitting..." : "Payment Request"}
+                </button>
+              </div>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+
       <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );

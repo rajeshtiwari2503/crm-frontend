@@ -322,21 +322,22 @@ const { user } = useUser();
   userData={user}
   data={reportData?.complaints?.map(complaint => {
     const createdAt = new Date(complaint.createdAt);
-    const updatedAt = new Date(complaint.updatedAt);
-    const durationMs = updatedAt - createdAt;
-
+    const now = new Date(); // current date and time
+    const durationMs = now - createdAt;
+    
     const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
     const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
     const durationDays = Math.floor(durationHours / 24);
-
-    let edge = '';
-    if (durationDays > 0) {
-      edge = `${durationDays}d ${durationHours % 24}h ${durationMinutes}m`;
-    } else if (durationHours > 0) {
-      edge = `${durationHours}h ${durationMinutes}m`;
-    } else {
-      edge = `${durationMinutes}m`;
-    }
+    
+    let aging = '';
+    aging = `${durationDays}d`;
+    // if (durationDays > 0) {
+    //   edge = `${durationDays}d`; // Only show days if it's more than 24h
+    // } else if (durationHours > 0) {
+    //   edge = `${durationHours}h ${durationMinutes}m`;
+    // } else {
+    //   edge = `${durationMinutes}m`;
+    // }
 
     return {
       ...complaint,
@@ -352,7 +353,7 @@ const { user } = useUser();
         entry.changes?.status === "FINAL VERIFICATION"
       )?.changes?.empName || " ",
 
-      edge:edge // ⏳ Add the computed edge field to the exported row
+      aging:aging // ⏳ Add the computed edge field to the exported row
     };
   })}
   fileName="ComplaintsList"
@@ -376,7 +377,7 @@ const { user } = useUser();
     "pincode",
     "serialNo",
     "purchaseDate",
-    "edge" ,// ⏳ Include the edge (duration) field in Excel
+    "aging" ,// ⏳ Include the edge (duration) field in Excel
     "assignServiceCenter", 
     "serviceCenterContact", 
     "assignTechnician", 

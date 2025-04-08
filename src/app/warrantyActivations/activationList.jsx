@@ -6,7 +6,7 @@ import {
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
- 
+
 import http_request from '.././../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '../components/common/Loading';
@@ -21,7 +21,8 @@ const WarrantyActivationList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('desc'); // Set default to 'desc'
   const [sortBy, setSortBy] = useState('createdAt'); // Set the default sort by createdAt
-   
+  const [searchTerm, setSearchTerm] = useState('');
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -38,10 +39,15 @@ const WarrantyActivationList = (props) => {
     setSortBy(property);
   };
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))
+  const filteredData = data?.filter((item) =>
+    item.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.brandName?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))
     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-  
+
   const handleDetails = (id) => {
     router.push(`/warrantyActivations/details/${id}`);
   };
@@ -62,7 +68,7 @@ const WarrantyActivationList = (props) => {
     setCateId(id);
     setConfirmBoxView(true);
   };
-// console.log(data);
+  // console.log(data);
 
   return (
     <div>
@@ -73,6 +79,16 @@ const WarrantyActivationList = (props) => {
           <Add style={{ color: "white" }} />
           <div className=' ml-2 '>Add Warranty </div>
         </div> */}
+        <div className='mb-4'>
+          <input
+            type='text'
+            placeholder='Search by User or Brand Name'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='w-full   border px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500'
+          />
+        </div>
+
       </div>
 
       {!data.length > 0 ? (
@@ -189,7 +205,7 @@ const WarrantyActivationList = (props) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={data.length}
+            count={filteredData?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -198,8 +214,8 @@ const WarrantyActivationList = (props) => {
         </>
       )}
 
-      
- 
+
+
     </div>
   );
 };

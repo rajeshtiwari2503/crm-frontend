@@ -66,7 +66,7 @@ const ActivateWarrantyButton = () => {
   };
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-  // console.log(filterWarranty);
+  console.log("filterWarranty",filterWarranty);
 
 
   const calculateWarrantyExpiration = () => {
@@ -443,10 +443,10 @@ const ActivateWarrantyButton = () => {
       
     }
   }
-  // console.log(filterWarranty);
+  console.log(filterWarranty);
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
-  // console.log(filterProduct);
+  console.log(filterProduct);
   const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
   // console.log(filterProductByBrand);
 
@@ -461,6 +461,7 @@ const ActivateWarrantyButton = () => {
       // setValue('brandName', selectedProduct.productBrand);
       // setValue('brandId', selectedProduct.brandId);
       setValue('categoryId', selectedProduct.categoryId);
+      setValue('subCategoryId', selectedProduct.subCategoryId);
       setValue('categoryName', selectedProduct.categoryName);
       setValue('year', new Date());
     }
@@ -470,8 +471,8 @@ const ActivateWarrantyButton = () => {
 
     try {
       const reqdata = {
-        brandId: filterProduct?.brandId, productBrand: filterProduct?.productBrand, productId: filterProduct?._id, productName: filterProduct?.productName
-        , categoryId: filterProduct?.categoryId, categoryName: filterProduct?.categoryName, modelNo: filterProduct?.modelNo
+        brandId: filterWarranty?.brandId, productBrand: filterWarranty?.brandName, productId: filterProduct?._id, productName: filterProduct?.productName
+        , categoryId: filterProduct?.categoryId,subCategoryId: filterProduct?.subCategoryId, categoryName: filterProduct?.categoryName, modelNo: filterProduct?.modelNo
         , serialNo: filterProduct?.serialNo, warrantyStatus: filterProduct?.warrantyStatus, uniqueId: filterWarranty?.uniqueId
         , lat: filterWarranty?.lat, long: filterWarranty?.long, userId: filterWarranty?.userId
         , userName: filterWarranty?.userName, serviceLocation: filterWarranty?.address, fullName: filterWarranty?.userName,
@@ -638,6 +639,7 @@ const ActivateWarrantyButton = () => {
                       <select
                         id="productName"
                         name="productName"
+                        // {...register("productName", { required: "Please select a product" })}
                         onChange={handleProductChange}
                         className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
                       >

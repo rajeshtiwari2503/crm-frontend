@@ -95,7 +95,7 @@ const EmployeeDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Total Pending</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending + data?.complaints?.assign} delay={1} />
                   </div>
                 </div>
               </div>

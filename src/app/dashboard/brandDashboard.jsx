@@ -9,7 +9,7 @@ import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShi
 import { Chart } from 'react-google-charts';
 import RecentServicesList from '../complaint/RecentServices';
 import { useRouter } from 'next/navigation';
- 
+
 import SearchComplaintList from '../complaint/allComplaint/dashboardComplaint';
 
 
@@ -20,8 +20,8 @@ const BrandDashboard = (props) => {
   const userData = props?.userData;
   const dashData = props?.dashData;
   // console.log("userData",userData);
- 
-  
+
+
   const [complaint, setComplaint] = useState([]);
   const [warranty, setWarranty] = useState(0);
   const [refresh, setRefresh] = useState("");
@@ -30,10 +30,12 @@ const BrandDashboard = (props) => {
   const [averageTAT, setAverageTAT] = useState(0);
   const [walletAmnt, setWalletAmnt] = useState(0);
 
+
   useEffect(() => {
     getAllComplaint();
     getWarrantyById()
     getWalletAmountById()
+ 
   }, [refresh]);
 
   const getWalletAmountById = async () => {
@@ -96,18 +98,18 @@ const BrandDashboard = (props) => {
   // console.log("jgjgjjg",warranty);
 
 
+
+
  
- 
-  
- 
-  
+
+
 
   // const getAllComplaint = async () => {
   //   try {
   //     let response = await http_request.get("/getAllComplaint");
   //     let { data } = response;
   //     setComplaint(data?.data);
-  
+
   //     // Filter complaints for the brand and required statuses
   //     const filteredComplaints = data?.data?.filter(
   //       (item) =>
@@ -115,7 +117,7 @@ const BrandDashboard = (props) => {
   //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
   //               item?.cspStatus === "NO"
   //     );
-  
+
   //     // Function to calculate time difference in hours and days
   //     const getTimeDifference = (start, end) => {
   //       if (!start || !end) return { days: 0, hours: 0 };
@@ -125,19 +127,19 @@ const BrandDashboard = (props) => {
   //       let hours = Math.round(totalHours % 24);
   //       return { days, hours };
   //     };
-  
+
   //     // Function to calculate percentage
   //     const calculatePercentage = (count, total) =>
   //       total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-  
+
   //     let totalTATCount = 0;
   //     let totalRTCount = 0;
   //     let totalCTCount = 0;
   //     let totalComplaints = filteredComplaints.length;
-  
+
   //     let monthlyReport = {};
   //     let yearlyReport = {};
-  
+
   //     // Process complaints
   //     const complaintsWithMetrics = filteredComplaints.map((c) => {
   //       const complaintDate = new Date(c.createdAt);
@@ -153,7 +155,7 @@ const BrandDashboard = (props) => {
   //       const serviceCompletionTime = c.complaintCloseTime
   //         ? new Date(c.complaintCloseTime)
   //         : null;
-  
+
   //       // ** Debugging logs **
   //       console.log("📝 Complaint ID:", c._id);
   //       console.log("Created At:", complaintDate.toISOString());
@@ -161,25 +163,25 @@ const BrandDashboard = (props) => {
   //         "Response Time:",
   //         responseTime ? responseTime.toISOString() : "N/A"
   //       );
-  
+
   //       const monthYear = complaintDate.toLocaleString("default", {
   //         month: "long",
   //         year: "numeric",
   //       });
   //       const year = complaintDate.getFullYear();
-  
+
   //       // Calculate TAT, RT, and CT
   //       let tat = getTimeDifference(complaintDate, complaintCloseDate);
   //       let rt = getTimeDifference(complaintDate, responseTime);
   //       let ct = getTimeDifference(complaintDate, complaintCloseDate);
-  
+
   //       console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
-  
+
   //       // Check if TAT, RT, and CT ≤ threshold
   //       if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
   //       if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
   //       if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
-  
+
   //       // Update Monthly Report
   //       if (!monthlyReport[monthYear]) {
   //         monthlyReport[monthYear] = {
@@ -204,7 +206,7 @@ const BrandDashboard = (props) => {
   //       if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
   //       if (rt.days === 0 && rt.hours <= 2) monthlyReport[monthYear].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
-  
+
   //       // Update Yearly Report
   //       if (!yearlyReport[year]) {
   //         yearlyReport[year] = {
@@ -229,15 +231,15 @@ const BrandDashboard = (props) => {
   //       if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
   //       if (rt.days === 0 && rt.hours <= 2) yearlyReport[year].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
-  
+
   //       return { complaintId: c._id, ct, rt, tat };
   //     });
-  
+
   //     // Calculate Overall Percentages
   //     let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
   //     let overallRTPercentage = calculatePercentage(totalRTCount, totalComplaints);
   //     let overallCTPercentage = calculatePercentage(totalCTCount, totalComplaints);
-  
+
   //     // Process final reports with TAT%, CT, RT averages
   //     const processReport = (report) =>
   //       Object.keys(report).map((key) => {
@@ -250,7 +252,7 @@ const BrandDashboard = (props) => {
   //           totalCT,
   //           totalRT,
   //         } = report[key];
-  
+
   //         return {
   //           period: key,
   //           tatPercentage: calculatePercentage(tatCount, totalComplaints),
@@ -265,7 +267,7 @@ const BrandDashboard = (props) => {
   //           complaints, // Includes per-complaint CT, RT, TAT
   //         };
   //       });
-  
+
   //     let finalMonthlyReport = processReport(monthlyReport);
   //     let finalYearlyReport = processReport(yearlyReport);
   // setAverageTAT(overallTATPercentage)
@@ -281,17 +283,17 @@ const BrandDashboard = (props) => {
   //     console.log("Error fetching complaints:", err);
   //   }
   // };
-  
+
   const getAllComplaint = async () => {
     try {
       let response = await http_request.get(`/getAllTatByBrand?brandId=${userData?._id}`);
       let { data } = response;
       // console.log("data",data);
-      
-  setAverageTAT(data?.overallTATPercentage)
-  setAverageRT(data?.overallRTPercentage)
-  setAverageCT(data?.overallCTPercentage)
-      
+
+      setAverageTAT(data?.overallTATPercentage)
+      setAverageRT(data?.overallRTPercentage)
+      setAverageCT(data?.overallCTPercentage)
+
     } catch (err) {
       console.log("Error fetching complaints:", err);
     }
@@ -309,7 +311,7 @@ const BrandDashboard = (props) => {
                 : complaint;
 
   const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
-// console.log("fil",filterData);
+  // console.log("fil",filterData);
 
   const RefreshData = (data) => {
     setRefresh(data);
@@ -350,11 +352,12 @@ const BrandDashboard = (props) => {
   };
   // console.log("dashData",dashData);
 
+
   return (
     <>
       <div className='mb-5 bg-[#e2e2e3] px-4 py-4 rounded-xl'>
         {/* Additional Content */}
-        <SearchComplaintList userData={userData}/>
+        <SearchComplaintList userData={userData} />
       </div>
 
       <div className=''>
@@ -570,7 +573,7 @@ const BrandDashboard = (props) => {
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Total Pending</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending} delay={1} />
+                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign} delay={1} />
                     </div>
                   </div>
                 </div>
@@ -805,7 +808,7 @@ const BrandDashboard = (props) => {
               </div>
             </div>
           </div>
-        <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>  Other details</div>
+          <div className=' h-8 col-span-5 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>  Other details</div>
 
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
             <div onClick={() => router.push("/user/brand/stickers")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
@@ -824,27 +827,28 @@ const BrandDashboard = (props) => {
               </div>
             </div>
           </div>
-         
-          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-              <div className='flex justify-between'>
-              </div>
-              <div className='pl-5 py-1 flex justify-between items-center'>
-                <div className='flex items-center'>
-                  <Wallet fontSize='medium' />
-                  <div className='ml-2'>
-                    <div className='text-blue-500 font-semibold'>Wallet Amount</div>
-                    <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={((walletAmnt ) * 1.18).toFixed(2)} delay={1} />
+
+          { props?.brandStickers ? ""
+            : <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+              <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+                <div className='flex justify-between'>
+                </div>
+                <div className='pl-5 py-1 flex justify-between items-center'>
+                  <div className='flex items-center'>
+                    <Wallet fontSize='medium' />
+                    <div className='ml-2'>
+                      <div className='text-blue-500 font-semibold'>Wallet Amount</div>
+                      <div className=' text-2xl font-semibold'>
+                        <CountUp start={0} end={((walletAmnt) * 1.18).toFixed(2)} delay={1} />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          
+          }
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -861,7 +865,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -878,7 +882,7 @@ const BrandDashboard = (props) => {
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -917,7 +921,7 @@ const BrandDashboard = (props) => {
             height={"400px"}
           />
         </div>
-       
+
       </div>
 
       <div className='flex justify-center'>

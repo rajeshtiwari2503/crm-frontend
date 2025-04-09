@@ -19,6 +19,8 @@ const CityWiseComplaintList = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [order, setOrder] = useState("desc");
   const [orderBy, setOrderBy] = useState("TOTAL");
+ const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
 
   useEffect(() => {
     fetchComplaintData();
@@ -40,12 +42,26 @@ const CityWiseComplaintList = () => {
     setOrderBy(property);
   };
 
-  // const sortedData = [...data].sort((a, b) => {
-  //   const valueA = a[orderBy] || 0;
-  //   const valueB = b[orderBy] || 0;
-  //   return order === "asc" ? valueA - valueB : valueB - valueA;
-  // });
-  const sortedData=data
+  const uniqueStates = [...new Set(data.map(item => item.state).filter(Boolean))];
+  const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state === selectedState : true).map(item => item._id.city).filter(Boolean))];
+  
+  
+    const filteredData = data.filter(item => {
+      const matchesState = selectedState ? item.state === selectedState : true;
+      const matchesCity = selectedCity ? item._id.city === selectedCity : true;
+      return matchesState && matchesCity;
+    });
+    
+    const sortedData = [...filteredData].sort((a, b) => {
+      const aValue = a[orderBy] || 0;
+      const bValue = b[orderBy] || 0;
+      return order === "asc" ? aValue - bValue : bValue - aValue;
+    });
+
+
+
+
+  // const sortedData=data
   // Pagination
   const handleChangePage = (_, newPage) => {
     setPage(newPage);
@@ -63,6 +79,37 @@ const CityWiseComplaintList = () => {
       Complaint Count by City & State
     </Typography>
     <div className='md:w-full w-[260px]'>
+    <div className="flex justify-between gap-4 p-2">
+  <div  className="w-full">
+    <label className="text-sm font-semibold">State:</label>
+    <select
+      value={selectedState}
+      onChange={(e) => {
+        setSelectedState(e.target.value);
+        setSelectedCity(""); // Reset city when state changes
+      }}
+      className="ml-2 border px-2 py-1 text-sm rounded"
+    >
+      <option value="">All</option>
+      {uniqueStates.map((state, index) => (
+        <option key={index} value={state}>{state}</option>
+      ))}
+    </select>
+  </div>
+  <div className="w-full">
+    <label className="text-sm font-semibold">City:</label>
+    <select
+      value={selectedCity}
+      onChange={(e) => setSelectedCity(e.target.value)}
+      className="ml-2 border px-2 py-1 text-sm rounded"
+    >
+      <option value="">All</option>
+      {uniqueCities.map((city, index) => (
+        <option key={index} value={city}>{city}</option>
+      ))}
+    </select>
+  </div>
+</div>
     <TableContainer component={Paper} sx={{ maxHeight: 350 }}>
       <Table size="small">
         <TableHead sx={{ backgroundColor: "#09090b" }}>
@@ -128,7 +175,7 @@ const CityWiseComplaintList = () => {
     <TablePagination
       rowsPerPageOptions={[5, 10, 20]}
       component="div"
-      count={data.length}
+      count={filteredData?.length}
       rowsPerPage={rowsPerPage}
       page={page}
       onPageChange={handleChangePage}

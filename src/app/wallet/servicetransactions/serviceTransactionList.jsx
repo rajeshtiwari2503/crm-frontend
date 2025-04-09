@@ -47,7 +47,10 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const [image, setImage] = useState("")
     const [searchTerm, setSearchTerm] = useState("");
     const [filterStatus, setFilterStatus] = useState("all");
-     const [confirmBoxView, setConfirmBoxView] = useState(false);
+    const [confirmBoxView, setConfirmBoxView] = useState(false);
+
+    const [selectedRows, setSelectedRows] = useState([]);
+
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
 
@@ -121,20 +124,45 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
             console.log(err);
         }
     };
+    // const UpdatePaymentStatus = async () => {
+    //     try {
+
+    //         setLoading(true);
+    //         const formData = new FormData();
+    //         formData.append('status', "PAID");
+    //         const response = await http_request.patch(`/editServicePayment/${isId}`, formData)
+    //         const { data: responseData } = response;
+    //         ToastMessage(responseData);
+    //         setLoading(false);
+    //         RefreshData(responseData);
+    //         setIsUpdateModalOpen(false)
+    //         setImage("")
+    //         setConfirmBoxView(false);
+
+    //     } catch (err) {
+    //         setLoading(false);
+    //         setConfirmBoxView(false);
+    //         console.log(err);
+    //     }
+    // };
+
     const UpdatePaymentStatus = async () => {
         try {
-           
             setLoading(true);
-            const formData = new FormData();
-            formData.append('sTatus', "PAID");
-            const response = await http_request.patch(`/editServicePayment/${isId}`, formData)
+
+            const response = await http_request.put('/updateBulkPayments', {
+                ids: selectedRows,   // selectedRows should be an array of selected IDs
+              
+            });
+
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);
             RefreshData(responseData);
-            setIsUpdateModalOpen(false)
-            setImage("")
+            setIsUpdateModalOpen(false);
+            setImage('');
             setConfirmBoxView(false);
+            setSelectedRows([]); // Clear selection after update
 
         } catch (err) {
             setLoading(false);
@@ -146,7 +174,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const handlePaidStatus = (id) => {
         setConfirmBoxView(true);
         setId(id)
-      }
+    }
     // console.log(sortedData.length);
 
     const ImagePopup = ({ src, alt }) => {
@@ -186,8 +214,8 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         return acc;
     }, { totalPaid: 0, totalUnpaid: 0 });
 
-
-    // console.log("Total Paid Amount:", totals.totalPaid);
+    
+    console.log("selectedRows", selectedRows);
     // console.log("Total Unpaid Amount:", totals.totalUnpaid);
     return (
 
@@ -249,29 +277,29 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                 <div className="flex justify-between items-center mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
                     {value?.role === "ADMIN" ?
-                     <div className="ml-5">
-                        {sortedData.length > 0 && (
-                            <DownloadExcel
-                                data={filteredData}
-                                fileName="ServiceCenterPaymentList"
-                                fieldsToInclude={[
-                                    "_id",
-                                    "complaintId",
-                                    "serviceCenterId",
-                                    "serviceCenterName",
-                                    "payment",
-                                    "description",
-                                    "contactNo",
-                                    "city",
-                                    "address",
-                                    "status",
-                                    "createdAt",
-                                    "updatedAt",
-                                ]}
-                            />
-                        )}
-                    </div>
-                    :""}
+                        <div className="ml-5">
+                            {sortedData.length > 0 && (
+                                <DownloadExcel
+                                    data={filteredData}
+                                    fileName="ServiceCenterPaymentList"
+                                    fieldsToInclude={[
+                                        "_id",
+                                        "complaintId",
+                                        "serviceCenterId",
+                                        "serviceCenterName",
+                                        "payment",
+                                        "description",
+                                        "contactNo",
+                                        "city",
+                                        "address",
+                                        "status",
+                                        "createdAt",
+                                        "updatedAt",
+                                    ]}
+                                />
+                            )}
+                        </div>
+                        : ""}
 
                 </div>
 
@@ -279,10 +307,34 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                     :
 
                     <div className="col-sm-12">
+
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>
                                     <TableRow >
+                                        <TableCell >
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRows.length === sortedData.length && sortedData.length > 0}
+                                                onChange={(e) => {
+                                                    // if (e.target.checked) {
+                                                    //     const allIds = sortedData.map((row) => row._id);
+                                                    //     setSelectedRows(allIds);
+                                                    // } else {
+                                                    //     setSelectedRows([]);
+                                                    // }
+                                                    if (e.target.checked) {
+                                                        const allUnpaidIds = sortedData
+                                                          .filter((row) => row.status === "UNPAID")
+                                                          .map((row) => row._id);
+                                                        setSelectedRows(allUnpaidIds);
+                                                      }
+                                                      else {
+                                                            setSelectedRows([]);
+                                                        }
+                                                }}
+                                            />
+                                        </TableCell>
                                         <TableCell >
                                             <TableSortLabel
                                                 active={sortBy === 'brandName'}
@@ -386,39 +438,56 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {sortedData?.map((row, index) => (
-                                        <TableRow key={index} hover>
-                                            <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
-                                            {/* <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell> */}
-                                            <TableCell
-                                                style={{ color: "blue", cursor: "pointer" }}
-                                                onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}
-                                            >
-                                                {row?.serviceCenterName}
-                                            </TableCell>
-                                            <TableCell>{row?.city}</TableCell>
-                                            <TableCell>{row?.address}</TableCell>
-                                            <TableCell>{row?.description}</TableCell>
-                                            <TableCell>{row?.contactNo}</TableCell>
+
+                                    {sortedData?.map((row, index) => {
+                                        const isSelected = selectedRows.includes(row._id);
+                                        const handleCheckboxChange = () => {
+                                            if (isSelected) {
+                                                setSelectedRows(prev => prev.filter(id => id !== row._id));
+                                            } else {
+                                                setSelectedRows(prev => [...prev, row._id]);
+                                            }
+                                        };
+                                        return (
+                                            <TableRow key={index} hover>
+                                                <TableCell>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isSelected}
+                                                        onChange={handleCheckboxChange}
+                                                    />
+                                                </TableCell>
+                                                <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
+                                                {/* <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell> */}
+                                                <TableCell
+                                                    style={{ color: "blue", cursor: "pointer" }}
+                                                    onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}
+                                                >
+                                                    {row?.serviceCenterName}
+                                                </TableCell>
+                                                <TableCell>{row?.city}</TableCell>
+                                                <TableCell>{row?.address}</TableCell>
+                                                <TableCell>{row?.description}</TableCell>
+                                                <TableCell>{row?.contactNo}</TableCell>
 
 
-                                            <TableCell>{row.payment} INR</TableCell>
-                                            <TableCell>
-                                                {row.qrCode ? <ImagePopup src={row.qrCode} alt="QR Code" /> : "No Image"}
-                                            </TableCell>
+                                                <TableCell>{row.payment} INR</TableCell>
+                                                <TableCell>
+                                                    {row.qrCode ? <ImagePopup src={row.qrCode} alt="QR Code" /> : "No Image"}
+                                                </TableCell>
 
-                                            <TableCell>
-                                                {row.payScreenshot ? <ImagePopup src={row.payScreenshot} alt="Payment Screenshot" /> : "No Image"}
-                                            </TableCell>
-                                            <TableCell style={{ textAlign: "center" }}  >
-                                                <div 
-                                                 onClick={row?.status === "UNPAID" && value?.role === "ADMIN" ? () => handlePaidStatus(row?._id) : undefined}
-                                                className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
-                                                    <div>{row.status}</div>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-                                            {/* <TableCell>
+                                                <TableCell>
+                                                    {row.payScreenshot ? <ImagePopup src={row.payScreenshot} alt="Payment Screenshot" /> : "No Image"}
+                                                </TableCell>
+                                                <TableCell style={{ textAlign: "center" }}  >
+                                                    <div
+                                                        onClick={row?.status === "UNPAID" && value?.role === "ADMIN" ? () => handlePaidStatus(row?._id) : undefined}
+                                                        className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
+                                                        <div>{row.status}</div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
+                                                {/* <TableCell>
                                                     <IconButton aria-label="view" onClick={() => handleView(row.id)}>
                                                         <Visibility color='primary' />
                                                     </IconButton>
@@ -429,18 +498,19 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                         <DeleteIcon color='error' />
                                                     </IconButton>
                                                 </TableCell> */}
-                                            <TableCell>
-                                                {value?.role === "ADMIN" && row?.status === "UNPAID" ?
-                                                    <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
-                                                        <Payments color='success' />
+                                                <TableCell>
+                                                    {value?.role === "ADMIN" && row?.status === "UNPAID" ?
+                                                        <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
+                                                            <Payments color='success' />
 
-                                                    </IconButton>
+                                                        </IconButton>
 
-                                                    : null
-                                                }
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                                        : null
+                                                    }
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -518,7 +588,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                 </DialogContent>
             </Dialog>
 
- <PaymentConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={UpdatePaymentStatus} />
+            <PaymentConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={UpdatePaymentStatus} />
         </div>
 
     );

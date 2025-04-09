@@ -21,7 +21,7 @@ const StatusComponent = ({ row }) => {
     if (row?.updateHistory?.length > 0) {
         const lastIndex = row?.updateHistory.length - 1;
         statusToDisplay = row?.updateHistory[lastIndex]?.changes?.status || row?.status;
-        console.log("statusToDisplay", statusToDisplay);
+        // console.log("statusToDisplay", statusToDisplay);
 
     }
 
@@ -151,7 +151,7 @@ const PartPendingTodayUpadteComplaintList = (props) => {
                             </TableHead>
                             <TableBody>
                                 {sortedData.map((row) => (
-                                    <TableRow key={row?.i} hover>
+                                    <TableRow key={row?.complaintId} hover>
                                         <TableCell>{row?.i}</TableCell>
                                         <TableCell>{row?.complaintId}</TableCell>
                                         <TableCell>{row?.fullName}</TableCell>

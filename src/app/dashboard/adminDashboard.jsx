@@ -27,7 +27,7 @@ const PieChart = dynamic(() => import("../analytics/charts/pieChart"), {
 const AdminDashboard = (props) => {
 
   const data = props?.dashData;
-  console.log(data);
+  // console.log(data);
   const router = useRouter();
 
 
@@ -374,7 +374,7 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Total Pending</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending + data?.complaints?.assign} delay={1} />
                   </div>
                 </div>
               </div>

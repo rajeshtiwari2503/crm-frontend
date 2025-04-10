@@ -74,8 +74,17 @@ const VerificationComplaintList = (props) => {
 
     // Handle the complaint ID format and general search terms
     return complaintId?.includes(search) ||
-      item?.complaintId.toLowerCase().includes(search) ||
-      item?.phoneNumber?.includes(searchTerm);
+    item?.complaintId?.toLowerCase().includes(search) ||
+    item?.productBrand?.toLowerCase().includes(search) ||
+    item?.productName?.toLowerCase().includes(search) ||
+    item?.subCategoryName?.toLowerCase().includes(search) ||
+    item?.categoryName?.toLowerCase().includes(search) ||
+    item?.fullName?.toLowerCase().includes(search) ||
+    item?.district?.toLowerCase().includes(search) ||
+    item?.state?.toLowerCase().includes(search) ||
+    item?.assignServiceCenter?.toLowerCase().includes(search) ||
+    item?.phoneNumber?.includes(searchTerm)||
+    item?.pincode?.includes(searchTerm);
   });
 
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -399,7 +408,7 @@ const VerificationComplaintList = (props) => {
                   <Search className="text-gray-500" />
                   <input
                     type="text"
-                    placeholder="Search by ID"
+                    placeholder="Search "
                     value={searchTerm}
                     onChange={handleSearch}
                     className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -725,7 +734,7 @@ const VerificationComplaintList = (props) => {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={data.length}
+              count={dataSearch?.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}

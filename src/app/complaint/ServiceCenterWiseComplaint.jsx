@@ -68,7 +68,8 @@ const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state 
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-// console.log("sortedData",sortedData);
+// console.log("uniqueStates",uniqueStates);
+// console.log("filteredData",filteredData);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", padding: 1 }}>

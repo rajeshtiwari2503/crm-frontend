@@ -11,17 +11,33 @@ const Recharge = (props) => {
   const [product, setProduct] = useState([])
 
   const [refresh, setRefresh] = useState("")
-   const { user } = useUser();
+  const { user } = useUser();
   const [userData, setUserData] = React.useState(null);
+  const [brandData, setBrandData] = useState([]);
   useEffect(() => {
-    
+
     if (user) {
       setUserData(user);
     }
     getAllRecharge()
     getAllProduct()
-  }, [refresh,user])
+    getAllProductWarrantyByBrandStickers()
+  }, [refresh, user])
 
+  const getAllProductWarrantyByBrandStickers = async () => {
+    try {
+      let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
+      let { data } = response;
+      // console.log("data", data);
+
+      setBrandData(data?.data)
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  const brandStickers = brandData?.find((f) => f?.brandId === user?.user?._id)
 
   const getAllRecharge = async () => {
     let response = await http_request.get("/getAllRecharge")
@@ -43,15 +59,18 @@ const Recharge = (props) => {
   const RefreshData = (data) => {
     setRefresh(data)
   }
-// console.log("page ",filterData);
+  console.log("page ", brandStickers);
 
   return (
     <>
       {props?.sidebar === false ?
 
+        <div>
+          {brandStickers ? ""
+            : <RechargeList data={data} userData={userData?.user} brandData={props?.brandData} product={product} RefreshData={RefreshData} />
 
-        <RechargeList data={data} userData={userData?.user} brandData={props?.brandData} product={product} RefreshData={RefreshData} />
-
+          }
+        </div>
         :
         <Sidenav>
 

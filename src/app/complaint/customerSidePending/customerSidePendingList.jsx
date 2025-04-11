@@ -156,7 +156,7 @@ const CustomerPendingComplaintList = (props) => {
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Part Pending Service Information</div>
+        <div className='font-bold text-2xl'>Customer Side Pending Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />

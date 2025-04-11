@@ -355,8 +355,8 @@ const ComplaintList = (props) => {
             empName: userData.name,
             ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
           };
-          console.log(reqdata);
-      // let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+          // console.log(reqdata);
+      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       // if (data?.comments) {
       //   updateComment({ comments: data?.comments })
       // }

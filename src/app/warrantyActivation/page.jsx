@@ -443,17 +443,17 @@ const ActivateWarrantyButton = () => {
       
     }
   }
-  console.log(filterWarranty);
+  // console.log(filterWarranty);
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
-  console.log(filterProduct);
+  // console.log(filterProduct);
   const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
   // console.log(filterProductByBrand);
 
   const handleProductChange = (e) => {
     const selectedProductId = e.target.value;
     const selectedProduct = product?.find(prod => prod._id === selectedProductId);
-    console.log(selectedProduct);
+    // console.log(selectedProduct);
 
     if (selectedProduct) {
       setValue('productId', selectedProduct._id);
@@ -480,7 +480,7 @@ const ActivateWarrantyButton = () => {
         , state: filterWarranty?.state, district: filterWarranty?.district, serviceAddress: filterWarranty?.address
 
       }
-      console.log(reqdata);
+      // console.log(reqdata);
 
       if (contactNo === filterWarranty?.contact) {
         setLoading(true)
@@ -542,7 +542,7 @@ const ActivateWarrantyButton = () => {
   return (
     <>
       <Toaster />
-      {loading === true ? <div>
+      {loading === true || !filterWarranty ? <div>
         <ReactLoader />
       </div>
         : <div className="flex justify-center items-center min-h-screen bg-white p-6">

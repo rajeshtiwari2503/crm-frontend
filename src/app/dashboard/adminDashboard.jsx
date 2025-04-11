@@ -48,8 +48,10 @@ const AdminDashboard = (props) => {
     ["Pending", data?.complaints?.pending],
     ["Complete", data?.complaints?.complete],
     ["PartPending", data?.complaints?.partPending],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["FinalVerification", data?.complaints?.finalVerification],
     ["Cancel", data?.complaints?.cancel],
+  
     ["In Progress", data?.complaints?.inProgress],
   ];
   const pieChartBrandData = [
@@ -84,6 +86,7 @@ const AdminDashboard = (props) => {
     ["Pending", data?.complaints?.pending],
     ["Complete", data?.complaints?.complete],
     ["PartPending", data?.complaints?.partPending],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["FinalVerification", data?.complaints?.finalVerification],
     ["Cancel", data?.complaints?.cancel],
     ["In Progress", data?.complaints?.inProgress],
@@ -365,6 +368,23 @@ const AdminDashboard = (props) => {
           </div>
         </div>
         <div className=''>
+          <div onClick={() => router.push("/complaint/customerSidePending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <Settings fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Customer Side Pending</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.complaints?.customerSidePending} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
           <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
@@ -374,7 +394,7 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Total Pending</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending + data?.complaints?.assign} delay={1} />
+                    <CountUp start={0} end={data?.complaints?.partPending + data?.complaints?.inProgress + data?.complaints?.pending + data?.complaints?.assign + data?.complaints?.customerSidePending} delay={1} />
                   </div>
                 </div>
               </div>

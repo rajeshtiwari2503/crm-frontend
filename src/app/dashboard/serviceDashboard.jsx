@@ -530,6 +530,7 @@ const getTransactions = async () => {
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
     ["Cancel", dashData?.complaints?.cancel],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["Complete", dashData?.complaints?.complete],
     ["PartPending", dashData?.complaints?.partPending],
     ["InProgress", dashData?.complaints?.inProgress],
@@ -542,6 +543,7 @@ const getTransactions = async () => {
     ["Assign", dashData?.complaints?.assign],
     ["Pending", dashData?.complaints?.pending],
     ["Complete", dashData?.complaints?.complete],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["Cancel", dashData?.complaints?.cancel],
     ["PartPending", dashData?.complaints?.partPending],
     ["InProgress", dashData?.complaints?.inProgress],
@@ -667,6 +669,23 @@ const getTransactions = async () => {
             </div>
           </div>
           <div className=' '>
+            <div onClick={() => router.push("/complaint/customerSidePending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Customer Side Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.customerSidePending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
             <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -676,7 +695,7 @@ const getTransactions = async () => {
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Total Pending</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign} delay={1} />
+                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign + dashData?.complaints?.customerSidePending} delay={1} />
                     </div>
                   </div>
                 </div>

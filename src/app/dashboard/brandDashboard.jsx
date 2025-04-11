@@ -341,6 +341,7 @@ const [brandData, setBrandData] = useState([]);
     ["Pending", dashData?.complaints?.pending],
     ["Cancel", dashData?.complaints?.cancel],
     ["Complete", dashData?.complaints?.complete],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["PartPending", dashData?.complaints?.partPending],
     ["FinalVerification", dashData?.complaints?.finalVerification],
     ["In Progress", dashData?.complaints?.inProgress],
@@ -353,6 +354,7 @@ const [brandData, setBrandData] = useState([]);
     ["Pending", dashData?.complaints?.pending],
     ["Cancel", dashData?.complaints?.cancel],
     ["Complete", dashData?.complaints?.complete],
+    ["customerSidePending", data?.complaints?.customerSidePending],
     ["PartPending", dashData?.complaints?.partPending],
     ["FinalVerification", dashData?.complaints?.finalVerification],
     ["In Progress", dashData?.complaints?.inProgress],
@@ -581,6 +583,23 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+            <div onClick={() => router.push("/complaint/customerSidePending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Customer Side Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.customerSidePending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
             <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
@@ -590,7 +609,7 @@ const [brandData, setBrandData] = useState([]);
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Total Pending</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign} delay={1} />
+                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign + dashData?.complaints?.customerSidePending} delay={1} />
                     </div>
                   </div>
                 </div>

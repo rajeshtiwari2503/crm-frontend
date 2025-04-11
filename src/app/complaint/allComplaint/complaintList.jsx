@@ -334,10 +334,29 @@ const ComplaintList = (props) => {
       setLoading(true);
 
 
-      const reqdata = assign === true ? { empId: userData._id, empName: userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, serviceCenterContact: data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status, empId: userData._id, empName: userData.name }
+      // const reqdata = assign === true ? { empId: userData._id, empName: userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, serviceCenterContact: data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status, empId: userData._id, empName: userData.name }
       // console.log(reqdata);
-
-      let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
+      const reqdata =
+      assign === true
+        ? {
+            empId: userData._id,
+            empName: userData.name ,
+            status: "ASSIGN",
+            assignServiceCenterId: data?.assignServiceCenterId,
+            assignServiceCenter: data?.assignServiceCenter,
+            serviceCenterContact: data?.serviceCenterContact,
+            assignServiceCenterTime: data?.assignServiceCenterTime,
+           
+          }
+        : {
+            status: data?.status,
+            comments: data?.comments,
+            empId: userData._id,
+            empName: userData.name,
+            ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
+          };
+          console.log(reqdata);
+      // let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       // if (data?.comments) {
       //   updateComment({ comments: data?.comments })
       // }
@@ -1010,7 +1029,8 @@ const ComplaintList = (props) => {
               >
                 <option value="IN PROGRESS">In Progress</option>
                 <option value="PART PENDING">Awaiting Parts</option>
-                {/* <option value="ONHOLD">On Hold</option> */}
+              {  userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?  <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
+              :""}
                 <option value="FINAL VERIFICATION">Completed</option>
                 <option value="CANCELED">Canceled</option>
               </select>

@@ -119,26 +119,59 @@ export const UserProvider = ({ children }) => {
     }, [user]);
     
 
+    // useEffect(() => {
+    //     const navigationEntries = window.performance.getEntriesByType("navigation");
+    //     const isReload = navigationEntries.length > 0 && navigationEntries[0].type === "reload";
+
+    //     if (isReload) setIsReloaded(true);
+
+    //     const storedUser = localStorage.getItem("user");
+    //     if (storedUser) {
+    //         try {
+    //             const userId = JSON.parse(storedUser)?.user?._id;
+    //             if (userId) getProfileById(userId);
+    //         } catch (error) {
+    //             console.error("Error parsing user data from localStorage", error);
+    //             router.push("/sign_in");
+    //         }
+    //     } else {
+    //         console.log("other");
+            
+    //     }
+    // }, [isReloaded]);
+
     useEffect(() => {
         const navigationEntries = window.performance.getEntriesByType("navigation");
         const isReload = navigationEntries.length > 0 && navigationEntries[0].type === "reload";
-
+    
         if (isReload) setIsReloaded(true);
-
+    
         const storedUser = localStorage.getItem("user");
+    
+        const currentPath = window.location.pathname;
+        const currentSearch = window.location.search;
+    
+        const isWarrantyActivation = currentPath.includes("warrantyActivation") && currentSearch.includes("uniqueId");
+    
         if (storedUser) {
             try {
                 const userId = JSON.parse(storedUser)?.user?._id;
-                if (userId) getProfileById(userId);
+                if (userId) {
+                    getProfileById(userId);
+                }
             } catch (error) {
                 console.error("Error parsing user data from localStorage", error);
                 router.push("/sign_in");
             }
         } else {
-            console.log("other");
-            
+            if (isWarrantyActivation) {
+                console.log("other");
+            } else {
+                router.push("/sign_in");
+            }
         }
     }, [isReloaded]);
+    
 
     const getProfileById = async (id) => {
         try {

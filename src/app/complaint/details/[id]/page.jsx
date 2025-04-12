@@ -141,7 +141,8 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.district}</div>
                                 <div className='md:text-xl text-sm font-semibold'>State : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.state}</div>
-
+                                <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
                                 <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.assignServiceCenter}</div>
                                 {value?.user?.role === "BRAND" ? ""

@@ -72,10 +72,10 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
     const filteredData = data?.reduce((acc, item) => {
         const matchesSearch =
-            item.serviceCenterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.city.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.complaintId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item.contactNo.toString().includes(searchTerm); // Now properly included
+            item?.serviceCenterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.contactNo?.toString().includes(searchTerm); // Now properly included
 
         const matchesStatus = filterStatus === "all" || item.status === filterStatus;
 

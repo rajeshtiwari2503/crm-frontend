@@ -45,14 +45,26 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const [payLoading, setPayLoading] = useState(false);
     const [uploading, setLoading] = useState(false);
     const [image, setImage] = useState("")
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filterStatus, setFilterStatus] = useState("all");
+    // const [searchTerm, setSearchTerm] = useState("");
+    // const [filterStatus, setFilterStatus] = useState("all");
     const [confirmBoxView, setConfirmBoxView] = useState(false);
 
     const [selectedRows, setSelectedRows] = useState([]);
 
     const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
+
+    const [service, setService] = useState([])
+    const [filterStatus, setFilterStatus] = useState("all"); // for PAID/UNPAID
+    const [filterServiceCenterType, setFilterServiceCenterType] = useState("allServiceCenters"); // for type
+    const [searchTerm, setSearchTerm] = useState("");
+
+
+    useEffect(() => {
+
+        getAllService()
+
+    }, [])
 
 
     const handleChangePage = (event, newPage) => {
@@ -70,21 +82,69 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         setSortBy(property);
     };
 
-    const filteredData = data?.reduce((acc, item) => {
-        const matchesSearch =
-            item?.serviceCenterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            item?.contactNo?.toString().includes(searchTerm); // Now properly included
 
-        const matchesStatus = filterStatus === "all" || item.status === filterStatus;
+    const getAllService = async () => {
+        try {
+            let response = await http_request.get("/getAllService")
+            let { data } = response;
 
-        if (matchesSearch && matchesStatus) {
-            acc.push(item);
+            setService(data)
         }
+        catch (err) {
+            console.log(err);
+        }
+    }
+    console.log("service", service);
 
+
+    // const filteredData = data?.reduce((acc, item) => {
+    //     const matchesSearch =
+    //         item?.serviceCenterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.contactNo?.toString().includes(searchTerm); // Now properly included
+
+    //     const matchesStatus = filterStatus === "all" || item.status === filterStatus;
+
+    //     if (matchesSearch && matchesStatus) {
+    //         acc.push(item);
+    //     }
+
+    //     return acc;
+    // }, []);
+
+
+    const enrichedData = data?.map(item => {
+        const matchedService = service.find(
+          s => s.serviceCenterName === item.serviceCenterName
+        );
+        return {
+          ...item,
+          serviceCenterType: matchedService?.serviceCenterType || "Unknown"
+        };
+      });
+      
+
+    const filteredData = enrichedData?.reduce((acc, item) => {
+        const matchesSearch =
+          item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item?.contactNo?.toString().includes(searchTerm);
+      
+        const matchesStatus = filterStatus === "all" || item?.status === filterStatus;
+      
+        const matchesServiceCenterType =
+          filterServiceCenterType === "allServiceCenters" ||
+          item?.serviceCenterType === filterServiceCenterType;
+      
+        if (matchesSearch && matchesStatus && matchesServiceCenterType) {
+          acc.push(item);
+        }
+      
         return acc;
-    }, []);
+      }, []);
+      
 
     const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -152,7 +212,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
             const response = await http_request.put('/updateBulkPayments', {
                 ids: selectedRows,   // selectedRows should be an array of selected IDs
-              
+
             });
 
             const { data: responseData } = response;
@@ -214,8 +274,8 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         return acc;
     }, { totalPaid: 0, totalUnpaid: 0 });
 
-    
-    console.log("selectedRows", selectedRows);
+
+    // console.log("selectedRows", selectedRows);
     // console.log("Total Unpaid Amount:", totals.totalUnpaid);
     return (
 
@@ -224,26 +284,19 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
             <div className="  ">
                 <div className="grid grid-cols-1 md:grid-cols-4 justify-center items-center gap-2 mb-4 ">
                     <div className="border-gray-300 rounded-md ">
-                        <div className="">
-                            <button
-                                className={`px-4 py-2 mr-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}
-                                onClick={() => setFilterStatus("all")}
-                            >
-                                All
-                            </button>
-                            <button
-                                className={`px-4 py-2 mr-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}
-                                onClick={() => setFilterStatus("PAID")}
-                            >
-                                Paid
-                            </button>
-                            <button
-                                className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}
-                                onClick={() => setFilterStatus("UNPAID")}
-                            >
-                                Unpaid
-                            </button>
+                        <div className="flex flex-wrap gap-2">
+                            {/* Status Filters */}
+                            <button onClick={() => setFilterStatus("all")} className={`px-4 py-2 rounded ${filterStatus === "all" ? "bg-gray-500 text-white" : "bg-gray-300"}`}>All</button>
+                            <button onClick={() => setFilterStatus("PAID")} className={`px-4 py-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}>Paid</button>
+                            <button onClick={() => setFilterStatus("UNPAID")} className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}>Unpaid</button>
+
+                            {/* Service Center Type Filters */}
+                            <button onClick={() => setFilterServiceCenterType("allServiceCenters")} className={`px-4 py-2 rounded ${filterServiceCenterType === "allServiceCenters" ? "bg-blue-500 text-white" : "bg-gray-300"}`}>All Service Centers</button>
+                            <button onClick={() => setFilterServiceCenterType("Authorized")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Authorized" ? "bg-indigo-500 text-white" : "bg-gray-300"}`}>Authorized</button>
+                            <button onClick={() => setFilterServiceCenterType("Franchise")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Franchise" ? "bg-yellow-500 text-white" : "bg-gray-300"}`}>Franchise</button>
+                            <button onClick={() => setFilterServiceCenterType("Independent")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Independent" ? "bg-purple-500 text-white" : "bg-gray-300"}`}>Independent</button>
                         </div>
+
                     </div>
                     <div className=" flex">
                         <input
@@ -325,13 +378,13 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                     // }
                                                     if (e.target.checked) {
                                                         const allUnpaidIds = sortedData
-                                                          .filter((row) => row.status === "UNPAID")
-                                                          .map((row) => row._id);
+                                                            .filter((row) => row.status === "UNPAID")
+                                                            .map((row) => row._id);
                                                         setSelectedRows(allUnpaidIds);
-                                                      }
-                                                      else {
-                                                            setSelectedRows([]);
-                                                        }
+                                                    }
+                                                    else {
+                                                        setSelectedRows([]);
+                                                    }
                                                 }}
                                             />
                                         </TableCell>

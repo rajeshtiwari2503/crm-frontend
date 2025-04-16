@@ -559,7 +559,7 @@ const AdminDashboard = (props) => {
           </div>
         </div>
         <div className=''>
-          <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div onClick={() => router.push(`/complaint/todayCloseComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>

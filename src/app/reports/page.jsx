@@ -352,7 +352,9 @@ const { user } = useUser();
       empName: complaint.updateHistory?.find(entry => 
         entry.changes?.status === "FINAL VERIFICATION"
       )?.changes?.empName || " ",
-
+      finalComments:complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "COMPLETED"
+      )?.changes?.finalComments || " ",
       aging:aging // ⏳ Add the computed edge field to the exported row
     };
   })}
@@ -382,7 +384,8 @@ const { user } = useUser();
     "serviceCenterContact", 
     "assignTechnician", 
     "paymentServiceCenter",              
-    "paymentBrand", 
+    "paymentBrand",
+    "finalComments", 
     "closerComment",
     "updatedAt",
     "createdAt",

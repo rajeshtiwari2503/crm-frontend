@@ -7,13 +7,12 @@ import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDYfib0PPm2jhAfMePzceN5yKv8p2vS97A",
-  authDomain: "servsy-f26f5.firebaseapp.com",
-  projectId: "servsy-f26f5",
-  storageBucket: "servsy-f26f5.firebasestorage.app",
-  messagingSenderId: "824248435029",
-  appId: "1:824248435029:web:7fcc7c81748d050300efdc",
-  measurementId: "G-EN5H951CB1"
+  apiKey: "AIzaSyAzTa51dr3HI87PgWoEkG6BCjZxpmaKFMo",
+  authDomain: "servsysms.firebaseapp.com",
+  projectId: "servsysms",
+  storageBucket: "servsysms.firebasestorage.app",
+  messagingSenderId: "350738282052",
+  appId: "1:350738282052:web:514443e2758b4f60c12e11"
 };
 
 // Initialize Firebase

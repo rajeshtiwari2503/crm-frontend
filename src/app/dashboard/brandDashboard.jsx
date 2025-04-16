@@ -21,7 +21,7 @@ const BrandDashboard = (props) => {
   const dashData = props?.dashData;
   // console.log("userData",userData);
 
-const [brandData, setBrandData] = useState([]);
+  const [brandData, setBrandData] = useState([]);
   const [complaint, setComplaint] = useState([]);
   const [warranty, setWarranty] = useState(0);
   const [refresh, setRefresh] = useState("");
@@ -41,19 +41,19 @@ const [brandData, setBrandData] = useState([]);
 
 
   const getAllProductWarrantyByBrandStickers = async () => {
-        try {
-            let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
-            let { data } = response;
-            // console.log("data", data);
+    try {
+      let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
+      let { data } = response;
+      // console.log("data", data);
 
-            setBrandData(data?.data)
-        }
-        catch (err) {
-            console.log(err);
-
-        }
+      setBrandData(data?.data)
     }
-    const brandStickers = brandData?.find((f) => f?.brandId ===  userData?._id)
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  const brandStickers = brandData?.find((f) => f?.brandId === userData?._id)
 
   const getWalletAmountById = async () => {
     try {
@@ -117,7 +117,7 @@ const [brandData, setBrandData] = useState([]);
 
 
 
- 
+
 
 
 
@@ -515,7 +515,9 @@ const [brandData, setBrandData] = useState([]);
 
         <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(
+              `/complaint/pending?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`
+            )} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -532,7 +534,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/inprogress?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -549,7 +551,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/assign?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -566,7 +568,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/partpending?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -583,7 +585,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/customerSidePending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/customerSidePending?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -600,7 +602,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/allComplaint?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -617,7 +619,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/scheduleUpcomming?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -634,7 +636,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/cancel?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -651,7 +653,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/finalVerification?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -668,7 +670,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/close?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -688,7 +690,7 @@ const [brandData, setBrandData] = useState([]);
 
 
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/allComplaint?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -710,7 +712,7 @@ const [brandData, setBrandData] = useState([]);
 
         <div className='grid grid-cols-5 gap-4'>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/pending/${"0-1"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center justify-between'>
@@ -726,7 +728,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/pending/${"2-5"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center'>
@@ -742,7 +744,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center'>
@@ -758,7 +760,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/pending/${"schedule"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center justify-between'>
@@ -774,7 +776,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/close?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
               <div className='pl-5 py-1 flex justify-between items-center'>
                 <div className='flex items-center'>
@@ -794,7 +796,7 @@ const [brandData, setBrandData] = useState([]);
 
         <div className='grid grid-cols-5 gap-4'>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/partpending/${"0-1"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -811,7 +813,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/partpending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/partpending/${"2-5"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -828,7 +830,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
           <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
-            <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}?role=${encodeURIComponent(userData?.role)}&brandId=${encodeURIComponent(userData?._id)}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -864,7 +866,7 @@ const [brandData, setBrandData] = useState([]);
             </div>
           </div>
 
-          {  brandStickers ? ""
+          {brandStickers ? ""
             : <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
               <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
                 <div className='flex justify-between'>

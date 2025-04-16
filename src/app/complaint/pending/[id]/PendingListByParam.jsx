@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Add, AssignmentTurnedIn, Close, Print, SystemSecurityUpdate, Visibility } from '@mui/icons-material';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
@@ -24,14 +24,53 @@ const PendingParamComplaintList = (props) => {
 
   const userData = props?.userData
 
-  const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
-    : userData?.role === "BRAND" ? complaint?.filter((item) => item?.brandId === userData._id)
-      : userData?.role === "USER" ? complaint?.filter((item) => item?.userId === userData._id)
-        : userData?.role === "SERVICE" ? complaint?.filter((item) => item?.assignServiceCenterId === userData?._id)
-          : userData?.role === "TECHNICIAN" ? complaint?.filter((item) => item?.technicianId === userData?._id)
-            : userData?.role === "DEALER" ? complaint?.filter((item) => item?.dealerId === userData?._id)
-              : []
+  // const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
+  //   : userData?.role === "BRAND" ? complaint?.filter((item) => item?.brandId === userData._id)
+  //     : userData?.role === "USER" ? complaint?.filter((item) => item?.userId === userData._id)
+  //       : userData?.role === "SERVICE" ? complaint?.filter((item) => item?.assignServiceCenterId === userData?._id)
+  //         : userData?.role === "TECHNICIAN" ? complaint?.filter((item) => item?.technicianId === userData?._id)
+  //           : userData?.role === "DEALER" ? complaint?.filter((item) => item?.dealerId === userData?._id)
+  //             : []
 
+
+      const searchParams = useSearchParams();
+      const brandId = searchParams.get('brandId');
+      const role = searchParams.get('role');
+    
+      const effectiveRole = role || userData?.role;
+    
+    let data = [];
+      if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
+        // Admin overriding to view a brand's complaints
+        data = complaint?.filter(item => item?.brandId === brandId);
+      } else {
+        switch (effectiveRole) {
+          case "ADMIN":
+          case "EMPLOYEE":
+            data = complaint;
+            break;
+          case "BRAND":
+            data = complaint?.filter(item => item?.brandId === userData._id);
+            break;
+          case "BRAND EMPLOYEE":
+            data = complaint?.filter(item => item?.brandId === userData.brandId);
+            break;
+          case "USER":
+            data = complaint?.filter(item => item?.userId === userData._id);
+            break;
+          case "SERVICE":
+            data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
+            break;
+          case "TECHNICIAN":
+            data = complaint?.filter(item => item?.technicianId === userData._id);
+            break;
+          case "DEALER":
+            data = complaint?.filter(item => item?.dealerId === userData._id);
+            break;
+          default:
+            data = [];
+        }
+      }
 
   const technician = props?.technicians
   const [status, setStatus] = useState(false);

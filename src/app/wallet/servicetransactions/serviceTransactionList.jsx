@@ -534,7 +534,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                 </TableCell>
                                                 <TableCell style={{ textAlign: "center" }}  >
                                                     <div
-                                                        onClick={row?.status === "UNPAID" && value?.role === "ADMIN" ? () => handlePaidStatus(row?._id) : undefined}
+                                                        onClick={row?.status === "UNPAID" && value?.role === "ADMIN"  ? () => handlePaidStatus(row?._id) : undefined}
                                                         className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
                                                         <div>{row.status}</div>
                                                     </div>
@@ -552,7 +552,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                     </IconButton>
                                                 </TableCell> */}
                                                 <TableCell>
-                                                    {value?.role === "ADMIN" && row?.status === "UNPAID" ?
+                                                    {value?.role === "ADMIN" || value?.role === "EMPLOYEE" && row?.status === "UNPAID" ?
                                                         <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
                                                             <Payments color='success' />
 

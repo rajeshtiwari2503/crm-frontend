@@ -355,6 +355,9 @@ const { user } = useUser();
       finalComments:complaint.updateHistory?.find(entry => 
         entry.changes?.status === "COMPLETED"
       )?.changes?.finalComments || " ",
+      kilometer:complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "COMPLETED"
+      )?.changes?.kilometer || " ",
       aging:aging // ⏳ Add the computed edge field to the exported row
     };
   })}
@@ -386,6 +389,7 @@ const { user } = useUser();
     "paymentServiceCenter",              
     "paymentBrand",
     "finalComments", 
+    "kilometer", 
     "closerComment",
     "updatedAt",
     "createdAt",

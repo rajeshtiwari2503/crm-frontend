@@ -726,7 +726,7 @@ let data = [];
                   {...register('serviceCenterName', {
                     required: 'Service Center Name is required',
                   })}
-                  // readOnly serviceCenterId
+                  readOnly
                   className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                   placeholder="Enter service center name"
                 />
@@ -734,21 +734,7 @@ let data = [];
                   <p className="text-red-500 text-sm mt-1">{errors.serviceCenterName.message}</p>
                 )}
               </div>
-              <div className='w-[350px] mb-5'>
-                <label className="block text-sm font-medium text-gray-700">serviceCenterId</label>
-                <input
-                  type="text"
-                  {...register('serviceCenterId', {
-                    required: 'serviceCenterId is required',
-                  })}
-                  // readOnly 
-                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                  placeholder="serviceCenterId"
-                />
-                {errors.serviceCenterId && (
-                  <p className="text-red-500 text-sm mt-1">{errors.serviceCenterId.message}</p>
-                )}
-              </div>
+
               {/* Payment */}
               <div className='w-[350px] mb-5'>
                 <label className="block text-sm font-medium text-gray-700">Payment</label>

@@ -599,15 +599,25 @@ body {
                         <div className='font-bold'>Updated At</div>
                         <div>{new Date(filtRecord?.updatedAt ? filtRecord?.updatedAt : warranty?.updatedAt).toLocaleString()}</div>
                     </div>
-                    {brand?._id === "67bd89f4ee5adb6d9ee17ce7" ?
+                    {/* {brand?._id === "67bd89f4ee5adb6d9ee17ce7" || "68022760acb4c657889b254a" ?
                         <button onClick={printA4Records} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                             Print Records 
-                            {/* A4 */}
+                            
                         </button>
                         : <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                             Print Records
                         </button>
-                    }
+                    } */}
+                    {["67bd89f4ee5adb6d9ee17ce7", "68022760acb4c657889b254a"].includes(brand?._id) ? (
+                        <button onClick={printA4Records} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print Records
+                        </button>
+                    ) : (
+                        <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print Records
+                        </button>
+                    )}
+
                     <div className='font-bold mt-5'>Generated QR codes</div>
                     <div className=' grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
                         {filtRecord?.records?.map((item, i) => (

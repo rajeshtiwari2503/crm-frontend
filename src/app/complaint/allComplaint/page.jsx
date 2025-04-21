@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
 import { useUser } from '@/app/components/UserContext';
-// import SendOtp from './sendOtp';
+import SendOtp from './sendOtp';
  
 
 
@@ -145,7 +145,7 @@ const Service = ({ dashboard }) => {
               dashboard={dashboard}
               totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
           </>
-          {/* <SendOtp /> */}
+         {/* <SendOtp />   */}
         </Sidenav>
     
     </>

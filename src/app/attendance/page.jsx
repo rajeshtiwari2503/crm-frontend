@@ -17,7 +17,7 @@ const Attendance = () => {
                 :
                 <>
                     <Clock />
-                    <Tasks />
+                    {/* <Tasks /> */}
                 </>
             }
         </Sidenav>

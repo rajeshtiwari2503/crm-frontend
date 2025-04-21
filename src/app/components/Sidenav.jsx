@@ -443,6 +443,16 @@ function Sidenav(props) {
               </ListItemButton>
             </ListItem>
               : ""}
+               {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                <ListItemIcon className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                  <Analytics style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} />
+                </ListItemIcon>
+                <ListItemText primary={"Attendance"} />
+
+              </ListItemButton>
+            </ListItem>
+              : ""} */}
             {value?.user?.role === "EMPLOYEE" ?
               <ListItem disablePadding onClick={() => { router.push("/wallet/servicetransactions") }} className={pathname.startsWith("/wallet/servicetransactions") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>

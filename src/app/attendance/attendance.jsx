@@ -36,7 +36,7 @@ export default function Clock({ userId }) {
       setStatus('Clocked In at ' + new Date(res.data.clockIn).toLocaleTimeString());
     } catch (error) {
       console.error('Clock In Error:', error);
-      setStatus('Failed to Clock In. Please try again.');
+      // setStatus('Failed to Clock In. Please try again.');
     }
   };
 
@@ -46,7 +46,7 @@ export default function Clock({ userId }) {
       setStatus('Clocked Out at ' + new Date(res.data.clockOut).toLocaleTimeString());
     } catch (error) {
       console.error('Clock Out Error:', error);
-      setStatus('Failed to Clock Out. Please try again.');
+      // setStatus('Failed to Clock Out. Please try again.');
     }
   };
 

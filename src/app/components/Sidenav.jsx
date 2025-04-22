@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, GppGood, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, MarkChatRead, NotificationsNone, Payment, Person, Report, ReportOff, RequestPage, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Visibility, Wallet, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, Event, ExpandLess, ExpandMore, Feedback, GppGood, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, MarkChatRead, NotificationsNone, Payment, Person, Report, ReportOff, RequestPage, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Visibility, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -443,16 +443,16 @@ function Sidenav(props) {
               </ListItemButton>
             </ListItem>
               : ""}
-               {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+               {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                 <ListItemIcon className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
-                  <Analytics style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} />
+                   <Event style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} />
                 </ListItemIcon>
                 <ListItemText primary={"Attendance"} />
 
               </ListItemButton>
             </ListItem>
-              : ""} */}
+              : ""}
             {value?.user?.role === "EMPLOYEE" ?
               <ListItem disablePadding onClick={() => { router.push("/wallet/servicetransactions") }} className={pathname.startsWith("/wallet/servicetransactions") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>

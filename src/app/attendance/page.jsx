@@ -5,6 +5,7 @@ import Clock from './attendance'
 import Tasks from './task'
 import AdminAttendanceList from './adminAttendanceList'
 import { useUser } from '../components/UserContext'
+import UserAttendanceList from './userAttendanceList'
 
 const Attendance = () => {
     const { user } = useUser()
@@ -12,15 +13,28 @@ const Attendance = () => {
 
     return (
         <Sidenav>
-            {user?.user?.role === "ADMIN" ?
+            {user?.user?.role === "ADMINq" ?
+             <div className="grid grid-cols-1   gap-4">
                 <AdminAttendanceList />
+                </div>
                 :
                 <>
-                    <Clock />
-                    {/* <Tasks /> */}
-                </>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <Clock />
+                        </div>
+                        <div>
+                            <Tasks />
+                        </div>
+                    <div className="md:col-span-2">
+                        <UserAttendanceList userId={user?.user?._id} />
+                    </div>
+
+                </div>
+        </>
+              
             }
-        </Sidenav>
+        </Sidenav >
 
     )
 }

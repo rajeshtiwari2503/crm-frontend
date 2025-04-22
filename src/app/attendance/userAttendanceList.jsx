@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import http_request from "../../../http-request";
 
-const AdminAttendanceList = () => {
+const UserAttendanceList = ({userId}) => {
   const [records, setRecords] = useState([]);
   const [monthlyRecords, setMonthlyRecords] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -10,7 +10,7 @@ const AdminAttendanceList = () => {
 
   const fetchDailyData = async (date) => {
     try {
-      const res = await http_request.get(`/attendance/getDailyAttendance?date=${date}`);
+      const res = await http_request.get(`/attendance/getDailyAttendanceByUserId?date=${date}&userId=${userId}`);
       const datav = res?.data?.map((item, index) => ({ ...item, i: index + 1 }));
       setRecords(datav);
     } catch (err) {
@@ -32,8 +32,9 @@ const AdminAttendanceList = () => {
     try {
       const queryParams = new URLSearchParams();
       queryParams.append('month', month);
+      queryParams.append('userId', userId);
   
-      const res = await http_request.get(`/attendance/getMonthlyAttendance?${queryParams.toString()}`);
+      const res = await http_request.get(`/attendance/getMonthlyAttendanceByUserId?${queryParams.toString()}`);
       const datav = res?.data?.map((item, index) => ({ ...item, i: index + 1 }));
       setMonthlyRecords(datav);
     } catch (err) {
@@ -50,7 +51,7 @@ const AdminAttendanceList = () => {
   // Fetch monthly data only when a month is selected
  
 
-  // console.log("monthlyRecords",monthlyRecords);
+//   console.log("monthlyRecords",monthlyRecords);
   
   return (
     <div className="">
@@ -119,7 +120,7 @@ const AdminAttendanceList = () => {
       {/* Monthly Summary Section */}
       {monthlyRecords.length > 0 && (
         <div className='overflow-x-auto'>
-          <h2 className=" text-xl font-semibold mb-4">📅 Monthly Attendance Summary</h2>
+          <h2 className="text-xl font-semibold mb-4">📅 Monthly Attendance Summary</h2>
           {monthlyRecords.map((month, idx) => (
             <div key={idx} className="mb-6 border rounded-lg shadow-sm">
               <div className="bg-gray-100 p-4 flex justify-between items-center">
@@ -177,4 +178,4 @@ const AdminAttendanceList = () => {
   );
 };
 
-export default AdminAttendanceList;
+export default UserAttendanceList;

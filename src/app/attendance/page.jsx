@@ -13,7 +13,7 @@ const Attendance = () => {
 
     return (
         <Sidenav>
-            {user?.user?.role === "ADMINq" ?
+            {user?.user?.role === "ADMIN" ?
              <div className="grid grid-cols-1   gap-4">
                 <AdminAttendanceList />
                 </div>

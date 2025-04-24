@@ -50,8 +50,9 @@ export default function SalarySlip() {
           <ReactLoader />
         </div>
       ) : slip ? (
-        <div>
+        <div className="border border-gray-300 rounded p-4 shadow-sm">
           {/* User Information */}
+          <div className="grid md:grid-cols-2 gap-4 mb-4">
           <div className="mb-4">
             <h3 className="text-lg font-semibold">User Information</h3>
             <p><strong>Name:</strong> {slip?.user?.name}</p>
@@ -59,12 +60,14 @@ export default function SalarySlip() {
           </div>
 
           {/* Salary Summary */}
-          <div className="mb-4">
+          <div className="mb-4 ">
             <h3 className="text-lg font-semibold">Salary Details</h3>
             <p><strong>Month:</strong> {month}</p>
             <p><strong>Daily Salary:</strong> ₹{slip.dailySalary}</p>
             <p><strong>Present Days:</strong> {slip.presentDays}</p>
+            <p><strong>Sunday Days:</strong> {slip.sundayDays}</p>
             <p><strong>Total Salary:</strong> ₹{slip.totalSalary}</p>
+          </div>
           </div>
 
           {/* Attendance Table */}
@@ -78,7 +81,7 @@ export default function SalarySlip() {
               </tr>
             </thead>
             <tbody>
-              {slip.map((day, idx) => (
+              {slip?.slip?.map((day, idx) => (
                 <tr key={idx} className="border-t">
                   <td className="p-2 border">{day.date}</td>
                   <td className="p-2 border">{day.day}</td>

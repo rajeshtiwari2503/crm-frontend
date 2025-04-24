@@ -62,7 +62,7 @@ const EmployeeList = (props) => {
   const handleAdd = () => {
     router.push("/user/employee/add")
   }
-  
+
   const handleDetails = (id) => {
     router.push(`/user/employee/details/${id}`)
   }
@@ -123,6 +123,15 @@ const EmployeeList = (props) => {
                       Creator
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'salary'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('salary')}
+                    >
+                      Salary
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -133,9 +142,9 @@ const EmployeeList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.name}</TableCell>
                     <TableCell>{row?.email}</TableCell>
-             
-               <TableCell>{row?.brandName?row?.brandName:"ADMIN"}</TableCell>
-               
+
+                    <TableCell>{row?.brandName ? row?.brandName : "ADMIN"}</TableCell>
+                    <TableCell>{row?.salary}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

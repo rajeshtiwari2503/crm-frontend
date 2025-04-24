@@ -86,8 +86,9 @@ export default function SalarySlipAdmin() {
                                     <div className="border rounded p-4">
                                         <h3 className="text-lg font-semibold mb-2">Salary Details</h3>
                                         <p><strong>Month:</strong> {selectedSlip.month}</p>
-                                        <p><strong>Daily Salary:</strong> ₹{selectedSlip.dailySalary}</p>
+                                        <p><strong>Daily Salary:</strong> ₹{selectedSlip.dailySalary}</p>  
                                         <p><strong>Present Days:</strong> {selectedSlip.presentDays}</p>
+                                        <p><strong>Sunday Days:</strong> {selectedSlip.sundayDays}</p>
                                         <p><strong>Total Salary:</strong> ₹{selectedSlip.totalSalary}</p>
                                     </div>
                                 </div>

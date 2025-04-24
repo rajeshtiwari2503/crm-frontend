@@ -67,6 +67,8 @@ const employeeDetails = ({ params }) => {
                             <div className='text-lg font-medium'>{employee?.contact}</div>
                             <div className='text-1xl font-semibold'>Password : </div>
                             <div className='text-lg font-medium'>{employee?.password}</div>
+                            <div className='text-1xl font-semibold'>Salary : </div>
+                            <div className='text-lg font-medium'>{employee?.salary}</div>
                         </div>
                     </div>
                     <div className='text-1xl font-semibold'>State Zones:</div>

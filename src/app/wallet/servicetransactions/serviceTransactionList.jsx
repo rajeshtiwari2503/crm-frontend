@@ -30,6 +30,7 @@ import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
 import DownloadExcel from '@/app/components/DownLoadExcel';
 import { PaymentConfirmBox } from '@/app/components/common/ConfirmBoxPayment';
+import DatePicker from 'react-datepicker';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
@@ -58,7 +59,8 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
     const [filterStatus, setFilterStatus] = useState("all"); // for PAID/UNPAID
     const [filterServiceCenterType, setFilterServiceCenterType] = useState("allServiceCenters"); // for type
     const [searchTerm, setSearchTerm] = useState("");
-
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
 
     useEffect(() => {
 
@@ -116,35 +118,71 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
     const enrichedData = data?.map(item => {
         const matchedService = service.find(
-          s => s.serviceCenterName === item.serviceCenterName
+            s => s.serviceCenterName === item.serviceCenterName
         );
         return {
-          ...item,
-          serviceCenterType: matchedService?.serviceCenterType || "Unknown"
+            ...item,
+            serviceCenterType: matchedService?.serviceCenterType || "Unknown"
         };
-      });
-      
+    });
+
+
+    // const filteredData = enrichedData?.reduce((acc, item) => {
+    //     const matchesSearch =
+    //         item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //         item?.contactNo?.toString().includes(searchTerm);
+
+    //     const matchesStatus = filterStatus === "all" || item?.status === filterStatus;
+
+    //     const matchesServiceCenterType =
+    //         filterServiceCenterType === "allServiceCenters" ||
+    //         item?.serviceCenterType === filterServiceCenterType;
+
+    //     if (matchesSearch && matchesStatus && matchesServiceCenterType) {
+    //         acc.push(item);
+    //     }
+
+    //     return acc;
+    // }, []);
 
     const filteredData = enrichedData?.reduce((acc, item) => {
         const matchesSearch =
-          item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item?.contactNo?.toString().includes(searchTerm);
-      
-        const matchesStatus = filterStatus === "all" || item?.status === filterStatus;
-      
+            item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.complaintId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            item?.contactNo?.toString().includes(searchTerm);
+
+        const matchesStatus =
+            filterStatus === "all" || item?.status === filterStatus;
+
         const matchesServiceCenterType =
-          filterServiceCenterType === "allServiceCenters" ||
-          item?.serviceCenterType === filterServiceCenterType;
-      
-        if (matchesSearch && matchesStatus && matchesServiceCenterType) {
-          acc.push(item);
+            filterServiceCenterType === "allServiceCenters" ||
+            item?.serviceCenterType === filterServiceCenterType;
+
+        const itemDate = new Date(item?.updatedAt); // ✅ use updatedAt field
+
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate + 'T23:59:59.999Z') : null; // ✅ include entire end day
+
+        const isWithinDateRange =
+            (!start || itemDate >= start) &&
+            (!end || itemDate <= end);
+
+        if (
+            matchesSearch &&
+            matchesStatus &&
+            matchesServiceCenterType &&
+            isWithinDateRange
+        ) {
+            acc.push(item);
         }
-      
+
         return acc;
-      }, []);
-      
+    }, []);
+
+
 
     const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -282,7 +320,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
         <div className="body d-flex py-lg-3 py-md-2">
             <Toaster />
             <div className="  ">
-                <div className="grid grid-cols-1 md:grid-cols-4 justify-center items-center gap-2 mb-4 ">
+                <div className="grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-2 mb-4 ">
                     <div className="border-gray-300 rounded-md ">
                         <div className="flex flex-wrap gap-2">
                             {/* Status Filters */}
@@ -290,7 +328,29 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             <button onClick={() => setFilterStatus("PAID")} className={`px-4 py-2 rounded ${filterStatus === "PAID" ? "bg-green-500 text-white" : "bg-gray-300"}`}>Paid</button>
                             <button onClick={() => setFilterStatus("UNPAID")} className={`px-4 py-2 rounded ${filterStatus === "UNPAID" ? "bg-red-500 text-white" : "bg-gray-300"}`}>Unpaid</button>
 
-                            {/* Service Center Type Filters */}
+                        </div>
+
+                    </div>
+                    <div className="  flex flex-col items-center justify-center   p-1">
+                        <div className="bg-white shadow-lg rounded-lg p-2 w-full  ">
+                            {/* <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">
+                                Payment Summary
+                            </h2> */}
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
+                                <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
+                                    <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                    <span className="text-lg font-bold text-green-700">₹{totals.totalPaid}</span>
+                                </div>
+                                <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg  ">
+                                    <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                    <span className="text-lg font-bold text-red-700">₹{totals.totalUnpaid}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="md:col-span-3 mb-4 border-gray-300 rounded-md mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 justify-center">
+
                             <button onClick={() => setFilterServiceCenterType("allServiceCenters")} className={`px-4 py-2 rounded ${filterServiceCenterType === "allServiceCenters" ? "bg-blue-500 text-white" : "bg-gray-300"}`}>All Service Centers</button>
                             <button onClick={() => setFilterServiceCenterType("Authorized")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Authorized" ? "bg-indigo-500 text-white" : "bg-gray-300"}`}>Authorized</button>
                             <button onClick={() => setFilterServiceCenterType("Franchise")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Franchise" ? "bg-yellow-500 text-white" : "bg-gray-300"}`}>Franchise</button>
@@ -298,7 +358,29 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                         </div>
 
                     </div>
-                    <div className=" flex">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center items-center mb-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Start Date</label>
+                            <input
+                                type="date"
+                                value={startDate || ""}
+                                onChange={(e) => setStartDate(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">End Date</label>
+                            <input
+                                type="date"
+                                value={endDate || ""}
+                                onChange={(e) => setEndDate(e.target.value)}
+                                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div className=" flex justify-center">
+                    <div className="  ">
                         <input
                             type="text"
                             placeholder="Search by Name , City,Contact, or Complaint ID"
@@ -307,30 +389,15 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             className="px-4 py-2 border border-gray-300 rounded-md w-full"
                         />
                     </div>
-                    <div className="col-span-2 flex flex-col items-center justify-center   p-1">
-                        <div className="bg-white shadow-lg rounded-lg p-2 w-full max-w-md">
-                            {/* <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">
-                                Payment Summary
-                            </h2> */}
-                            <div className='flex '>
-                                <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
-                                    <span className="text-lg font-semibold text-green-600">Total Paid:</span>
-                                    <span className="text-lg font-bold text-green-700">₹{totals.totalPaid}</span>
-                                </div>
-                                <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg ms-2">
-                                    <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
-                                    <span className="text-lg font-bold text-red-700">₹{totals.totalUnpaid}</span>
-                                </div>
-                            </div>
-                        </div>
                     </div>
+
                 </div>
 
 
-                <div className="flex justify-between items-center mb-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 justify-center items-center overflow-x-auto mb-5">
                     <div className='font-bold text-xl'> Service Center Transactions List</div>
                     {value?.role === "ADMIN" ?
-                        <div className="ml-5">
+                        <div className="">
                             {sortedData.length > 0 && (
                                 <DownloadExcel
                                     data={filteredData}
@@ -358,189 +425,189 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
                 {loading ? <div><ReactLoader /></div>
                     :
+                    <div className='flex justify-center'>
+                        <div className="md:w-full  w-[250px]   ">
 
-                    <div className="col-sm-12">
-
-                        <TableContainer component={Paper}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow >
-                                        <TableCell >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedRows.length === sortedData.length && sortedData.length > 0}
-                                                onChange={(e) => {
-                                                    // if (e.target.checked) {
-                                                    //     const allIds = sortedData.map((row) => row._id);
-                                                    //     setSelectedRows(allIds);
-                                                    // } else {
-                                                    //     setSelectedRows([]);
-                                                    // }
-                                                    if (e.target.checked) {
-                                                        const allUnpaidIds = sortedData
-                                                            .filter((row) => row.status === "UNPAID")
-                                                            .map((row) => row._id);
-                                                        setSelectedRows(allUnpaidIds);
-                                                    }
-                                                    else {
-                                                        setSelectedRows([]);
-                                                    }
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell >
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                Sr. No.
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                Service_Center
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                City
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                Addess
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                Description
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'brandName'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('brandName')}
-                                            >
-                                                Contact
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'addedAmount'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('addedAmount')}
-                                            >
-                                                Paid_Amount
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'payScreenshot'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('payScreenshot')}
-                                            >
-                                                QR_Code
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'payScreenshot'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('payScreenshot')}
-                                            >
-                                                Pay_Screenshot
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'status'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('status')}
-                                            >
-                                                Status
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        <TableCell>
-                                            <TableSortLabel
-                                                active={sortBy === 'createdAt'}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort('createdAt')}
-                                            >
-                                                Pay_Date
-                                            </TableSortLabel>
-                                        </TableCell>
-                                        {value?.role === "ADMIN" ? <TableCell>Actions</TableCell> : null}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-
-                                    {sortedData?.map((row, index) => {
-                                        const isSelected = selectedRows.includes(row._id);
-                                        const handleCheckboxChange = () => {
-                                            if (isSelected) {
-                                                setSelectedRows(prev => prev.filter(id => id !== row._id));
-                                            } else {
-                                                setSelectedRows(prev => [...prev, row._id]);
-                                            }
-                                        };
-                                        return (
-                                            <TableRow key={index} hover>
-                                                <TableCell>
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={isSelected}
-                                                        onChange={handleCheckboxChange}
-                                                    />
-                                                </TableCell>
-                                                <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
-                                                {/* <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell> */}
-                                                <TableCell
-                                                    style={{ color: "blue", cursor: "pointer" }}
-                                                    onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow >
+                                            <TableCell >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={selectedRows.length === sortedData.length && sortedData.length > 0}
+                                                    onChange={(e) => {
+                                                        // if (e.target.checked) {
+                                                        //     const allIds = sortedData.map((row) => row._id);
+                                                        //     setSelectedRows(allIds);
+                                                        // } else {
+                                                        //     setSelectedRows([]);
+                                                        // }
+                                                        if (e.target.checked) {
+                                                            const allUnpaidIds = sortedData
+                                                                .filter((row) => row.status === "UNPAID")
+                                                                .map((row) => row._id);
+                                                            setSelectedRows(allUnpaidIds);
+                                                        }
+                                                        else {
+                                                            setSelectedRows([]);
+                                                        }
+                                                    }}
+                                                />
+                                            </TableCell>
+                                            <TableCell >
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
                                                 >
-                                                    {row?.serviceCenterName}
-                                                </TableCell>
-                                                <TableCell>{row?.city}</TableCell>
-                                                <TableCell>{row?.address}</TableCell>
-                                                <TableCell>{row?.description}</TableCell>
-                                                <TableCell>{row?.contactNo}</TableCell>
+                                                    Sr. No.
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    Service_Center
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    City
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    Addess
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    Description
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    Contact
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'addedAmount'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('addedAmount')}
+                                                >
+                                                    Paid_Amount
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'payScreenshot'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('payScreenshot')}
+                                                >
+                                                    QR_Code
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'payScreenshot'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('payScreenshot')}
+                                                >
+                                                    Pay_Screenshot
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'status'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('status')}
+                                                >
+                                                    Status
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'createdAt'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('createdAt')}
+                                                >
+                                                    Pay_Date
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            {value?.role === "ADMIN" ? <TableCell>Actions</TableCell> : null}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+
+                                        {sortedData?.map((row, index) => {
+                                            const isSelected = selectedRows.includes(row._id);
+                                            const handleCheckboxChange = () => {
+                                                if (isSelected) {
+                                                    setSelectedRows(prev => prev.filter(id => id !== row._id));
+                                                } else {
+                                                    setSelectedRows(prev => [...prev, row._id]);
+                                                }
+                                            };
+                                            return (
+                                                <TableRow key={index} hover>
+                                                    <TableCell>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isSelected}
+                                                            onChange={handleCheckboxChange}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row.i}</TableCell>
+                                                    {/* <TableCell onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}>{row?.serviceCenterName}</TableCell> */}
+                                                    <TableCell
+                                                        style={{ color: "blue", cursor: "pointer" }}
+                                                        onClick={() => router.push(`/complaint/details/${row?.complaintId}`)}
+                                                    >
+                                                        {row?.serviceCenterName}
+                                                    </TableCell>
+                                                    <TableCell>{row?.city}</TableCell>
+                                                    <TableCell>{row?.address}</TableCell>
+                                                    <TableCell>{row?.description}</TableCell>
+                                                    <TableCell>{row?.contactNo}</TableCell>
 
 
-                                                <TableCell>{row.payment} INR</TableCell>
-                                                <TableCell>
-                                                    {row.qrCode ? <ImagePopup src={row.qrCode} alt="QR Code" /> : "No Image"}
-                                                </TableCell>
+                                                    <TableCell>{row.payment} INR</TableCell>
+                                                    <TableCell>
+                                                        {row.qrCode ? <ImagePopup src={row.qrCode} alt="QR Code" /> : "No Image"}
+                                                    </TableCell>
 
-                                                <TableCell>
-                                                    {row.payScreenshot ? <ImagePopup src={row.payScreenshot} alt="Payment Screenshot" /> : "No Image"}
-                                                </TableCell>
-                                                <TableCell style={{ textAlign: "center" }}  >
-                                                    <div
-                                                        onClick={row?.status === "UNPAID" && value?.role === "ADMIN"  ? () => handlePaidStatus(row?._id) : undefined}
-                                                        className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
-                                                        <div>{row.status}</div>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
-                                                {/* <TableCell>
+                                                    <TableCell>
+                                                        {row.payScreenshot ? <ImagePopup src={row.payScreenshot} alt="Payment Screenshot" /> : "No Image"}
+                                                    </TableCell>
+                                                    <TableCell style={{ textAlign: "center" }}  >
+                                                        <div
+                                                            onClick={row?.status === "UNPAID" && value?.role === "ADMIN" ? () => handlePaidStatus(row?._id) : undefined}
+                                                            className={row?.status === "UNPAID" ? 'bg-red-400  cursor-pointer  text-white p-2 rounded-md' : 'bg-green-400 text-white p-2 rounded-md'}>
+                                                            <div>{row.status}</div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
+                                                    {/* <TableCell>
                                                     <IconButton aria-label="view" onClick={() => handleView(row.id)}>
                                                         <Visibility color='primary' />
                                                     </IconButton>
@@ -551,31 +618,32 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                         <DeleteIcon color='error' />
                                                     </IconButton>
                                                 </TableCell> */}
-                                                <TableCell>
-                                                    {value?.role === "ADMIN" || value?.role === "EMPLOYEE" && row?.status === "UNPAID" ?
-                                                        <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
-                                                            <Payments color='success' />
+                                                    <TableCell>
+                                                        {value?.role === "ADMIN" || value?.role === "EMPLOYEE" && row?.status === "UNPAID" ?
+                                                            <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
+                                                                <Payments color='success' />
 
-                                                        </IconButton>
+                                                            </IconButton>
 
-                                                        : null
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <TablePagination
-                            rowsPerPageOptions={[5, 10, 25]}
-                            component="div"
-                            count={filteredData.length}
-                            rowsPerPage={rowsPerPage}
-                            page={page}
-                            onPageChange={handleChangePage}
-                            onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
+                                                            : null
+                                                        }
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={filteredData.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </div>
                     </div>
 
                 }

@@ -6,8 +6,10 @@ import Sidenav from "@/app/components/Sidenav";
 import { ToastMessage } from "@/app/components/common/Toastify";
 import { useRouter } from "next/navigation";
 import Select from "react-select";
+import { useUser } from "@/app/components/UserContext";
 
 const Editemployee = ({ params }) => {
+    const {user}=useUser()
     const router = useRouter();
     const [id, setId] = useState("");
     const [employee, setEmployee] = useState("");
@@ -114,6 +116,7 @@ const Editemployee = ({ params }) => {
         loadFileFromPublic();
     }, []);
 
+ 
 
     return (
         <Sidenav>
@@ -167,6 +170,7 @@ const Editemployee = ({ params }) => {
                             />
                             {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
                         </div>
+                      {user?.user?.role==="ADMIN"?
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">
                                 Salary
@@ -181,6 +185,7 @@ const Editemployee = ({ params }) => {
                                 <p className="text-red-500 text-sm mt-1">{errors.salary.message}</p>
                             )}
                         </div>
+                        :""}
                         {/* State Zones (Multi-Select) */}
 
                         <div className="mb-4 w-full">

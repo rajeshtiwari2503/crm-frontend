@@ -18,6 +18,7 @@ const post=(url,obj)=>{
  const patch=(url,obj)=>{
     return axios.patch(baseUrl+url ,obj)
  }
+ 
 
  const put=(url,obj)=>{
     return axios.put(baseUrl+url ,obj)

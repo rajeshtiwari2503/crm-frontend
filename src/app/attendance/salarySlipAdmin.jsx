@@ -86,7 +86,7 @@ export default function SalarySlipAdmin() {
                                     <div className="border rounded p-4">
                                         <h3 className="text-lg font-semibold mb-2">Salary Details</h3>
                                         <p><strong>Month:</strong> {selectedSlip.month}</p>
-                                        <p><strong>Daily Salary:</strong> ₹{selectedSlip.dailySalary}</p>  
+                                        <p><strong>Daily Salary:</strong> ₹{selectedSlip.dailySalary}</p>
                                         <p><strong>Present Days:</strong> {selectedSlip.presentDays}</p>
                                         <p><strong>Sunday Days:</strong> {selectedSlip.sundayDays}</p>
                                         <p><strong>Total Salary:</strong> ₹{selectedSlip.totalSalary}</p>
@@ -95,35 +95,39 @@ export default function SalarySlipAdmin() {
 
 
                                 <table className="w-full mt-4 border text-sm">
-                                    <thead className="bg-gray-100">
+                                    <thead className="bg-[#09090b]">
                                         <tr>
-                                            <th className="p-2 border">Date</th>
-                                            <th className="p-2 border">Day</th>
-                                            <th className="p-2 border">Status</th>
-                                            <th className="p-2 border">Daily Payment</th>
+                                            <th className="p-2 border text-white">Date</th>
+                                            <th className="p-2 border text-white">Day</th>
+                                            <th className="p-2 border text-white">Status</th>
+                                            <th className="p-2 border text-white">Daily Payment</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {selectedSlip.slip.map((day, idx) => (
-                                            <tr key={idx} className="border-t">
+                                            <tr key={idx}   className={`border-t ${
+                                                day.day === "Sun"
+                                                  ? "bg-yellow-50 text-yellow-700 font-semibold"
+                                                  : day.status === "Present"
+                                                  ? "bg-green-50 text-green-700 font-semibold"
+                                                  : day.status === "Absent"
+                                                  ? "bg-red-50 text-red-600"
+                                                  : ""
+                                              }`}>
                                                 <td className="p-2 border">{day.date}</td>
                                                 <td className="p-2 border">{day.day}</td>
+                                                
                                                 <td
-                                                    className={`p-2 border ${day.status === "Present"
-                                                            ? "text-green-600"
-                                                            : day.status === "Absent"
-                                                                ? "text-red-500"
-                                                                : ""
-                                                        }`}
+                                                    className={`p-2 border  `}
                                                 >
-                                                    {day.status}
+                                                    {day.day === "Sun" ? "----------" : day.status}
                                                 </td>
                                                 <td className="p-2 border">₹{day.payment}</td>
                                             </tr>
                                         ))}
                                         <tr className="font-semibold bg-gray-100">
                                             <td colSpan={2} className="p-2 border">Total Present Days</td>
-                                            <td className="p-2 border text-center">{selectedSlip.presentDays}</td>
+                                            <td className="p-2 border text-center">{`${selectedSlip.presentDays} Present and  ${ selectedSlip.sundayDays} Sunday = `} {`${selectedSlip.presentDays + selectedSlip.sundayDays}  `} </td>
                                             <td className="p-2 border">₹{selectedSlip.totalSalary}</td>
                                         </tr>
                                     </tbody>

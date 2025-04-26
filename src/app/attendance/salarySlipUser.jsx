@@ -71,7 +71,7 @@ export default function SalarySlip() {
           </div>
 
           {/* Attendance Table */}
-          <table className="w-full mt-4 border text-sm">
+          {/* <table className="w-full mt-4 border text-sm">
             <thead className="bg-gray-100">
               <tr>
                 <th className="p-2 border">Date</th>
@@ -99,7 +99,45 @@ export default function SalarySlip() {
                 <td className="p-2 border">₹{slip.totalSalary}</td>
               </tr>
             </tbody>
-          </table>
+          </table> */}
+            <table className="w-full mt-4 border text-sm">
+                                    <thead className="bg-[#09090b]">
+                                        <tr>
+                                            <th className="p-2 border text-white">Date</th>
+                                            <th className="p-2 border text-white">Day</th>
+                                            <th className="p-2 border text-white">Status</th>
+                                            <th className="p-2 border text-white">Daily Payment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {slip?.slip.map((day, idx) => (
+                                            <tr key={idx}   className={`border-t ${
+                                                day.day === "Sun"
+                                                  ? "bg-yellow-50 text-yellow-700 font-semibold"
+                                                  : day.status === "Present"
+                                                  ? "bg-green-50 text-green-700 font-semibold"
+                                                  : day.status === "Absent"
+                                                  ? "bg-red-50 text-red-600"
+                                                  : ""
+                                              }`}>
+                                                <td className="p-2 border">{day.date}</td>
+                                                <td className="p-2 border">{day.day}</td>
+                                                
+                                                <td
+                                                    className={`p-2 border  `}
+                                                >
+                                                    {day.day === "Sun" ? "----------" : day.status}
+                                                </td>
+                                                <td className="p-2 border">₹{day.payment}</td>
+                                            </tr>
+                                        ))}
+                                        <tr className="font-semibold bg-gray-100">
+                                            <td colSpan={2} className="p-2 border">Total Present Days</td>
+                                            <td className="p-2 border text-center">{`${slip.presentDays} Present and  ${ slip.sundayDays} Sunday = `} {`${slip.presentDays + slip.sundayDays}  `} </td>
+                                            <td className="p-2 border">₹{slip.totalSalary}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
         </div>
       ) : (
         <p>No data found.</p>

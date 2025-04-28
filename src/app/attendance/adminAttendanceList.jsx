@@ -88,7 +88,7 @@ const AdminAttendanceList = () => {
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">User</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock In</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock Out</th>
-                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Breaks</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Location</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
               </tr>
             </thead>
@@ -99,7 +99,7 @@ const AdminAttendanceList = () => {
                   <td className="px-4 py-2">{rec.user || 'Unknown'}</td>
                   <td className="px-4 py-2">{rec.clockIn ? new Date(rec.clockIn).toLocaleString() : '-'}</td>
                   <td className="px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
-                  <td className="px-4 py-2">
+                  {/* <td className="px-4 py-2">
                     {rec.breaks?.length > 0
                       ? rec.breaks.map((b, index) => (
                           <div key={index}>
@@ -107,7 +107,8 @@ const AdminAttendanceList = () => {
                           </div>
                         ))
                       : '-'}
-                  </td>
+                  </td> */}
+                  <td className="px-4 py-2">{rec?.location || '-'}</td>
                   <td className="px-4 py-2">{rec.totalHours || '-'}</td>
                 </tr>
               ))}

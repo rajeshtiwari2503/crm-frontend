@@ -32,14 +32,15 @@ export default function Clock({ userId }) {
         setIsLoading(true);
         const res = await http_request.get(`/attendance/getTodayStatus/${user?.user?._id}`);
         const { data } = res;
-        // console.log(data);
+        console.log(data);
         setUserAttendance(data?.record?.taskComment)
         if (res.data.clockOut) {
           setStatus(`Clocked Out at ${new Date(res.data.clockOut).toLocaleTimeString()}`);
           setIsClockedOut(true);
           setIsClockedIn(true);
         } else if (res.data.clockIn) {
-          setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()}`);
+          setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()} `);
+          // setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()} from ${res?.data?.record?.location}`);
           setIsClockedIn(true);
         } else {
           setStatus('Not Clocked In');
@@ -57,21 +58,117 @@ export default function Clock({ userId }) {
     }
   }, [user]);
 
+  // const handleClockIn = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const res = await http_request.post('/attendance/clock-in', {
+  //       userId: user?.user?._id,
+  //       user: user?.user?.name
+  //     });
+  //     setStatus('Clocked In at ' + new Date(res.data.clockIn).toLocaleTimeString());
+  //     setIsClockedIn(true);
+  //   } catch (error) {
+  //     console.error('Clock In Error:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+ 
+
   const handleClockIn = async () => {
     try {
       setIsLoading(true);
-      const res = await http_request.post('/attendance/clock-in', {
-        userId: user?.user?._id,
-        user: user?.user?.name
-      });
-      setStatus('Clocked In at ' + new Date(res.data.clockIn).toLocaleTimeString());
-      setIsClockedIn(true);
+  
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser.');
+        setIsLoading(false);
+        return;
+      }
+  
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+  
+          if (latitude && longitude) {
+            // console.log("Latitude:", latitude, "Longitude:", longitude);
+  
+            try {
+              const response = await fetch(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
+              );
+              const data = await response.json();
+  
+              if (data.results && data.results.length > 0) {
+                const bestMatch = data.results[0]; // Most accurate match
+  
+                const address = bestMatch.formatted_address;
+  
+                // Extract district
+                const districtComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_2")
+                );
+                const district = districtComponent ? districtComponent.long_name : "District not found";
+  
+                // Extract state
+                const stateComponent = bestMatch.address_components.find((component) =>
+                  component.types.includes("administrative_area_level_1")
+                );
+                const state = stateComponent ? stateComponent.long_name : "State not found";
+  
+                // console.log("Address:", address);
+                // console.log("District:", district);
+                // console.log("State:", state);
+  
+                // Now call your Clock-In API with address, district, state, latitude, longitude
+                const res = await http_request.post('/attendance/clock-in', {
+                  userId: user?.user?._id,
+                  user: user?.user?.name,
+                  location: address
+                });
+  
+                setStatus(`Clocked In at ${new Date( ).toLocaleTimeString()} from ${address}`);
+                setIsClockedIn(true);
+  
+              } else {
+                console.warn("No location results found for the given coordinates.");
+                alert("Unable to fetch your location. Please try again.");
+              }
+            } catch (error) {
+              console.error("Error fetching address: ", error);
+              alert("Failed to fetch location details. Please try again.");
+            }
+          } else {
+            console.warn("Latitude and Longitude are missing.");
+            alert("Unable to retrieve your location.");
+          }
+        },
+        (error) => {
+          console.error("Error getting location: ", error);
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              alert("Location access denied by the user.");
+              break;
+            case error.POSITION_UNAVAILABLE:
+              alert("Location information is unavailable.");
+              break;
+            case error.TIMEOUT:
+              alert("The request to get user location timed out.");
+              break;
+            default:
+              alert("An unknown error occurred while fetching location.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 } // Enable high accuracy
+      );
     } catch (error) {
       console.error('Clock In Error:', error);
     } finally {
       setIsLoading(false);
     }
   };
+  
+
+
 
   const handleClockOut = async () => {
     try {

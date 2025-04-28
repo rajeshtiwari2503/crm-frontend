@@ -108,7 +108,7 @@ export default function SalarySlipAdmin() {
                                             <tr key={idx}   className={`border-t ${
                                                 day.day === "Sun"
                                                   ? "bg-yellow-50 text-yellow-700 font-semibold"
-                                                  : day.status === "Present"
+                                                  : day.status.startsWith("Present")
                                                   ? "bg-green-50 text-green-700 font-semibold"
                                                   : day.status === "Absent"
                                                   ? "bg-red-50 text-red-600"

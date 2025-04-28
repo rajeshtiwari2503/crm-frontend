@@ -473,7 +473,7 @@ const ActivateWarrantyButton = () => {
       const reqdata = {
         brandId: filterWarranty?.brandId, productBrand: filterWarranty?.brandName, productId: filterProduct?._id, productName: filterProduct?.productName
         , categoryId: filterProduct?.categoryId,subCategoryId: filterProduct?.subCategoryId, categoryName: filterProduct?.categoryName, modelNo: filterProduct?.modelNo
-        , serialNo: filterProduct?.serialNo, warrantyStatus: filterProduct?.warrantyStatus, uniqueId: filterWarranty?.uniqueId
+        , serialNo: filterProduct?.serialNo, warrantyStatus: filterProduct?.warrantyStatus, uniqueId: qrCodeUrl
         , lat: filterWarranty?.lat, long: filterWarranty?.long, userId: filterWarranty?.userId
         , userName: filterWarranty?.userName, serviceLocation: filterWarranty?.address, fullName: filterWarranty?.userName,
         phoneNumber: filterWarranty?.contact, emailAddress: `${filterWarranty?.contact}@gmail.com`, pincode: filterWarranty?.pincode

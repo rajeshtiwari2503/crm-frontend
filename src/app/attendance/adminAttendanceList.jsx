@@ -194,7 +194,7 @@ const AdminAttendanceList = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null); // To hold the record to be edited
-  const [refresh,setRefresh]=useState([])
+  const [refresh, setRefresh] = useState([])
   const fetchDailyData = async (date) => {
     try {
       const res = await http_request.get(`/attendance/getDailyAttendance?date=${date}`);
@@ -213,7 +213,7 @@ const AdminAttendanceList = () => {
 
   useEffect(() => {
     if (selectedMonth) fetchMonthlyData(selectedMonth);
-  }, [selectedMonth,refresh]);
+  }, [selectedMonth, refresh]);
 
   const fetchMonthlyData = async (month) => {
     try {
@@ -232,7 +232,7 @@ const AdminAttendanceList = () => {
   // Fetch daily data initially
   useEffect(() => {
     if (selectedDate) fetchDailyData(selectedDate);
-  }, [selectedDate,refresh]);
+  }, [selectedDate, refresh]);
 
   const handleEditClick = (record) => {
     setSelectedRecord(record);  // Store the record to be edited
@@ -244,7 +244,7 @@ const AdminAttendanceList = () => {
     setSelectedRecord(null);  // Clear the selected record
   };
 
-  
+
   const formatDateTimeLocal = (dateString) => {
     // console.log("dateString",dateString);
 
@@ -260,20 +260,20 @@ const AdminAttendanceList = () => {
         alert('No record selected.');
         return;
       }
-  
+
       const payload = {
         clockIn: selectedRecord.clockIn ? new Date(selectedRecord.clockIn).toISOString() : null,
         clockOut: selectedRecord.clockOut ? new Date(selectedRecord.clockOut).toISOString() : null,
       };
-  // console.log("payload",payload);
-  
+      // console.log("payload",payload);
+
       const response = await http_request.put(`/attendance/updateAttendance/${selectedRecord._id}`, payload);
-  
+
       console.log('Updated successfully:', response.data);
       setRefresh(response.data)
       // After success, close modal and maybe refresh the table
       handleCloseModal();
-         // Refresh your attendance list (optional)
+      // Refresh your attendance list (optional)
     } catch (error) {
       console.error('Error updating attendance:', error);
       alert('Failed to update attendance.');
@@ -392,7 +392,12 @@ const AdminAttendanceList = () => {
                             </td>
                             <td className="text-left px-4 py-2">{rec.totalHours || '-'}</td>
                             <td className="text-left px-4 py-2">
-                              <Edit onClick={() => handleEditClick(rec)} />
+                              <button
+                                onClick={() => handleEditClick(rec)}
+                                className="text-blue-600 hover:text-blue-800"
+                              >
+                                <Edit />
+                              </button>
 
                             </td>
                           </tr>

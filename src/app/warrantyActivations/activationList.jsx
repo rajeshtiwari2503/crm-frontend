@@ -40,10 +40,13 @@ const WarrantyActivationList = (props) => {
   };
 
   const filteredData = data?.filter((item) =>
-    item.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.brandName?.toLowerCase().includes(searchTerm.toLowerCase())
+    // console.log(item)
+    
+    (item.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.brandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.uniqueId.includes(searchTerm))  // Convert uniqueId to string
   );
-
+  console.log(searchTerm)
   const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))
     ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 

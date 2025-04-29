@@ -11,6 +11,7 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import Select from 'react-select';
 import { ReactLoader } from '@/app/components/common/Loading';
+import UserAllServicesListByUniqueId from '../details/[id]/GetUserComplaintByUniqueId';
 const AddComplaint = () => {
 
   const router = useRouter()
@@ -436,7 +437,16 @@ const AddComplaint = () => {
 
 
             {loading === true ? <ReactLoader />
-              : <div  >
+              : 
+              <>
+              <div> 
+             {searchValue?.length>=6 ?  
+                <UserAllServicesListByUniqueId   userId={searchValue} />
+                
+                :""}
+              </div>
+             
+              <div  >
                 <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
                   Create a new complaint
                 </h2>
@@ -974,6 +984,7 @@ const AddComplaint = () => {
                   </button>
                 </div>
               </div>
+              </>
             }
           </div>
 

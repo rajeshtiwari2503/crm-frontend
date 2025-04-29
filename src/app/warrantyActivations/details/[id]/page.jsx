@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ReactLoader } from '@/app/components/common/Loading';
 import UserDashboard from '@/app/dashboard/userDashboard';
 import EditWarrantyDetails from './EditActivationWarranty';
+import UserAllServicesListByUniqueId from '@/app/complaint/details/[id]/GetUserComplaintByUniqueId';
 
 const WarrantyActivationDetails = ({ params }) => {
 
@@ -17,6 +18,7 @@ const WarrantyActivationDetails = ({ params }) => {
 
     const [dashData, setData] = React.useState("");
     const [value, setBrandValue] = React.useState(null);
+    const [userId, setSetUserId] = React.useState(null);
 
 
 
@@ -26,7 +28,8 @@ const WarrantyActivationDetails = ({ params }) => {
                 setLoading(true)
                 const warrantyResponse = await http_request.get(`/getActivationWarrantyById/${params?.id}`);
                 setWarranty(warrantyResponse.data);
-
+                //  console.log("warrantyResponse.data",warrantyResponse.data);
+                 
                 // Fetch user data and dashboard details after fetching the warranty
                 // console.log(warrantyResponse.data);
                 
@@ -56,8 +59,10 @@ const WarrantyActivationDetails = ({ params }) => {
         try {
             const response = await http_request.get(`/getUserBy/${userId}`);
             const userData = response.data;
+            // console.log("userData",userData);
+            
             // setUser(userData);
-            // setId(userData?._id);
+            setSetUserId(userData?._id);
         } catch (err) {
             console.log('Error fetching user details', err);
         }
@@ -69,6 +74,8 @@ const WarrantyActivationDetails = ({ params }) => {
             const endPoint = `/dashboardDetailsByUserId/${userId}`;
             const response = await http_request.get(endPoint);
             const dashboardData = response.data;
+            // console.log("dashboardData",dashboardData);
+            
             setData(dashboardData);
         } catch (err) {
             console.log('Error fetching dashboard details', err);
@@ -194,10 +201,8 @@ const handleEdit=(data)=>{
                         </div>
                     </div>
                     <div>
-                        <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
-                            Customer Information
-                        </h2>
-                        <UserDashboard dashData={dashData} userData={value} />
+                        
+                        <UserAllServicesListByUniqueId   userId={data?.uniqueId} />
                     </div>
                 </>
             }

@@ -9,6 +9,7 @@ import { Chart } from 'react-google-charts';
 import { useRouter } from 'next/navigation';
 import RecentServicesList from '../complaint/RecentServices';
 import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, ProductionQuantityLimits, QrCodeScanner, Settings, ShoppingBag, Wallet } from '@mui/icons-material';
+import UserAllServicesList from '../complaint/details/[id]/UserAllServices';
 
 
 
@@ -285,7 +286,7 @@ const UserDashboard = (props) => {
 
       <div className="mt-8 flex justify-center ">
       <div className="  md:w-full w-[260px] ">
-        <RecentServicesList data={filterData} userData={userData} />
+      <UserAllServicesList data={userComp} />
       </div>
       </div>
     </>

@@ -6,8 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 // import SendOtp from './sendOtp';
- 
+
 
 
 
@@ -22,6 +23,10 @@ const Service = ({ dashboard }) => {
 
   const [totalPages, setTotalPages] = React.useState(0);
   const { user } = useUser()
+  const [complaintLoading, setComplaintLoading] = useState(true);
+  const [serviceLoading, setServiceLoading] = useState(true);
+
+
   useEffect(() => {
     getAllComplaint()
     getAllServiceCenter()
@@ -74,6 +79,7 @@ const Service = ({ dashboard }) => {
 
   const getAllComplaint = async () => {
     try {
+      setComplaintLoading(true);
       if (!user?.user?.role || !user?.user?._id) return;
 
       let role = user.user.role;
@@ -100,7 +106,11 @@ const Service = ({ dashboard }) => {
       setTotalPages(Math.ceil((data?.totalComplaints || 0)));
       setComplaint(data?.data);
     } catch (err) {
+      setComplaintLoading(false);
       console.error("Error fetching complaints:", err);
+    }
+    finally {
+      setComplaintLoading(false);
     }
   };
 
@@ -108,19 +118,18 @@ const Service = ({ dashboard }) => {
 
 
 
-
-
   const getAllServiceCenter = async () => {
     try {
-      let response = await http_request.get("/getAllService")
+      setServiceLoading(true);
+      let response = await http_request.get("/getAllServiceCenterAction");
       let { data } = response;
-
-      setServiceCenter(data)
-    }
-    catch (err) {
+      setServiceCenter(data);
+    } catch (err) {
       console.log(err);
+    } finally {
+      setServiceLoading(false);
     }
-  }
+  };
 
   // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
   const sortData = complaint;
@@ -133,10 +142,15 @@ const Service = ({ dashboard }) => {
 
   return (
     <>
-       
-        <Sidenav>
-          <Toaster />
-          <>
+
+      <Sidenav>
+        <Toaster />
+        <>
+          {(complaintLoading || serviceLoading) ? (
+            <div className="flex items-center justify-center h-[80vh]">
+              <ReactLoader />
+            </div>
+          ) : (
             <ComplaintList data={data} serviceCenter={serviceCenter}
               page={page}
               setPage={setPage}
@@ -144,10 +158,11 @@ const Service = ({ dashboard }) => {
               setLimit={setLimit}
               dashboard={dashboard}
               totalPage={totalPages} userData={value?.user} RefreshData={RefreshData} />
-          </>
-         {/* <SendOtp />   */}
-        </Sidenav>
-    
+          )}
+        </>
+        {/* <SendOtp />   */}
+      </Sidenav>
+
     </>
   )
 }

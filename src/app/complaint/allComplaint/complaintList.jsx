@@ -56,6 +56,8 @@ const ComplaintList = (props) => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [filterComp, setFilteredComp] = useState([]);
+  
+
 
   // const handleChangePage = (event, newPage) => {
   //   setPage(newPage);
@@ -110,16 +112,7 @@ const ComplaintList = (props) => {
 
   };
 
-  // const data = filteredData
-  // const data = filteredData?.filter((item) => {
-  //   const complaintId = item?._id?.toLowerCase();
-  //   const search = searchTerm.toLowerCase();
 
-
-  //   return complaintId?.includes(search) ||
-  //     item?._id.toLowerCase().includes(search) ||
-  //     item?.phoneNumber?.includes(searchTerm);
-  // });
 
   useEffect(() => {
     if (searchTerm.trim() !== "") {
@@ -183,56 +176,90 @@ const ComplaintList = (props) => {
   };
 
 
+  // const handleAssignServiceCenter = async (id) => {
+  //   setId(id);
+
+  //   const filterCom = data?.find((f) => f?._id === id);
+  //   setAssign(true);
+  //   if (!filterCom?.pincode) {
+  //     console.log("Pincode not found in the complaint");
+  //     return;
+  //   }
+
+  //   const targetPincode = filterCom?.pincode.trim(); // Trim the complaint pincode
+
+  //   // const serviceCenter1 = props?.serviceCenter?.filter((f) => {
+  //   //   if (Array.isArray(f?.pincodeSupported)) {
+
+  //   //     return f.pincodeSupported.some((pincodeString) => {
+
+  //   //       const supportedPincodes = pincodeString.split(',').map(p => p.trim());
+
+  //   //       return supportedPincodes.includes(targetPincode);
+  //   //     });
+  //   //   }
+  //   //   return false;
+  //   // });
+  //   const serviceCenter1 = props?.serviceCenter?.filter((center) => {
+  //     // Convert postalCode (string) into an array and merge with pincodeSupported (if it's an array)
+  //     const pincodeList = [
+  //       ...(Array.isArray(center?.pincodeSupported) ? center.pincodeSupported : []),
+  //       ...(center?.postalCode ? center.postalCode.split(',').map(p => p.trim()) : [])
+  //     ];
+
+  //     console.log(pincodeList, "pincodeList");
+
+  //     // Check if targetPincode exists in the merged list
+  //     return pincodeList.includes(targetPincode);
+  //   });
+
+
+  //   setFilterSer(serviceCenter1)
+  //   // console.log(serviceCenter1, "Filtered service centers with matching pincode");
+
+  //   if (serviceCenter1.length === 0) {
+  //     console.log("No service centers found for the given pincode.");
+  //   }
+
+
+  // };
+
+
   const handleAssignServiceCenter = async (id) => {
     setId(id);
-
-    const filterCom = data?.find((f) => f?._id === id);
     setAssign(true);
-    if (!filterCom?.pincode) {
+    setLoading(true);
+  
+    const complaint = data?.find(item => item?._id === id);
+  
+    if (!complaint || !complaint.pincode) {
       console.log("Pincode not found in the complaint");
+      setLoading(false);
       return;
     }
-
-    const targetPincode = filterCom?.pincode.trim(); // Trim the complaint pincode
-
-    // const serviceCenter1 = props?.serviceCenter?.filter((f) => {
-    //   if (Array.isArray(f?.pincodeSupported)) {
-
-    //     return f.pincodeSupported.some((pincodeString) => {
-
-    //       const supportedPincodes = pincodeString.split(',').map(p => p.trim());
-
-    //       return supportedPincodes.includes(targetPincode);
-    //     });
-    //   }
-    //   return false;
-    // });
-    const serviceCenter1 = props?.serviceCenter?.filter((center) => {
-      // Convert postalCode (string) into an array and merge with pincodeSupported (if it's an array)
-      const pincodeList = [
-        ...(Array.isArray(center?.pincodeSupported) ? center.pincodeSupported : []),
-        ...(center?.postalCode ? center.postalCode.split(',').map(p => p.trim()) : [])
+  
+    const targetPincode = complaint.pincode.trim();
+  
+    const filteredCenters = props?.serviceCenter?.filter(center => {
+      const supportedPincodes = [
+        ...(Array.isArray(center.pincodeSupported) ? center.pincodeSupported : []),
+        ...(typeof center.postalCode === 'string'
+          ? center.postalCode.split(',').map(p => p.trim())
+          : [])
       ];
-
-      console.log(pincodeList, "pincodeList");
-
-      // Check if targetPincode exists in the merged list
-      return pincodeList.includes(targetPincode);
-    });
-
-
-    setFilterSer(serviceCenter1)
-    // console.log(serviceCenter1, "Filtered service centers with matching pincode");
-
-    if (serviceCenter1.length === 0) {
+  
+      return supportedPincodes.includes(targetPincode);
+    }) || [];
+  
+    setFilterSer(filteredCenters);
+    setLoading(false);
+  
+    if (filteredCenters.length === 0) {
       console.log("No service centers found for the given pincode.");
     }
-
-
   };
-
-
-
+  
+  
 
 
   const handleUpdateStatus = async (id) => {
@@ -337,25 +364,25 @@ const ComplaintList = (props) => {
       // const reqdata = assign === true ? { empId: userData._id, empName: userData.name, status: "ASSIGN", assignServiceCenterId: data?.assignServiceCenterId, assignServiceCenter: data?.assignServiceCenter, serviceCenterContact: data?.serviceCenterContact, assignServiceCenterTime: data?.assignServiceCenterTime } : { status: data?.status, empId: userData._id, empName: userData.name }
       // console.log(reqdata);
       const reqdata =
-      assign === true
-        ? {
+        assign === true
+          ? {
             empId: userData._id,
-            empName: userData.name ,
+            empName: userData.name,
             status: "ASSIGN",
             assignServiceCenterId: data?.assignServiceCenterId,
             assignServiceCenter: data?.assignServiceCenter,
             serviceCenterContact: data?.serviceCenterContact,
             assignServiceCenterTime: data?.assignServiceCenterTime,
-           
+
           }
-        : {
+          : {
             status: data?.status,
             comments: data?.comments,
             empId: userData._id,
             empName: userData.name,
             ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
           };
-          // console.log(reqdata);
+      // console.log(reqdata);
       let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
       // if (data?.comments) {
       //   updateComment({ comments: data?.comments })
@@ -430,17 +457,17 @@ const ComplaintList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center m-3'>
         <div>
-        <div className='font-bold text-2xl'>Service Information</div>
-        <div className="flex items-center  mt-2">
-        <Search className="text-gray-500" />
-        <input
-          type="text"
-          placeholder="Search by ID"
-          value={searchTerm}
-          onChange={handleSearch}
-          className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
+          <div className='font-bold text-2xl'>Service Information</div>
+          <div className="flex items-center  mt-2">
+            <Search className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search by ID"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
         </div>
         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
           ""
@@ -451,7 +478,7 @@ const ComplaintList = (props) => {
           </div>
         }
       </div>
-     
+
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
         :
         <div className='flex justify-center'>
@@ -748,7 +775,7 @@ const ComplaintList = (props) => {
                           <Visibility color="primary" />
                         
                         </IconButton> */}
-                          {row?.status  !== "COMPLETED" && row?.status  !== "CANCELED" &&
+                          {row?.status !== "COMPLETED" && row?.status !== "CANCELED" &&
                             <>
                               {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
                                 <div
@@ -975,32 +1002,39 @@ const ComplaintList = (props) => {
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(asignCenter)}>
-            <div className='w-[350px] mb-5'>
-              <label id="service-center-label" className="block text-sm font-medium text-white ">
-                Assign  Service Center
-              </label>
+            <>
+          {loading ? (
+    <ReactLoader />
+  ) : filterSer?.length > 0 ? (
+    <>
+              <div className='w-[350px] mb-5'>
+                <label id="service-center-label" className="block text-sm font-medium text-white ">
+                  Assign  Service Center
+                </label>
 
-              <select
-                id="service-center-label"
-                value={selectedService}
-                onChange={handleServiceChange}
-                className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              >
-                <option value="" disabled>Select Service Center</option>
-                {serviceCenter?.map((center) => (
-                  <option key={center.id} value={center._id}>
-                    {center.serviceCenterName}
-                  </option>
-                ))}
-              </select>
+                <select
+                  id="service-center-label"
+                  value={selectedService}
+                  onChange={handleServiceChange}
+                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                >
+                  <option value="" disabled>Select Service Center</option>
+                  {serviceCenter?.map((center) => (
+                    <option key={center.id} value={center._id}>
+                      {center.serviceCenterName}
+                    </option>
+                  ))}
+                </select>
 
-            </div>
-
+              </div>
+         
             <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
-
-            {/* <Button onClick={handleSubmit(onSubmit)} variant="outlined" className='mt-5 hover:bg-[#09090b] hover:text-white' color="success" type="submit">
-              Assign   Service Center
-            </Button> */}
+            </>
+             ) : (
+    <p className="w-[350px] mb-7 text-center text-red-500 text-lg font-bold">No service centers found this complaint pencode .</p>
+  )}
+  </>
+            
           </form>
         </DialogContent>
 
@@ -1029,8 +1063,8 @@ const ComplaintList = (props) => {
               >
                 <option value="IN PROGRESS">In Progress</option>
                 <option value="PART PENDING">Awaiting Parts</option>
-              {  userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?  <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
-              :""}
+                {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
+                  : ""}
                 <option value="FINAL VERIFICATION">Completed</option>
                 <option value="CANCELED">Canceled</option>
               </select>

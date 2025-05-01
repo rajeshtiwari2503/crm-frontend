@@ -12,6 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import EditComplaintForm from '../assign/partPendingVideo';
+import MatchedSparePartsModal from '@/app/components/MatchSparepartsModal';
 
 
 const ComplaintList = (props) => {
@@ -56,7 +57,7 @@ const ComplaintList = (props) => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [filterComp, setFilteredComp] = useState([]);
-  
+
 
 
   // const handleChangePage = (event, newPage) => {
@@ -229,17 +230,17 @@ const ComplaintList = (props) => {
     setId(id);
     setAssign(true);
     setLoading(true);
-  
+
     const complaint = data?.find(item => item?._id === id);
-  
+
     if (!complaint || !complaint.pincode) {
       console.log("Pincode not found in the complaint");
       setLoading(false);
       return;
     }
-  
+
     const targetPincode = complaint.pincode.trim();
-  
+
     const filteredCenters = props?.serviceCenter?.filter(center => {
       const supportedPincodes = [
         ...(Array.isArray(center.pincodeSupported) ? center.pincodeSupported : []),
@@ -247,19 +248,19 @@ const ComplaintList = (props) => {
           ? center.postalCode.split(',').map(p => p.trim())
           : [])
       ];
-  
+
       return supportedPincodes.includes(targetPincode);
     }) || [];
-  
+
     setFilterSer(filteredCenters);
     setLoading(false);
-  
+
     if (filteredCenters.length === 0) {
       console.log("No service centers found for the given pincode.");
     }
   };
-  
-  
+
+
 
 
   const handleUpdateStatus = async (id) => {
@@ -794,6 +795,13 @@ const ComplaintList = (props) => {
                                 >
                                   Send OTP
                                 </div>
+
+                                : ""}
+                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                <div>
+                                  <MatchedSparePartsModal complaintId= {row?._id} />
+
+                                </div>
                                 : ""}
                             </>
                           }
@@ -1003,38 +1011,38 @@ const ComplaintList = (props) => {
         <DialogContent>
           <form onSubmit={handleSubmit(asignCenter)}>
             <>
-          {loading ? (
-    <ReactLoader />
-  ) : filterSer?.length > 0 ? (
-    <>
-              <div className='w-[350px] mb-5'>
-                <label id="service-center-label" className="block text-sm font-medium text-white ">
-                  Assign  Service Center
-                </label>
+              {loading ? (
+                <ReactLoader />
+              ) : filterSer?.length > 0 ? (
+                <>
+                  <div className='w-[350px] mb-5'>
+                    <label id="service-center-label" className="block text-sm font-medium text-white ">
+                      Assign  Service Center
+                    </label>
 
-                <select
-                  id="service-center-label"
-                  value={selectedService}
-                  onChange={handleServiceChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Service Center</option>
-                  {serviceCenter?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.serviceCenterName}
-                    </option>
-                  ))}
-                </select>
+                    <select
+                      id="service-center-label"
+                      value={selectedService}
+                      onChange={handleServiceChange}
+                      className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                      <option value="" disabled>Select Service Center</option>
+                      {serviceCenter?.map((center) => (
+                        <option key={center.id} value={center._id}>
+                          {center.serviceCenterName}
+                        </option>
+                      ))}
+                    </select>
 
-              </div>
-         
-            <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
+                  </div>
+
+                  <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
+                </>
+              ) : (
+                <p className="w-[350px] mb-7 text-center text-red-500 text-lg font-bold">No service centers found this complaint pencode .</p>
+              )}
             </>
-             ) : (
-    <p className="w-[350px] mb-7 text-center text-red-500 text-lg font-bold">No service centers found this complaint pencode .</p>
-  )}
-  </>
-            
+
           </form>
         </DialogContent>
 

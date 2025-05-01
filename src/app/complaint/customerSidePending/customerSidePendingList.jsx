@@ -12,6 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
+import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
 
 const CustomerPendingComplaintList = (props) => {
 
@@ -491,6 +492,7 @@ const CustomerPendingComplaintList = (props) => {
                             <SystemSecurityUpdate />
                           </div>
                           : ""}
+
                            {userData?.role === "BRAND"   ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
@@ -499,6 +501,12 @@ const CustomerPendingComplaintList = (props) => {
                             <SystemSecurityUpdate />
                           </div>
                           : ""}
+                            {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                                          <div>
+                                                            <MatchedSparePartsModalButton complaintId= {row?._id} />
+                          
+                                                          </div>
+                                                          : ""}
                         <div
                         
                           onClick={() => handleDetails(row?._id)}

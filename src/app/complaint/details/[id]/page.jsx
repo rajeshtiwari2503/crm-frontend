@@ -24,6 +24,7 @@ const ComplaintDetails = ({ params }) => {
         }
         getComplaintById()
         getComplaintByUserId()
+        getAllSpareParts()
     }, [id])
 
     const getComplaintById = async () => {
@@ -79,6 +80,29 @@ const ComplaintDetails = ({ params }) => {
         const match = url.match(/(?:id=|\/d\/)([\w-]+)/);
         return match ? match[1] : null;
     };
+    const [spareParts, setSpareParts] = useState([]); // state to store all spare parts
+    const [matchedSpareParts, setMatchedSpareParts] = useState([]); // filtered parts
+
+    const getAllSpareParts = async () => {
+        try {
+            const res = await http_request.get("/getAllSparepart"); // adjust route accordingly
+            const parts = res?.data || [];
+
+            setSpareParts(parts);
+            // console.log("parts", parts);
+
+            // filter by matching productId
+            const matched = parts.filter(part =>
+                part.products.some(product => product.productId === complaint?.productId)
+            );
+
+            // console.log("matched", matched);
+            setMatchedSpareParts(matched);
+        } catch (err) {
+            console.log("Error fetching spare parts", err);
+        }
+    };
+
     return (
         <>
 
@@ -170,6 +194,62 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
+                                 <div className='md:text-xl text-sm font-semibold'> Sparepart   : </div>
+                                <div>
+                                    {matchedSpareParts.length > 0 ? (
+                                        <div className="mt-8">
+                                            {/* <h3 className="text-xl font-bold mb-4">Matched Spare Parts</h3> */}
+                                            <ul className=" ">
+                                                {matchedSpareParts.map((part, index) => (
+                                                    <li
+                                                        key={index}
+                                                        className="bg-gray-100 p-4 rounded-lg shadow hover:bg-blue-50 cursor-pointer"
+                                                        onClick={() => router.push(`/product/sparepart/details/${part._id}`)}
+                                                    >
+                                                        <div className="font-bold text-lg">Sparepart Name : {part.partName}</div>
+                                                        <div className="text-sm text-gray-700">Part No: {part.partNo}</div>
+                                                        {/* <div className="text-sm text-gray-700">SKU No: {part.skuNo}</div>
+                                                    <div className="text-sm text-gray-700">MRP: ₹{part.MRP}</div>
+                                                    <div className="text-sm text-gray-700">Best Price: ₹{part.bestPrice}</div>
+                                                    <div className="text-sm text-gray-700">Brand: {part.brandName}</div>
+                                                    <div className="text-sm text-gray-700">Category: {part.category}</div>
+                                                    <div className="text-sm text-gray-700">Seller: {part.seller}</div>
+                                                    <div className="text-sm text-gray-700">Dimensions: {part.length} x {part.breadth} x {part.height}</div>
+                                                    <div className="text-sm text-gray-700">Weight: {part.weight} kg</div>
+                                                    <div className="text-sm text-gray-700">Status: {part.status}</div>
+
+                                                    {part.products?.length > 0 && (
+                                                        <div className="text-sm text-gray-700 mt-1">
+                                                            Products:
+                                                            <ul className="ml-4 list-disc">
+                                                                {part.products.map((product, i) => (
+                                                                    <li key={i}>{product.productName}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
+                                                    )} */}
+
+                                                        {part.images?.length > 0 && (
+                                                            <div className="mt-2 flex  gap-2">
+                                                                <div>Sparepart Image : </div>
+                                                                {part.images.map((image, i) => (
+                                                                    <img
+                                                                        key={i}
+                                                                        src={image}
+                                                                        alt={`Part image ${i + 1}`}
+                                                                        className="w-20 h-20 object-cover rounded border"
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )
+                                :"Sparepart not match this product id"}
+                                </div>
+
                                 <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>
                                 <div className='md:text-xl text-sm font-semibold'>AssignTechnician : </div>

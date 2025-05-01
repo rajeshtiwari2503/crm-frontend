@@ -12,6 +12,7 @@ import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
 
 const VerificationComplaintList = (props) => {
 
@@ -739,6 +740,12 @@ const VerificationComplaintList = (props) => {
                             Assign Technician
                           </div>
                           : ""} */}
+                            {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                                          <div>
+                                                            <MatchedSparePartsModalButton complaintId= {row?._id} />
+                          
+                                                          </div>
+                                                          : ""}
                           <div
                             onClick={() => handleDetails(row?._id)}
                             className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"

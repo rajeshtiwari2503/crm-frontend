@@ -12,6 +12,7 @@ import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import EditComplaintForm from './partPendingVideo';
+import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
 
 const AssignComplaintList = (props) => {
 
@@ -31,45 +32,45 @@ const AssignComplaintList = (props) => {
   //           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
   //             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
   //               : []
-  
-    const searchParams = useSearchParams();
-    const brandId = searchParams.get('brandId');
-    const role = searchParams.get('role');
-  
-    const effectiveRole = role || userData?.role;
-  
+
+  const searchParams = useSearchParams();
+  const brandId = searchParams.get('brandId');
+  const role = searchParams.get('role');
+
+  const effectiveRole = role || userData?.role;
+
   let data = [];
-    if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
-      // Admin overriding to view a brand's complaints
-      data = complaint?.filter(item => item?.brandId === brandId);
-    } else {
-      switch (effectiveRole) {
-        case "ADMIN":
-        case "EMPLOYEE":
-          data = complaint;
-          break;
-        case "BRAND":
-          data = complaint?.filter(item => item?.brandId === userData._id);
-          break;
-        case "BRAND EMPLOYEE":
-          data = complaint?.filter(item => item?.brandId === userData.brandId);
-          break;
-        case "USER":
-          data = complaint?.filter(item => item?.userId === userData._id);
-          break;
-        case "SERVICE":
-          data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
-          break;
-        case "TECHNICIAN":
-          data = complaint?.filter(item => item?.technicianId === userData._id);
-          break;
-        case "DEALER":
-          data = complaint?.filter(item => item?.dealerId === userData._id);
-          break;
-        default:
-          data = [];
-      }
+  if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
+    // Admin overriding to view a brand's complaints
+    data = complaint?.filter(item => item?.brandId === brandId);
+  } else {
+    switch (effectiveRole) {
+      case "ADMIN":
+      case "EMPLOYEE":
+        data = complaint;
+        break;
+      case "BRAND":
+        data = complaint?.filter(item => item?.brandId === userData._id);
+        break;
+      case "BRAND EMPLOYEE":
+        data = complaint?.filter(item => item?.brandId === userData.brandId);
+        break;
+      case "USER":
+        data = complaint?.filter(item => item?.userId === userData._id);
+        break;
+      case "SERVICE":
+        data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
+        break;
+      case "TECHNICIAN":
+        data = complaint?.filter(item => item?.technicianId === userData._id);
+        break;
+      case "DEALER":
+        data = complaint?.filter(item => item?.dealerId === userData._id);
+        break;
+      default:
+        data = [];
     }
+  }
 
   const technician = props?.technicians
   const [status, setStatus] = useState(false);
@@ -105,17 +106,17 @@ const AssignComplaintList = (props) => {
 
     // Handle the complaint ID format and general search terms
     return complaintId?.includes(search) ||
-    item?.complaintId?.toLowerCase().includes(search) ||
-    item?.productBrand?.toLowerCase().includes(search) ||
-    item?.productName?.toLowerCase().includes(search) ||
-    item?.subCategoryName?.toLowerCase().includes(search) ||
-    item?.categoryName?.toLowerCase().includes(search) ||
-    item?.fullName?.toLowerCase().includes(search) ||
-    item?.district?.toLowerCase().includes(search) ||
-    item?.assignServiceCenter?.toLowerCase().includes(search) ||
-    item?.state?.toLowerCase().includes(search) ||
-    item?.phoneNumber?.includes(searchTerm)||
-    item?.pincode?.includes(searchTerm);
+      item?.complaintId?.toLowerCase().includes(search) ||
+      item?.productBrand?.toLowerCase().includes(search) ||
+      item?.productName?.toLowerCase().includes(search) ||
+      item?.subCategoryName?.toLowerCase().includes(search) ||
+      item?.categoryName?.toLowerCase().includes(search) ||
+      item?.fullName?.toLowerCase().includes(search) ||
+      item?.district?.toLowerCase().includes(search) ||
+      item?.assignServiceCenter?.toLowerCase().includes(search) ||
+      item?.state?.toLowerCase().includes(search) ||
+      item?.phoneNumber?.includes(searchTerm) ||
+      item?.pincode?.includes(searchTerm);
   });
 
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -279,18 +280,18 @@ const AssignComplaintList = (props) => {
 
   const sendOTP = async (id) => {
     try {
-      const response = await http_request.post("/send-otp", { complaintId:id });
+      const response = await http_request.post("/send-otp", { complaintId: id });
 
       if (response.data.success) {
         console.log("OTP sent successfully!");
-       ToastMessage({status:true,msg:"OTP sent successfully!"})
+        ToastMessage({ status: true, msg: "OTP sent successfully!" })
       } else {
         console.log("Failed to send OTP. Please try again.");
-        ToastMessage({status:false,msg:"Failed to send OTP. Please try again."})
+        ToastMessage({ status: false, msg: "Failed to send OTP. Please try again." })
       }
     } catch (error) {
       console.log("Error sending OTP: " + error.response?.data?.message || error.message);
-    } 
+    }
   };
 
   return (
@@ -585,22 +586,22 @@ const AssignComplaintList = (props) => {
                             </div>
                             : ""}
 
-                          {userData?.role === "SERVICE" ||userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
 
                             >
-                             Add Video
+                              Add Video
                             </div>
                             : ""}
-                             {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN"  ?
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
                             <div
                               onClick={() => sendOTP(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
 
                             >
-                            Send OTP
+                              Send OTP
                             </div>
                             : ""}
 
@@ -611,6 +612,12 @@ const AssignComplaintList = (props) => {
 
                             >
                               <AssignmentTurnedIn />
+                            </div>
+                            : ""}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div>
+                              <MatchedSparePartsModalButton complaintId={row?._id} />
+
                             </div>
                             : ""}
                           <div

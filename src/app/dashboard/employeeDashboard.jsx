@@ -207,6 +207,38 @@ const EmployeeDashboard = (props) => {
             </div>
           </div>
         </div>
+         <div className=''>
+                  <div onClick={() => router.push(`/complaint/todayCloseComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+        
+                    <div className='pl-5 py-1 flex justify-between items-center'>
+                      <div className='flex items-center'>
+                        <AssignmentTurnedIn fontSize='medium' />
+                        <div className='ml-2'>
+                          <div className='text-blue-500 font-semibold'>Today completed</div>
+                          <div className=' text-2xl font-semibold'>
+                            <CountUp start={0} end={data?.complaints?.completedToday} delay={1} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className=''>
+                  <div onClick={() => router.push(`/complaint/todayCreateComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+        
+                    <div className='pl-5 py-1 flex justify-between items-center'>
+                      <div className='flex items-center'>
+                        <Assignment fontSize='medium' />
+                        <div className='ml-2'>
+                          <div className='text-blue-500 font-semibold'>Today created</div>
+                          <div className=' text-2xl font-semibold'>
+                            <CountUp start={0} end={data?.complaints?.createdToday} delay={1} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
       </div>
 
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
@@ -276,7 +308,7 @@ const EmployeeDashboard = (props) => {
             </div>
           </div>
         </div>
-        <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
+        {/* <div className='lg:col-span-1 sm:col-span-4 xs:col-span-4'>
           <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
 
             <div className='pl-5 py-1 flex justify-between items-center'>
@@ -291,7 +323,7 @@ const EmployeeDashboard = (props) => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 

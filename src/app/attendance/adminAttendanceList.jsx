@@ -369,7 +369,7 @@ const AdminAttendanceList = () => {
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">User</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock In</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock Out</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Breaks</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Location</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th> {/* 👈 Added Actions */}
                         </tr>
@@ -381,15 +381,7 @@ const AdminAttendanceList = () => {
                             <td className="text-left px-4 py-2">{rec.user || 'Unknown'}</td>
                             <td className="text-left px-4 py-2">{rec.clockIn ? new Date(rec.clockIn).toLocaleString() : '-'}</td>
                             <td className="text-left px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
-                            <td className="text-left px-4 py-2">
-                              {rec.breaks?.length > 0
-                                ? rec.breaks.map((b, index) => (
-                                  <div key={index}>
-                                    {new Date(b.breakIn).toLocaleTimeString()} - {new Date(b.breakOut).toLocaleTimeString()}
-                                  </div>
-                                ))
-                                : '-'}
-                            </td>
+                            <td className="px-4 py-2">{rec?.location || '-'}</td>
                             <td className="text-left px-4 py-2">{rec.totalHours || '-'}</td>
                             <td className="text-left px-4 py-2">
                               <button

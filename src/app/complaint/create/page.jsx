@@ -70,10 +70,14 @@ const AddComplaint = () => {
         const remainingDays = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
         const remDay=remainingDays > 0 ? remainingDays : 0;
         console.log("remDay",remDay);
+        setValue("uniqueId",value)
+        // console.log("value",value);
+        
         if (selectedProduct) {
           const selectednature = nature?.filter(nat =>
             nat.products?.some(product => product.productId === selectedProduct?._id))
           setComplaintNature(selectednature);
+          setValue("uniqueId",value)
           const selectesubCat = subCategory?.filter(cat => cat?.categoryId === selectedProduct?.categoryId);
           setSubCat(selectesubCat);
           setValue('productName', selectedProduct.productName);

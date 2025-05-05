@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import DownloadExcel from '@/app/components/DownLoadExcel';
  
 
 const TodayCreateComplaintList = (props) => {
@@ -200,7 +201,88 @@ const TodayCreateComplaintList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Today Create  Complaints Information</div>
+       {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
+                 <div>
+                   {dataSearch?.length > 0 ?
        
+                     <DownloadExcel
+                       userData={userData}
+                       data={dataSearch?.map(complaint => {
+                         const createdAt = new Date(complaint.createdAt);
+                         const now = new Date(); // current date and time
+                         const durationMs = now - createdAt;
+       
+                         const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+                         const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
+                         const durationDays = Math.floor(durationHours / 24);
+       
+                         let aging = '';
+                         aging = `${durationDays}d`;
+       
+       
+                         return {
+                           ...complaint,
+                           sndStatus: complaint.updateComments?.map(comment =>
+                             `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+                           ).join(", ") || "",
+       
+                           closerComment: complaint.updateHistory?.find(entry =>
+                             entry.changes?.status === "FINAL VERIFICATION"
+                           )?.changes?.comments || " ",
+       
+                           empName: complaint.updateHistory?.find(entry =>
+                             entry.changes?.status === "FINAL VERIFICATION"
+                           )?.changes?.empName || " ",
+                           finalComments: complaint.updateHistory?.find(entry =>
+                             entry.changes?.status === "COMPLETED"
+                           )?.changes?.finalComments || " ",
+                           kilometer: complaint.updateHistory?.find(entry =>
+                             entry.changes?.status === "COMPLETED"
+                           )?.changes?.kilometer || " ",
+                           aging: aging // ⏳ Add the computed edge field to the exported row
+                         };
+                       })}
+                       fileName="ComplaintsList"
+                       fieldsToInclude={[
+                         "complaintId",
+                         "productBrand",
+                         "categoryName",
+                         "subCategoryName",
+                         "productName",
+                         "modelNo",
+                         "warrantyStatus",
+                         "userName",
+                         "fullName",
+                         "phoneNumber",
+                         "serviceAddress",
+                         "detailedDescription",
+                         "status",
+                         "empName",
+                         "state",
+                         "district",
+                         "pincode",
+                         "serialNo",
+                         "purchaseDate",
+                         "aging",// ⏳ Include the edge (duration) field in Excel
+                         "assignServiceCenter",
+                         "serviceCenterContact",
+                         "assignTechnician",
+                         "paymentServiceCenter",
+                         "paymentBrand",
+                         "finalComments",
+                         "kilometer",
+                         "closerComment",
+                         "updatedAt",
+                         "createdAt",
+                         "sndStatus"
+       
+                       ]}
+       
+       
+                     /> : ""
+                   }
+                 </div>
+                 : ""}
          <div className="flex items-center mb-3">
                   <Search className="text-gray-500" />
                   <input

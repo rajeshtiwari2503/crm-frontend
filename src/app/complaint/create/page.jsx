@@ -55,7 +55,7 @@ const AddComplaint = () => {
         // setWarrantyDetails(data);
         const filterWarranty = data?.records?.find((f) => f?.uniqueId === value)
         // console.log("data",data);
-        console.log(filterWarranty);
+        // console.log("filterWarranty",filterWarranty);
         const selectedProductId = filterWarranty?.productId;
 
         setProductName(selectedProductId)

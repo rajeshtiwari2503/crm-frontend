@@ -63,17 +63,33 @@ const {user}=useUser()
       console.log(err);
     }
   }
+  // const getAllServiceCenter = async () => {
+  //   try {
+  //     let response = await http_request.get("/getAllService")
+  //     let { data } = response;
+
+  //     setServiceCenter(data)
+  //   }
+  //   catch (err) {
+  //     console.log(err);
+  //   }
+  // }
   const getAllServiceCenter = async () => {
     try {
-      let response = await http_request.get("/getAllService")
-      let { data } = response;
-
-      setServiceCenter(data)
+      const response = await http_request.get("/getAllService");
+      if (response?.data) {
+        const authorizedCenters = response.data.filter(
+          (center) => center.serviceCenterType === "Authorized"
+        );
+        setServiceCenter(authorizedCenters);
+      } else {
+        console.warn("No service center data received.");
+      }
+    } catch (err) {
+      console.error("Failed to fetch service centers:", err?.response?.data || err.message);
     }
-    catch (err) {
-      console.log(err);
-    }
-  }
+  };
+  
   const getAllBrand = async () => {
     try {
       let response = await http_request.get("/getAllBrand")

@@ -71,6 +71,15 @@ const AddComplaint = () => {
         const remDay=remainingDays > 0 ? remainingDays : 0;
         console.log("remDay",remDay);
         setValue("uniqueId",value)
+        setValue('fullName', filterWarranty.userName);
+        setValue('phoneNumber', filterWarranty.contact);
+        setValue('emailAddress', filterWarranty.email);
+        setValue('pincode', filterWarranty.pincode);
+        setValue('serviceAddress', filterWarranty.address);
+        setValue('serviceLocation', filterWarranty.address);
+        setPincode(filterWarranty?.pincode)
+        setValue('brandId', filterWarranty.brandId);
+        setValue('productBrand', filterWarranty.brandName);
         // console.log("value",value);
         
         if (selectedProduct) {

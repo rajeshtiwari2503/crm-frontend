@@ -66,14 +66,15 @@ const ActivateWarrantyButton = () => {
   };
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-  console.log("filterWarranty",filterWarranty);
+  // console.log("filterWarranty",filterWarranty);
+  // console.log("warrantyDetails",warrantyDetails);
 
 
   const calculateWarrantyExpiration = () => {
     if (warrantyDetails) {
       const purchaseDate = new Date(filterWarranty?.activationDate);
       const expirationDate = new Date(purchaseDate);
-      expirationDate.setDate(purchaseDate.getDate() + warrantyDetails.warrantyInDays);
+      expirationDate.setDate(purchaseDate.getDate() + filterWarranty?.warrantyInDays);
       return expirationDate.toLocaleDateString();
     }
     return null;
@@ -574,7 +575,7 @@ const ActivateWarrantyButton = () => {
               </div>
               <div className='mt-2'>
                 <label className="font-bold text-gray-700 text-sm">Year </label>
-                {filterWarranty && <p className="text-gray-600 text-sm">{new Date(filterWarranty?.year).toLocaleDateString()}</p>}
+                {filterWarranty && <p className="text-gray-600 text-sm">{new Date(filterWarranty?.activationDate).toLocaleDateString()}</p>}
               </div>
               {/* <div>
           <label className="font-bold text-gray-700">Warranty Expiration Date:</label>

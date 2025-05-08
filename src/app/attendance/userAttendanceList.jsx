@@ -1,8 +1,8 @@
- 'use client';
+'use client';
 import { useEffect, useState } from 'react';
 import http_request from "../../../http-request";
 
-const UserAttendanceList = ({userId}) => {
+const UserAttendanceList = ({ userId }) => {
   const [records, setRecords] = useState([]);
   const [monthlyRecords, setMonthlyRecords] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState('');
@@ -23,17 +23,17 @@ const UserAttendanceList = ({userId}) => {
     const currentMonth = today.toISOString().slice(0, 7); // "YYYY-MM"
     setSelectedMonth(currentMonth);
   }, []);
-  
+
   useEffect(() => {
     if (selectedMonth) fetchMonthlyData(selectedMonth);
   }, [selectedMonth]);
-  
+
   const fetchMonthlyData = async (month) => {
     try {
       const queryParams = new URLSearchParams();
       queryParams.append('month', month);
       queryParams.append('userId', userId);
-  
+
       const res = await http_request.get(`/attendance/getMonthlyAttendanceByUserId?${queryParams.toString()}`);
       const datav = res?.data?.map((item, index) => ({ ...item, i: index + 1 }));
       setMonthlyRecords(datav);
@@ -49,10 +49,10 @@ const UserAttendanceList = ({userId}) => {
   }, [selectedDate]);
 
   // Fetch monthly data only when a month is selected
- 
 
-//   console.log("monthlyRecords",monthlyRecords);
-  
+
+  //   console.log("monthlyRecords",monthlyRecords);
+
   return (
     <div className="">
       <h1 className="text-2xl font-semibold text-gray-800 mb-6">📊 Attendance Dashboard</h1>
@@ -89,7 +89,9 @@ const UserAttendanceList = ({userId}) => {
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">User</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock In</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock Out</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Location</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Breaks</th>
+                <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Task Comment</th>
                 <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
               </tr>
             </thead>
@@ -100,15 +102,17 @@ const UserAttendanceList = ({userId}) => {
                   <td className="px-4 py-2">{rec.user || 'Unknown'}</td>
                   <td className="px-4 py-2">{rec.clockIn ? new Date(rec.clockIn).toLocaleString() : '-'}</td>
                   <td className="px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
+                  <td className="px-4 py-2">{rec?.location || '-'}</td>
                   <td className="px-4 py-2">
                     {rec.breaks?.length > 0
                       ? rec.breaks.map((b, index) => (
-                          <div key={index}>
-                            {new Date(b.breakIn).toLocaleTimeString()} - {new Date(b.breakOut).toLocaleTimeString()}
-                          </div>
-                        ))
+                        <div key={index}>
+                          {new Date(b.breakIn).toLocaleTimeString()} - {new Date(b.breakOut).toLocaleTimeString()}
+                        </div>
+                      ))
                       : '-'}
                   </td>
+                  <td className="text-left px-4 py-2">{rec?.taskComment || '-'}</td>
                   <td className="px-4 py-2">{rec.totalHours || '-'}</td>
                 </tr>
               ))}
@@ -142,39 +146,44 @@ const UserAttendanceList = ({userId}) => {
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">User</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock In</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock Out</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Breaks</th>
-                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Location</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Breaks</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Task Comment</th>
+                        <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {day.records.map((rec, rIdx) => (
+                        <tr key={rec._id} className="border-t text-sm font-medium text-gray-700 hover:bg-gray-50">
+                          <td className="text-left px-4 py-2">{rIdx + 1}</td>
+                          <td className="text-left px-4 py-2">{rec.user || 'Unknown'}</td>
+                          <td className="text-left px-4 py-2">{rec.clockIn ? new Date(rec.clockIn).toLocaleString() : '-'}</td>
+                          <td className="text-left px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
+                          <td className="px-4 py-2">{rec?.location || '-'}</td>
+                          <td className="text-left px-4 py-2">
+                            {rec.breaks?.length > 0
+                              ? rec.breaks.map((b, index) => (
+                                <div key={index}>
+                                  {new Date(b.breakIn).toLocaleTimeString()} - {new Date(b.breakOut).toLocaleTimeString()}
+                                </div>
+                              ))
+                              : '-'}
+                          </td>
+                          <td className="text-left px-4 py-2">{rec?.taskComment || '-'}</td>
+                          <td className="text-left px-4 py-2">{rec.totalHours || '-'}</td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {day.records.map((rec, rIdx) => (
-                          <tr key={rec._id} className="border-t text-sm font-medium text-gray-700 hover:bg-gray-50">
-                            <td className="text-left px-4 py-2">{rIdx + 1}</td>
-                            <td className="text-left px-4 py-2">{rec.user || 'Unknown'}</td>
-                            <td className="text-left px-4 py-2">{rec.clockIn ? new Date(rec.clockIn).toLocaleString() : '-'}</td>
-                            <td className="text-left px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
-                            <td className="text-left px-4 py-2">
-                              {rec.breaks?.length > 0
-                                ? rec.breaks.map((b, index) => (
-                                    <div key={index}>
-                                      {new Date(b.breakIn).toLocaleTimeString()} - {new Date(b.breakOut).toLocaleTimeString()}
-                                    </div>
-                                  ))
-                                : '-'}
-                            </td>
-                            <td className="text-left px-4 py-2">{rec.totalHours || '-'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                      ))}
+                    </tbody>
+                  </table>
                   </div>
                 ))}
-              </div>
             </div>
-          ))}
-        </div>
-      )}
+            </div>
+      ))}
     </div>
+  )
+}
+    </div >
   );
 };
 

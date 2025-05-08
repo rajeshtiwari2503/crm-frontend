@@ -371,6 +371,7 @@ const AdminAttendanceList = () => {
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Clock Out</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Location</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Total Hours</th>
+                          <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Task Comment</th>
                           <th className="px-4 py-2 text-left text-sm font-medium text-gray-700">Actions</th> {/* 👈 Added Actions */}
                         </tr>
                       </thead>
@@ -383,6 +384,7 @@ const AdminAttendanceList = () => {
                             <td className="text-left px-4 py-2">{rec.clockOut ? new Date(rec.clockOut).toLocaleString() : '-'}</td>
                             <td className="px-4 py-2">{rec?.location || '-'}</td>
                             <td className="text-left px-4 py-2">{rec.totalHours || '-'}</td>
+                            <td className="text-left px-4 py-2">{rec?.taskComment || '-'}</td>
                             <td className="text-left px-4 py-2">
                               <button
                                 onClick={() => handleEditClick(rec)}

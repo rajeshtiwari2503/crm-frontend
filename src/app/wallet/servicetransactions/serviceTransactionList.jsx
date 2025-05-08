@@ -511,6 +511,15 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                             </TableCell>
                                             <TableCell>
                                                 <TableSortLabel
+                                                    active={sortBy === 'brandName'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('brandName')}
+                                                >
+                                                    Month
+                                                </TableSortLabel>
+                                            </TableCell>
+                                            <TableCell>
+                                                <TableSortLabel
                                                     active={sortBy === 'addedAmount'}
                                                     direction={sortDirection}
                                                     onClick={() => handleSort('addedAmount')}
@@ -589,6 +598,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                     <TableCell>{row?.address}</TableCell>
                                                     <TableCell>{row?.description}</TableCell>
                                                     <TableCell>{row?.contactNo}</TableCell>
+                                                    <TableCell>{row?.month}</TableCell>
 
 
                                                     <TableCell>{row.payment} INR</TableCell>

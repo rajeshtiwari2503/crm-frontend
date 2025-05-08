@@ -212,7 +212,7 @@ const AddComplaint = () => {
     }
     catch (err) {
       setLoading(false)
-      ToastMessage(err.response.data)
+      ToastMessage(err?.response?.data)
 
       console.log(err);
     }

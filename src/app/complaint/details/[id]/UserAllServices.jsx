@@ -111,7 +111,7 @@ const UserAllServicesList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                      Ticket Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -241,33 +241,7 @@ const UserAllServicesList = (props) => {
                       Assign Service Center
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -294,7 +268,7 @@ const UserAllServicesList = (props) => {
                 {sortedData.map((row,item) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{item+1}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.serviceAddress}</TableCell>
@@ -309,9 +283,7 @@ const UserAllServicesList = (props) => {
                     <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">

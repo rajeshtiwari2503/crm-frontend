@@ -41,9 +41,11 @@ const ComplaintDetails = ({ params }) => {
     }
     const getComplaintByUserId = async () => {
         try {
-            let response = await http_request.get(`/getAllComplaint`)
+            let response = await http_request.get(`/getAllBrandComplaint`)
             let { data } = response;
-            setUserComplaint(data?.data)
+            // console.log("data",data);
+            
+            setUserComplaint(data)
 
         }
         catch (err) {

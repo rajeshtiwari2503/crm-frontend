@@ -560,6 +560,15 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                     direction={sortDirection}
                                                     onClick={() => handleSort('createdAt')}
                                                 >
+                                                    Create_Date
+                                                </TableSortLabel>
+                                            </TableCell>
+                                             <TableCell>
+                                                <TableSortLabel
+                                                    active={sortBy === 'createdAt'}
+                                                    direction={sortDirection}
+                                                    onClick={() => handleSort('createdAt')}
+                                                >
                                                     Pay_Date
                                                 </TableSortLabel>
                                             </TableCell>
@@ -617,6 +626,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
+                                                    <TableCell>{new Date(row.updatedAt).toLocaleString()}</TableCell>
                                                     {/* <TableCell>
                                                     <IconButton aria-label="view" onClick={() => handleView(row.id)}>
                                                         <Visibility color='primary' />

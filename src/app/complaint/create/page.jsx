@@ -56,10 +56,11 @@ const AddComplaint = () => {
         // setWarrantyDetails(data);
         setSuccessData(data);
         const filterWarranty = data?.records?.find((f) => f?.uniqueId === value)
-        console.log("data", data);
-        // console.log("filterWarranty",filterWarranty);
+        // console.log("data", data);
+        // console.log("filterWarranty", filterWarranty);
         const selectedProductId = filterWarranty?.productId;
-
+        setValue('productBrand', filterWarranty?.brandName);
+        // console.log(" filterWarranty?.brandName", filterWarranty?.brandName);
         setProductName(selectedProductId)
         const selectedProduct = products?.find(product => product._id === selectedProductId);
         // console.log(selectedProduct, "djhj");
@@ -85,8 +86,7 @@ const AddComplaint = () => {
         setValue('categoryName', selectedProduct.categoryName);
         setValue('subCategoryName', selectedProduct?.subCategory);
         setValue('subCategoryId', selectedProduct?.subCategoryId);
-        setValue('productBrand', filterWarranty.brandName);
-        // console.log("value",value);
+
 
         if (selectedProduct) {
           const selectednature = nature?.filter(nat =>
@@ -97,7 +97,7 @@ const AddComplaint = () => {
           setSubCat(selectesubCat);
           setValue('productName', selectedProduct.productName);
           setValue('categoryName', selectedProduct.categoryName);
-          setValue('productBrand', selectedProduct.productBrand);
+          // setValue('productBrand', selectedProduct.productBrand);
           setValue('productId', selectedProduct._id);
           setValue('categoryId', selectedProduct.categoryId);
           setValue('brandId', selectedProduct.brandId);

@@ -9,6 +9,7 @@ const StatewisePendingComplaints = () => {
   const [statewiseData, setStatewiseData] = useState([]);
   const [locationwiseData, setLocationwiseData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [brandLoading, setBrandLoading] = useState(false);
 
   useEffect(() => {
     // Fetch data from the backend API
@@ -31,14 +32,16 @@ const StatewisePendingComplaints = () => {
 
   const fetchAllComplaintData = async () => {
     try {
-      setLoading(true)
+      setBrandLoading(true)
       // const response = await http_request.get("/getAllComplaint"); // Adjust the API path if needed
       const response = await http_request.get("/getAllBrandComplaint");  // Adjust the API path if needed
       let { data } = response;
+      console.log("data",data);
+      
       setLocationwiseData(data);
-      setLoading(false)
+      setBrandLoading(false)
     } catch (error) {
-      setLoading(false)
+      setBrandLoading(false)
 
       console.error("Error fetching data:", error);
     }
@@ -156,7 +159,7 @@ const StatewisePendingComplaints = () => {
         </div>
 
         {/* Chart Display */}
-        {chartData.length > 1 ? (
+        {!brandLoading ? (
           <Chart chartType="PieChart" width="100%" height="400px" data={chartDataLoc} options={optionsLoc} />
         ) : (
           <div className="h-[400px] flex justify-center items-center"> <ReactLoader /></div>

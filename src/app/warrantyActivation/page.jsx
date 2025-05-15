@@ -568,10 +568,10 @@ const ActivateWarrantyButton = () => {
       {loading === true || !filterWarranty ? <div>
         <ReactLoader />
       </div>
-        : <div className="flex justify-center items-center min-h-screen bg-white p-6">
+        : <div className="flex justify-center items-center min-h-screen bg-white p-5">
           <Toaster />
           <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
-            <div className="flex justify-center mb-5 ">
+            <div className="flex justify-center mb-3 ">
               <img
                 src="/Logo.png" // Replace with actual logo path
                 alt="Servsy Logo"
@@ -579,7 +579,7 @@ const ActivateWarrantyButton = () => {
               />
             </div>
             <h2 className="text-2xl font-semibold text-center text-gray-800  ">Activate Your Product Warranty</h2>
-            <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-5">
+            <div className="grid grid-cols-2 bg-white rounded-2xl py-4 ga p-4 mt-3">
 
               <div className='mt-2'>
                 <label className="font-bold text-sm text-gray-700">Brand Name </label>
@@ -640,7 +640,7 @@ const ActivateWarrantyButton = () => {
                   <div>
                     <button
                       onClick={() => handleDashboard(filterWarranty?.userId)}
-                      className="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                      className="w-full bg-green-500 text-white p-1 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                     >
                       Go Dashboard
                     </button>
@@ -649,7 +649,7 @@ const ActivateWarrantyButton = () => {
                   <div>
                     <button
                       onClick={handleComplaint}
-                      className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                      className="ms-2 w-full bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                     >
                       Create Complaint
                     </button>

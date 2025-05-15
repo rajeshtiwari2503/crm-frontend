@@ -95,20 +95,20 @@ export const UserProvider = ({ children }) => {
     // 👇 Setup inactivity listener
     useEffect(() => {
         if (!user || user?.user?.role !== "ADMIN") return;
-    
+
         const handleUserActivity = () => {
             resetInactivityTimer();
         };
-    
+
         // Listen to user activity
         window.addEventListener("mousemove", handleUserActivity);
         window.addEventListener("keydown", handleUserActivity);
         window.addEventListener("scroll", handleUserActivity);
         window.addEventListener("click", handleUserActivity);
-    
+
         // Start the initial timer
         resetInactivityTimer();
-    
+
         return () => {
             window.removeEventListener("mousemove", handleUserActivity);
             window.removeEventListener("keydown", handleUserActivity);
@@ -117,7 +117,7 @@ export const UserProvider = ({ children }) => {
             if (logoutTimerRef.current) clearTimeout(logoutTimerRef.current);
         };
     }, [user]);
-    
+
 
     // useEffect(() => {
     //     const navigationEntries = window.performance.getEntriesByType("navigation");
@@ -136,23 +136,23 @@ export const UserProvider = ({ children }) => {
     //         }
     //     } else {
     //         console.log("other");
-            
+
     //     }
     // }, [isReloaded]);
 
     useEffect(() => {
         const navigationEntries = window.performance.getEntriesByType("navigation");
         const isReload = navigationEntries.length > 0 && navigationEntries[0].type === "reload";
-    
+
         if (isReload) setIsReloaded(true);
-    
+
         const storedUser = localStorage.getItem("user");
-    
+
         const currentPath = window.location.pathname;
         const currentSearch = window.location.search;
-    
+
         const isWarrantyActivation = currentPath.includes("warrantyActivation") && currentSearch.includes("uniqueId");
-    
+
         if (storedUser) {
             try {
                 const userId = JSON.parse(storedUser)?.user?._id;
@@ -171,16 +171,74 @@ export const UserProvider = ({ children }) => {
             }
         }
     }, [isReloaded]);
-    
+
+
+    // const getProfileById = async (id) => {
+    //     try {
+    //         const response = await http_request.get(`/getUserServerById/${id}`);
+    //         // console.log("response.data", response.data);
+    //         if (response?.data?.user?.status === "ACTIVE") {
+    //             setUser(response.data);
+    //         } else {
+    //             setUser(null);
+    //         }
+
+    //     } catch (err) {
+    //         console.error("Error fetching user profile", err);
+    //     }
+    // };
+    const previousUserRef = useRef(null);
 
     const getProfileById = async (id) => {
         try {
             const response = await http_request.get(`/getUserServerById/${id}`);
-            setUser(response.data);
+
+            const newUser = response?.data;
+            const isActive = newUser?.user?.status === "ACTIVE";
+            const currentPath = window.location.pathname;
+            const currentSearch = window.location.search;
+
+            const isWarrantyActivation = currentPath.includes("warrantyActivation") && currentSearch.includes("uniqueId");
+
+            if (isActive) {
+                const previousUser = previousUserRef.current;
+
+                // Compare new data with previous
+                if (JSON.stringify(previousUser) !== JSON.stringify(newUser)) {
+                    setUser(newUser);
+                    previousUserRef.current = newUser;
+                } else {
+                    console.log("No changes in user data");
+                }
+            } else {
+
+                if (isWarrantyActivation) {
+                    console.log("other");
+                } else {
+                    setUser(null);
+                    router.push("/sign_in");
+                    previousUserRef.current = null;
+                }
+
+            }
+
         } catch (err) {
             console.error("Error fetching user profile", err);
         }
     };
+
+    useEffect(() => {
+
+        const storedUser = localStorage.getItem("user");
+        const userId = JSON.parse(storedUser)?.user?._id;
+        getProfileById(userId); // initial call
+
+        const interval = setInterval(() => {
+            getProfileById(userId); // repeat every 5 minutes
+        }, 50000); // 5 minutes  5 * 60 * 1000
+
+        return () => clearInterval(interval); // cleanup on unmount
+    }, []);
 
     return (
         <UserContext.Provider value={{ user, setUser, isReloaded }}>

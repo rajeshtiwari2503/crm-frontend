@@ -25,8 +25,11 @@ const ActivateWarrantyButton = () => {
   const [product, setProduct] = useState([])
   const [productID, setProductID] = useState("")
   const [users, setUsers] = useState(null);
+
+  const [location, setLocation] = useState(null);
+  // const [pincode, setPincode] = useState('');
   // Set up react-hook-form
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue ,watch} = useForm({
     mode: 'onBlur', // or 'onChange' for real-time validation
   });
   useEffect(() => {
@@ -103,10 +106,13 @@ const ActivateWarrantyButton = () => {
         alert("Please select a product model");
         return;
       }
-
+      if (!location) {
+        alert("Please enter valid pincode!");
+        return;
+      }
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
-        ...data, 
+        ...data,
       });
 
       const result = response.data;
@@ -249,7 +255,8 @@ const ActivateWarrantyButton = () => {
 
   // console.log(filterWarranty);
 
-  const getLocation = () => {
+  const getLocation = (e) => {
+   e.preventDefault();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -338,8 +345,41 @@ const ActivateWarrantyButton = () => {
       alert("Geolocation is not supported by this browser.");
     }
   };
+const pincode = watch('pincode');
 
+  useEffect(() => {
+    if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
+      fetchLocation();
+    }
+  }, [pincode]);
+  const fetchLocation = async () => {
+    try {
+      const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+      if (response.data && response.data[0].Status === 'Success') {
 
+        const [details] = response.data;
+
+        const { District, State } = details.PostOffice[0];
+
+        setLocation({ District, State });
+        setValue('pincode', pincode);
+        setValue('state', State);
+        setValue('district', District);
+      console.log('pincode', pincode);
+      console.log('state', State);
+      console.log('district', District);
+      
+        return response.data[0].PostOffice[0]; // Return the location details
+      } else {
+        alert('No location found for the provided pincode.');
+        return null;
+      }
+    } catch (error) {
+      alert('Error fetching location details.');
+      console.error(error);
+      return null;
+    }
+  };
 
   const handleSearch = async () => {
     const apiKey = 'AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k';
@@ -418,6 +458,8 @@ const ActivateWarrantyButton = () => {
 
         if (postalCodeComponent) {
           setValue("pincode", postalCodeComponent.long_name);
+          // setPincode(postalCodeComponent?.long_name)
+          // setPincode(postalCodeComponent.long_name)
           console.log("Pincode:", postalCodeComponent.long_name);
         } else {
           console.warn("Pincode not found in the address components.");
@@ -760,7 +802,7 @@ const ActivateWarrantyButton = () => {
 
 
                       <button
-                        onClick={() => getLocation()}
+                        onClick={(e) => getLocation(e)}
                         className="  bg-blue-500 text-white text-sm flex px-2 py-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                       >
                         <MyLocation /> Location

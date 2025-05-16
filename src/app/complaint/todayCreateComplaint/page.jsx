@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import { useUser } from '@/app/components/UserContext';
 import TodayCreateComplaintList from './todayCreateComplaint';
+import { ReactLoader } from '@/app/components/common/Loading';
  
  
 
@@ -18,6 +19,13 @@ const TodayCreated = () => {
 
  const { user } = useUser();
  
+const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return today.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+  });
+
+ const [loading, setLoading] = useState(false);
+
  
    useEffect(() => {
  
@@ -26,19 +34,22 @@ const TodayCreated = () => {
      }
     getAllComplaint()
     
-  }, [refresh,user])
+  }, [refresh,user,selectedDate])
 
   const getAllComplaint = async () => {
-    try {
-      let response = await http_request.get("/getTodayCreatedComplaints")
-      let { data } = response;
-
-      setComplaint(data)
-    }
-    catch (err) {
-      console.log(err);
-    }
+  setLoading(true);
+  try {
+    const response = await http_request.get(`/getTodayCreatedComplaints?date=${selectedDate}`);
+    const { data } = response;
+    setComplaint(data);
+  } catch (err) {
+    console.error(err);
+    setComplaint([]);
+  } finally {
+    setLoading(false);
   }
+};
+
   // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
 
   const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
@@ -64,9 +75,25 @@ const TodayCreated = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
+       <div className="mb-6">
+        <label htmlFor="date" className="block text-sm font-semibold text-gray-800 mb-2">
+          Select Date
+        </label>
+        <input
+          type="date"
+          id="date"
+          value={selectedDate}
+          onChange={(e) => setSelectedDate(e.target.value)}
+          className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-800 shadow-sm outline-none transition duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+        />
+      </div>
+         {loading ? (
+              <div  >
+                <ReactLoader />
+              </div>
+            ) : (
         <TodayCreateComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
-      </>
+     )}
     </Sidenav>
   )
 }

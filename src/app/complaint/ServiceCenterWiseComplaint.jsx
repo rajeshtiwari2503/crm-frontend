@@ -12,6 +12,7 @@ import {
   TableSortLabel,
   Typography,
 } from "@mui/material";
+import { ReactLoader } from "../components/common/Loading";
 
 const ServiceCenterWiseComplaintList = () => {
   const [data, setData] = useState([]);
@@ -21,7 +22,7 @@ const ServiceCenterWiseComplaintList = () => {
   const [orderBy, setOrderBy] = useState("TOTAL");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-
+ const [loading, setloading] = React.useState(false);
   
   useEffect(() => {
     fetchComplaintData();
@@ -29,10 +30,13 @@ const ServiceCenterWiseComplaintList = () => {
 
   const fetchComplaintData = async () => {
     try {
+       setloading(true)
       const response = await http_request.get("/getComplaintCountByServiceCenter");
       setData(response.data.data);
+       setloading(false)
     } catch (error) {
       console.error("Error fetching complaints:", error);
+       setloading(false)
     }
   };
 
@@ -76,7 +80,11 @@ const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state 
     <Typography variant="h6" sx={{ fontSize: 14, fontWeight: "bold", textAlign: "center" }} gutterBottom>
       Service Center wise Complaint  
     </Typography>
-    <div className='md:w-full w-[260px]'>
+  {loading === true ? (
+          <div className="flex items-center justify-center h-[80vh]">
+            <ReactLoader />
+          </div>
+        ) : (  <div className='md:w-full w-[260px]'>
     <div className="flex justify-between gap-4 p-2">
   <div className="w-full">
     <label className="text-sm font-semibold">State:</label>
@@ -109,7 +117,8 @@ const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state 
   </div>
 </div>
 
-    <TableContainer component={Paper} sx={{ maxHeight: 350 }}>
+  {!sortedData?.length>0 ?   <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+  :  <TableContainer component={Paper} sx={{ maxHeight: 350 }}>
       <Table size="small">
         <TableHead sx={{ backgroundColor: "#09090b" }}>
           <TableRow>
@@ -171,6 +180,7 @@ const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state 
         </TableBody>
       </Table>
     </TableContainer>
+}
     <TablePagination
       rowsPerPageOptions={[5, 10, 20]}
       component="div"
@@ -181,7 +191,7 @@ const uniqueCities = [...new Set(data.filter(item => selectedState ? item.state 
       onRowsPerPageChange={handleChangeRowsPerPage}
       sx={{ fontSize: 12 }}
     />
-    </div>
+    </div>)}
   </Paper>
 );
 };

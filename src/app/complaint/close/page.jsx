@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import CloseComplaintList from './closeComplaintList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -16,6 +17,8 @@ const Close = () => {
 
   const [value, setValue] = React.useState(null);
 const [transactions, setTransactions] = useState([]);
+ const [loading, setloading] = React.useState(false);
+
  const { user } = useUser();
  
  
@@ -47,13 +50,17 @@ const [transactions, setTransactions] = useState([]);
   };
   const getAllComplaint = async () => {
     try {
+          setloading(true)
+  
       let response = await http_request.get("/getComplaintsByComplete")
       let { data } = response;
 
       setComplaint(data)
+       setloading(false)
     }
     catch (err) {
       console.log(err);
+       setloading(false)
     }
   }
   // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
@@ -81,9 +88,16 @@ const [transactions, setTransactions] = useState([]);
   return (
     <Sidenav>
       <Toaster />
+      {loading === true ? (
+              <div className="flex items-center justify-center h-[80vh]">
+                <ReactLoader />
+              </div>
+            ) : (
       <>
         <CloseComplaintList data={data}userData={value?.user}transactions={transactions} RefreshData={RefreshData} />
-      </>
+        </>
+      )}
+    
     </Sidenav>
   )
 }

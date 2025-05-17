@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import InProgressComplaintList from './inProgressList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -16,6 +17,7 @@ const InProgress = () => {
   const [refresh, setRefresh] = useState("")
 
   const [value, setValue] = React.useState(null);
+  const [loading, setloading] = React.useState(false);
 
   const { user } = useUser();
 
@@ -26,16 +28,19 @@ const InProgress = () => {
       setValue(user)
     }
     getAllComplaint()
-    }, [refresh,user])
+  }, [refresh, user])
 
   const getAllComplaint = async () => {
     try {
+      setloading(true)
       let response = await http_request.get("/getComplaintsByInProgress")
       let { data } = response;
 
       setComplaint(data)
+      setloading(false)
     }
     catch (err) {
+      setloading(false)
       console.log(err);
     }
   }
@@ -44,13 +49,13 @@ const InProgress = () => {
   const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
   const hasStateZone = user?.user?.stateZone?.length > 0;
   const hasBrand = selectedBrandIds.length > 0;
-  
+
   const sortData = user?.user?.role === "EMPLOYEE"
     ? complaint?.filter(f1 => {
-        const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
-        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
-        return matchState && matchBrand;
-      })
+      const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
     : complaint;
 
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
@@ -64,9 +69,15 @@ const InProgress = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
-        <InProgressComplaintList data={data} userData={value?.user} RefreshData={RefreshData} />
-      </>
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
+          <InProgressComplaintList data={data} userData={value?.user} RefreshData={RefreshData} />
+        </>
+      )}
     </Sidenav>
   )
 }

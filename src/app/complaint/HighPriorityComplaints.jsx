@@ -46,6 +46,7 @@ const HighPriorityComplaintList = (props) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortDirection, setSortDirection] = useState('asc');
     const [sortBy, setSortBy] = useState('id');
+    const [loading, setloading] = React.useState(false);
 
     const router = useRouter()
 
@@ -58,19 +59,22 @@ const HighPriorityComplaintList = (props) => {
     }, [user]);
     const getAllComplaint = async () => {
         try {
+            setloading(true)
             let response = await http_request.get("/getComplaintsByPending")
             let { data } = response;
 
             setComplaint(data)
+            setloading(false)
         }
         catch (err) {
             console.log(err);
+            setloading(false)
         }
     }
     const filtData = user?.user?.role === "BRAND EMPLOYEE" ? complaint?.filter((f) => f?.brandId === user?.user?.brandId) : complaint
-    const sortData = user?.user?.role==="EMPLOYEE"?filtData?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):filtData;
+    const sortData = user?.user?.role === "EMPLOYEE" ? filtData?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)) : filtData;
 
-     
+
     const data = sortData
         ?.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Oldest first
         .map((item, index) => ({ ...item, i: index + 1 }));
@@ -112,92 +116,98 @@ const HighPriorityComplaintList = (props) => {
 
             </div>
 
-            {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+            {loading === true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
                 :
-                <div className='md:w-full w-[260px]'>
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead sx={{ backgroundColor: "#09090b" }}>
-                                <TableRow >
-                                    {[
-                                        { label: "ID", key: "_id" },
-                                        { label: "Complaint_Id", key: "_id" },
-                                        { label: "Customer", key: "fullName" },
-                                        { label: "City", key: "district" },
-                                        { label: "Contact", key: "customerMobile" },
-                                        { label: "Product_Brand", key: "productBrand" },
-                                        { label: "Status", key: "status" },
-                                        { label: "Created_At", key: "createdAt" },
-                                    ].map(({ label, key }) => (
-                                        <TableCell key={key} sx={{ color: "white" }}>
-                                            <TableSortLabel
-                                                active={sortBy === key}
-                                                direction={sortDirection}
-                                                onClick={() => handleSort(key)}
-                                                sx={{
-                                                    color: "white !important", // White text
-                                                    "& .MuiTableSortLabel-icon": {
-                                                        color: "white !important", // White sort arrow
-                                                    },
-                                                }}
-                                            >
-                                                {label}
-                                            </TableSortLabel>
-                                        </TableCell>
-                                    ))}
-                                    <TableCell sx={{ color: "white" }}>Actions</TableCell>
+                <>
+                    {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+                        : <div className='md:w-full w-[260px]'>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead sx={{ backgroundColor: "#09090b" }}>
+                                        <TableRow >
+                                            {[
+                                                { label: "ID", key: "_id" },
+                                                { label: "Complaint_Id", key: "_id" },
+                                                { label: "Customer", key: "fullName" },
+                                                { label: "City", key: "district" },
+                                                { label: "Contact", key: "customerMobile" },
+                                                { label: "Product_Brand", key: "productBrand" },
+                                                { label: "Status", key: "status" },
+                                                { label: "Created_At", key: "createdAt" },
+                                            ].map(({ label, key }) => (
+                                                <TableCell key={key} sx={{ color: "white" }}>
+                                                    <TableSortLabel
+                                                        active={sortBy === key}
+                                                        direction={sortDirection}
+                                                        onClick={() => handleSort(key)}
+                                                        sx={{
+                                                            color: "white !important", // White text
+                                                            "& .MuiTableSortLabel-icon": {
+                                                                color: "white !important", // White sort arrow
+                                                            },
+                                                        }}
+                                                    >
+                                                        {label}
+                                                    </TableSortLabel>
+                                                </TableCell>
+                                            ))}
+                                            <TableCell sx={{ color: "white" }}>Actions</TableCell>
 
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {sortedData.map((row) => (
-                                    <TableRow key={row?.i} hover>
-                                        <TableCell>{row?.i}</TableCell>
-                                        <TableCell>{row?.complaintId}</TableCell>
-                                        <TableCell>{row?.fullName}</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {sortedData.map((row) => (
+                                            <TableRow key={row?.i} hover>
+                                                <TableCell>{row?.i}</TableCell>
+                                                <TableCell>{row?.complaintId}</TableCell>
+                                                <TableCell>{row?.fullName}</TableCell>
 
-                                        <TableCell>{row?.district}</TableCell>
+                                                <TableCell>{row?.district}</TableCell>
 
-                                        <TableCell>{row?.phoneNumber}</TableCell>
+                                                <TableCell>{row?.phoneNumber}</TableCell>
 
-                                        <TableCell>
-                                            {String(row?.productBrand || "").length > 15
-                                                ? String(row?.productBrand).substring(0, 15) + "..."
-                                                : row?.productBrand}
-                                        </TableCell>
+                                                <TableCell>
+                                                    {String(row?.productBrand || "").length > 15
+                                                        ? String(row?.productBrand).substring(0, 15) + "..."
+                                                        : row?.productBrand}
+                                                </TableCell>
 
 
-                                        {/* <TableCell>{row?.status}</TableCell> */}
-                                        <TableCell>
-                                            <StatusComponent row={row} />
-                                        </TableCell>
+                                                {/* <TableCell>{row?.status}</TableCell> */}
+                                                <TableCell>
+                                                    <StatusComponent row={row} />
+                                                </TableCell>
 
-                                        <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                                        <TableCell className="p-0">
-                                            <div className="flex items-center space-x-2">
+                                                <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                                                <TableCell className="p-0">
+                                                    <div className="flex items-center space-x-2">
 
-                                                <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                                                    <Visibility color="primary" />
-                                                </IconButton>
+                                                        <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                                                            <Visibility color="primary" />
+                                                        </IconButton>
 
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
 
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25]}
-                        component="div"
-                        count={data.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </div>}
+
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 25]}
+                                component="div"
+                                count={data.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                        </div>
+                    }
+                </>
+            }
 
         </div>
     );

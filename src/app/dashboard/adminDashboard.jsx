@@ -17,6 +17,7 @@ import ServiceCenterWiseComplaintList from '../complaint/ServiceCenterWiseCompla
 import BrandWiseComplaintList from '../complaint/BrandWiseComplaint';
 import PartPendingTodayUpadteComplaintList from '../complaint/PartPendingTodayUpdated';
 import PartPendingTodayNotUpadteComplaintList from '../complaint/PartPendingTodayNotUpdated';
+import { ReactLoader } from '../components/common/Loading';
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
   loading: () => <p>Chart loading.........</p>
@@ -34,6 +35,7 @@ const AdminDashboard = (props) => {
   const [orderData, setOrderData] = useState([])
   const [complaints, setComplaints] = useState([])
   const [brandData, setBrandData] = useState([]);
+    const [loading, setloading] = React.useState(false);
 
   React.useEffect(() => {
     // getAllComplaint()
@@ -106,10 +108,13 @@ const AdminDashboard = (props) => {
 
   const fetchComplaintData = async () => {
     try {
+        setloading(true)
       const response = await http_request.get("/getComplaintCountByBrand");
       setBrandData(response.data.data);
+        setloading(false)
     } catch (error) {
       console.error("Error fetching complaints:", error);
+        setloading(false)
     }
   };
 
@@ -749,6 +754,11 @@ const AdminDashboard = (props) => {
           />
         </div>
         <div className='rounded-lg shadow  bg-white'>
+           {loading === true ? (
+                 <div className="flex items-center justify-center h-[80vh]">
+                   <ReactLoader />
+                 </div>
+               ) : (
           <Chart
             chartType="PieChart"
             data={pieChartBrandPenData}
@@ -756,8 +766,14 @@ const AdminDashboard = (props) => {
             width={"100%"}
             height={"100%"}
           />
+               )}
         </div>
         <div className='rounded-lg shadow  bg-white'>
+            {loading === true ? (
+                  <div className="flex items-center justify-center h-[80vh]">
+                    <ReactLoader />
+                  </div>
+                ) : (
           <Chart
             chartType="PieChart"
             data={pieChartBrandData}
@@ -765,11 +781,17 @@ const AdminDashboard = (props) => {
             width={"100%"}
             height={"100%"}
           />
+                )}
         </div>
         
         <div className='  md:w-full w-[260px]   '>
-      
+        {loading === true ? (
+              <div className="flex items-center justify-center h-[80vh]">
+                <ReactLoader />
+              </div>
+            ) : (
           <BrandWiseComplaintList brandData={brandData}/>
+            )}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">

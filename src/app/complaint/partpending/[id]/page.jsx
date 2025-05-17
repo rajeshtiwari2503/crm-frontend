@@ -5,18 +5,20 @@ import http_request from "../../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import PartPendingParamComplaintList from './PartPendingByParam';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 const PartPending = () => {
   const [complaint, setComplaint] = useState([]);
   const [refresh, setRefresh] = useState("");
   const [technicians, setTechnicians] = useState([]);
   const [value, setValue] = useState(null);
-  
+  const [loading, setloading] = React.useState(false);
+
   const router = useRouter();
   const params = useParams(); // Extract dynamic param from route
   const daysRange = params?.id; // Get "2-5", "0-1", or "more-than-week"
- 
-  
+
+
   useEffect(() => {
     fetchPendingComplaints();
     getAllTechnician();
@@ -38,16 +40,19 @@ const PartPending = () => {
 
   const fetchPendingComplaints = async () => {
     try {
+      setloading(true)
       const response = await http_request.get(`/getPartPendingComplaints/${daysRange}`);
       setComplaint(response.data.data);
+      setloading(false)
     } catch (err) {
       console.error("Error fetching complaints:", err);
+      setloading(false)
     }
   };
 
-   
 
-  const data =  complaint?.map((item, index) => ({
+
+  const data = complaint?.map((item, index) => ({
     ...item,
     i: index + 1,
   }));
@@ -64,13 +69,19 @@ const PartPending = () => {
   return (
     <Sidenav>
       <Toaster />
-      <PartPendingParamComplaintList 
-        data={data} 
-        technicians={techData} 
-        userData={value?.user} 
-        RefreshData={RefreshData} 
-        
-      />
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <PartPendingParamComplaintList
+          data={data}
+          technicians={techData}
+          userData={value?.user}
+          RefreshData={RefreshData}
+
+        />
+      )}
     </Sidenav>
   );
 };

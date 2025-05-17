@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react'
 import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
- 
+
 import { useUser } from '@/app/components/UserContext';
 import ScheduleComplaintList from './scheduleComplaintList';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -16,24 +17,29 @@ const Service = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
-  const {user}=useUser()
+  const [loading, setloading] = React.useState(false);
+
+  const { user } = useUser()
   useEffect(() => {
     getAllComplaint()
     getAllServiceCenter()
-    
+
     if (user) {
       setValue(user);
     }
-  }, [refresh,user])
+  }, [refresh, user])
 
   const getAllComplaint = async () => {
     try {
+      setloading(true)
       let response = await http_request.get("/getComplaintsByUpcomming")
       let { data } = response;
 
       setComplaint(data)
+      setloading(false)
     }
     catch (err) {
+      setloading(false)
       console.log(err);
     }
   }
@@ -54,13 +60,13 @@ const Service = () => {
   const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
   const hasStateZone = user?.user?.stateZone?.length > 0;
   const hasBrand = selectedBrandIds.length > 0;
-  
+
   const sortData = user?.user?.role === "EMPLOYEE"
     ? complaint?.filter(f1 => {
-        const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
-        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
-        return matchState && matchBrand;
-      })
+      const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
     : complaint;
 
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
@@ -72,9 +78,15 @@ const Service = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
-        <ScheduleComplaintList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
-      </>
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
+          <ScheduleComplaintList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
+        </>
+      )}
     </Sidenav>
   )
 }

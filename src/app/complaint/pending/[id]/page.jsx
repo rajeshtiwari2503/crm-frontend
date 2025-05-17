@@ -6,13 +6,15 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import PendingParamComplaintList from './PendingListByParam';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 const Pending = () => {
   const [complaint, setComplaint] = useState([]);
   const [refresh, setRefresh] = useState("");
   const [technicians, setTechnicians] = useState([]);
   const [value, setValue] = useState(null);
-  
+  const [loading, setloading] = React.useState(false);
+
   const router = useRouter();
   const params = useParams(); // Extract dynamic param from route
   const daysRange = params?.id; // Get "2-5", "0-1", or "more-than-week"
@@ -34,19 +36,25 @@ const Pending = () => {
 
   const getAllTechnician = async () => {
     try {
+        // setloading(true)
       let response = await http_request.get("/getAllTechnician");
       let { data } = response;
       setTechnicians(data);
+        // setloading(false)
     } catch (err) {
       console.log(err);
+        // setloading(false)
     }
   };
 
   const fetchPendingComplaints = async () => {
     try {
+       setloading(true)
       const response = await http_request.get(`/getPendingComplaints/${daysRange}`);
       setComplaint(response.data);
+       setloading(false)
     } catch (err) {
+       setloading(false)
       console.error("Error fetching complaints:", err);
     }
   };
@@ -83,6 +91,11 @@ const Pending = () => {
   return (
     <Sidenav>
       <Toaster />
+       {loading === true ? (
+                    <div className="flex items-center justify-center h-[80vh]">
+                      <ReactLoader />
+                    </div>
+                  ) : (
       <PendingParamComplaintList 
         data={data} 
         technicians={techData} 
@@ -90,6 +103,7 @@ const Pending = () => {
         RefreshData={RefreshData} 
         
       />
+                  )}
     </Sidenav>
   );
 };

@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import OutOfWarrantyList from './outOfComplaintList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
  
 
 
@@ -16,7 +17,8 @@ const OutOfWarranty = () => {
   const [serviceCenter, setServiceCenter] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
-
+ const [loading, setloading] = React.useState(false);
+ 
  const { user } = useUser();
    
       useEffect(() => {
@@ -31,13 +33,16 @@ const OutOfWarranty = () => {
 
   const getAllComplaint = async () => {
     try {
+      setloading(true)
       let response = await http_request.get("/getAllBrandComplaint")
       let { data } = response;
 
       setComplaint(data)
+      setloading(false)
     }
     catch (err) {
       console.log(err);
+      setloading(false)
     }
   }
   const getAllServiceCenter = async () => {
@@ -62,9 +67,15 @@ const OutOfWarranty = () => {
   return (
     <Sidenav>
       <Toaster />
+        {loading === true ? (
+              <div className="flex items-center justify-center h-[80vh]">
+                <ReactLoader />
+              </div>
+            ) : (
       <>
         <OutOfWarrantyList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
       </>
+            )}
     </Sidenav>
   )
 }

@@ -377,7 +377,7 @@ let filteredData = [];
           className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
 

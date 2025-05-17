@@ -295,7 +295,7 @@ const TodayCreateComplaintList = (props) => {
                 </div>
       </div>
 
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!dataSearch?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <div className='flex justify-center'>
           <div className=' md:w-full w-[260px]'>

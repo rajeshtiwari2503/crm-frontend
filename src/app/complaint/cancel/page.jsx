@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import CancelComplaintList from './cancelComplaintList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -14,44 +15,48 @@ const Cancel = () => {
   const [complaint, setComplaint] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
+   const [loading, setloading] = React.useState(false);
 
   const { user } = useUser();
   // console.log("usercancel",user,value);
-  
-  
-    useEffect(() => {
-  
-      if (user) {
-        setValue(user)
-      }
+
+
+  useEffect(() => {
+
+    if (user) {
+      setValue(user)
+    }
     getAllComplaint()
-    
-  }, [refresh,user])
+
+  }, [refresh, user])
 
 
 
   const getAllComplaint = async () => {
     try {
+          setloading(true)
       let response = await http_request.get("/getComplaintsByCancel")
       let { data } = response;
 
       setComplaint(data)
+          setloading(false)
     }
     catch (err) {
       console.log(err);
+          setloading(false)
     }
   }
   // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
   const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
   const hasStateZone = user?.user?.stateZone?.length > 0;
   const hasBrand = selectedBrandIds.length > 0;
-  
+
   const sortData = user?.user?.role === "EMPLOYEE"
     ? complaint?.filter(f1 => {
-        const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
-        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
-        return matchState && matchBrand;
-      })
+      const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
     : complaint;
 
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
@@ -65,10 +70,15 @@ const Cancel = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
-        <CancelComplaintList data={data}userData={value?.user} RefreshData={RefreshData} />
-      </>
-    </Sidenav>
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <CancelComplaintList data={data} userData={value?.user} RefreshData={RefreshData} />
+      )}
+    
+    </Sidenav >
   )
 }
 

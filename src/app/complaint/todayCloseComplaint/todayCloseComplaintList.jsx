@@ -354,7 +354,15 @@ const TodayCloseComplaintList = (props) => {
                         Contact No.
                       </TableSortLabel>
                     </TableCell>
-
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'productBrand'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('productBrand')}
+                      >
+                        Brand
+                      </TableSortLabel>
+                    </TableCell>
                     <TableCell>
                       <TableSortLabel
                         active={sortBy === 'assignServiceCenter'}

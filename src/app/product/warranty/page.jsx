@@ -5,47 +5,51 @@ import http_request from '.././../../../http-request'
 import WarrantyList from './WarrantyList'
 import ProductWarrantyPage from './paginationWithWarrantyList'
 import { useUser } from '@/app/components/UserContext'
+import { ReactLoader } from '@/app/components/common/Loading'
 
 const Warranty = () => {
   const [warranty, setWarranty] = useState([])
   const [product, setProduct] = useState([])
   const [brand, setBrand] = useState([])
-
+  const [loading, setLoading] = useState(false)
   const [refresh, setRefresh] = useState("")
   const [value, setUser] = useState(null)
 
   const { user } = useUser();
 
 
+  // useEffect(() => {
+
+  //   if (user) {
+  //     setUser(user?.user)
+  //     // getAllwarranty()
+  //   }
+
+  //   getAllProduct()
+  //   getAllBrand()
+  // }, [refresh, user])
+
   useEffect(() => {
-
     if (user) {
-      setUser(user?.user)
-      // getAllwarranty()
+      fetchData()
     }
-
-    getAllProduct()
-    getAllBrand()
   }, [refresh, user])
 
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      await Promise.all([
+
+        getAllProduct(),
+        getAllBrand()
+      ])
+    } catch (err) {
+      console.error("Error fetching warranty data:", err)
+    }
+    setLoading(false)
+  }
 
 
-  // const getAllwarranty = async () => {
-
-  //   try{
-
-
-  //   const reqData=value?.user?.role==="ADMIN"?"/getAllProductWarranty" :`/getAllProductWarrantyById/${value?.user?._id}`
-  //   let response = await http_request.get(reqData)
-  //   let { data } = response;
-
-  //   setWarranty (data?.data)
-  //   }
-  //   catch(err){
-  //     console.log(err);
-
-  //   }
-  // }
   const getAllProduct = async () => {
 
     let response = await http_request.get("/getAllProduct")
@@ -70,9 +74,14 @@ const Warranty = () => {
   return (
     <>
       <Sidenav>
+        {loading ? (
+          <div className="flex justify-center items-center  h-[80vh]">
+            <ReactLoader />
+          </div>
+        ) : (
 
-        {/* <WarrantyList data={data}brand={brand}product={product}user={user} RefreshData={RefreshData}/> */}
-        <ProductWarrantyPage brand={brand} product={product} user={value} RefreshData={RefreshData} />
+          <ProductWarrantyPage brand={brand} product={product} user={value} RefreshData={RefreshData} />
+        )}
       </Sidenav>
     </>
   )

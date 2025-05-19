@@ -5,6 +5,7 @@ import http_request from "../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import FeedbackList from './feedbackList';
+import { ReactLoader } from '../components/common/Loading';
 
 
 const Feedback = () => {
@@ -12,6 +13,7 @@ const Feedback = () => {
   const [feedbacks, setFeedbacks] = useState([])
 
   const [refresh, setRefresh] = useState("")
+   const [loading, setLoading] = useState(false); 
 
   useEffect(() => {
     getAllFeedback()
@@ -20,6 +22,7 @@ const Feedback = () => {
 
   const getAllFeedback = async () => {
     try {
+      setLoading(true);
       let user = localStorage.getItem("user");
       let obj = JSON.parse(user);
   
@@ -40,7 +43,9 @@ const Feedback = () => {
       let { data } = response;
   
       setFeedbacks(data);
+       setLoading(false);
     } catch (err) {
+      setLoading(false);
       console.log(err);
     }
   };
@@ -55,14 +60,19 @@ const Feedback = () => {
   return (
     <Sidenav>
         <>
-      <Toaster />
-      <div className='flex justify-center'>
-      <div className='md:w-full w-[260px]'>
-     <FeedbackList data={data}   RefreshData={RefreshData}/>
-       {/* <Thankyou /> */}
-       </div>
-       </div>
-       </>
+        <Toaster />
+        <div className="flex justify-center">
+          <div className="md:w-full w-[260px]">
+            {loading===true ? (
+              <div className="flex items-center justify-center h-[80vh]">
+                       <ReactLoader />
+                     </div>
+            ) : (
+              <FeedbackList data={data} RefreshData={RefreshData} />
+            )}
+          </div>
+        </div>
+      </>
     </Sidenav>
   )
 }

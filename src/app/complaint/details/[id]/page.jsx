@@ -29,27 +29,31 @@ const ComplaintDetails = ({ params }) => {
 
     const getComplaintById = async () => {
         try {
+         
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
             setId(data?.userId)
-
+            
         }
         catch (err) {
             console.log(err);
+            
         }
     }
     const getComplaintByUserId = async () => {
         try {
+            setLoading(true)
             let response = await http_request.get(`/getAllBrandComplaint`)
             let { data } = response;
             // console.log("data",data);
-            
-            setUserComplaint(data)
 
+            setUserComplaint(data)
+            setLoading(false)
         }
         catch (err) {
             console.log(err);
+            setLoading(false)
         }
     }
     const handleEdit = () => {
@@ -196,7 +200,7 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
-                                 <div className='md:text-xl text-sm font-semibold'> Sparepart   : </div>
+                                <div className='md:text-xl text-sm font-semibold'> Sparepart   : </div>
                                 <div>
                                     {matchedSpareParts.length > 0 ? (
                                         <div className="mt-8">
@@ -249,7 +253,7 @@ const ComplaintDetails = ({ params }) => {
                                             </ul>
                                         </div>
                                     )
-                                :"Sparepart not match this product id"}
+                                        : "Sparepart not match this product id"}
                                 </div>
 
                                 <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
@@ -418,7 +422,13 @@ const ComplaintDetails = ({ params }) => {
                         </div>
 
                         <div className='  '>
-                            <UserAllServicesList data={userComp} />
+                            {loading === true ? (
+                                <div className="h-[400px] flex justify-center items-center">
+                                    <ReactLoader />
+                                </div>
+                            ) : (
+                                <UserAllServicesList data={userComp} />
+                            )}
                         </div>
                     </div>
                 }

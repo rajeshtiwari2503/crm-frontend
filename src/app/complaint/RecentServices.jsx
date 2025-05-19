@@ -45,7 +45,7 @@
 
 
 //   const userData = props?.userData;
-  
+
 
 //   const data11 = props?.data;
 //   // console.log("data11",data11);
@@ -193,7 +193,7 @@
 
 //                     {/* <TableCell>{row?.modelNo}</TableCell>
 //                                    <TableCell>{row?.serialNo}</TableCell>
-               
+
 //                                    <TableCell>{row?.issueType}</TableCell>
 //                                    <TableCell>{row?.detailedDescription}</TableCell>
 //                                    <TableCell>{row?.errorMessages}</TableCell>
@@ -299,6 +299,7 @@ const RecentServicesList = ({ userData }) => {
 
   const getAllComplaint = async () => {
     try {
+      setLoading(true);
       if (!userData?.role || !userData?._id) return;
 
       let queryParams = new URLSearchParams({
@@ -320,9 +321,9 @@ const RecentServicesList = ({ userData }) => {
 
       const { data } = response;
       // console.log(data,"daaaa");
-      
+
       setComplaints(data?.data || []);
-      setTotalPages(Math.ceil((data?.totalComplaints || 0)  )); 
+      setTotalPages(Math.ceil((data?.totalComplaints || 0)));
       setLoading(false);
     } catch (err) {
       console.error("Error fetching complaints:", err);
@@ -367,74 +368,79 @@ const RecentServicesList = ({ userData }) => {
           <ReactLoader />
         </div>
       ) : (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead sx={{ backgroundColor: "#09090b" }}>
-              <TableRow>
-                {[
-                  { label: "ID", key: "complaintId" },
-                  { label: "Complaint ID", key: "_id" },
-                  { label: "Customer", key: "fullName" },
-                  { label: "City", key: "district" },
-                  { label: "Contact", key: "phoneNumber" },
-                  { label: "Product Brand", key: "productBrand" },
-                  { label: "Status", key: "status" },
-                  { label: "Updated At", key: "updatedAt" },
-                ].map(({ label, key }) => (
-                  <TableCell key={key} sx={{ color: "white" }}>
-                    <TableSortLabel
-                      active={sortBy === key}
-                      direction={sortDirection}
-                      onClick={() => handleSort(key)}
-                      sx={{
-                        color: "white !important",
-                        "& .MuiTableSortLabel-icon": {
-                          color: "white !important",
-                        },
-                      }}
-                    >
-                      {label}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-                <TableCell sx={{ color: "white" }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sortedComplaints.map((row, index) => (
-                <TableRow key={index} hover>
-                  <TableCell>{index + 1 + page * limit}</TableCell>
-                  <TableCell>{row.complaintId}</TableCell>
-                  <TableCell>{row.fullName}</TableCell>
-                  <TableCell>{row.district}</TableCell>
-                  <TableCell>{row.phoneNumber}</TableCell>
-                  <TableCell>
-                    {String(row.productBrand || "").length > 15
-                      ? `${String(row.productBrand).substring(0, 15)}...`
-                      : row.productBrand}
-                  </TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{new Date(row.updatedAt).toLocaleString()}</TableCell>
-                  <TableCell>
-                    <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                      <Visibility color="primary" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={totalPages }
-            rowsPerPage={limit}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </TableContainer>
+        <>
+          {!complaints?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+            : <TableContainer component={Paper}>
+              <Table>
+                <TableHead sx={{ backgroundColor: "#09090b" }}>
+                  <TableRow>
+                    {[
+                      { label: "ID", key: "complaintId" },
+                      { label: "Complaint ID", key: "_id" },
+                      { label: "Customer", key: "fullName" },
+                      { label: "City", key: "district" },
+                      { label: "Contact", key: "phoneNumber" },
+                      { label: "Product Brand", key: "productBrand" },
+                      { label: "Status", key: "status" },
+                      { label: "Updated At", key: "updatedAt" },
+                    ].map(({ label, key }) => (
+                      <TableCell key={key} sx={{ color: "white" }}>
+                        <TableSortLabel
+                          active={sortBy === key}
+                          direction={sortDirection}
+                          onClick={() => handleSort(key)}
+                          sx={{
+                            color: "white !important",
+                            "& .MuiTableSortLabel-icon": {
+                              color: "white !important",
+                            },
+                          }}
+                        >
+                          {label}
+                        </TableSortLabel>
+                      </TableCell>
+                    ))}
+                    <TableCell sx={{ color: "white" }}>Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sortedComplaints.map((row, index) => (
+                    <TableRow key={index} hover>
+                      <TableCell>{index + 1 + page * limit}</TableCell>
+                      <TableCell>{row.complaintId}</TableCell>
+                      <TableCell>{row.fullName}</TableCell>
+                      <TableCell>{row.district}</TableCell>
+                      <TableCell>{row.phoneNumber}</TableCell>
+                      <TableCell>
+                        {String(row.productBrand || "").length > 15
+                          ? `${String(row.productBrand).substring(0, 15)}...`
+                          : row.productBrand}
+                      </TableCell>
+                      <TableCell>{row.status}</TableCell>
+                      <TableCell>{new Date(row.updatedAt).toLocaleString()}</TableCell>
+                      <TableCell>
+                        <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                          <Visibility color="primary" />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={totalPages}
+                rowsPerPage={limit}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableContainer>
+          }
+        </>
       )}
+
     </div>
   );
 };

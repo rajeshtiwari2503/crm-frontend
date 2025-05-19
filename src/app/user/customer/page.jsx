@@ -13,6 +13,7 @@ const Customer = () => {
 
   const [users, setUsers] = useState([])
   const [refresh, setRefresh] = useState("")
+   const [loading, setLoading] = useState(true);
   const {user}=useUser()
   useEffect(() => {
     getAllUsers()
@@ -21,12 +22,15 @@ const Customer = () => {
 
   const getAllUsers = async () => {
     try {
+       setLoading(true);
       let response = await http_request.get("/getAllUser")
       let { data } = response;
 
       setUsers(data)
+       setLoading(false);
     }
     catch (err) {
+       setLoading(false);
       console.log(err);
     }
   }
@@ -41,10 +45,16 @@ const data1=user?.user?.role==="ADMIN"?users :user?.user?.role==="BRAND EMPLOYEE
   return (
     <Sidenav>
       <Toaster />
+       {loading ? (
+              <div className="flex justify-center items-center h-screen">
+                <ReactLoader />
+              </div>
+            ) : (
       <>
          <CustomerList data={data} RefreshData={RefreshData} />
         
       </>
+            )}
     </Sidenav>
   )
 }

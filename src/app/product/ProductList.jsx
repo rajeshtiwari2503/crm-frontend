@@ -36,14 +36,15 @@ const ProductList = (props) => {
 
   const [userData, setUserData] = React.useState(null);
   const [userProduct, setUserProduct] = React.useState([]);
-  
-  const {user}=useUser()
+  const [loading, setLoading] = useState(false);
+
+  const { user } = useUser()
   React.useEffect(() => {
-    
+
     if (user) {
       const userData4 = user
-      
-      
+
+
       setUserData(user);
       if (userData4?.user?.role === "USER") {
         getAllUserProducts(userData4?.user?._id)
@@ -54,26 +55,31 @@ const ProductList = (props) => {
 
   const getAllUserProducts = async (id) => {
     try {
+      setLoading(true);
       let response = await http_request.get(`/getActivationWarrantyByUserId/${id}`)
       let { data } = response;
 
       setUserProduct(data)
+      setLoading(false);
     }
     catch (err) {
       console.log(err);
-
+      setLoading(false);
+    }
+    finally {
+      setLoading(false);
     }
   }
   // console.log(userData?.user?._id);
 
-  const filterData = userData?.user?.role==="BRAND EMPLOYEE" ?props?.data?.filter((item) => item?.userId === userData?.user?.brandId) :props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  const filterData = userData?.user?.role === "BRAND EMPLOYEE" ? props?.data?.filter((item) => item?.userId === userData?.user?.brandId) : props?.data?.filter((item) => item?.userId === userData?.user?._id)
   // console.log("filterData",filterData);
-  
-  const filUserData=[...userProduct,...filterData]
+
+  const filUserData = [...userProduct, ...filterData]
   // console.log("filUserData",filUserData);
   const data2 = userData?.user?.role === "ADMIN" ? props?.data : filUserData;
   // console.log("data2",data2);
-  const data = data2?.map((item, index) => ({ ...item, i: index + 1}));
+  const data = data2?.map((item, index) => ({ ...item, i: index + 1 }));
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -131,113 +137,119 @@ const ProductList = (props) => {
   return (
     <div>
       <Toaster />
-      <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Product Information</div>
-        <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-          <Add style={{ color: "white" }} />
-          <div className=' ml-2 '>Add Product</div>
+      {loading === true && filUserData ? (
+        <div className="flex justify-center items-center  h-[80vh]">
+          <ReactLoader />
         </div>
-      </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
-        :
+      ) :
         <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productName')}
-                    >
-                      Product
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productDescription'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productDescription')}
-                    >
-                      Product Description
-                    </TableSortLabel>
-                  </TableCell>
+          <div className='flex justify-between items-center mb-3'>
+            <div className='font-bold text-2xl'>Product Information</div>
+            <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+              <Add style={{ color: "white" }} />
+              <div className=' ml-2 '>Add Product</div>
+            </div>
+          </div>
+          {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'>  Data not available !</div>
+            :
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === '_id'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('_id')}
+                        >
+                          ID
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'productName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('productName')}
+                        >
+                          Product
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'productDescription'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('productDescription')}
+                        >
+                          Product Description
+                        </TableSortLabel>
+                      </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Category Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'categoryName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('categoryName')}
-                    >
-                      Sub Category Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productBrand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productBrand')}
-                    >
-                      Brand
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'modelNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('modelNo')}
-                    >
-                      Model No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serialNo'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serialNo')}
-                    >
-                      Serial No.
-                    </TableSortLabel>
-                  </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'categoryName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('categoryName')}
+                        >
+                          Category Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'categoryName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('categoryName')}
+                        >
+                          Sub Category Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'productBrand'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('productBrand')}
+                        >
+                          Brand
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'modelNo'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('modelNo')}
+                        >
+                          Model No.
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'serialNo'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('serialNo')}
+                        >
+                          Serial No.
+                        </TableSortLabel>
+                      </TableCell>
 
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'warrantyStatus'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('warrantyStatus')}
-                    >
-                      Warranty In Days
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'warrantyStatus'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('warrantyStatus')}
+                        >
+                          Warranty In Days
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'status'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('status')}
+                        >
+                          Status
+                        </TableSortLabel>
+                      </TableCell>
+                      {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'purchaseDate'}
                       direction={sortDirection}
@@ -246,73 +258,74 @@ const ProductList = (props) => {
                       Purchase Date
                     </TableSortLabel>
                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      CreatedAt
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'createdAt'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('createdAt')}
+                        >
+                          CreatedAt
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>Actions</TableCell>
 
-                </TableRow>
-              </TableHead>
+                    </TableRow>
+                  </TableHead>
 
-              <TableBody>
-                {sortedData?.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.productName  }</TableCell>
-                    <TableCell>{row?.productDescription}</TableCell>
-                    <TableCell>{row?.categoryName}</TableCell>
-                    <TableCell>{row?.subCategory}</TableCell>
-                    <TableCell>{row?.productBrand || row?.brandName}</TableCell>
-                    <TableCell>{row?.modelNo || row?.batchNo}</TableCell>
-                    <TableCell>{row?.serialNo}</TableCell>
-                    {/* <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell> */}
-                    <TableCell>{row?.warrantyInDays }</TableCell>
-                    <TableCell>{row?.status || (row?.isActivated === true ? "ACTIVE" : "INACTIVE")}</TableCell>
-                    {/* <TableCell> {new Date(row?.purchaseDate || row?.activationDate)?.toLocaleString()}</TableCell> */}
-                    <TableCell>{new Date(row?.createdAt || row?.activationDate)?.toLocaleString()}</TableCell>
-                    <TableCell className='flex'>
-                      <div className='flex'>
+                  <TableBody>
+                    {sortedData?.map((row) => (
+                      <TableRow key={row?.i} hover>
+                        <TableCell>{row?.i}</TableCell>
+                        <TableCell>{row?.productName}</TableCell>
+                        <TableCell>{row?.productDescription}</TableCell>
+                        <TableCell>{row?.categoryName}</TableCell>
+                        <TableCell>{row?.subCategory}</TableCell>
+                        <TableCell>{row?.productBrand || row?.brandName}</TableCell>
+                        <TableCell>{row?.modelNo || row?.batchNo}</TableCell>
+                        <TableCell>{row?.serialNo}</TableCell>
+                        {/* <TableCell>{row?.warrantyStatus === true ? "true" : "false"}</TableCell> */}
+                        <TableCell>{row?.warrantyInDays}</TableCell>
+                        <TableCell>{row?.status || (row?.isActivated === true ? "ACTIVE" : "INACTIVE")}</TableCell>
+                        {/* <TableCell> {new Date(row?.purchaseDate || row?.activationDate)?.toLocaleString()}</TableCell> */}
+                        <TableCell>{new Date(row?.createdAt || row?.activationDate)?.toLocaleString()}</TableCell>
+                        <TableCell className='flex'>
+                          <div className='flex'>
 
-                        {/* <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
+                            {/* <div onClick={() => router.push(`/serviceRequest/${row._id}`)} className="bg-blue-300 text-sm cursor-pointer text-black font-semibold rounded-md p-2 hover:bg-blue-500 hover:font-semibold hover:text-white">
                           Request Service
                         </div>
                         <div onClick={() => handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
                           View Warranty
                         </div> */}
-                        {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                            {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
                         <Visibility color='primary' />
                       </IconButton> */}
-                        <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
-                          <EditIcon color='success' />
-                        </IconButton>
-                        {userData?.user?.role === "ADMIN" ?
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
-                          : ""}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                            <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                              <EditIcon color='success' />
+                            </IconButton>
+                            {userData?.user?.role === "ADMIN" ?
+                              <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                                <DeleteIcon color='error' />
+                              </IconButton>
+                              : ""}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={data?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={data?.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </>}
         </>}
       {/* Edit Modal */}
       <Dialog open={editModalOpen} onClose={handleEditModalClose}>

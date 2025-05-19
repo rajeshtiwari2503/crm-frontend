@@ -16,6 +16,7 @@ const Service = () => {
   const [refresh, setRefresh] = useState("")
 
   const [value, setValue] = React.useState(null);
+const [loading, setLoading] = useState(true);
 
   const { user } = useUser();
 
@@ -31,13 +32,16 @@ const Service = () => {
 
   const getAllService = async () => {
     try {
+        setLoading(true);
       let response = await http_request.get("/getAllService")
       let { data } = response;
 
       setService(data)
+        setLoading(false);
     }
     catch (err) {
       console.log(err);
+        setLoading(false);
     }
   }
   // const filData = value?.user?.role === "BRAND" ? service?.filter((f) => f?.brandId === value?.user?._id) :
@@ -65,10 +69,15 @@ const Service = () => {
   return (
     <Sidenav>
       <Toaster />
+       {loading ? (
+                          <div className="flex justify-center items-center  h-[80vh]">
+                            <ReactLoader />
+                          </div>
+                        ) : (
       <>
         <ServiceList data={data} user={value?.user} RefreshData={RefreshData} />
 
-      </>
+      </>)}
     </Sidenav>
   )
 }

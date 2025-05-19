@@ -178,8 +178,8 @@ const ProductWarrantyPage = (props) => {
       </div>
 
       {loading === true ? (
-        <div className="flex-grow flex justify-center items-center">
-          <ReactLoader />
+       <div className="flex justify-center items-center  h-[80vh]">
+            <ReactLoader />
         </div>
       ) : (
         <>

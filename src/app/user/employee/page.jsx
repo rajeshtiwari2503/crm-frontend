@@ -14,6 +14,7 @@ const Employee = () => {
 
   const [employees, setEmployees] = useState([])
   const [refresh, setRefresh] = useState("")
+  const [loading, setLoading] = useState(true);
 const { user } = useUser()
   useEffect(() => {
     getAllEmployees()
@@ -22,13 +23,16 @@ const { user } = useUser()
 
   const getAllEmployees = async () => {
     try {
+       setLoading(true);
       let response = await http_request.get("/getAllEmployee")
       let { data } = response;
 
       setEmployees(data)
+       setLoading(false);
     }
     catch (err) {
       console.log(err);
+       setLoading(false);
     }
   }
 
@@ -42,10 +46,16 @@ const data=data1?.map((item, index) => ({ ...item, i: index + 1 }))
   return (
     <Sidenav>
       <Toaster />
+       {loading ? (
+                    <div className="flex justify-center items-center h-screen">
+                      <ReactLoader />
+                    </div>
+                  ) : (
       <>
       <EmployeeList data={data} user={user?.user} RefreshData={RefreshData} />
        
       </>
+                  )}
     </Sidenav>
   )
 }

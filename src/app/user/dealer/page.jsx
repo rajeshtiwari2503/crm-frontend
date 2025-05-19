@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import DealerList from './dealerList';
 import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
  
 
 
@@ -13,6 +14,7 @@ const Dealer = () => {
 
   const [dealers, setDealers] = useState([])
   const [refresh, setRefresh] = useState("")
+const [loading, setLoading] = useState(true);
 
   const [value, setValue] = React.useState(null);
  const { user } = useUser();
@@ -32,9 +34,11 @@ const Dealer = () => {
       let { data } = response;
 
       setDealers(data)
+       setLoading(false);
     }
     catch (err) {
       console.log(err);
+       setLoading(false);
     }
   }
 
@@ -48,10 +52,15 @@ const Dealer = () => {
   return (
     <Sidenav>
       <Toaster />
+       {loading ? (
+              <div className="flex justify-center items-center  h-[80vh]">
+                <ReactLoader />
+              </div>
+            ) : (
       <>
        <DealerList data={data}user={value?.user} RefreshData={RefreshData} />
         
-      </>
+      </>)}
     </Sidenav>
   )
 }

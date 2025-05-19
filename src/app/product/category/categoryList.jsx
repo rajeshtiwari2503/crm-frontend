@@ -97,7 +97,7 @@ const CategoryList = (props) => {
           <div className=' ml-2 '>Add Category</div>
         </div>
       </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>

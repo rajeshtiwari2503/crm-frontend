@@ -144,6 +144,8 @@ const ServiceProfile = (props) => {
 
     }
   };
+
+  const brandsSupported=userData?.brandsSupported?.length>0 ?userData?.brandsSupported:[];
   return (
 
     <div className=' '>
@@ -412,7 +414,7 @@ const ServiceProfile = (props) => {
           <div className=' md:text-1xl text-sm font-semibold mt-5'>BrandsSupported :</div>
           <div className=' md:text-1xl text-sm  mt-5 '>
             {
-              userData?.brandsSupported?.map((item, i) =>
+              brandsSupported?.map((item, i) =>
                 <div className="font-bold" key={i}>{i + 1}. {item?.label}   </div>
               )
             }
@@ -425,7 +427,7 @@ const ServiceProfile = (props) => {
           </div>
           <div className=' md:col-span-2 col-span-2'>
             {props?.admin?.user?.role === "ADMIN" ?
-              <AddSupportedBrands serviceCenterId={userData?._id} existingBrands={userData?.brandsSupported} RefreshData={props?.RefreshData} />
+              <AddSupportedBrands serviceCenterId={userData?._id} existingBrands={brandsSupported} RefreshData={props?.RefreshData} />
 
               : ""
             }

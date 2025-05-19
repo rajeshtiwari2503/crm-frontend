@@ -40,8 +40,8 @@ const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData 
     useEffect(() => {
         if (existingBrands.length) {
             const formattedBrands = existingBrands.map(brand => ({
-                value: brand.value,
-                label: brand.label
+                value: brand?.value,
+                label: brand?.label
             }));
             // console.log("formattedBrands",formattedBrands);
             
@@ -55,8 +55,8 @@ const AddSupportedBrands = ({ existingBrands = [], serviceCenterId, RefreshData 
         try {
             const payload = {
                 brandsSupported: data.brandsSupported.map(option => ({
-                    value: option.value,
-                    label: option.label
+                    value: option?.value,
+                    label: option?.label
                 }))
             };
             // console.log("brandsSupported",data);

@@ -1,9 +1,10 @@
- "use client";
+"use client";
 import React, { useState, useEffect } from "react";
 import Sidenav from "../components/Sidenav";
 import { Chart } from "react-google-charts"; // Import Chart component from react-google-charts
 import http_request from "../../../http-request"
 import { ReactLoader } from "../components/common/Loading";
+import { Business, ReportProblem } from "@mui/icons-material";
 
 const StatewisePendingComplaints = () => {
   const [statewiseData, setStatewiseData] = useState([]);
@@ -36,8 +37,8 @@ const StatewisePendingComplaints = () => {
       // const response = await http_request.get("/getAllComplaint"); // Adjust the API path if needed
       const response = await http_request.get("/getAllBrandComplaint");  // Adjust the API path if needed
       let { data } = response;
-      console.log("data",data);
-      
+      console.log("data", data);
+
       setLocationwiseData(data);
       setBrandLoading(false)
     } catch (error) {
@@ -74,10 +75,10 @@ const StatewisePendingComplaints = () => {
   const brands = [...new Set(complaints.map((c) => c.productBrand))];
   // Extract unique cities based on selected state
   const cities = state ? [...new Set(complaints.filter((c) => c.state === state).map((c) => c.district))] : [];
- 
+
   const filteredComplaints = complaints.filter((complaint) => {
     const complaintDate = new Date(complaint.createdAt);
-  
+
     return (
       (!brand || complaint.productBrand === brand) && // Show all brands by default
       (!state || complaint.state === state) &&
@@ -86,7 +87,7 @@ const StatewisePendingComplaints = () => {
       (!endDate || complaintDate <= new Date(endDate))
     );
   });
-  
+
 
   // console.log("filteredComplaints", filteredComplaints);
 
@@ -114,7 +115,14 @@ const StatewisePendingComplaints = () => {
   };
 
   // console.log("stateCounts",stateCounts);
-
+  const gradients = [
+    "from-pink-50 to-pink-100",
+    "from-blue-50 to-blue-100",
+    "from-green-50 to-green-100",
+    "from-yellow-50 to-yellow-100",
+    "from-purple-50 to-purple-100",
+    "from-teal-50 to-teal-100",
+  ];
   return (
     <>
       <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
@@ -189,7 +197,7 @@ const StatewisePendingComplaints = () => {
           </div>
 
           {/* Statewise Pending Complaints Data (optional table or detailed list) */}
-          <div className="grid grid-cols-12 gap-4">
+          {/* <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 rounded-lg shadow px-4 py-4 bg-white">
               <h3 className="text-xl mb-4">Detailed Pending Complaints by State</h3>
               {statewiseData.length > 0 ? (
@@ -213,6 +221,39 @@ const StatewisePendingComplaints = () => {
                 <p>No data available.</p>
               )}
             </div>
+          </div> */}
+          <div>
+            <h3 className="text-xl mb-4">Detailed Pending Complaints by State</h3>
+            {statewiseData.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-10">
+                {statewiseData?.map((item, index) => (
+                  <div
+                    key={index}
+                    className={`bg-gradient-to-br ${gradients[index % gradients.length]} text-gray-800 rounded-xl shadow p-4 transition-transform transform hover:scale-105`}
+                  >
+                    {/* Service Center Name */}
+                    <div className="flex items-center gap-2 mb-2">
+                      <Business fontSize="small" className="text-gray-700" />
+                      <span
+                        className=" text-sm font-semibold truncate max-w-[200px]" // adjust width as needed
+                        title={item._id} // shows full name on hover
+                      >
+                        {item._id}
+                      </span>
+                    </div>
+
+                    {/* Pending Complaints */}
+                    <div className="flex items-center gap-2">
+                      <ReportProblem fontSize="small" className="text-red-600" />
+                      <span className="text-sm font-semibold text-red-600">{item.count} Pending </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+              : (
+                <p>No data available.</p>
+              )}
           </div>
         </div>
       }

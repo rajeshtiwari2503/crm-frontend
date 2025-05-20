@@ -76,7 +76,7 @@ let filteredData = [];
         filteredData = [];
     }
   }
-  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue ,watch} = useForm();
   const router = useRouter()
 
 
@@ -290,7 +290,45 @@ let filteredData = [];
     }
   };
 
+ const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [enteredOtp, setEnteredOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+
+  const handleVerifyOtp = () => {
+    if (enteredOtp === generatedOtp) {
+      setOtpVerified(true);
+      alert("OTP Verified!");
+    } else {
+      alert("Invalid OTP");
+    }
+  };
+
+  const compStatus = watch("status");
+
+  const sendOTP = async (id) => {
+    try {
+      const response = await http_request.post("/send-otp", { complaintId: id });
+      const { data } = response;
+      if (response.data.success) {
+        setGeneratedOtp(data?.otp);
+        setOtpSent(true);
+        ToastMessage({ status: true, msg: "OTP sent successfully!" })
+
+      } else {
+        console.log("Failed to send OTP. Please try again.");
+        ToastMessage({ status: false, msg: "Failed to send OTP. Please try again." })
+      }
+    } catch (error) {
+      console.log("Error sending OTP: " + error.response?.data?.message || error.message);
+    }
+  };
   const onSubmit = async (data) => {
+
+    if (userData?.role === "SERVICE" && data?.status === "FINAL VERIFICATION" && !otpVerified) {
+      alert("Please verify OTP before submitting.");
+      return;
+    }
     try {
       setLoading(true);
 
@@ -945,8 +983,39 @@ let filteredData = [];
               ></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
+              {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
+              <div className="mb-4">
+                {!otpSent ? (
+                  <button type="button" onClick={() => sendOTP(id)} className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                    Send OTP
+                  </button>
+                ) : !otpVerified ? (
+                  <>
+                    <div className="mt-4">
+                      <input
+                        type="text"
+                        placeholder="Enter OTP"
+                        value={enteredOtp}
+                        onChange={(e) => setEnteredOtp(e.target.value)}
+                        className="p-2 border border-gray-300 rounded-md w-full"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md"
+                    >
+                      Verify OTP
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-green-600 mt-2">OTP Verified ✅</p>
+                )}
+              </div>
+            )}
             <div>
-              <button type="submit" disabled={loading} className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit"
+                disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified || loading} className="rounded-lg p-3 mt-5 w-full border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>

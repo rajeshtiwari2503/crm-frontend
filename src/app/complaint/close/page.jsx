@@ -18,7 +18,10 @@ const Close = () => {
   const [value, setValue] = React.useState(null);
 const [transactions, setTransactions] = useState([]);
  const [loading, setloading] = React.useState(false);
+  const [page, setPage] = useState(1); // Default page
+  const [limit, setLimit] = useState(5); // Items per page
 
+  const [totalPages, setTotalPages] = React.useState(0);
  const { user } = useUser();
  
  
@@ -29,7 +32,7 @@ const [transactions, setTransactions] = useState([]);
      }
     getAllComplaint()
     getTransactions()
-  }, [refresh,user])
+  }, [refresh,user, page, limit])
 
   const getTransactions = async () => {
     try {
@@ -52,15 +55,37 @@ const [transactions, setTransactions] = useState([]);
     try {
           setloading(true)
   
-      let response = await http_request.get("/getComplaintsByComplete")
-      let { data } = response;
+     if (!user?.user?.role || !user?.user?._id) return;
 
-      setComplaint(data)
-       setloading(false)
+      let role = user.user.role;
+      let id = user.user._id;
+
+      let queryParams = new URLSearchParams();
+      queryParams.append("page", page);
+      queryParams.append("limit", limit);
+
+      if (role === "BRAND") queryParams.append("brandId", id);
+      else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
+      else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
+      else if (role === "CUSTOMER") queryParams.append("userId", id);
+      else if (role === "DEALER") queryParams.append("dealerId", id);
+
+      let response =
+        role === "ADMIN" || role === "EMPLOYEE"
+          ? await http_request.get(`/getComplaintsByComplete?page=${page}&limit=${limit}`)
+          : await http_request.get(`/getCompleteComplaintByRole?page=${page}&limit=${limit}?${queryParams.toString()}`);
+
+      let { data } = response;
+      // console.log("data",data?.data);
+
+      setTotalPages(Math.ceil((data?.totalComplaints || 0)));
+      setComplaint(data?.data);
+    } catch (err) {
+      setloading(false);
+      console.error("Error fetching complaints:", err);
     }
-    catch (err) {
-      console.log(err);
-       setloading(false)
+    finally {
+      setloading(false);
     }
   }
   // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
@@ -94,7 +119,10 @@ const [transactions, setTransactions] = useState([]);
               </div>
             ) : (
       <>
-        <CloseComplaintList data={data}userData={value?.user}transactions={transactions} RefreshData={RefreshData} />
+        <CloseComplaintList  page={page}
+              setPage={setPage}
+              limit={limit}
+              setLimit={setLimit} totalPage={totalPages}  data={data}userData={value?.user}transactions={transactions} RefreshData={RefreshData} />
         </>
       )}
     

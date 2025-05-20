@@ -16,7 +16,7 @@ import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal'
 
 const InProgressComplaintList = (props) => {
 
-  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, reset, setValue ,watch} = useForm();
 
   const router = useRouter()
   const complaint = props?.data;
@@ -38,7 +38,7 @@ const InProgressComplaintList = (props) => {
 
   const effectiveRole = role || userData?.role;
 
-let data = [];
+  let data = [];
   if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
     // Admin overriding to view a brand's complaints
     data = complaint?.filter(item => item?.brandId === brandId);
@@ -102,17 +102,17 @@ let data = [];
 
     // Handle the complaint ID format and general search terms
     return complaintId?.includes(search) ||
-    item?.complaintId?.toLowerCase().includes(search) ||
-    item?.productBrand?.toLowerCase().includes(search) ||
-    item?.productName?.toLowerCase().includes(search) ||
-    item?.subCategoryName?.toLowerCase().includes(search) ||
-    item?.categoryName?.toLowerCase().includes(search) ||
-    item?.fullName?.toLowerCase().includes(search) ||
-    item?.district?.toLowerCase().includes(search) ||
-    item?.state?.toLowerCase().includes(search) ||
-    item?.assignServiceCenter?.toLowerCase().includes(search) ||
-    item?.phoneNumber?.includes(searchTerm)||
-    item?.pincode?.includes(searchTerm);
+      item?.complaintId?.toLowerCase().includes(search) ||
+      item?.productBrand?.toLowerCase().includes(search) ||
+      item?.productName?.toLowerCase().includes(search) ||
+      item?.subCategoryName?.toLowerCase().includes(search) ||
+      item?.categoryName?.toLowerCase().includes(search) ||
+      item?.fullName?.toLowerCase().includes(search) ||
+      item?.district?.toLowerCase().includes(search) ||
+      item?.state?.toLowerCase().includes(search) ||
+      item?.assignServiceCenter?.toLowerCase().includes(search) ||
+      item?.phoneNumber?.includes(searchTerm) ||
+      item?.pincode?.includes(searchTerm);
   });
 
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -147,10 +147,46 @@ let data = [];
       console.log(err);
     }
   };
+
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [enteredOtp, setEnteredOtp] = useState("");
+  const [generatedOtp, setGeneratedOtp] = useState("");
+
+  const handleVerifyOtp = () => {
+    if (enteredOtp === generatedOtp) {
+      setOtpVerified(true);
+      alert("OTP Verified!");
+    } else {
+      alert("Invalid OTP");
+    }
+  };
+
+  const compStatus = watch("status");
+
+  const sendOTP = async (id) => {
+    try {
+      const response = await http_request.post("/send-otp", { complaintId: id });
+      const { data } = response;
+      if (response.data.success) {
+        setGeneratedOtp(data?.otp);
+        setOtpSent(true);
+        ToastMessage({ status: true, msg: "OTP sent successfully!" })
+
+      } else {
+        console.log("Failed to send OTP. Please try again.");
+        ToastMessage({ status: false, msg: "Failed to send OTP. Please try again." })
+      }
+    } catch (error) {
+      console.log("Error sending OTP: " + error.response?.data?.message || error.message);
+    }
+  };
   const onSubmit = async (data) => {
-    // const dataReq = { ...data, empId: userData._id, empName: userData.name, }
-    // try {
-    //   let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
+
+    if (userData?.role === "SERVICE" && data?.status === "FINAL VERIFICATION" && !otpVerified) {
+      alert("Please verify OTP before submitting.");
+      return;
+    }
     try {
       const reqdata = { comments: data?.comments, status: data?.status, empId: userData._id, empName: userData.name, }
       const formData = new FormData();
@@ -510,12 +546,12 @@ let data = [];
                               <SystemSecurityUpdate />
                             </div>
                             : ""}
-                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                                            <div>
-                                                              <MatchedSparePartsModalButton complaintId= {row?._id} />
-                            
-                                                            </div>
-                                                            : ""}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div>
+                              <MatchedSparePartsModalButton complaintId={row?._id} />
+
+                            </div>
+                            : ""}
                           <div
                             onClick={() => handleDetails(row?._id)}
                             className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -617,8 +653,40 @@ let data = [];
                 <p className="text-red-500 text-sm mt-1">{errors.partPendingImage.message}</p>
               )} */}
             </div>
+            {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
+              <div className="mb-4">
+                {!otpSent ? (
+                  <button type="button" onClick={() => sendOTP(id)}  className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                    Send OTP
+                  </button>
+                ) : !otpVerified ? (
+                  <>
+                    <div className="mt-4">
+                      <input
+                        type="text"
+                        placeholder="Enter OTP"
+                        value={enteredOtp}
+                        onChange={(e) => setEnteredOtp(e.target.value)}
+                        className="p-2 border border-gray-300 rounded-md w-full"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleVerifyOtp}
+                      className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md"
+                    >
+                      Verify OTP
+                    </button>
+                  </>
+                ) : (
+                  <p className="text-green-600 mt-2">OTP Verified ✅</p>
+                )}
+              </div>
+            )}
             <div>
-              <button type="submit" className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+              <button type="submit"
+                disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
+               className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                 Submit
               </button>
             </div>

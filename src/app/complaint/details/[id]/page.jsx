@@ -186,20 +186,21 @@ const ComplaintDetails = ({ params }) => {
                                     </>
 
                                 }
+                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE"  || value?.user?.role === "USER" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
+                                        <div className='md:text-xl flex justify-center items-center bg-green-400 text-center rounded-md font-bold text-sm '><div>{complaint?.otp}</div></div>
+                                    </> : ""
+
+                                }
                                 {value?.user?.role === "ADMIN" ?
                                     <>
-                                        <div className='md:text-xl text-sm font-semibold'> Service Center Payment : </div>
+                                        <div className='md:text-xl text-sm font-semibold'> ServiceCenter Payment : </div>
                                         <div className='md:text-xl text-sm '>{complaint?.paymentServiceCenter}</div>
                                     </> : ""
 
                                 }
-                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "USER" ?
-                                    <>
-                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
-                                        <div className='md:text-xl bg-slate-400 text-center rounded-md text-sm '>{complaint?.otp}</div>
-                                    </> : ""
-
-                                }
+                               
                                 <div className='md:text-xl text-sm font-semibold'> Sparepart   : </div>
                                 <div>
                                     {matchedSpareParts.length > 0 ? (

@@ -31,8 +31,10 @@ const Warranty = () => {
 
   useEffect(() => {
     if (user) {
-      fetchData()
+      setUser(user?.user)
+    //  getAllwarranty()
     }
+    fetchData()
   }, [refresh, user])
 
   const fetchData = async () => {

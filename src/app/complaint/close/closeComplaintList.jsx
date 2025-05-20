@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,14 +24,7 @@ const CloseComplaintList = (props) => {
   const complaint = props?.data;
   const userData = props?.userData;
 
-  // const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
-  //   : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
-  //     : userData?.role === "BRAND EMPLOYEE" ? complaint.filter((item) => item?.brandId === userData.brandId)
-  //       : userData?.role === "USER" ? complaint.filter((item) => item?.userId === userData._id)
-  //         : userData?.role === "SERVICE" ? complaint.filter((item) => item?.assignServiceCenterId === userData._id)
-  //           : userData?.role === "TECHNICIAN" ? complaint.filter((item) => item?.technicianId === userData._id)
-  //             : userData?.role === "DEALER" ? complaint.filter((item) => item?.dealerId === userData._id)
-  //               : []
+ const filteredData = complaint
 
 
   const searchParams = useSearchParams();
@@ -40,40 +33,7 @@ const CloseComplaintList = (props) => {
 
   const effectiveRole = role || userData?.role;
 
-let data = [];
-  if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
-    // Admin overriding to view a brand's complaints
-    data = complaint?.filter(item => item?.brandId === brandId);
-  } else {
-    switch (effectiveRole) {
-      case "ADMIN":
-      case "EMPLOYEE":
-        data = complaint;
-        break;
-      case "BRAND":
-        data = complaint?.filter(item => item?.brandId === userData._id);
-        break;
-      case "BRAND EMPLOYEE":
-        data = complaint?.filter(item => item?.brandId === userData.brandId);
-        break;
-      case "USER":
-        data = complaint?.filter(item => item?.userId === userData._id);
-        break;
-      case "SERVICE":
-        data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
-        break;
-      case "TECHNICIAN":
-        data = complaint?.filter(item => item?.technicianId === userData._id);
-        break;
-      case "DEALER":
-        data = complaint?.filter(item => item?.dealerId === userData._id);
-        break;
-      default:
-        data = [];
-    }
-  }
-
-
+ 
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -86,43 +46,76 @@ let data = [];
   const [loading, setLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState('');
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+   const [visible, setVisible] = useState(false);
+   const [filterComp, setFilteredComp] = useState([]);
+
+    const handleChangePage = (event, newPage) => {
+    if (searchTerm) {
+      setPage(newPage);
+    } else {
+      props?.setPage(newPage + 1); // Convert zero-based index to 1-based for backend
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    const newRowsPerPage = parseInt(event.target.value, 10);
+
+    if (searchTerm) {
+      setRowsPerPage(newRowsPerPage);
+      setPage(0); // Reset to first page
+    } else {
+      props?.setLimit(newRowsPerPage);
+      props?.setPage(1); // Reset to first page (1-based for backend)
+    }
   };
+  
+    const handleSort = (property) => {
+      const isAsc = sortBy === property && sortDirection === 'asc';
+      setSortDirection(isAsc ? 'desc' : 'asc');
+      setSortBy(property);
+    };
+  
+    const handleSearch = (event) => {
+      setVisible(true)
+      setSearchTerm(event.target.value);
+      console.log(event.target.value);
+  
+    };
+  
+  
+  
+    useEffect(() => {
+      if (searchTerm.trim() !== "") {
+        fetchFilteredData();
+      }
+      else {
+        props?.RefreshData(searchTerm)
+      }
+    }, [searchTerm]);
+  
+  
+    const fetchFilteredData = async () => {
+      try {
+        const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
+        const { data } = response;
+        setFilteredComp(data);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    };
+    const dataSearch = searchTerm ? filterComp : filteredData;
+    const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? dataSearch
+      : userData?.role === "BRAND" ? dataSearch?.filter((item) => item?.brandId === userData._id)
+        : userData?.role === "BRAND EMPLOYEE" ? dataSearch?.filter((item) => item?.brandId === userData.brandId)
+          : userData?.role === "USER" ? dataSearch?.filter((item) => item?.userId === userData._id)
+            : userData?.role === "SERVICE" ? dataSearch?.filter((item) => item?.assignServiceCenterId === userData._id)
+              : userData?.role === "TECHNICIAN" ? dataSearch?.filter((item) => item?.technicianId === userData._id)
+                : userData?.role === "DEALER" ? dataSearch?.filter((item) => item?.dealerId === userData._id)
+                  : []
+  
 
-  const handleSort = (property) => {
-    const isAsc = sortBy === property && sortDirection === 'asc';
-    setSortDirection(isAsc ? 'desc' : 'asc');
-    setSortBy(property);
-  };
-
-  // const fitData = data
-  // ?.filter(f => f) // ✅ Filters out any falsy values
-  // .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-  const dataSearch = data?.filter((item) => {
-    const complaintId = item?._id?.toLowerCase();
-    const search = searchTerm.toLowerCase();
-
-    // Handle the complaint ID format and general search terms
-    return complaintId?.includes(search) ||
-    item?.complaintId?.toLowerCase().includes(search) ||
-    item?.productBrand?.toLowerCase().includes(search) ||
-    item?.productName?.toLowerCase().includes(search) ||
-    item?.subCategoryName?.toLowerCase().includes(search) ||
-    item?.categoryName?.toLowerCase().includes(search) ||
-    item?.fullName?.toLowerCase().includes(search) ||
-    item?.district?.toLowerCase().includes(search) ||
-    item?.state?.toLowerCase().includes(search) ||
-    item?.assignServiceCenter?.toLowerCase().includes(search) ||
-    item?.phoneNumber?.includes(searchTerm)||
-    item?.pincode?.includes(searchTerm);
-  });
-  const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+   
+  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -319,11 +312,11 @@ let data = [];
       setLoading(false);
     }
   };
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-    console.log(event.target.value);
+  // const handleSearch = (event) => {
+  //   setSearchTerm(event.target.value);
+  //   console.log(event.target.value);
 
-  };
+  // };
   return (
     <div>
 
@@ -667,9 +660,9 @@ let data = [];
             <TablePagination
               rowsPerPageOptions={[5, 10, 25]}
               component="div"
-              count={dataSearch?.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
+              count={searchTerm ? data?.length : props?.totalPage}
+              rowsPerPage={searchTerm ? rowsPerPage : props?.limit}
+              page={searchTerm ? page : Math.max(props?.page - 1, 0)} // Ensure non-negative page index
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
             />

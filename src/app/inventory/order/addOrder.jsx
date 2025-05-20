@@ -1,5 +1,5 @@
 import { useForm, useFieldArray } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import http_request from '.././../../../http-request'
 import { ToastMessage } from "@/app/components/common/Toastify";
 import { Toaster } from "react-hot-toast";
@@ -73,6 +73,21 @@ const [loading,setLoading]=useState(false)
     }
   };
    
+  useEffect(() => {
+  if (userData?.user?.role === "SERVICE") {
+    
+    const selectedCenter = centers.find(c => c._id === userData?.user?._id);
+
+    
+
+    if (selectedCenter) {
+      console.log("serviceCenterId", selectedCenter._id,"serviceCenter", selectedCenter.serviceCenterName);
+      
+      setValue("serviceCenterId", selectedCenter._id);
+      setValue("serviceCenter", selectedCenter.serviceCenterName);
+    }
+  }
+}, [ ]);
  
   return (
 

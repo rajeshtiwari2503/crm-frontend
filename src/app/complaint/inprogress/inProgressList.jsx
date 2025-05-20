@@ -656,7 +656,7 @@ const InProgressComplaintList = (props) => {
             {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
               <div className="mb-4">
                 {!otpSent ? (
-                  <button type="button" onClick={sendOTP(id?._id)} className="bg-blue-500 text-white px-4 py-2 rounded-md">
+                  <button type="button" onClick={() => sendOTP(id)}  className="bg-blue-500 text-white px-4 py-2 rounded-md">
                     Send OTP
                   </button>
                 ) : !otpVerified ? (

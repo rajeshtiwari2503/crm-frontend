@@ -29,16 +29,16 @@ const ComplaintDetails = ({ params }) => {
 
     const getComplaintById = async () => {
         try {
-         
+
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
             setId(data?.userId)
-            
+
         }
         catch (err) {
             console.log(err);
-            
+
         }
     }
     const getComplaintByUserId = async () => {
@@ -177,6 +177,13 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.state}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "USER" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
+                                        <div className='md:text-xl flex justify-center items-center p-2 bg-green-400 text-center rounded-md font-bold text-sm '><div>{complaint?.otp}</div></div>
+                                    </> : ""
+
+                                }
                                 <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.assignServiceCenter}</div>
                                 {value?.user?.role === "BRAND" ? ""
@@ -186,13 +193,7 @@ const ComplaintDetails = ({ params }) => {
                                     </>
 
                                 }
-                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE"  || value?.user?.role === "USER" ?
-                                    <>
-                                        <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
-                                        <div className='md:text-xl flex justify-center items-center bg-green-400 text-center rounded-md font-bold text-sm '><div>{complaint?.otp}</div></div>
-                                    </> : ""
 
-                                }
                                 {value?.user?.role === "ADMIN" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'> ServiceCenter Payment : </div>
@@ -200,7 +201,7 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
-                               
+
                                 <div className='md:text-xl text-sm font-semibold'> Sparepart   : </div>
                                 <div>
                                     {matchedSpareParts.length > 0 ? (

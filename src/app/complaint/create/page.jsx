@@ -295,7 +295,13 @@ const AddComplaint = () => {
   };
   useEffect(() => {
     const storedValue = localStorage.getItem("user");
+
     if (storedValue) {
+       const userInfo =  JSON.parse(storedValue)
+      setValue('empName', userInfo?.user?.name);
+      setValue('empId', userInfo?.user?._id);
+// console.log( userInfo?.user?.name,userInfo?.user?._id);
+
       setLocalValue(JSON.parse(storedValue));
     }
 

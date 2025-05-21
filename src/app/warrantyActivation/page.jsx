@@ -112,6 +112,7 @@ const ActivateWarrantyButton = () => {
         alert("Please enter valid pincode!");
         return;
       }
+        setLoading(true)
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
         ...data,
@@ -122,15 +123,16 @@ const ActivateWarrantyButton = () => {
       if (result.status) {
         ToastMessage(result)
         setRefresh(result)
-
+  // setLoading(false)
       } else {
 
         setRefresh(result)
         ToastMessage(result)
+          setLoading(false)
       }
     } catch (error) {
       console.log(error);
-
+  setLoading(false)
       ToastMessage(error?.response?.data)
 
     }
@@ -525,6 +527,7 @@ const pincode = watch('pincode');
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
 
     try {
+         
       const response = await axios.get(url);
       const result = response.data.results[0];
 

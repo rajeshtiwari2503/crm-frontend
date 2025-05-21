@@ -288,7 +288,7 @@ const OrderList = (props) => {
 
 
   const handleApproval = async (row) => {
-    console.log("row", row);
+    // console.log("row", row);
 
     try {
       setLoading(true);

@@ -109,6 +109,8 @@ const ComplaintDetails = ({ params }) => {
         }
     };
 
+    // console.log("matchedSpareParts",matchedSpareParts);
+    
     return (
         <>
 

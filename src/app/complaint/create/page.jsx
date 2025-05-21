@@ -185,9 +185,10 @@ const AddComplaint = () => {
     }
   }
   const RegiterComplaint = async (reqdata) => {
+console.log("jdfshjgjh",reqdata);
 
     try {
-      if (location) {
+      // if (location) {
 
         setLoading(true)
         const formData = new FormData();
@@ -209,13 +210,13 @@ const AddComplaint = () => {
         reset()
         router.push("/complaint/allComplaint")
       }
-      else {
-        // setError('Please enter a valid pincode.');
-        setLoading(false);
-        return;
+      // else {
+         
+      //   setLoading(false);
+      //   return;
 
-      }
-    }
+      // }
+    // }
     catch (err) {
       setLoading(false)
       ToastMessage(err?.response?.data)
@@ -230,20 +231,20 @@ const AddComplaint = () => {
   const onSubmit = async (data) => {
     try {
 
-      if (pincode) {
-        const locationResponse = await fetchLocation();
+      // if (pincode) {
+      //   const locationResponse = await fetchLocation();
 
-        if (!locationResponse) {
-          setError('Failed to fetch location details.');
-          return;
-        }
+      //   if (!locationResponse) {
+      //     setError('Failed to fetch location details.');
+      //     return;
+      //   }
 
 
         await RegiterComplaint(data);
 
-      } else {
-        setError('Please enter a pincode.');
-      }
+      // } else {
+      //   setError('Please enter a pincode.');
+      // }
     } catch (error) {
       // Handle unexpected errors
       setError('An error occurred while submitting the complaint. Please try again.');
@@ -342,6 +343,7 @@ const AddComplaint = () => {
   useEffect(() => {
     if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
       fetchLocation();
+       setValue('pincode', pincode)
     }
   }, [pincode]);
   const fetchLocation = async () => {

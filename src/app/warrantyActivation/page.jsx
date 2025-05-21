@@ -27,6 +27,8 @@ const ActivateWarrantyButton = () => {
   const [users, setUsers] = useState(null);
 
   const [location, setLocation] = useState(null);
+   const [jsonData, setJsonData] = useState([]);
+     const [error, setError] = useState('');
   // const [pincode, setPincode] = useState('');
   // Set up react-hook-form
   const { register, handleSubmit, formState: { errors }, setValue ,watch} = useForm({
@@ -100,7 +102,7 @@ const ActivateWarrantyButton = () => {
   };
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       if (!productID) {
         alert("Please select a product model");
@@ -347,36 +349,114 @@ const ActivateWarrantyButton = () => {
   };
 const pincode = watch('pincode');
 
-  useEffect(() => {
+ useEffect(() => {
     if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
-      fetchLocation();
+      fetchLocation(pincode);
+      setValue('pincode', pincode)
     }
   }, [pincode]);
-  const fetchLocation = async () => {
+  useEffect(() => {
+    // Fetch the file from the public folder
+    const loadFileFromPublic = async () => {
+      try {
+        const response = await fetch("/INpostalCode.txt");
+        // console.log("response",response);
+        // Adjust filename if needed
+        const text = await response.text();  // Read file content as text
+
+        const lines = text.trim().split("\n");
+        const stateData = {};
+
+        lines.forEach((line) => {
+          const parts = line.split("\t").map((s) => s.trim());
+
+          if (parts.length >= 5) {
+            const pincode = parts[1]; // Pincode
+            const areaName = parts[2]; // Area
+            const state = parts[3]; // State
+            const district = parts[5]; // District
+
+            if (!stateData[state]) {
+              stateData[state] = {};
+            }
+            if (!stateData[state][district]) {
+              stateData[state][district] = [];
+            }
+
+            stateData[state][district].push({ areaName, pincode });
+          }
+        });
+        // console.log("stateData",stateData);
+
+        setJsonData(stateData);
+      } catch (error) {
+        console.error("Error loading file:", error);
+      }
+    };
+
+    loadFileFromPublic();
+  }, []);
+  const fetchLocation = async (pincode) => {
     try {
-      const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
-      if (response.data && response.data[0].Status === 'Success') {
+      // console.log("pincode", pincode);
 
-        const [details] = response.data;
-
-        const { District, State } = details.PostOffice[0];
-
-        setLocation({ District, State });
-        setValue('pincode', pincode);
-        setValue('state', State);
-        setValue('district', District);
-      console.log('pincode', pincode);
-      console.log('state', State);
-      console.log('district', District);
-      
-        return response.data[0].PostOffice[0]; // Return the location details
-      } else {
-        alert('No location found for the provided pincode.');
+      if (!pincode || pincode.toString().trim().length !== 6) {
+        setError('Please enter a valid 6-digit pincode.');
         return null;
       }
+
+      const pinStr = pincode.toString().trim();
+
+      // Step 1: Check local file data
+      if (jsonData && Object.keys(jsonData).length > 0) {
+        for (const state in jsonData) {
+          for (const district in jsonData[state]) {
+            const match = jsonData[state][district].find(
+              (entry) => entry.pincode.toString() === pinStr
+            );
+
+            if (match) {
+              // console.log(" District: district, State: state ",   district,   state );
+              
+              console.log("✅ Local match found:", match, district, state);
+              setLocation({ District: district, State: state });
+              setValue('pincode', pinStr);
+              setValue('state', state);
+              setValue('district', district);
+              setError('');
+              return { District: district, State: state, Area: match.areaName };
+            }
+          }
+        }
+      }
+      setError('No location found for the provided pincode.');
+      setError('No location found for the provided pincode.');
+      setLocation(null);
+      setValue('pincode', '');
+      setValue('state', '');
+      setValue('district', '');
+
+      // Step 2: Fallback to external API
+      // const response = await axios.get(`https://api.postalpincode.in/pincode/${pinStr}`);
+      // if (response.data && response.data[0].Status === 'Success') {
+      //   const { PostOffice } = response.data[0];
+      //   const { District, State } = PostOffice[0];
+
+      //   console.log("✅ API match found:", District, State);
+      //   setLocation({ District, State });
+      //   setValue('pincode', pinStr);
+      //   setValue('state', State);
+      //   setValue('district', District);
+      //   setError('');
+      //   return PostOffice[0];
+      // } else {
+      //   setError('No location found for the provided pincode.');
+      //   return null;
+      // }
+
     } catch (error) {
-      alert('Error fetching location details.');
-      console.error(error);
+      console.error("❌ Error fetching location:", error);
+      setError('Something went wrong while fetching location.');
       return null;
     }
   };
@@ -815,14 +895,18 @@ const pincode = watch('pincode');
                     <label htmlFor="pincode" className="block text-gray-700">Pincode:</label>
                     <input
                       id="pincode"
-                      type="text"
+                      type="number"
                       {...register('pincode', { required: 'Pincode is required' })}
-                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                        placeholder="Enter 6-digit pincode"
+                        className="border p-2 mb-4 w-full"
+                        maxLength={6}
+                      // className="w-full  p-0.5 border border-gray-300 rounded-md"
                     />
                     {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
+                     {error && <p className="text-red-500 mt-1">{error}</p>}
                   </div>
                 </form>
-
+  
                 <div className="flex w-full max-w-md mt-6 space-x-3">
                   <input
                     type="text"

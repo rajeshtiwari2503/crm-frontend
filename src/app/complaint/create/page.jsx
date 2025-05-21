@@ -42,6 +42,7 @@ const AddComplaint = () => {
   const [searchValue, setSearchValue] = useState('');
   const [filteredData, setFilteredData] = useState([]);
   const [successData, setSuccessData] = useState(null);
+  const [jsonData, setJsonData] = useState([]);
 
   const handleChange = async (event) => {
     const value = event.target.value;
@@ -185,10 +186,10 @@ const AddComplaint = () => {
     }
   }
   const RegiterComplaint = async (reqdata) => {
-console.log("jdfshjgjh",reqdata);
+    // console.log("jdfshjgjh", reqdata);
 
     try {
-      // if (location) {
+      if (location) {
 
         setLoading(true)
         const formData = new FormData();
@@ -210,13 +211,13 @@ console.log("jdfshjgjh",reqdata);
         reset()
         router.push("/complaint/allComplaint")
       }
-      // else {
-         
-      //   setLoading(false);
-      //   return;
+      else {
 
-      // }
-    // }
+        setLoading(false);
+        return;
+
+      }
+    }
     catch (err) {
       setLoading(false)
       ToastMessage(err?.response?.data)
@@ -240,9 +241,10 @@ console.log("jdfshjgjh",reqdata);
       //   }
 
 
-        await RegiterComplaint(data);
+      await RegiterComplaint(data);
 
-      // } else {
+      // } 
+      // else {
       //   setError('Please enter a pincode.');
       // }
     } catch (error) {
@@ -342,35 +344,117 @@ console.log("jdfshjgjh",reqdata);
   }
   useEffect(() => {
     if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
-      fetchLocation();
-       setValue('pincode', pincode)
+      fetchLocation(pincode);
+      setValue('pincode', pincode)
     }
   }, [pincode]);
-  const fetchLocation = async () => {
+  useEffect(() => {
+    // Fetch the file from the public folder
+    const loadFileFromPublic = async () => {
+      try {
+        const response = await fetch("/INpostalCode.txt");
+        // console.log("response",response);
+        // Adjust filename if needed
+        const text = await response.text();  // Read file content as text
+
+        const lines = text.trim().split("\n");
+        const stateData = {};
+
+        lines.forEach((line) => {
+          const parts = line.split("\t").map((s) => s.trim());
+
+          if (parts.length >= 5) {
+            const pincode = parts[1]; // Pincode
+            const areaName = parts[2]; // Area
+            const state = parts[3]; // State
+            const district = parts[5]; // District
+
+            if (!stateData[state]) {
+              stateData[state] = {};
+            }
+            if (!stateData[state][district]) {
+              stateData[state][district] = [];
+            }
+
+            stateData[state][district].push({ areaName, pincode });
+          }
+        });
+        // console.log("stateData",stateData);
+
+        setJsonData(stateData);
+      } catch (error) {
+        console.error("Error loading file:", error);
+      }
+    };
+
+    loadFileFromPublic();
+  }, []);
+  const fetchLocation = async (pincode) => {
     try {
-      const response = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
-      if (response.data && response.data[0].Status === 'Success') {
+      console.log("pincode", pincode);
 
-        const [details] = response.data;
-
-        const { District, State } = details.PostOffice[0];
-
-        setLocation({ District, State });
-        setValue('pincode', pincode);
-        setValue('state', State);
-        setValue('district', District);
-        setError('')
-        return response.data[0].PostOffice[0]; // Return the location details
-      } else {
-        setError('No location found for the provided pincode.');
+      if (!pincode || pincode.toString().trim().length !== 6) {
+        setError('Please enter a valid 6-digit pincode.');
         return null;
       }
+
+      const pinStr = pincode.toString().trim();
+
+      // Step 1: Check local file data
+      if (jsonData && Object.keys(jsonData).length > 0) {
+        for (const state in jsonData) {
+          for (const district in jsonData[state]) {
+            const match = jsonData[state][district].find(
+              (entry) => entry.pincode.toString() === pinStr
+            );
+
+            if (match) {
+              console.log("✅ Local match found:", match, district, state);
+              setLocation({ District: district, State: state });
+              setValue('pincode', pinStr);
+              setValue('state', state);
+              setValue('district', district);
+              setError('');
+              return { District: district, State: state, Area: match.areaName };
+            }
+          }
+        }
+      }
+      setError('No location found for the provided pincode.');
+      setError('No location found for the provided pincode.');
+      setLocation(null);
+      setValue('pincode', '');
+      setValue('state', '');
+      setValue('district', '');
+
+      // Step 2: Fallback to external API
+      // const response = await axios.get(`https://api.postalpincode.in/pincode/${pinStr}`);
+      // if (response.data && response.data[0].Status === 'Success') {
+      //   const { PostOffice } = response.data[0];
+      //   const { District, State } = PostOffice[0];
+
+      //   console.log("✅ API match found:", District, State);
+      //   setLocation({ District, State });
+      //   setValue('pincode', pinStr);
+      //   setValue('state', State);
+      //   setValue('district', District);
+      //   setError('');
+      //   return PostOffice[0];
+      // } else {
+      //   setError('No location found for the provided pincode.');
+      //   return null;
+      // }
+
     } catch (error) {
-      setError('Error fetching location details.');
-      console.error(error);
+      console.error("❌ Error fetching location:", error);
+      setError('Something went wrong while fetching location.');
       return null;
     }
   };
+
+
+  // console.log(location,"location");
+
 
   // Watch the 'purchaseDate' field from your form
   const purchaseDate = watch('purchaseDate');
@@ -894,12 +978,25 @@ console.log("jdfshjgjh",reqdata);
                       </label>
 
                       <input
+                        // name="pincode"
+                        // type="number"
+                        // value={pincode}
+                        // onChange={(e) => setPincode(e.target.value)}
+                        // placeholder="Enter pincode"
+                        // className="border p-2 mb-4 w-full"
                         name="pincode"
-                        type="number"
+                        type="text" // Use text instead of number to allow length control
                         value={pincode}
-                        onChange={(e) => setPincode(e.target.value)}
-                        placeholder="Enter pincode"
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Only allow digits and limit to 6 characters
+                          if (/^\d{0,6}$/.test(value)) {
+                            setPincode(value);
+                          }
+                        }}
+                        placeholder="Enter 6-digit pincode"
                         className="border p-2 mb-4 w-full"
+                        maxLength={6}
                       />
                       {error && <p className="text-red-500 mt-1">{error}</p>}
                     </div>

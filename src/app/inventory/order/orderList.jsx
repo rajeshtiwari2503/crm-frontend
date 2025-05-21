@@ -286,45 +286,45 @@ const OrderList = (props) => {
   const handleStockTypeChange = (e) => setStockType(e.target.value);
   const handleFileChange = (e) => setSelectedFile(e.target.files[0]);
 
-  
+
   const handleApproval = async (row) => {
-  console.log("row", row);
+    console.log("row", row);
 
-  try {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    // Extract necessary data from the row
-    const data = {
-      orderId: row?._id, // Ensure order ID is sent
-      spareParts: row?.spareParts || [], // Ensure spare parts data
-      serviceCenterId: row?.serviceCenterId,
-      serviceCenter: row?.serviceCenter,
-      brandId: row?.brandId,
-      brandName: row?.brandName,
-    };
+      // Extract necessary data from the row
+      const data = {
+        orderId: row?._id, // Ensure order ID is sent
+        spareParts: row?.spareParts || [], // Ensure spare parts data
+        serviceCenterId: row?.serviceCenterId,
+        serviceCenter: row?.serviceCenter,
+        brandId: row?.brandId,
+        brandName: row?.brandName,
+      };
 
-    let response = await http_request.patch(`/approvalServiceOrder`, data);
-    let { data: responseData } = response;
+      let response = await http_request.patch(`/approvalServiceOrder`, data);
+      let { data: responseData } = response;
 
-    setOrder(false);
-    setLoading(false);
-    
-    // Refresh data after successful approval
-    props?.RefreshData(responseData);
-    
-    // Show success message
-    ToastMessage(responseData);
+      setOrder(false);
+      setLoading(false);
 
-  } catch (err) {
-    setLoading(false);
+      // Refresh data after successful approval
+      props?.RefreshData(responseData);
 
-    console.log("Approval Error:", err);
+      // Show success message
+      ToastMessage(responseData);
 
-    // Handle errors safely
-    const errorMessage = err?.response?.data?.msg || "Something went wrong!";
-     ToastMessage(err.response.data);
-  }
-};
+    } catch (err) {
+      setLoading(false);
+
+      console.log("Approval Error:", err);
+
+      // Handle errors safely
+      const errorMessage = err?.response?.data?.msg || "Something went wrong!";
+      ToastMessage(err.response.data);
+    }
+  };
 
 
   return (
@@ -414,7 +414,7 @@ const OrderList = (props) => {
                           disabled={loading}
                           className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                         >
-                         {loading ?"Approval proceed..." :"Approve"}
+                          {loading ? "Approval proceed..." : "Approve"}
                         </button>
                       ) : (
                         row.brandApproval
@@ -427,7 +427,16 @@ const OrderList = (props) => {
                       </a>
                     </TableCell>
                     <TableCell>
-                      <img src={row.chalanImage} alt="Chalan" width="50" height="50" />
+                      {/* <img src={row.chalanImage} alt="Chalan" width="50" height="50" /> */}
+                      <a
+                        href={row.chalanImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View chalan
+                      </a>
+
                     </TableCell>
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
                     <TableCell className="flex">

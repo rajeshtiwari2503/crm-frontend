@@ -211,6 +211,7 @@ useEffect(() => {
   useEffect(() => {
     if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
       fetchLocation();
+       setValue('pincode', pincode)
     }
   }, [pincode]);
   const fetchLocation = async () => {

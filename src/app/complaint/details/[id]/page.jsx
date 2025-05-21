@@ -23,7 +23,7 @@ const ComplaintDetails = ({ params }) => {
             setLocalValue(JSON.parse(storedValue));
         }
         getComplaintById()
-        getComplaintByUserId()
+       
         getAllSpareParts()
     }, [id])
 
@@ -33,6 +33,7 @@ const ComplaintDetails = ({ params }) => {
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
+             getComplaintByUserId(data?.phoneNumber);
             setId(data?.userId)
 
         }
@@ -41,21 +42,45 @@ const ComplaintDetails = ({ params }) => {
 
         }
     }
-    const getComplaintByUserId = async () => {
-        try {
-            setLoading(true)
-            let response = await http_request.get(`/getAllBrandComplaint`)
-            let { data } = response;
-            // console.log("data",data);
+    // const getComplaintByUserId = async () => {
+    //     try {
+    //         setLoading(true)
+    //         let response = await http_request.get(`/getAllBrandComplaint`)
+    //         let { data } = response;
+    //         // console.log("data",data);
 
-            setUserComplaint(data)
-            setLoading(false)
-        }
-        catch (err) {
-            console.log(err);
-            setLoading(false)
-        }
-    }
+    //         setUserComplaint(data)
+    //         setLoading(false)
+    //     }
+    //     catch (err) {
+    //         console.log(err);
+    //         setLoading(false)
+    //     }
+    // }
+
+ 
+
+
+ const getComplaintByUserId = async (phoneNumber) => {
+  if (!phoneNumber) {
+    console.warn("Missing phone number, not sending request.");
+    return;
+  }
+
+  try {
+    setLoading(true);
+   const response = await http_request.get(`/getCompleteComplaintByUserContact?phoneNumber=${phoneNumber}` );
+
+    setUserComplaint(response.data);
+  } catch (error) {
+    console.error("Error fetching complaints:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
     const handleEdit = () => {
         router.push(`/complaint/edit/${complaint?._id}`);
     };

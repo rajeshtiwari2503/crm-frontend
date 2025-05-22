@@ -96,10 +96,13 @@ const CloseComplaintList = (props) => {
   
     const fetchFilteredData = async () => {
       try {
+        setLoading(true);
         const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
         const { data } = response;
         setFilteredComp(data);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         console.error("Error fetching search results:", error);
       }
     };
@@ -340,7 +343,9 @@ const CloseComplaintList = (props) => {
           />
         </div>
       </div>
-
+ <div>
+        {loading===true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+          : <>
       {!dataSearch?.length > 0 ? <div className='h-[400px] flex justify-center items-center'>   Data not available !</div>
         :
         <div className='flex justify-center'>
@@ -669,6 +674,9 @@ const CloseComplaintList = (props) => {
           </div>
         </div>
       }
+        </>
+        }
+        </div>
       <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  ADD Feedback</DialogTitle>
         <IconButton

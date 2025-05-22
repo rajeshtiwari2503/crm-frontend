@@ -165,7 +165,10 @@ const ComplaintDetails = ({ params }) => {
                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <div className='md:text-xl text-sm font-semibold'>UniqueId : </div>
                                     : ""}
-                                <div className='md:text-xl text-sm '>{complaint?.uniqueId}</div>
+                                      {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                    <div className='md:text-xl text-sm '>{complaint?.uniqueId}</div>
+                                    : ""}
+                               
                                 <div className='md:text-xl text-sm font-semibold'>ComplaintId : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.complaintId}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Brand : </div>
@@ -211,6 +214,20 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
+                                      {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'>Created By    : </div>
+                                        <div className='md:text-xl text-sm'> {complaint?.empName} </div>
+                                    </> : ""
+
+                                }
+                                   {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'> Emp Id  : </div>
+                                        <div className='md:text-xl text-sm'> {complaint?.empId} </div>
+                                    </> : ""
+
+                                } */}
                                 <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.assignServiceCenter}</div>
                                 {value?.user?.role === "BRAND" ? ""

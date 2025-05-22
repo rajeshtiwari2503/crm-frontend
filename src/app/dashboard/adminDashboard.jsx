@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Typography } from '@mui/material'
-import { Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings, ShoppingBag } from '@mui/icons-material'
+import { Assignment, AssignmentTurnedIn, Cancel, CurrencyRupee, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, Settings, ShoppingBag } from '@mui/icons-material'
 
 import { Circle } from 'rc-progress'
 import CountUp from 'react-countup';
@@ -32,16 +32,35 @@ const AdminDashboard = (props) => {
   const router = useRouter();
 
 
-  const [orderData, setOrderData] = useState([])
   const [complaints, setComplaints] = useState([])
   const [brandData, setBrandData] = useState([]);
-    const [loading, setloading] = React.useState(false);
+  const [loading, setloading] = React.useState(false);
+  const [serviceDetails, setServiceDetails] = useState("");
 
   React.useEffect(() => {
     // getAllComplaint()
-    getAllOrder()
+    getOrderPriceAndDepositsByServiceCenter()
     fetchComplaintData();
   }, []);
+
+  const getOrderPriceAndDepositsByServiceCenter = async () => {
+    try {
+
+
+      const response = await http_request.get(`/getAllServiceCenterOrdersAndDeposits`);
+
+      let { data } = response;
+      // console.log("data",data);
+
+      setServiceDetails(data);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
+  console.log("serviceDetails", serviceDetails);
+
 
   const pieChartData = [
     ["Task", "Hours per Day"],
@@ -53,7 +72,7 @@ const AdminDashboard = (props) => {
     ["customerSidePending", data?.complaints?.customerSidePending],
     ["FinalVerification", data?.complaints?.finalVerification],
     ["Cancel", data?.complaints?.cancel],
-  
+
     ["In Progress", data?.complaints?.inProgress],
   ];
   const pieChartBrandData = [
@@ -104,17 +123,17 @@ const AdminDashboard = (props) => {
     legend: { position: "right" },
   };
 
-  
+
 
   const fetchComplaintData = async () => {
     try {
-        setloading(true)
+      setloading(true)
       const response = await http_request.get("/getComplaintCountByBrand");
       setBrandData(response.data.data);
-        setloading(false)
+      setloading(false)
     } catch (error) {
       console.error("Error fetching complaints:", error);
-        setloading(false)
+      setloading(false)
     }
   };
 
@@ -128,30 +147,7 @@ const AdminDashboard = (props) => {
   //   }
   // };
 
-  const getAllOrder = async () => {
 
-    try {
-
-      const endPoint = "/getAllOrder"
-
-      let response = await http_request.get(endPoint)
-      let { data } = response;
-
-      setOrderData(data)
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
-  // console.log(orderData?.length);
-  const order = orderData?.filter((f) => f?.status === "ORDER")
-  // console.log(order);
-  const approveOrder = order?.filter((f) => f?.brandApproval === "APPROVED")
-  // console.log(approveOrder);
-  const notApproveOrder = order?.filter((f) => f?.brandApproval === "NOT_APPROVE")
-  // console.log(notApproveOrder);
-  const cancelOrder = orderData?.filter((f) => f?.status === "OrderCanceled")
-  // console.log(cancelOrder);
   return (
     <>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Users</div>
@@ -246,61 +242,61 @@ const AdminDashboard = (props) => {
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Independent Service  Payment</div>
 
-<div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4 mb-5'>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1  gap-4 mb-5'>
 
-  
-  <div className=''>
-    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-      <div className='flex justify-between'>
-      </div>
-      <div className='pl-5 py-1 flex justify-between items-center'>
-        <div className='flex items-center'>
-          <PeopleAlt fontSize='medium' />
-          <div className='ml-2'>
-            <div className='text-blue-500 font-semibold'>Paid Payment</div>
-            <div className=' text-2xl font-semibold'>
-              <CountUp start={0} end={data?.centerPaidPayment} delay={1} />
+
+        <div className=''>
+          <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PeopleAlt fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Paid Payment</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.centerPaidPayment} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PeopleAlt fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>UnPaid Payment</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.centerUnPaidPayment} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <PeopleAlt fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold '>Total Payments</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={data?.centerPayment} delay={1} />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div className=''>
-    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-      <div className='flex justify-between'>
-      </div>
-      <div className='pl-5 py-1 flex justify-between items-center'>
-        <div className='flex items-center'>
-          <PeopleAlt fontSize='medium' />
-          <div className='ml-2'>
-            <div className='text-blue-500 font-semibold'>UnPaid Payment</div>
-            <div className=' text-2xl font-semibold'>
-              <CountUp start={0} end={data?.centerUnPaidPayment} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div className=''>
-    <div onClick={() => router.push("/wallet/servicetransactions")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-      <div className='flex justify-between'>
-      </div>
-      <div className='pl-5 py-1 flex justify-between items-center'>
-        <div className='flex items-center'>
-          <PeopleAlt fontSize='medium' />
-          <div className='ml-2'>
-            <div className='text-blue-500 font-semibold '>Total Payments</div>
-            <div className=' text-2xl font-semibold'>
-              <CountUp start={0} end={data?.centerPayment} delay={1} />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
@@ -416,7 +412,7 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>  Upcomming Schedule</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={data?.complaints?.schedule } delay={1} />
+                    <CountUp start={0} end={data?.complaints?.schedule} delay={1} />
                   </div>
                 </div>
               </div>
@@ -595,7 +591,7 @@ const AdminDashboard = (props) => {
             </div>
           </div>
         </div>
-      
+
       </div>
       <div className=' h-8 col-span-4 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
@@ -653,19 +649,19 @@ const AdminDashboard = (props) => {
         </div>
 
       </div>
-      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Order </div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
       <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
         <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+          <div  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
+                <CurrencyRupee fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>New Order</div>
+                  <div className='text-blue-500 font-semibold'> Deposite Amount </div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={order?.length} delay={1} />
+                    <CountUp start={0} end={serviceDetails?.totalDepositAll} delay={1} />
                   </div>
                 </div>
               </div>
@@ -678,17 +674,18 @@ const AdminDashboard = (props) => {
             </div>
             <div className='pl-5 py-1 flex justify-between items-center'>
               <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
+                <CurrencyRupee fontSize='medium' />
                 <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Cancel Order</div>
+                  <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={cancelOrder?.length} delay={1} />
+                    <CountUp start={0} end={serviceDetails?.totalOrderPriceAll} delay={1} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+       
         <div className=''>
           <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
             <div className='flex justify-between'>
@@ -699,7 +696,7 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Approved</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={approveOrder?.length} delay={1} />
+                    <CountUp start={0} end={serviceDetails?.approvedOrderCountAll} delay={1} />
                   </div>
                 </div>
               </div>
@@ -716,7 +713,24 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Not Approved</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={notApproveOrder?.length} delay={1} />
+                    <CountUp start={0} end={serviceDetails?.notApprovedOrderCountAll} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+         <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <ShoppingBag fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Cancel Order</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.canceledOrderCountAll} delay={1} />
                   </div>
                 </div>
               </div>
@@ -733,7 +747,7 @@ const AdminDashboard = (props) => {
                 <div className='ml-2'>
                   <div className='text-blue-500 font-semibold'>Total Orders</div>
                   <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={orderData?.length} delay={1} />
+                    <CountUp start={0} end={serviceDetails?.orderCountAll} delay={1} />
                   </div>
                 </div>
               </div>
@@ -754,54 +768,54 @@ const AdminDashboard = (props) => {
           />
         </div>
         <div className='rounded-lg shadow  bg-white'>
-           {loading === true ? (
-                 <div className="flex items-center justify-center h-[80vh]">
-                   <ReactLoader />
-                 </div>
-               ) : (
-          <Chart
-            chartType="PieChart"
-            data={pieChartBrandPenData}
-            options={optionsPenBrand}
-            width={"100%"}
-            height={"100%"}
-          />
-               )}
+          {loading === true ? (
+            <div className="flex items-center justify-center h-[80vh]">
+              <ReactLoader />
+            </div>
+          ) : (
+            <Chart
+              chartType="PieChart"
+              data={pieChartBrandPenData}
+              options={optionsPenBrand}
+              width={"100%"}
+              height={"100%"}
+            />
+          )}
         </div>
         <div className='rounded-lg shadow  bg-white'>
-            {loading === true ? (
-                  <div className="flex items-center justify-center h-[80vh]">
-                    <ReactLoader />
-                  </div>
-                ) : (
-          <Chart
-            chartType="PieChart"
-            data={pieChartBrandData}
-            options={optionsBrand}
-            width={"100%"}
-            height={"100%"}
-          />
-                )}
+          {loading === true ? (
+            <div className="flex items-center justify-center h-[80vh]">
+              <ReactLoader />
+            </div>
+          ) : (
+            <Chart
+              chartType="PieChart"
+              data={pieChartBrandData}
+              options={optionsBrand}
+              width={"100%"}
+              height={"100%"}
+            />
+          )}
         </div>
-        
+
         <div className='  md:w-full w-[260px]   '>
-        {loading === true ? (
-              <div className="flex items-center justify-center h-[80vh]">
-                <ReactLoader />
-              </div>
-            ) : (
-          <BrandWiseComplaintList brandData={brandData}/>
-            )}
+          {loading === true ? (
+            <div className="flex items-center justify-center h-[80vh]">
+              <ReactLoader />
+            </div>
+          ) : (
+            <BrandWiseComplaintList brandData={brandData} />
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         <div className=' md:w-full w-[260px]  '>
           <ServiceCenterWiseComplaintList />
         </div>
-     
-      <div className='md:w-full w-[260px]'>
-        <CityWiseComplaintList />
-      </div>
+
+        <div className='md:w-full w-[260px]'>
+          <CityWiseComplaintList />
+        </div>
       </div>
 
       <div className='md:w-full w-[260px]'>
@@ -810,18 +824,18 @@ const AdminDashboard = (props) => {
       <div className='   md:w-full w-[260px] '>
         <UnAssignComplaintList />
       </div>
-     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
         <div className=' md:w-full w-[260px]  '>
           <PartPendingTodayUpadteComplaintList />
         </div>
-     
-      <div className='md:w-full w-[260px]'>
-        <PartPendingTodayNotUpadteComplaintList />
-      </div>
+
+        <div className='md:w-full w-[260px]'>
+          <PartPendingTodayNotUpadteComplaintList />
+        </div>
       </div>
 
       <div className='md:w-full w-[260px]'>
-        <RecentServicesList data={complaints} userData={props?.userData}/>
+        <RecentServicesList data={complaints} userData={props?.userData} />
         <div>
           {/* <UploadApk /> */}
         </div>

@@ -65,11 +65,20 @@ const OrderList = (props) => {
   // console.log("selectedBrandFiltr",selectedBrandFiltr);
 
 
-  const brandData = props?.data?.filter((f) => f?.brandId === selectedBrandFiltr)
+  // const brandData = props?.data?.filter((f) => f?.brandId === selectedBrandFiltr)
 
 
-  const data = selectedBrandFiltr === "" ? data1 : brandData
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // const data = selectedBrandFiltr === "" ? data1 : brandData
+   
+
+  const filteredOrders = props?.data?.filter((order) => {
+    const lowerSearch = searchTerm.toLowerCase();
+    return (
+      order.serviceCenter.toLowerCase().includes(lowerSearch) ||
+      order.brandName.toLowerCase().includes(lowerSearch)
+    );
+  });
+  const sortedData = stableSort(filteredOrders, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -351,7 +360,8 @@ const OrderList = (props) => {
       />
     </div> */}
       {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
-        <FormControl fullWidth style={{ marginBottom: '20px' }}>
+        <div className='mb-5'>
+        {/* <FormControl fullWidth style={{ marginBottom: '20px' }}>
           <InputLabel id="brand-select-label">Select Brand</InputLabel>
           <Select
             labelId="brand-select-label"
@@ -368,9 +378,17 @@ const OrderList = (props) => {
               </MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
+         <input
+        type="text"
+        placeholder="Search by Service Center or Brand"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="border p-2 rounded w-full"
+      />
+      </div>
       )}
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+      {!filteredOrders?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
 
@@ -383,11 +401,12 @@ const OrderList = (props) => {
                   <TableCell sx={{ minWidth: 300 }}>Spare_Parts</TableCell>
                   <TableCell>Brand Name</TableCell>
                   <TableCell>Quantity</TableCell>
+                  <TableCell>Total_Price</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Approval</TableCell>
-                  <TableCell>Docket No.</TableCell>
-                  <TableCell>Track Link</TableCell>
-                  <TableCell>Chalan Image</TableCell>
+                  <TableCell>Docket_No.</TableCell>
+                  <TableCell>Track  </TableCell>
+                  <TableCell>Chalan </TableCell>
                   <TableCell>Order Date</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -400,12 +419,13 @@ const OrderList = (props) => {
                     <TableCell>
                       {row.spareParts.map((part) => (
                         <div key={part._id}>
-                          {part.sparePartName} (Qty: {part.quantity}, Price: ${part.price})
+                          {part.sparePartName} (Qty: {part.quantity}, Price: ₹ {part.price})
                         </div>
                       ))}
                     </TableCell>
                     <TableCell>{row.brandName}</TableCell>
                     <TableCell>{row.spareParts.reduce((sum, part) => sum + part.quantity, 0)}</TableCell>
+                    <TableCell>  ₹{row.spareParts.reduce((sum, part) => sum + part.price, 0).toLocaleString()}</TableCell>
                     <TableCell>{row.status}</TableCell>
                     <TableCell>
                       {row.brandApproval === "DISAPPROVED" ? (
@@ -434,7 +454,7 @@ const OrderList = (props) => {
                         rel="noopener noreferrer"
                         className="text-blue-600 underline"
                       >
-                        View chalan
+                        View_chalan
                       </a>
 
                     </TableCell>
@@ -458,7 +478,7 @@ const OrderList = (props) => {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={data.length}
+            count={filteredOrders?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

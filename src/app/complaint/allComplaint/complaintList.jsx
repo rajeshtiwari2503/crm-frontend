@@ -127,10 +127,13 @@ const ComplaintList = (props) => {
 
   const fetchFilteredData = async () => {
     try {
+      setLoading(true);
       const response = await http_request.get(`/searchComplaint?searchTerm=${searchTerm}`);
       const { data } = response;
       setFilteredComp(data);
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.error("Error fetching search results:", error);
     }
   };
@@ -479,44 +482,46 @@ const ComplaintList = (props) => {
           </div>
         }
       </div>
+      <div>
+        {loading===true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+          : <>
+            {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+              :
+              <div className='flex justify-center'>
+                <div className=' md:w-full w-[260px]'>
 
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
-        :
-        <div className='flex justify-center'>
-          <div className=' md:w-full w-[260px]'>
-
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === '_id'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('_id')}
-                      >
-                        ID
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === '_id'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('_id')}
-                      >
-                        Complaint Id
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'fullName'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('fullName')}
-                      >
-                        Customer Name
-                      </TableSortLabel>
-                    </TableCell>
-                    {/* <TableCell>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === '_id'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('_id')}
+                            >
+                              ID
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === '_id'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('_id')}
+                            >
+                              Complaint Id
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'fullName'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('fullName')}
+                            >
+                              Customer Name
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'emailAddress'}
                                      direction={sortDirection}
@@ -525,16 +530,16 @@ const ComplaintList = (props) => {
                                      Customer Email
                                    </TableSortLabel>
                                  </TableCell> */}
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'district'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('district')}
-                      >
-                        City
-                      </TableSortLabel>
-                    </TableCell>
-                    {/* <TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'district'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('district')}
+                            >
+                              City
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'serviceAddress'}
                                      direction={sortDirection}
@@ -543,7 +548,7 @@ const ComplaintList = (props) => {
                                      Service_Address
                                    </TableSortLabel>
                                  </TableCell> */}
-                    {/* <TableCell>
+                          {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'city'}
                                      direction={sortDirection}
@@ -561,16 +566,16 @@ const ComplaintList = (props) => {
                                     State
                                    </TableSortLabel>
                                  </TableCell> */}
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'customerMobile'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('customerMobile')}
-                      >
-                        Contact No.
-                      </TableSortLabel>
-                    </TableCell>
-                    {/* <TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'customerMobile'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('customerMobile')}
+                            >
+                              Contact No.
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'categoryName'}
                                      direction={sortDirection}
@@ -579,16 +584,16 @@ const ComplaintList = (props) => {
                                      Category Name
                                    </TableSortLabel>
                                  </TableCell> */}
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'productBrand'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('productBrand')}
-                      >
-                        Product Brand
-                      </TableSortLabel>
-                    </TableCell>
-                    {/* <TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'productBrand'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('productBrand')}
+                            >
+                              Product Brand
+                            </TableSortLabel>
+                          </TableCell>
+                          {/* <TableCell>
                                    <TableSortLabel
                                      active={sortBy === 'modelNo'}
                                      direction={sortDirection}
@@ -670,56 +675,56 @@ const ComplaintList = (props) => {
                                      Technician Comments
                                    </TableSortLabel>
                                  </TableCell> */}
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'assignServiceCenter'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('assignServiceCenter')}
-                      >
-                        Service Center
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'status'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('status')}
-                      >
-                        Status
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>
-                      <TableSortLabel
-                        active={sortBy === 'createdAt'}
-                        direction={sortDirection}
-                        onClick={() => handleSort('createdAt')}
-                      >
-                        Created_At
-                      </TableSortLabel>
-                    </TableCell>
-                    <TableCell>Actions</TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'assignServiceCenter'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('assignServiceCenter')}
+                            >
+                              Service Center
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'status'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('status')}
+                            >
+                              Status
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortBy === 'createdAt'}
+                              direction={sortDirection}
+                              onClick={() => handleSort('createdAt')}
+                            >
+                              Created_At
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>Actions</TableCell>
 
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sortedData.map((row) => (
-                    <TableRow key={row?.i} hover>
-                      <TableCell>{row?.i}</TableCell>
-                      <TableCell>{row?.complaintId}</TableCell>
-                      <TableCell>{row?.fullName}</TableCell>
-                      {/* <TableCell>{row?.emailAddress}</TableCell> */}
-                      <TableCell>{row?.district}</TableCell>
-                      {/* <TableCell>{row?.serviceAddress}</TableCell> */}
-                      {/* <TableCell>{row?.state}</TableCell> */}
-                      <TableCell>{row?.phoneNumber}</TableCell>
-                      {/* <TableCell>{row?.categoryName}</TableCell> */}
-                      <TableCell>
-                        {String(row?.productBrand || "").length > 15
-                          ? String(row?.productBrand).substring(0, 15) + "..."
-                          : row?.productBrand}
-                      </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {sortedData.map((row) => (
+                          <TableRow key={row?.i} hover>
+                            <TableCell>{row?.i}</TableCell>
+                            <TableCell>{row?.complaintId}</TableCell>
+                            <TableCell>{row?.fullName}</TableCell>
+                            {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                            <TableCell>{row?.district}</TableCell>
+                            {/* <TableCell>{row?.serviceAddress}</TableCell> */}
+                            {/* <TableCell>{row?.state}</TableCell> */}
+                            <TableCell>{row?.phoneNumber}</TableCell>
+                            {/* <TableCell>{row?.categoryName}</TableCell> */}
+                            <TableCell>
+                              {String(row?.productBrand || "").length > 15
+                                ? String(row?.productBrand).substring(0, 15) + "..."
+                                : row?.productBrand}
+                            </TableCell>
 
-                      {/* <TableCell>{row?.modelNo}</TableCell>
+                            {/* <TableCell>{row?.modelNo}</TableCell>
                                    <TableCell>{row?.serialNo}</TableCell>
                
                                    <TableCell>{row?.issueType}</TableCell>
@@ -729,21 +734,21 @@ const ComplaintList = (props) => {
                                    <TableCell>{row?.assignTechnician}</TableCell>
                                    <TableCell>{row?.technicianContact}</TableCell>
                                    <TableCell>{row?.comments}</TableCell> */}
-                      <TableCell>{row?.assignServiceCenter}</TableCell>
-                      <TableCell>{row?.status}</TableCell>
-                      <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                      <TableCell className="p-0">
-                        <div className="flex items-center space-x-2">
-                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                            <div
-                              onClick={() => handleUpdateStatus(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <SystemSecurityUpdate />
-                            </div>
-                            : ""}
+                            <TableCell>{row?.assignServiceCenter}</TableCell>
+                            <TableCell>{row?.status}</TableCell>
+                            <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                            <TableCell className="p-0">
+                              <div className="flex items-center space-x-2">
+                                {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                  <div
+                                    onClick={() => handleUpdateStatus(row?._id)}
+                                    className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                  >
+                                    <SystemSecurityUpdate />
+                                  </div>
+                                  : ""}
 
-                          {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
                               className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -751,86 +756,86 @@ const ComplaintList = (props) => {
                               Order Part
                             </div>
                             : ""} */}
-                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
-                            <div
-                              onClick={() => handleAssignServiceCenter(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <AssignmentTurnedIn />
-                            </div>
-                            : ""}
-                          {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
-                            (row?.status === "PENDING" || row?.status === "ASSIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
-                            <div
-                              onClick={() => {
-                                // Debugging
-                                handleUpdatedCommm(row?._id);
-                              }}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <Comment />
-                            </div>
-                          ) : null}
+                                {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
+                                  <div
+                                    onClick={() => handleAssignServiceCenter(row?._id)}
+                                    className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                  >
+                                    <AssignmentTurnedIn />
+                                  </div>
+                                  : ""}
+                                {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
+                                  (row?.status === "PENDING" || row?.status === "ASSIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (
+                                  <div
+                                    onClick={() => {
+                                      // Debugging
+                                      handleUpdatedCommm(row?._id);
+                                    }}
+                                    className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                  >
+                                    <Comment />
+                                  </div>
+                                ) : null}
 
-                          {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                                {/* <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                           <Visibility color="primary" />
                         
                         </IconButton> */}
-                          {row?.status !== "COMPLETED" && row?.status !== "CANCELED" &&
-                            <>
-                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                {row?.status !== "COMPLETED" && row?.status !== "CANCELED" &&
+                                  <>
+                                    {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                      <div
+                                        onClick={() => handleOrderPart(row?._id)}
+                                        className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                                      >
+                                        Add Video
+                                      </div>
+                                      : ""}
+                                    {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                      <div
+                                        onClick={() => sendOTP(row?._id)}
+                                        className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                                      >
+                                        Send OTP
+                                      </div>
+
+                                      : ""}
+                                    {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                                      <div>
+                                        <MatchedSparePartsModal complaintId={row?._id} />
+
+                                      </div>
+                                      : ""}
+                                  </>
+                                }
                                 <div
-                                  onClick={() => handleOrderPart(row?._id)}
+                                  onClick={() => handleDetails(row?._id)}
                                   className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-
                                 >
-                                  Add Video
+                                  <Visibility />
                                 </div>
-                                : ""}
-                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                <div
-                                  onClick={() => sendOTP(row?._id)}
-                                  className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
+                                  <>
+                                    <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                                      <EditIcon color="success" />
+                                    </IconButton>
 
-                                >
-                                  Send OTP
-                                </div>
+                                    <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                                      <DeleteIcon color="error" />
+                                    </IconButton>
+                                  </>
+                                  : ""}
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
 
-                                : ""}
-                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                <div>
-                                  <MatchedSparePartsModal complaintId= {row?._id} />
-
-                                </div>
-                                : ""}
-                            </>
-                          }
-                          <div
-                            onClick={() => handleDetails(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                          >
-                            <Visibility />
-                          </div>
-                          {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
-                            <>
-                              <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                                <EditIcon color="success" />
-                              </IconButton>
-
-                              <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                                <DeleteIcon color="error" />
-                              </IconButton>
-                            </>
-                            : ""}
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-
-            {/* <TablePagination
+                  {/* <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
             count={searchTerm ?data?.length :props?.totalPage  }
@@ -840,19 +845,22 @@ const ComplaintList = (props) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           /> */}
 
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
-              component="div"
-              count={searchTerm ? data?.length : props?.totalPage}
-              rowsPerPage={searchTerm ? rowsPerPage : props?.limit}
-              page={searchTerm ? page : Math.max(props?.page - 1, 0)} // Ensure non-negative page index
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+                  <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={searchTerm ? data?.length : props?.totalPage}
+                    rowsPerPage={searchTerm ? rowsPerPage : props?.limit}
+                    page={searchTerm ? page : Math.max(props?.page - 1, 0)} // Ensure non-negative page index
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
 
-          </div>
-        </div>
-      }
+                </div>
+              </div>
+            }
+          </>
+        }
+      </div>
       <Dialog open={order} onClose={handleOrderClose}>
         <DialogTitle> Part Order</DialogTitle>
         <IconButton

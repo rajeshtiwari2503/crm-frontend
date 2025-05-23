@@ -66,12 +66,12 @@ export default function AnalyticsDashboard() {
 
     return (
         <div className="p-6 space-y-4   ">
-            <h1 className="text-3xl font-bold text-gray-800">Service Center Analytics</h1>
+            <h1 className="md:text-3xl text-xl font-bold text-gray-800">Service Center Analytics</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 items-center">
                 {/* Left: Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 items-center  ">
-                    
+
                     {/* Summary Card 1 */}
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 shadow rounded-lg p-6">
                         <h2 className="text-sm font-medium text-gray-600">Total Orders</h2>
@@ -110,53 +110,60 @@ export default function AnalyticsDashboard() {
                 </div>
             </div>
 
-
-            <div className="overflow-x-auto  ">
+            <div className="">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
                     {[...data.serviceCenters]
                         .sort((a, b) => b.totalOrderPrice - a.totalOrderPrice)
-                        .map((center, index) => (
-                            <div
-                                key={center.serviceCenterId}
-                                className={`bg-gradient-to-br ${gradients[index % gradients.length]} text-gray-800 rounded-xl shadow p-4 transition-transform transform hover:scale-105`}
-                            >
-                                {/* Service Center Name */}
-                                <h2 className="text-lg font-semibold truncate" title={center.serviceCenterName}>
-                                    {center.serviceCenterName}
-                                </h2>
+                        .map((center) => {
+                            const isDepositGreater = center.totalDeposit > center.totalOrderPrice;
 
-                                <div className="mt-2 space-y-1 text-sm">
-                                    <div className="flex justify-between">
-                                        <span>Total Orders:</span>
-                                        <span className="font-medium">{center.totalOrders}</span>
-                                    </div>
-                                    <div className="flex justify-between text-green-600">
-                                        <span>Approved:</span>
-                                        <span className="font-medium">{center.approvedOrderCount}</span>
-                                    </div>
-                                    <div className="flex justify-between text-yellow-600">
-                                        <span>Not Approved:</span>
-                                        <span className="font-medium">{center.notApprovedOrderCount}</span>
-                                    </div>
-                                    <div className="flex justify-between text-red-600">
-                                        <span>Canceled:</span>
-                                        <span className="font-medium">{center.canceledOrderCount}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Order Value:</span>
-                                        <span className="font-medium">₹{center.totalOrderPrice.toLocaleString()}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span>Deposits:</span>
-                                        <span className="font-medium">₹{center.totalDeposit.toLocaleString()}</span>
+                            return (
+                                <div
+                                    key={center.serviceCenterId}
+                                    className={`text-gray-800 rounded-xl shadow p-4 transition-transform transform hover:scale-105
+              ${isDepositGreater
+                                            ? 'bg-gradient-to-br from-green-200 to-green-300'
+                                            : 'bg-gradient-to-br from-yellow-200 to-yellow-300'
+                                        }`}
+                                >
+                                    {/* Service Center Name */}
+                                    <h2 className="text-lg font-semibold truncate capitalize" title={center.serviceCenterName}>
+                                        {center.serviceCenterName}
+                                    </h2>
+
+                                    <div className="mt-2 space-y-1 text-sm">
+                                        <div className="flex justify-between">
+                                            <span>Total Orders:</span>
+                                            <span className="font-medium">{center.totalOrders}</span>
+                                        </div>
+                                        <div className="flex justify-between text-green-600">
+                                            <span>Approved:</span>
+                                            <span className="font-medium">{center.approvedOrderCount}</span>
+                                        </div>
+                                        <div className="flex justify-between text-yellow-600">
+                                            <span>Not Approved:</span>
+                                            <span className="font-medium">{center.notApprovedOrderCount}</span>
+                                        </div>
+                                        <div className="flex justify-between text-red-600">
+                                            <span>Canceled:</span>
+                                            <span className="font-medium">{center.canceledOrderCount}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Order Value:</span>
+                                            <span className="font-medium">₹{center.totalOrderPrice.toLocaleString()}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Deposits:</span>
+                                            <span className="font-medium">₹{center.totalDeposit.toLocaleString()}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                 </div>
-
-
             </div>
+
+
         </div>
     );
 }

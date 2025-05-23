@@ -35,6 +35,8 @@ const AdminDashboard = (props) => {
   const [complaints, setComplaints] = useState([])
   const [brandData, setBrandData] = useState([]);
   const [loading, setloading] = React.useState(false);
+  const [serviceLoading, setServiceLoading] = React.useState(false);
+
   const [serviceDetails, setServiceDetails] = useState("");
 
   React.useEffect(() => {
@@ -46,20 +48,23 @@ const AdminDashboard = (props) => {
   const getOrderPriceAndDepositsByServiceCenter = async () => {
     try {
 
-
+setServiceLoading(true)
       const response = await http_request.get(`/getAllServiceCenterOrdersAndDeposits`);
 
       let { data } = response;
       // console.log("data",data);
 
       setServiceDetails(data);
+      setServiceLoading(false)
     } catch (err) {
+        setServiceLoading(false)
       console.error("Error fetching transactions:", err);
     } finally {
       // setLoading(false);
+        setServiceLoading(false)
     }
   };
-  console.log("serviceDetails", serviceDetails);
+  // console.log("serviceDetails", serviceDetails);
 
 
   const pieChartData = [
@@ -650,112 +655,118 @@ const AdminDashboard = (props) => {
 
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
-      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
-        <div className=''>
-          <div  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
+     
+     <> {serviceLoading===true ?  <div className="flex justify-center items-center  h-[400px]">
+                <ReactLoader />
             </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <CurrencyRupee fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'> Deposite Amount </div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.totalDepositAll} delay={1} />
+    : <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+          <div className=''>
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <CurrencyRupee fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'> Deposite Amount </div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.totalDepositAll} delay={1} />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <CurrencyRupee fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.totalOrderPriceAll} delay={1} />
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <CurrencyRupee fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.totalOrderPriceAll} delay={1} />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-       
-        <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Approved</div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.approvedOrderCountAll} delay={1} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Not Approved</div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.notApprovedOrderCountAll} delay={1} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-         <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Cancel Order</div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.canceledOrderCountAll} delay={1} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className=''>
-          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-            <div className='flex justify-between'>
-            </div>
-            <div className='pl-5 py-1 flex justify-between items-center'>
-              <div className='flex items-center'>
-                <ShoppingBag fontSize='medium' />
-                <div className='ml-2'>
-                  <div className='text-blue-500 font-semibold'>Total Orders</div>
-                  <div className=' text-2xl font-semibold'>
-                    <CountUp start={0} end={serviceDetails?.orderCountAll} delay={1} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
-      </div>
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <ShoppingBag fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Approved</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.approvedOrderCountAll} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <ShoppingBag fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Not Approved</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.notApprovedOrderCountAll} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <ShoppingBag fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Cancel Order</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.canceledOrderCountAll} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <ShoppingBag fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Total Orders</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.orderCountAll} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      }
+      </>
 
       <div className='grid md:grid-cols-2 sm:grid-cols-1 gap-4 my-8'>
         <div className='rounded-lg shadow   bg-white'>

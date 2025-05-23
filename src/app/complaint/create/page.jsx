@@ -298,8 +298,8 @@ const AddComplaint = () => {
 
     if (storedValue) {
        const userInfo =  JSON.parse(storedValue)
-      setValue('empName', userInfo?.user?.name ||  userInfo?.user?.brandName);
-      setValue('empId', userInfo?.user?._id);
+      setValue('createEmpName', userInfo?.user?.name ||  userInfo?.user?.brandName);
+      setValue('createEmpId', userInfo?.user?._id);
 // console.log( userInfo?.user?.name,userInfo?.user?._id);
 
       setLocalValue(JSON.parse(storedValue));

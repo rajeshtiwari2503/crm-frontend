@@ -217,7 +217,7 @@ const ComplaintDetails = ({ params }) => {
                                       {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'>Created By  : </div>
-                                        <div className='md:text-xl text-sm'> {complaint?.empName} </div>
+                                        <div className='md:text-xl text-sm'> {complaint?.createEmpName ||complaint?.empName} </div> 
                                     </> : ""
 
                                 }

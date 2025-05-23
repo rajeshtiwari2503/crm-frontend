@@ -72,31 +72,46 @@ export default function AnalyticsDashboard() {
                 {/* Left: Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 items-center  ">
 
-                    {/* Summary Card 1 */}
+
+                  
+                    {/* Summary Card 2 */}
+                    <div className="bg-gradient-to-br from-green-50 to-green-100 shadow rounded-lg p-6">
+                        <h2 className="text-sm font-medium text-gray-600">Total Order Value</h2>
+                        <p className="text-xl font-bold text-gray-900">₹{data.totalOrderPriceAll.toLocaleString()}</p>
+                    </div>
+
+                    {/* Summary Card 3 */}
+                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 shadow rounded-lg p-6">
+                        <h2 className="text-sm font-medium text-gray-600">Total Deposits</h2>
+                        <p className="text-xl font-bold text-gray-900">₹{data.totalDepositAll.toLocaleString()}</p>
+                    </div>
+
+                    
+
+                    {/* Summary Card 5 */}
+                    <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 shadow rounded-lg p-6">
+                        <h2 className="text-sm font-medium text-gray-600">Approved Orders</h2>
+                        <p className="text-xl font-bold text-gray-900">{data.approvedOrderCountAll}</p>
+                    </div>
+
+                    {/* Summary Card 6 */}
+                    <div className="bg-gradient-to-br from-orange-50 to-orange-100 shadow rounded-lg p-6">
+                        <h2 className="text-sm font-medium text-gray-600">Not Approved</h2>
+                        <p className="text-xl font-bold text-gray-900">{data.notApprovedOrderCountAll}</p>
+                    </div>
+
+                    {/* Summary Card 7 */}
+                    <div className="bg-gradient-to-br from-red-50 to-red-100 shadow rounded-lg p-6">
+                        <h2 className="text-sm font-medium text-gray-600">Canceled Orders</h2>
+                        <p className="text-xl font-bold text-gray-900">{data.canceledOrderCountAll}</p>
+                    </div>
+                      {/* Summary Card 1 */}
                     <div className="bg-gradient-to-br from-blue-50 to-blue-100 shadow rounded-lg p-6">
                         <h2 className="text-sm font-medium text-gray-600">Total Orders</h2>
                         <p className="text-xl font-bold text-gray-900">{data.totalOrdersAll}</p>
                     </div>
 
-                    {/* Summary Card 2 */}
-                    <div className="bg-gradient-to-br from-green-50 to-green-100 shadow rounded-lg p-6">
-                        <h2 className="text-sm font-medium text-gray-600">Total Order Value</h2>
-                        <p className="text-xl font-bold text-gray-900">
-                            ₹{data.totalOrderPriceAll.toLocaleString()}
-                        </p>
-                    </div>
-
-
-                    {/* Summary Card 3 */}
-                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 shadow rounded-lg p-6">
-                        <h2 className="text-sm font-medium text-gray-600">Total Deposits</h2>
-                        <p className="text-xl font-bold text-gray-900">
-                            ₹{data.totalDepositAll.toLocaleString()}
-                        </p>
-                    </div>
                 </div>
-
-
                 {/* Right: Google Pie Chart */}
                 <div className="bg-white shadow rounded-lg p-6">
                     <h2 className="text-lg font-semibold text-gray-700 mb-4">Order Status Overview</h2>
@@ -122,8 +137,8 @@ export default function AnalyticsDashboard() {
                                     key={center.serviceCenterId}
                                     className={`text-gray-800 rounded-xl shadow p-4 transition-transform transform hover:scale-105
               ${isDepositGreater
-                                            ? 'bg-gradient-to-br from-green-200 to-green-300'
-                                            : 'bg-gradient-to-br from-yellow-200 to-yellow-300'
+                                            ? 'bg-gradient-to-br from-green-100 to-green-600'
+                                            : 'bg-gradient-to-br from-red-100 to-red-600'
                                         }`}
                                 >
                                     {/* Service Center Name */}
@@ -142,7 +157,7 @@ export default function AnalyticsDashboard() {
                                         </div>
                                         <div className="flex justify-between text-yellow-600">
                                             <span>Not Approved:</span>
-                                            <span className="font-medium">{center.notApprovedOrderCount}</span>
+                                            <span className="font-bold">{center.notApprovedOrderCount}</span>
                                         </div>
                                         <div className="flex justify-between text-red-600">
                                             <span>Canceled:</span>

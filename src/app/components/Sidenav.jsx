@@ -105,7 +105,7 @@ function Sidenav(props) {
   const getAllEmpDashboard = async () => {
     try {
 
-      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone,brand:user?.user?.brand }); // ✅ Send POST request with body
+      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone, brand: user?.user?.brand }); // ✅ Send POST request with body
       let { data } = response;
       console.log(data);
 
@@ -399,7 +399,7 @@ function Sidenav(props) {
   const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'Upcomming', 'Final Verification', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Upcomming', 'Final Verification', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Upcomming', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES") ? ['Service', 'Dealer', 'Customer', 'Employee'] : value?.user?.role === "BRAND" ? ['Dealer', 'Customer',] : value?.user?.role === "EMPLOYEE" ? ['Service'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
-  const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
+  const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order", "inventory"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
     <>
       {value ?
@@ -443,11 +443,11 @@ function Sidenav(props) {
               </ListItemButton>
             </ListItem>
               : ""}
-               {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
               <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                 <ListItemIcon className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
-                   <FactCheck style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} /> 
-                   {/* <HowToReg style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} /> */}
+                  <FactCheck style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} />
+                  {/* <HowToReg style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} /> */}
                 </ListItemIcon>
                 <ListItemText primary={"Attendance"} />
 
@@ -947,7 +947,7 @@ function Sidenav(props) {
               </ListItem>
               : ""}
             <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
-              <List className=' '>
+              {/* <List className=' '>
                 {inventory?.map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
@@ -969,6 +969,40 @@ function Sidenav(props) {
                     </ListItemButton>
                   </ListItem>
                 ))}
+              </List> */}
+              <List>
+                {inventory?.map((text) => {
+                  const lowerText = text.toLowerCase();
+                  const isInventoryMain = lowerText === 'inventory';
+                  const isActive = isInventoryMain
+                    ? pathname === '/inventory'
+                    : pathname === `/inventory/${lowerText}`;
+                  const iconColor = isActive ? '#007BFF' : '#64748b';
+
+                  // Set the correct icon
+                  let icon;
+                  if (lowerText === "stock") icon = <Category style={{ color: iconColor }} />;
+                  else if (lowerText === "order") icon = <LocalShipping style={{ color: iconColor }} />;
+                  else icon = <Inventory style={{ color: iconColor }} />; // default for "inventory"
+
+                  return (
+                    <ListItem
+                      key={text}
+                      disablePadding
+                      className={isActive ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'}
+                      onClick={() =>
+                        isInventoryMain
+                          ? router.push('/inventory')
+                          : router.push(`/inventory/${lowerText}`)
+                      }
+                    >
+                      <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                        <ListItemIcon>{icon}</ListItemIcon>
+                        <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
               </List>
             </Collapse>
             {value?.user?.role === "SERVICE1" || value?.user?.role === "TECHNICIAN1"
@@ -1193,13 +1227,13 @@ function Sidenav(props) {
                                     {`${notification?.message}  Complaint_Id : ${notification?.compId || 'NA'}`}
                                   </div>
                                   {notification?.compId &&
-                                          <button   onClick={() => {
-                                            handleReadMark(notification?._id);
-                                            router.push(`/complaint/details/${notification?.complaintId}`);
-                                          }}className=" rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
-                                            <Visibility />
-                                          </button>
-                                        }
+                                    <button onClick={() => {
+                                      handleReadMark(notification?._id);
+                                      router.push(`/complaint/details/${notification?.complaintId}`);
+                                    }} className=" rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
+                                      <Visibility />
+                                    </button>
+                                  }
                                   {(value?.user?.role === "ADMIN" ? notification?.adminStatus === "UNREAD"
                                     : value?.user?.role === "BRAND" ? notification?.brandStatus === "UNREAD"
                                       : value?.user?.role === "USER" ? notification?.userStatus === "UNREAD"
@@ -1209,7 +1243,7 @@ function Sidenav(props) {
                                               : ""
                                   ) && (
                                       <div className='flex items-center'>
-                                        
+
                                         <button onClick={() => handleReadMark(notification?._id)} className="ms-2 rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
                                           <MarkChatRead />
                                         </button>

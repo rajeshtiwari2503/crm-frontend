@@ -38,20 +38,23 @@ export default function SignIn() {
           localStorage.setItem('user', JSON.stringify(data));
         }
 
-        setLoading(false);
+        
         ToastMessage(data);
 
         // Navigate and reload
         window.location.href = "/dashboard"; // Ensures navigation and reload
+        // router.push('/dashboard');
+        // setLoading(false);
       } else {
         // Handle unverified users
         window.location.href = "/dashboard"; // Ensures navigation and reload
+         setLoading(false);
       }
     } catch (err) {
       setLoading(false);
       ToastMessage(err?.response?.data);
       console.log(err);
-    }
+    } 
   };
 
 

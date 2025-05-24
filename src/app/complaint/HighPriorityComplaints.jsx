@@ -10,33 +10,48 @@ import { useUser } from '../components/UserContext';
 
 
 const StatusComponent = ({ row }) => {
-    let statusToDisplay = row?.status;
-    let preferredServiceDate = new Date(row?.preferredServiceDate);
-    let currentDate = new Date();
+  let statusToDisplay = row?.status || '';
+  let preferredServiceDate = row?.preferredServiceDate ? new Date(row.preferredServiceDate) : null;
+  let currentDate = new Date();
 
-    // Normalize the dates to only compare Y/M/D (ignoring time)
-    let preferredDateOnly = new Date(preferredServiceDate.setHours(0, 0, 0, 0));
-    let currentDateOnly = new Date(currentDate.setHours(0, 0, 0, 0));
+  // Normalize dates (ignore time)
+  let preferredDateOnly = preferredServiceDate ? new Date(preferredServiceDate.setHours(0, 0, 0, 0)) : null;
+  let currentDateOnly = new Date(currentDate.setHours(0, 0, 0, 0));
 
-    if (row?.updateHistory?.length > 0) {
-        const lastIndex = row?.updateHistory.length - 1;
-        statusToDisplay = row?.updateHistory[lastIndex]?.changes?.status || row?.status;
-        console.log("statusToDisplay", statusToDisplay);
+  if (row?.updateHistory?.length > 0) {
+    const lastIndex = row.updateHistory.length - 1;
+    statusToDisplay = row.updateHistory[lastIndex]?.changes?.status || statusToDisplay;
+  }
 
+  const statusLower = statusToDisplay.toLowerCase();
+
+  // Set a default color, e.g. green
+  let bgColor = 'bg-green-400';
+
+  // Apply date-based color logic for ALL statuses you listed
+  const statusesToCheck = [
+    'pending',
+    'in progress',
+    'part pending',
+    'assign',
+    'customer side pending',
+  ];
+
+  if (statusesToCheck.includes(statusLower) && preferredDateOnly) {
+    if (preferredDateOnly < currentDateOnly) {
+      bgColor = 'bg-red-500'; // Overdue
+    } else if (preferredDateOnly.getTime() === currentDateOnly.getTime()) {
+      bgColor = 'bg-orange-400'; // Due today
     }
+  }
 
-    // Determine color based on priority
-    let bgColor = 'bg-green-400'; // Default (future dates)
-    if (statusToDisplay.toLowerCase() === 'pending') {
-        if (preferredDateOnly < currentDateOnly) {
-            bgColor = 'bg-red-500'; // Past date (overdue)
-        } else if (preferredDateOnly.getTime() === currentDateOnly.getTime()) {
-            bgColor = 'bg-orange-400'; // Due today
-        }
-    }
-
-    return <div className={`${bgColor} text-white p-2 rounded-md`}>{statusToDisplay}</div>;
+  return (
+    <div className={`${bgColor} text-white p-2 rounded-md`}>
+      {statusToDisplay}
+    </div>
+  );
 };
+
 
 
 
@@ -60,7 +75,7 @@ const HighPriorityComplaintList = (props) => {
     const getAllComplaint = async () => {
         try {
             setloading(true)
-            let response = await http_request.get("/getComplaintsByPending")
+            let response = await http_request.get("/getComplaintsByHighPriorityPending")
             let { data } = response;
 
             setComplaint(data)

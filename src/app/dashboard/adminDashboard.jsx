@@ -656,7 +656,7 @@ setServiceLoading(true)
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
      
-     <> {serviceLoading===true ?  <div className="flex justify-center items-center  h-[400px]">
+     <> {serviceLoading===true ?  <div className="flex justify-center items-center   ">
                 <ReactLoader />
             </div>
     : <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>

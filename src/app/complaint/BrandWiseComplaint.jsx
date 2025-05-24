@@ -58,6 +58,7 @@ const BrandWiseComplaintList = ({brandData}) => {
                   { label: "P ", key: "PENDING" },
                   { label: "I.P. ", key: "INPROGRESS" },
                   { label: "P.P. ", key: "PART_PENDING" },
+                   { label: "C.S.P. ", key: "CUSTOMER_SIDE_PENDING" },
                   { label: "A ", key: "ASSIGN" },
                   { label: "C", key: "CANCEL" },
                  
@@ -96,6 +97,7 @@ const BrandWiseComplaintList = ({brandData}) => {
               <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.PENDING || 0}</TableCell>
               <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.INPROGRESS || 0}</TableCell>
               <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.PART_PENDING || 0}</TableCell>
+              <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.CUSTOMER_SIDE_PENDING || 0}</TableCell>
               <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.ASSIGN || 0}</TableCell>
               <TableCell sx={{ fontSize: 12, padding: "4px" }}>{item.CANCEL || 0}</TableCell>
              

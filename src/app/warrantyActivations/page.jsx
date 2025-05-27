@@ -69,9 +69,9 @@ const WarrantyActivation = (props) => {
 
     setProduct(data)
   }
-  const filterData = userData?.user?.role === "ADMIN" ? warrantyActivation : userData?.user?.role === "BRAND EMPLOYEE" ? warrantyActivation?.filter((f) => f?.brandId === userData?.user?.brandId) : warrantyActivation?.filter((f) => f?.brandId === userData?.user?._id)
+  const filterData = userData?.user?.role === "ADMIN" ||userData?.user?.role === "EMPLOYEE"? warrantyActivation : userData?.user?.role === "BRAND EMPLOYEE" ? warrantyActivation?.filter((f) => f?.brandId === userData?.user?.brandId) : warrantyActivation?.filter((f) => f?.brandId === userData?.user?._id)
 
-  const data = filterData?.map((item, index) => ({ ...item, i: index + 1 }));
+  const data = filterData
 
   const RefreshData = (data) => {
     setRefresh(data)

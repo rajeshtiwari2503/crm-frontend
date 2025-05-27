@@ -36,7 +36,7 @@ const WarrantyActivationList = ({ data,
       setSearchData([]);
       return;
     }
- 
+  
     const delayDebounceFn = setTimeout(() => {
       setLoading(true);
       console.log("searchTerm", searchTerm);
@@ -52,7 +52,7 @@ const WarrantyActivationList = ({ data,
           console.log(err.message || "Error fetching data");
           setLoading(false);
         });
-    }, 1000); // 1000ms = 1 seconds debounce
+    }, 500); // 1000ms = 1 seconds debounce
 
     // Cleanup function to clear the timeout if searchTerm changes before 3 seconds
     return () => clearTimeout(delayDebounceFn);
@@ -107,8 +107,9 @@ const WarrantyActivationList = ({ data,
     }
   }, [searchTerm, searchData, data]);
 
+   const trueData =combinedData?.map((item, index) => ({ ...item, i: index + 1 }));
 
-  const sortedData = stableSort(combinedData, getComparator(sortDirection, sortBy))
+  const sortedData = stableSort(trueData, getComparator(sortDirection, sortBy))
     .slice(page * limit, (page + 1) * limit);
 
   const handleDetails = (id) => {

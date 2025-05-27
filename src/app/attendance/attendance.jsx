@@ -229,7 +229,7 @@ export default function Clock({ userId }) {
               <button
                 className="bg-green-500 text-white p-2 rounded mr-2 disabled:opacity-50"
                 onClick={handleClockIn}
-                disabled={isClockedIn}
+                disabled={isClockedIn ||isLoading}
               >
                 Clock In
               </button>

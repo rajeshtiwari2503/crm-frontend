@@ -1088,7 +1088,7 @@ const AddComplaint = () => {
                       <input
                         id="phoneNumber"
                         name="phoneNumber"
-                        type="tel"
+                        type="number"
                         autoComplete="phoneNumber"
                         required
                         {...register('phoneNumber', {

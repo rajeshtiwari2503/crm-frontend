@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogTitle
@@ -11,17 +11,56 @@ import http_request from '.././../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '../components/common/Loading';
 
-const WarrantyActivationList = (props) => {
+const WarrantyActivationList = ({ data,
+  page,
+  setPage,
+  limit,
+  setLimit,
+  totalPage,
+  RefreshData }) => {
   const router = useRouter();
-  const data = props?.data;
+
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
   const [cateId, setCateId] = useState("");
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  // const [page, setPage] = useState(0);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('desc'); // Set default to 'desc'
   const [sortBy, setSortBy] = useState('createdAt'); // Set the default sort by createdAt
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [searchData, setSearchData] = useState([]);
+
+  useEffect(() => {
+    if (!searchTerm || searchTerm.length < 3) {
+      setSearchData([]);
+      return;
+    }
+ 
+    const delayDebounceFn = setTimeout(() => {
+      setLoading(true);
+      console.log("searchTerm", searchTerm);
+
+      http_request
+        .get(`/getActivationWarrantySearch?search=${encodeURIComponent(searchTerm)}`)
+        .then((response) => {
+          console.log("response", response);
+          setSearchData(response?.data?.data || []);
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err.message || "Error fetching data");
+          setLoading(false);
+        });
+    }, 1000); // 1000ms = 1 seconds debounce
+
+    // Cleanup function to clear the timeout if searchTerm changes before 3 seconds
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
+
+
+
+
 
 
   const handleChangePage = (event, newPage) => {
@@ -29,30 +68,48 @@ const WarrantyActivationList = (props) => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+    setLimit(parseInt(event.target.value, 10));
     setPage(0);
   };
+
 
   const handleSort = (property) => {
     const isAsc = sortBy === property && sortDirection === 'asc';
     setSortDirection(isAsc ? 'desc' : 'asc');
     setSortBy(property);
   };
+  // console.log("item,data", data)
 
-  const filteredData = data?.filter((item) =>
-    // console.log(item)
-    
-    (item.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.brandName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.contact?.includes(searchTerm ) ||
-      item?.pincode?.includes(searchTerm ) ||
-      item?.uniqueId.includes(searchTerm))  // Convert uniqueId to string
-  );
+
+  //   let combinedData;
+
+  // if (!searchTerm || searchTerm.length < 3) {
+  //   // When no valid search term, just show searchData (or you might want to show empty array)
+  //   combinedData = searchData; 
+  // } else {
+  //   // When search term is valid, combine both arrays
+  //   combinedData = [...searchData, ...data];
+  // }
+
+
   // console.log(searchTerm)
   // console.log(filteredData)
-  const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))
-    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // const sortedData = stableSort(filteredData, getComparator(sortDirection, sortBy))
+  //   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
+  const [combinedData, setCombinedData] = React.useState([]);
+
+  React.useEffect(() => {
+    if (searchTerm && searchTerm.length >= 3) {
+      setCombinedData(searchData);
+    } else {
+      setCombinedData(data);
+    }
+  }, [searchTerm, searchData, data]);
+
+
+  const sortedData = stableSort(combinedData, getComparator(sortDirection, sortBy))
+    .slice(page * limit, (page + 1) * limit);
 
   const handleDetails = (id) => {
     router.push(`/warrantyActivations/details/${id}`);
@@ -64,7 +121,7 @@ const WarrantyActivationList = (props) => {
       let { data } = response;
       setConfirmBoxView(false);
       ToastMessage(data)
-      props?.RefreshData(data);
+      RefreshData(data);
     } catch (err) {
       console.log(err);
     }
@@ -96,45 +153,50 @@ const WarrantyActivationList = (props) => {
         </div>
 
       </div>
-
-      {!data.length > 0 ? (
+      {loading===true > 0 ? (
         <div className='h-[400px] flex justify-center items-center'>
           <ReactLoader />
         </div>
       ) : (
         <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'userName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('userName')}
-                    >
-                      User Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'brandName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('brandName')}
-                    >
-                      Brand Name
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+          {!data.length > 0 ? (
+            <div className='h-[400px] flex justify-center items-center'>
+              Data not available !
+            </div>
+          ) : (
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === '_id'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('_id')}
+                        >
+                          ID
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'userName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('userName')}
+                        >
+                          User Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'brandName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('brandName')}
+                        >
+                          Brand Name
+                        </TableSortLabel>
+                      </TableCell>
+                      {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'productName'}
                       direction={sortDirection}
@@ -143,7 +205,7 @@ const WarrantyActivationList = (props) => {
                       Product Name
                     </TableSortLabel>
                   </TableCell> */}
-                  {/* <TableCell>
+                      {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'numberOfGenerate'}
                       direction={sortDirection}
@@ -152,75 +214,76 @@ const WarrantyActivationList = (props) => {
                       Number of QR
                     </TableSortLabel>
                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'warrantyInDays'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('warrantyInDays')}
-                    >
-                      Warranty Days
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'year'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('year')}
-                    >
-                      Batch No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      Created At
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sortedData?.map((row) => (
-                  <TableRow key={row.i} hover>
-                    <TableCell>{row.i}</TableCell>
-                    <TableCell>{row.userName}</TableCell>
-                    <TableCell>{row.brandName}</TableCell>
-                    {/* <TableCell>{row.productName}</TableCell> */}
-                    {/* <TableCell>{row.numberOfGenerate}</TableCell> */}
-                    <TableCell>{row.warrantyInDays}</TableCell>
-                    <TableCell>{row?.batchNo}</TableCell>
-                    <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
-                    <TableCell className='flex'>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'warrantyInDays'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('warrantyInDays')}
+                        >
+                          Warranty Days
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'year'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('year')}
+                        >
+                          Batch No.
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'createdAt'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('createdAt')}
+                        >
+                          Created At
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedData?.map((row) => (
+                      <TableRow key={row.i} hover>
+                        <TableCell>{row.i}</TableCell>
+                        <TableCell>{row.userName}</TableCell>
+                        <TableCell>{row.brandName}</TableCell>
+                        {/* <TableCell>{row.productName}</TableCell> */}
+                        {/* <TableCell>{row.numberOfGenerate}</TableCell> */}
+                        <TableCell>{row.warrantyInDays}</TableCell>
+                        <TableCell>{row?.batchNo}</TableCell>
+                        <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
+                        <TableCell className='flex'>
+                          <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                            <Visibility color='primary' />
+                          </IconButton>
+                          {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <Delete color='error' />
                       </IconButton> */}
 
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredData?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={totalPage * limit} // total items = totalPage * limit
+                rowsPerPage={limit}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </>
+          )}
+
         </>
       )}
-
-
 
     </div>
   );

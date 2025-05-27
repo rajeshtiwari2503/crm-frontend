@@ -276,7 +276,7 @@ const ProductWarrantyPage = (props) => {
                     {props?.user?.role === "ADMIN" &&
                       <TableCell>{row.isDeleted===true? "Yes":"No"}</TableCell>
                     }
-                    <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="flex">
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color="primary" />

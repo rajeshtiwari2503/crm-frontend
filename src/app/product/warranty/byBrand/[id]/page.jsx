@@ -233,7 +233,7 @@ const userBrand=brand?.find((f) => f?._id === params?.id)
                     <TableCell>{row.numberOfGenerate}</TableCell>
                     <TableCell>{row.warrantyInDays}</TableCell>
                     <TableCell>{row?.records[0]?.batchNo}</TableCell>
-                    <TableCell>{new Date(row.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="flex">
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color="primary" />

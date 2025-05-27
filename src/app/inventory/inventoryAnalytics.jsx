@@ -28,7 +28,7 @@ export default function AnalyticsDashboard() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center  h-[400px]">
+            <div className="flex justify-center items-center ">
                 <ReactLoader />
             </div>
         );

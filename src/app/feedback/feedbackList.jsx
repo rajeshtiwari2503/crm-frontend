@@ -37,7 +37,7 @@ const FeedbackList = (props) => {
   useEffect(() => {
     getAllComplaint()
 
-  }, [ ])
+  }, [])
 
   const getAllComplaint = async () => {
     try {
@@ -127,9 +127,9 @@ const FeedbackList = (props) => {
     }
   };
 
-  const handleMarkReviewed=async(id)=>{
+  const handleMarkReviewed = async (id) => {
     try {
-      let response = await http_request.patch(`/editFeedback/${id}`,{status:"REVIEWED"});
+      let response = await http_request.patch(`/editFeedback/${id}`, { status: "REVIEWED" });
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -201,7 +201,7 @@ const FeedbackList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('status')}
                     >
-                     Reply Status
+                      Reply Status
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -314,7 +314,7 @@ const FeedbackList = (props) => {
                 {sortedData?.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.ticketNumber}</TableCell>
+                    <TableCell>{row?.ticketNumber }</TableCell>
                     <TableCell>{row?.customerName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.status}</TableCell>
@@ -330,40 +330,70 @@ const FeedbackList = (props) => {
                     <TableCell>{row?.futureServiceInterest}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>
-                      {/* <IconButton aria-label="view"  >
-                        <Visibility color='primary' />
-                      </IconButton> */}
-                      {value?.user?.role === "USER" ?
-                        <>
-                          {/* <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
-                            <EditIcon color='success' />
-                          </IconButton> */}
-                          {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton> */}
-                        </>
-                        :value?.user?.role === "ADMIN" ?  
-                        <>
-                          <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
-                            <EditIcon color='success' />
-                          </IconButton>
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
-                          <div className='flex justify-between'>
-                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
-                        <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>
-                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Contact Customer</Button>
-                        </div>
-                        </>
-                        : value?.user?.role === "BRAND"   ?
-                        <div className='flex justify-between'>
-                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
-                        <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>
-                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Contact Customer</Button>
-                        </div>
-                          : ""}
+                      <div className='flex'>
+                        {value?.user?.role === "ADMIN" ?
+                          <>
 
+                            {/* <div className='flex justify-between'>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Reply</Button>
+                        <Button onClick={() => handleMarkReviewed(row._id)} className='ms-2 me-2 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Mark as Reviewed</Button>
+                        <Button onClick={() => handleReplyMessage(row._id)} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>Contact Customer</Button>
+                        </div> */}
+                            <div className="flex justify-between gap-2">
+                              <button
+                                onClick={() => handleReplyMessage(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Reply
+                              </button>
+
+                              <button
+                                onClick={() => handleMarkReviewed(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Mark as Reviewed
+                              </button>
+
+                              <button
+                                onClick={() => handleReplyMessage(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Contact Customer
+                              </button>
+                            </div>
+                            <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
+                              <EditIcon color='success' />
+                            </IconButton>
+                            <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                              <DeleteIcon color='error' />
+                            </IconButton>
+                          </>
+                          : value?.user?.role === "BRAND" ?
+                            <div className="flex justify-between gap-2">
+                              <button
+                                onClick={() => handleReplyMessage(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Reply
+                              </button>
+
+                              <button
+                                onClick={() => handleMarkReviewed(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Mark as Reviewed
+                              </button>
+
+                              <button
+                                onClick={() => handleReplyMessage(row._id)}
+                                className="flex bg-blue-600 hover:bg-blue-500 hover:text-black rounded-md p-2 cursor-pointer text-white justify-center items-center transition"
+                              >
+                                Contact Customer
+                              </button>
+                            </div>
+
+                            : ""}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

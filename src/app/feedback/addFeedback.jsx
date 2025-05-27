@@ -81,6 +81,7 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
             setValue('ticketNumber', complaints?._id);
             setValue('customerName', complaints?.fullName);
             setValue('complaintId', complaints?.complaintId || complaints?._id);
+            setValue('ticketNumber2', complaints?.complaintId || complaints?._id);
             setValue('brandId', complaints?.brandId);
             setValue('userId', complaints?.userId);
             setValue('technicianId', complaints?.technicianId);
@@ -117,13 +118,13 @@ const AddFeedback = ({ existingFeedback, RefreshData, onClose, complaints }) => 
                 : <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
                     <div className="  ">
                         <label className="block">
-                            Ticket Number:
+                            Complaint Id:
                             <input
                                 type="text"
                                 onChange={handleTicket}
                                 readOnly
                                 value={ticket}
-                                {...register("ticketNumber", { required: true })}
+                                {...register("ticketNumber2", { required: true })}
                                 className="mt-1 block w-full border border-gray-300 rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         </label>

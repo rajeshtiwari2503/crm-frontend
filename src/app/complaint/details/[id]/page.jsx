@@ -197,6 +197,8 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.emailAddress}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Customer Contact : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.phoneNumber}</div>
+                                   <div className='md:text-xl text-sm font-semibold'> Alternate Contact : </div>
+                                <div className='md:text-xl text-sm '>{complaint?.alternateContactInfo}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Service Address : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.serviceAddress}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Pincode : </div>
@@ -217,7 +219,7 @@ const ComplaintDetails = ({ params }) => {
                                       {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'>Created By  : </div>
-                                        <div className='md:text-xl text-sm'> {complaint?.createEmpName ||complaint?.empName} </div> 
+                                        <div className='md:text-xl flex justify-center items-center p-2 bg-[#f7bab7] text-center rounded-md font-bold text-sm'> {complaint?.createEmpName ||complaint?.empName} </div> 
                                     </> : ""
 
                                 }

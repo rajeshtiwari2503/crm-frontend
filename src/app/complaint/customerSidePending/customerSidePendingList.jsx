@@ -13,6 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
 import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
+import UpdateComplaintModal from '../UpdateComplaintModel';
 
 const CustomerPendingComplaintList = (props) => {
 
@@ -31,44 +32,44 @@ const CustomerPendingComplaintList = (props) => {
   //             : userData?.role === "DEALER" ? complaint?.filter((item) => item?.dealerId === userData._id)
   //               : []
 
-    const searchParams = useSearchParams();
-    const brandId = searchParams.get('brandId');
-    const role = searchParams.get('role');
-  
-    const effectiveRole = role || userData?.role;
-  
+  const searchParams = useSearchParams();
+  const brandId = searchParams.get('brandId');
+  const role = searchParams.get('role');
+
+  const effectiveRole = role || userData?.role;
+
   let data = [];
-    if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
-      // Admin overriding to view a brand's complaints
-      data = complaint?.filter(item => item?.brandId === brandId);
-    } else {
-      switch (effectiveRole) {
-        case "ADMIN":
-        case "EMPLOYEE":
-          data = complaint;
-          break;
-        case "BRAND":
-          data = complaint?.filter(item => item?.brandId === userData._id);
-          break;
-        case "BRAND EMPLOYEE":
-          data = complaint?.filter(item => item?.brandId === userData.brandId);
-          break;
-        case "USER":
-          data = complaint?.filter(item => item?.userId === userData._id);
-          break;
-        case "SERVICE":
-          data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
-          break;
-        case "TECHNICIAN":
-          data = complaint?.filter(item => item?.technicianId === userData._id);
-          break;
-        case "DEALER":
-          data = complaint?.filter(item => item?.dealerId === userData._id);
-          break;
-        default:
-          data = [];
-      }
+  if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
+    // Admin overriding to view a brand's complaints
+    data = complaint?.filter(item => item?.brandId === brandId);
+  } else {
+    switch (effectiveRole) {
+      case "ADMIN":
+      case "EMPLOYEE":
+        data = complaint;
+        break;
+      case "BRAND":
+        data = complaint?.filter(item => item?.brandId === userData._id);
+        break;
+      case "BRAND EMPLOYEE":
+        data = complaint?.filter(item => item?.brandId === userData.brandId);
+        break;
+      case "USER":
+        data = complaint?.filter(item => item?.userId === userData._id);
+        break;
+      case "SERVICE":
+        data = complaint?.filter(item => item?.assignServiceCenterId === userData._id);
+        break;
+      case "TECHNICIAN":
+        data = complaint?.filter(item => item?.technicianId === userData._id);
+        break;
+      case "DEALER":
+        data = complaint?.filter(item => item?.dealerId === userData._id);
+        break;
+      default:
+        data = [];
     }
+  }
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -77,8 +78,8 @@ const CustomerPendingComplaintList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
- const [searchTerm, setSearchTerm] = useState('');
- 
+  const [searchTerm, setSearchTerm] = useState('');
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -100,17 +101,17 @@ const CustomerPendingComplaintList = (props) => {
 
     // Handle the complaint ID format and general search terms
     return complaintId?.includes(search) ||
-    item?.complaintId?.toLowerCase().includes(search) ||
-    item?.productBrand?.toLowerCase().includes(search) ||
-    item?.productName?.toLowerCase().includes(search) ||
-    item?.subCategoryName?.toLowerCase().includes(search) ||
-    item?.categoryName?.toLowerCase().includes(search) ||
-    item?.fullName?.toLowerCase().includes(search) ||
-    item?.district?.toLowerCase().includes(search) ||
-    item?.state?.toLowerCase().includes(search) ||
-    item?.assignServiceCenter?.toLowerCase().includes(search) ||
-    item?.phoneNumber?.includes(searchTerm)||
-    item?.pincode?.includes(searchTerm);
+      item?.complaintId?.toLowerCase().includes(search) ||
+      item?.productBrand?.toLowerCase().includes(search) ||
+      item?.productName?.toLowerCase().includes(search) ||
+      item?.subCategoryName?.toLowerCase().includes(search) ||
+      item?.categoryName?.toLowerCase().includes(search) ||
+      item?.fullName?.toLowerCase().includes(search) ||
+      item?.district?.toLowerCase().includes(search) ||
+      item?.state?.toLowerCase().includes(search) ||
+      item?.assignServiceCenter?.toLowerCase().includes(search) ||
+      item?.phoneNumber?.includes(searchTerm) ||
+      item?.pincode?.includes(searchTerm);
   });
 
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -133,7 +134,7 @@ const CustomerPendingComplaintList = (props) => {
     try {
       // console.log(id);
       // console.log(data);
-      const sndStatusReq = userData?.role === "BRAND"?{ sndStatus: data.comments, brandId: userData._id, brandName: userData.brandName }:{ sndStatus: data.comments, empId: userData._id, empName: userData.name }
+      const sndStatusReq = userData?.role === "BRAND" ? { sndStatus: data.comments, brandId: userData._id, brandName: userData.brandName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name }
       const response = await http_request.patch(`/updateComplaintComments/${id}`,
         sndStatusReq
       );
@@ -148,7 +149,7 @@ const CustomerPendingComplaintList = (props) => {
   };
   const onSubmit = async (data) => {
     try {
-      const dataReq = userData?.role === "BRAND"?{ comments:data?.comments, brandId: userData._id, brandName: userData.brandName, }: { ...data, empId: userData._id, empName: userData.name, }
+      const dataReq = userData?.role === "BRAND" ? { comments: data?.comments, brandId: userData._id, brandName: userData.brandName, } : { ...data, empId: userData._id, empName: userData.name, }
       let response = await http_request.patch(`/editComplaint/${id}`, dataReq);
       if (data.comments) {
         updateComment({ comments: data?.comments })
@@ -203,54 +204,54 @@ const CustomerPendingComplaintList = (props) => {
           <div className=' ml-2 '>Add Complaint</div>
         </div>
         } */}
-         <div className="flex items-center mb-3">
-                  <Search className="text-gray-500" />
-                  <input
-                    type="text"
-                    placeholder="Search  "
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+        <div className="flex items-center mb-3">
+          <Search className="text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search  "
+            value={searchTerm}
+            onChange={handleSearch}
+            className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
       </div>
 
       {!dataSearch?.length > 0 ? <div className='h-[400px] flex justify-center items-center'>   Data not available !</div>
         :
         <div className='flex justify-center'>
           <div className=' md:w-full w-[260px]'>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === '_id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('_id')}
-                    >
-                      Complaint Id
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'fullName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('fullName')}
-                    >
-                      Customer Name
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === '_id'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('_id')}
+                      >
+                        ID
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === '_id'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('_id')}
+                      >
+                        Complaint Id
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'fullName'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('fullName')}
+                      >
+                        Customer Name
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                     <TableSortLabel
                                       active={sortBy === 'emailAddress'}
                                       direction={sortDirection}
@@ -259,16 +260,16 @@ const CustomerPendingComplaintList = (props) => {
                                       Customer Email
                                     </TableSortLabel>
                                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'district'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('district')}
-                    >
-                      City
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'district'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('district')}
+                      >
+                        City
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                     <TableSortLabel
                                       active={sortBy === 'serviceAddress'}
                                       direction={sortDirection}
@@ -277,7 +278,7 @@ const CustomerPendingComplaintList = (props) => {
                                       Service_Address
                                     </TableSortLabel>
                                   </TableCell> */}
-                  {/* <TableCell>
+                    {/* <TableCell>
                                     <TableSortLabel
                                       active={sortBy === 'city'}
                                       direction={sortDirection}
@@ -295,16 +296,16 @@ const CustomerPendingComplaintList = (props) => {
                                      State
                                     </TableSortLabel>
                                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'customerMobile'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('customerMobile')}
-                    >
-                      Contact No.
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'customerMobile'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('customerMobile')}
+                      >
+                        Contact No.
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                     <TableSortLabel
                                       active={sortBy === 'categoryName'}
                                       direction={sortDirection}
@@ -313,16 +314,16 @@ const CustomerPendingComplaintList = (props) => {
                                       Category Name
                                     </TableSortLabel>
                                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'productBrand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('productBrand')}
-                    >
-                      Product Brand
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'productBrand'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('productBrand')}
+                      >
+                        Product Brand
+                      </TableSortLabel>
+                    </TableCell>
+                    {/* <TableCell>
                                     <TableSortLabel
                                       active={sortBy === 'modelNo'}
                                       direction={sortDirection}
@@ -404,56 +405,56 @@ const CustomerPendingComplaintList = (props) => {
                                       Technician Comments
                                     </TableSortLabel>
                                   </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'assignServiceCenter'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('assignServiceCenter')}
-                    >
-                      Service Center
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      Created_At
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
-
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.complaintId}</TableCell>
-                    <TableCell>{row?.fullName}</TableCell>
-                    {/* <TableCell>{row?.emailAddress}</TableCell> */}
-                    <TableCell>{row?.district}</TableCell>
-                    {/* <TableCell>{row?.serviceAddress}</TableCell> */}
-                    {/* <TableCell>{row?.state}</TableCell> */}
-                    <TableCell>{row?.phoneNumber}</TableCell>
-                    {/* <TableCell>{row?.categoryName}</TableCell> */}
                     <TableCell>
-                      {String(row?.productBrand || "").length > 15
-                        ? String(row?.productBrand).substring(0, 15) + "..."
-                        : row?.productBrand}
+                      <TableSortLabel
+                        active={sortBy === 'assignServiceCenter'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('assignServiceCenter')}
+                      >
+                        Service Center
+                      </TableSortLabel>
                     </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'status'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('status')}
+                      >
+                        Status
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'createdAt'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('createdAt')}
+                      >
+                        Created_At
+                      </TableSortLabel>
+                    </TableCell>
+                    <TableCell>Actions</TableCell>
 
-                    {/* <TableCell>{row?.modelNo}</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {sortedData.map((row) => (
+                    <TableRow key={row?.i} hover>
+                      <TableCell>{row?.i}</TableCell>
+                      <TableCell>{row?.complaintId}</TableCell>
+                      <TableCell>{row?.fullName}</TableCell>
+                      {/* <TableCell>{row?.emailAddress}</TableCell> */}
+                      <TableCell>{row?.district}</TableCell>
+                      {/* <TableCell>{row?.serviceAddress}</TableCell> */}
+                      {/* <TableCell>{row?.state}</TableCell> */}
+                      <TableCell>{row?.phoneNumber}</TableCell>
+                      {/* <TableCell>{row?.categoryName}</TableCell> */}
+                      <TableCell>
+                        {String(row?.productBrand || "").length > 15
+                          ? String(row?.productBrand).substring(0, 15) + "..."
+                          : row?.productBrand}
+                      </TableCell>
+
+                      {/* <TableCell>{row?.modelNo}</TableCell>
                                     <TableCell>{row?.serialNo}</TableCell>
                 
                                     <TableCell>{row?.issueType}</TableCell>
@@ -463,58 +464,61 @@ const CustomerPendingComplaintList = (props) => {
                                     <TableCell>{row?.assignTechnician}</TableCell>
                                     <TableCell>{row?.technicianContact}</TableCell>
                                     <TableCell>{row?.comments}</TableCell> */}
-                    <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
-                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell className="p-0">
-                      <div className="flex items-center space-x-2">
-                        {userData?.role === "USER" ?
-                          <>
-                            <div
-                              // onClick={() => handleUpdateStatus(row)}
-                              className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
-                            >
-                              Give Feedback
-                            </div>
-                            {/* <div
+                      <TableCell>{row?.assignServiceCenter}</TableCell>
+                      <TableCell>{row?.status}</TableCell>
+                      <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                      <TableCell className="p-0">
+                        <div className="flex items-center space-x-2">
+                          {userData?.role === "USER" ?
+                            <>
+                              <div
+                                // onClick={() => handleUpdateStatus(row)}
+                                className="rounded-md p-2 cursor-pointer bg-[#2e7d32] text-black hover:bg-[#2e7d32] hover:text-white"
+                              >
+                                Give Feedback
+                              </div>
+                              {/* <div
                               onClick={() => handleUpdateStatus(row)}
                               className="rounded-md p-2 cursor-pointer bg-[#007BFF] text-black hover:bg-[#007BFF] hover:text-white"
                             >
                               Pay
                             </div> */}
-                          </>
-                          : ""}
-                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
-                          <div
-                            onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                          >
-                            <SystemSecurityUpdate />
-                          </div>
-                          : ""}
+                            </>
+                            : ""}
+                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
+                            <div
+                              onClick={() => handleUpdateStatus(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            >
+                              <SystemSecurityUpdate />
+                            </div>
+                            : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                              <UpdateComplaintModal complaintId={row?.id} />
+                              :
+                              ""}
 
-                           {userData?.role === "BRAND"   ?
+                          {userData?.role === "BRAND" ?
+                            <div
+                              onClick={() => handleUpdateStatus(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            >
+                              <SystemSecurityUpdate />
+                            </div>
+                            : ""}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div>
+                              <MatchedSparePartsModalButton complaintId={row?._id} />
+
+                            </div>
+                            : ""}
                           <div
-                            onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+
+                            onClick={() => handleDetails(row?._id)}
+                            className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
-                            <SystemSecurityUpdate />
+                            <Visibility />
                           </div>
-                          : ""}
-                            {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                                          <div>
-                                                            <MatchedSparePartsModalButton complaintId= {row?._id} />
-                          
-                                                          </div>
-                                                          : ""}
-                        <div
-                        
-                          onClick={() => handleDetails(row?._id)}
-                          className="rounded-md p-2  cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                        >
-                          <Visibility />
-                        </div>
-                        {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
+                          {/* <IconButton aria-label="print" onClick={() => handleDetails(row?._id)}>
                           <Print color="primary" />
                         </IconButton>
                         <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
@@ -523,26 +527,26 @@ const CustomerPendingComplaintList = (props) => {
                         <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
                           <DeleteIcon color="error" />
                         </IconButton> */}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={dataSearch?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={dataSearch?.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </div>
         </div>
-        </div>
-        }
+      }
       <Dialog open={status} onClose={handleUpdateClose}>
         <DialogTitle>  Update Status</DialogTitle>
         <IconButton
@@ -562,22 +566,22 @@ const CustomerPendingComplaintList = (props) => {
           {/* <AddFeedback  complaints={id}  onClose={handleUpdateClose}/> */}
 
           <form onSubmit={handleSubmit(onSubmit)}>
-          {userData?.role === "BRAND"? ""
-           :<div className='w-[350px] mb-5'>
-            
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                {...register('status')}
-                className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-              >
-                {/* <option value="NEW">New</option> */}
-                <option value="IN PROGRESS">In Progress</option>
-                <option value="PART PENDING">Awaiting Parts</option>
-                {/* <option value="ONHOLD">On Hold</option> */}
-                <option value="FINAL VERIFICATION">Completed</option>
-                <option value="CANCELED">Canceled</option>
-              </select>
-            </div>
+            {userData?.role === "BRAND" ? ""
+              : <div className='w-[350px] mb-5'>
+
+                <label className="block text-sm font-medium text-gray-700">Status</label>
+                <select
+                  {...register('status')}
+                  className="mt-1 p-3 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                >
+                  {/* <option value="NEW">New</option> */}
+                  <option value="IN PROGRESS">In Progress</option>
+                  <option value="PART PENDING">Awaiting Parts</option>
+                  {/* <option value="ONHOLD">On Hold</option> */}
+                  <option value="FINAL VERIFICATION">Completed</option>
+                  <option value="CANCELED">Canceled</option>
+                </select>
+              </div>
             }
             <div className='mb-6'>
               <label className="block text-gray-700">Comments/Notes</label>

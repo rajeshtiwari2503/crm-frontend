@@ -13,6 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import AddFeedback from '@/app/feedback/addFeedback';
 import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
+import UpdateComplaintModal from '../UpdateComplaintModel';
 
 const PartPendingComplaintList = (props) => {
 
@@ -523,14 +524,17 @@ const PartPendingComplaintList = (props) => {
                             </div> */}
                             </>
                             : ""}
-                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
-                            <div
-                              onClick={() => handleUpdateStatus(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <SystemSecurityUpdate />
-                            </div>
-                            : ""}
+                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"  ?
+                                                            <div
+                                                              onClick={() => handleUpdateStatus(row?._id)}
+                                                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                                            >
+                                                              <SystemSecurityUpdate />
+                                                            </div>
+                                                            : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                                            <UpdateComplaintModal complaintId={row?.id}      />
+                                                            :
+                                                            ""}
                           {userData?.role === "BRAND" ?
                             <div
                               onClick={() => handleUpdateStatus(row?._id)}

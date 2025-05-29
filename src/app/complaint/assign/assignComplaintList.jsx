@@ -609,7 +609,7 @@ const AssignComplaintList = (props) => {
                             // >
                             //   <SystemSecurityUpdate />
                             // </div>
-                            <UpdateComplaintModal complaintId={row?._id} />
+                            <UpdateComplaintModal complaintId={row?._id} RefreshData={  props?.RefreshData} />
                             : ""}
 
                           {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?

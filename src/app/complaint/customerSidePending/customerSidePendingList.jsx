@@ -493,7 +493,7 @@ const CustomerPendingComplaintList = (props) => {
                               <SystemSecurityUpdate />
                             </div>
                             : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                              <UpdateComplaintModal complaintId={row?.id} />
+                              <UpdateComplaintModal complaintId={row?._id}  RefreshData={  props?.RefreshData}/>
                               :
                               ""}
 

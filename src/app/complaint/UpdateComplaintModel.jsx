@@ -431,7 +431,7 @@ const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    // disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
+                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

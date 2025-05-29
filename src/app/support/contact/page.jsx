@@ -68,10 +68,11 @@ const Contact = () => {
                                                     Technical support
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    support@example.com
+                                                   hello@servsy.in
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    +1 234-567-89
+                                                   +91 9565892772
+
                                                 </p>
                                             </div>
                                         </div>
@@ -92,10 +93,11 @@ const Contact = () => {
                                                     Sales questions
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    sales@example.com
+                                                    hello@servsy.in
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    +1 234-567-89
+                                                  +91 9266985775
+
                                                 </p>
                                             </div>
                                         </div>
@@ -114,10 +116,11 @@ const Contact = () => {
                                             <div class="ml-6 grow">
                                                 <p class="mb-2 font-bold ">Press</p>
                                                 <p class="text-neutral-500 ">
-                                                    press@example.com
+                                                   hello@servsy.in
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    +1 234-567-89
+                                                  +91 9266985775
+
                                                 </p>
                                             </div>
                                         </div>
@@ -138,10 +141,10 @@ const Contact = () => {
                                                     Bug report
                                                 </p>
                                                 <p class="text-neutral-500 ">
-                                                    bugs@example.com
+                                                    hello@servsy.in
                                                 </p>
                                                 <p class="text-neutral-500">
-                                                    +1 234-567-89
+                                                    +91 9565892772
                                                 </p>
                                             </div>
                                         </div>

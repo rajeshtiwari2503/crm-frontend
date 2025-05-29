@@ -898,41 +898,9 @@ function Sidenav(props) {
             }
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER"
-              ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
-                  <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
-                    <Support style={{ color: pathname.startsWith("/support") ? '#007BFF' : '#64748b' }} />
-                  </ListItemIcon>
-                  <ListItemText primary={"Support"} />
-                  {isCollapseSupport ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-              </ListItem>
-              : ""}
-            <Collapse in={isCollapseSupport} timeout={"auto"} unmountOnExit >
-              <List className=' '>
-                {['Knowledge', "Contact", "Chat"].map((text, index) => (
-                  <ListItem key={text} disablePadding
-                    className={
-                      pathname === `/support/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
-                    }
-                    onClick={(event) => {
-                      router.push(`/support/${text.toLowerCase()}`)
-                    }}
-                  >
-                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
-                      <ListItemIcon
-                        className={
-                          pathname === "/support/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  '}
-                      >
-                        {text?.toLocaleLowerCase() === "chat" ? <LiveHelp style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : text?.toLocaleLowerCase() === "knowledge" ? <Info style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : <ContactPage style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} />}
-                      </ListItemIcon>
-                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+         
+
+
             {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE"
               ?
 
@@ -1141,7 +1109,41 @@ function Sidenav(props) {
               </ListItem>
               : ""}
 
-
+   {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER"|| value?.user?.role === "SERVICE"
+              ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <Support style={{ color: pathname.startsWith("/support") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Support"} />
+                  {isCollapseSupport ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              : ""}
+            <Collapse in={isCollapseSupport} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {['Knowledge', "Contact", "Chat"].map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={
+                      pathname === `/support/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => {
+                      router.push(`/support/${text.toLowerCase()}`)
+                    }}
+                  >
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                      <ListItemIcon
+                        className={
+                          pathname === "/support/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  '}
+                      >
+                        {text?.toLocaleLowerCase() === "chat" ? <LiveHelp style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : text?.toLocaleLowerCase() === "knowledge" ? <Info style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : <ContactPage style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} />}
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
 
 
           </div>

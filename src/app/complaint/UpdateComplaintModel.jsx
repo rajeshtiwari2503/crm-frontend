@@ -11,7 +11,7 @@ import { ToastMessage } from '../components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 
 
-const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
+const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
     const [open, setOpen] = useState(false);
 
     const [matchedSpareParts, setMatchedSpareParts] = useState([]);
@@ -164,6 +164,7 @@ const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
             // console.log(id);
             // console.log(data);
             const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+            userData?.role === "SERVICE" ? { status: data?.status, sndStatus: data.comments, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name }
             const response = await http_request.patch(`/updateComplaintComments/${id}`,
                 sndStatusReq
             );
@@ -188,33 +189,49 @@ const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
         }
 
         try {
-            const reqdata = userData?.role === "SERVICE" ? { status: data?.status, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName, comments: data?.comments, } : { status: data?.status, empId: userData._id, empName: userData.name, comments: data?.comments, }
-
             const formData = new FormData();
 
+            // Build reqdata cleanly
+            const reqdata = {
+                status: data?.status,
+                comments: data?.comments,
+                ...(userData?.role === "SERVICE"
+                    ? {
+                        serviceCenterId: userData._id,
+                        serviceCenterName: userData.serviceCenterName,
+                        serviceCenter: userData.serviceCenterName
+                    }
+                    : {
+                        empId: userData._id,
+                        empName: userData.name
+                    })
+            };
+
+            // Add conditional spare part data
+            if (data?.useSpareParts === "yes" && data?.status === "FINAL VERIFICATION") {
+                reqdata.spareParts = JSON.stringify(data.spareParts || []);
+                reqdata.brandId = data.brandId;
+                reqdata.brandName = data.brandName;
+            }
+
+            // ✅ Append only once per key
             Object.entries(reqdata).forEach(([key, value]) => {
                 if (value !== undefined && value !== null) {
-                    formData.append(key, value);
+                    // If it's spareParts, allow it to be appended even as a stringified array
+                    if (key === "spareParts") {
+                        formData.append("spareParts", value); // It's already a string
+                    } else {
+                        formData.set(key, value); // Ensures only one value per key
+                    }
                 }
             });
 
-            // Append image if present
-            if (data?.partPendingImage && data.partPendingImage[0]) {
+            // ✅ Append file separately
+            if (data?.partPendingImage?.[0]) {
                 formData.append("partPendingImage", data.partPendingImage[0]);
             }
 
-            // ✅ If useSpareParts is true and status is FINAL VERIFICATION, append order-related fields
-            if (data?.useSpareParts === "yes" && data?.status === "FINAL VERIFICATION") {
-                if (Array.isArray(data.spareParts) && data.spareParts.length > 0) {
-                    formData.append("spareParts", JSON.stringify(data.spareParts));
-                }
 
-                if (data.brandId) formData.append("brandId", data.brandId);
-                if (data.brandName) formData.append("brandName", data.brandName);
-                if (data.serviceCenterId) formData.append("serviceCenterId", data.serviceCenterId);
-                if (data.serviceCenter) formData.append("serviceCenter", data.serviceCenter);
-
-            }
             // for (let pair of formData.entries()) {
             //   console.log(`${pair[0]}:`, pair[1]);
             // }
@@ -431,7 +448,7 @@ const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
+                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified || loading===true }
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

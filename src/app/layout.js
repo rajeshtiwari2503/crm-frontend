@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className}>
         <UserProvider> {/* Wrap children inside UserProvider */}
-          <InternetStatusPopup />
+          {/* <InternetStatusPopup /> */}
           {children}
         </UserProvider>
       </body>

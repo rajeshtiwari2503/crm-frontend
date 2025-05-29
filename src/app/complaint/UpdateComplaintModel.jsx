@@ -78,10 +78,10 @@ const UpdateComplaintModal = ({ complaintId }) => {
 
 
     useEffect(() => {
-        if ( useSpareParts === "yes"&&complaintId)  {
+        if (useSpareParts === "yes" && complaintId) {
             fetchComplaintAndParts(complaintId);
         }
-    }, [useSpareParts === "yes",complaintId]);
+    }, [useSpareParts === "yes", complaintId]);
 
 
     const fetchComplaintAndParts = async (complaintId) => {
@@ -119,49 +119,106 @@ const UpdateComplaintModal = ({ complaintId }) => {
     // Watch selected spare parts to prevent duplicates
     const selectedSpareParts = watch("spareParts")?.map(part => part.sparePartId);
 
-    const onSubmit = async (data) => {
+    // const onSubmit = async (data) => {
 
-        if (userData?.role === "SERVICE" && data?.status === "FINAL VERIFICATION" && !otpVerified) {
+    //     if (userData?.role === "SERVICE" && data?.status === "FINAL VERIFICATION" && !otpVerified) {
+    //         alert("Please verify OTP before submitting.");
+    //         return;
+    //     }
+    //     try {
+    //         console.log("data", data);
+
+    //         const reqdata =   { status: data?.status, empId: userData._id, empName: userData.name || userData.name , comments: data?.comments, }
+
+    //         const formData = new FormData();
+    //         Object.entries(reqdata).forEach(([key, value]) => {
+    //             if (value !== undefined && value !== null) {
+    //                 formData.append(key, value);
+    //             }
+    //         });
+
+
+    //         if (data?.partPendingImage && data.partPendingImage[0]) {
+    //             formData.append("partPendingImage", data.partPendingImage[0]); // Assuming file input
+    //         }
+
+    //         let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData
+    //         );
+    //         let { data: responseData } = response;
+    //         if (data.comments) {
+    //             updateComment({ comments: data?.comments })
+    //         }
+    //         setStatus(false)
+    //         setAssignTech(false)
+    //         props?.RefreshData(responseData)
+    //         ToastMessage(responseData);
+    //         reset()
+    //     } catch (err) {
+    //         console.log(err);
+    //     }
+    // };
+
+
+    const onSubmit = async (data) => {
+        if (
+            userData?.role === "SERVICE" &&
+            data?.status === "FINAL VERIFICATION" 
+            &&    !otpVerified
+        ) {
             alert("Please verify OTP before submitting.");
             return;
         }
+
         try {
-            console.log("data", data);
+            const reqdata = userData?.role === "SERVICE"?{ status: data?.status, serviceCenterId: userData._id, serviceCenterName:   userData.serviceCenterName , comments: data?.comments, } :{ status: data?.status, empId: userData._id, empName: userData.name  , comments: data?.comments, }
 
-            // const reqdata = assignTech === true ? {
-            //     empId: userData._id, empName: userData.name,
-            //     comments: data?.comments,
-            //     status: data?.status, technicianId: data?.technicianId, assignTechnician: data?.assignTechnician,
-            //     assignTechnicianTime: data?.assignTechnicianTime, srerviceCenterResponseTime: data?.srerviceCenterResponseTime, technicianContact: data?.technicianContact
-            // } : { status: data?.status, empId: userData._id, empName: userData.name, comments: data?.comments, }
+            const formData = new FormData();
 
-            // const formData = new FormData();
-            // Object.entries(reqdata).forEach(([key, value]) => {
-            //     if (value !== undefined && value !== null) {
-            //         formData.append(key, value);
-            //     }
-            // });
+            Object.entries(reqdata).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    formData.append(key, value);
+                }
+            });
 
+            // Append image if present
+            if (data?.partPendingImage && data.partPendingImage[0]) {
+                formData.append("partPendingImage", data.partPendingImage[0]);
+            }
 
-            // if (data?.partPendingImage && data.partPendingImage[0]) {
-            //     formData.append("partPendingImage", data.partPendingImage[0]); // Assuming file input
-            // }
+            // ✅ If useSpareParts is true and status is FINAL VERIFICATION, append order-related fields
+            if (data?.useSpareParts === "yes" && data?.status === "FINAL VERIFICATION") {
+                if (Array.isArray(data.spareParts) && data.spareParts.length > 0) {
+                    formData.append("spareParts", JSON.stringify(data.spareParts));
+                }
 
-            // let response = await http_request.patch(`/updateComplaintWithImage/${id}`, formData
-            // );
-            // let { data: responseData } = response;
-            // if (data.comments) {
-            //     updateComment({ comments: data?.comments })
-            // }
-            // setStatus(false)
-            // setAssignTech(false)
-            // props?.RefreshData(responseData)
-            // ToastMessage(responseData);
-            // reset()
+                if (data.brandId) formData.append("brandId", data.brandId);
+                if (data.brandName) formData.append("brandName", data.brandName);
+                if (data.serviceCenterId) formData.append("serviceCenterId", data.serviceCenterId);
+                if (data.serviceCenter) formData.append("serviceCenter", data.serviceCenter);
+               
+            }
+// for (let pair of formData.entries()) {
+//   console.log(`${pair[0]}:`, pair[1]);
+// }
+
+            // API request
+            let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData);
+            let { data: responseData } = response;
+
+            if (data.comments) {
+                updateComment({ comments: data?.comments });
+            }
+
+            setStatus(false);
+            setAssignTech(false);
+            props?.RefreshData(responseData);
+            ToastMessage(responseData);
+            reset();
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     };
+
 
     return (
         <>
@@ -333,7 +390,7 @@ const UpdateComplaintModal = ({ complaintId }) => {
                                             <div className="mt-5 flex justify-between">
                                                 <button
                                                     type="button"
-                                                    onClick={() => sendOTP(id)}
+                                                    onClick={() => sendOTP(complaintId)}
                                                     className="bg-yellow-500 text-white px-4 py-1 rounded-md"
                                                 >
                                                     Resend OTP
@@ -357,7 +414,7 @@ const UpdateComplaintModal = ({ complaintId }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified} 
+                                    // disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

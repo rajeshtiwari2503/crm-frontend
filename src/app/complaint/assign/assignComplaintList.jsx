@@ -13,6 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import EditComplaintForm from './partPendingVideo';
 import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
+import UpdateComplaintModal from '../UpdateComplaintModel';
 
 const AssignComplaintList = (props) => {
 
@@ -602,12 +603,13 @@ const AssignComplaintList = (props) => {
                           Update Status
                         </div> */}
                           {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND EMPLOYEE" ?
-                            <div
-                              onClick={() => handleUpdateStatus(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <SystemSecurityUpdate />
-                            </div>
+                            // <div
+                            //   onClick={() => handleUpdateStatus(row?._id)}
+                            //   className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            // >
+                            //   <SystemSecurityUpdate />
+                            // </div>
+                            <UpdateComplaintModal complaintId={row?._id} />
                             : ""}
 
                           {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?

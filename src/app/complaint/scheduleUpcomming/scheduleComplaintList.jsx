@@ -12,6 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
+import UpdateComplaintModal from '../UpdateComplaintModel';
 
 
 const ScheduleComplaintList = (props) => {
@@ -44,7 +45,7 @@ const ScheduleComplaintList = (props) => {
 
   const effectiveRole = role || userData?.role;
 
-let filteredData = [];
+  let filteredData = [];
   if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
     // Admin overriding to view a brand's complaints
     filteredData = complaint?.filter(item => item?.brandId === brandId);
@@ -76,7 +77,7 @@ let filteredData = [];
         filteredData = [];
     }
   }
-  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue ,watch} = useForm();
+  const { register, handleSubmit, formState: { errors }, getValues, reset, setValue, watch } = useForm();
   const router = useRouter()
 
 
@@ -186,14 +187,14 @@ let filteredData = [];
     const serviceCenter1 = props?.serviceCenter?.filter((center) => {
       // Ensure pincodeSupported is an array and check for alternative field names
       const pincodeList = center?.pincodeSupported || center?.postalCode || [];
-  
+
       if (Array.isArray(pincodeList)) {
         return pincodeList.some((pincodeString) => {
           const supportedPincodes = pincodeString.split(',').map(p => p.trim());
           return supportedPincodes.includes(targetPincode);
         });
       }
-  
+
       return false;
     });
     setFilterSer(serviceCenter1)
@@ -290,7 +291,7 @@ let filteredData = [];
     }
   };
 
- const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [enteredOtp, setEnteredOtp] = useState("");
   const [generatedOtp, setGeneratedOtp] = useState("");
@@ -668,14 +669,17 @@ let filteredData = [];
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
                       <div className="flex items-center space-x-2">
-                        {userData?.role === "ADMIN" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
                           <div
                             onClick={() => handleUpdateStatus(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                           >
                             <SystemSecurityUpdate />
                           </div>
-                          : ""}
+                          : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                            <UpdateComplaintModal complaintId={row?.id} />
+                            :
+                            ""}
 
                         {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                           <div
@@ -710,12 +714,12 @@ let filteredData = [];
                           <Visibility color="primary" />
                         
                         </IconButton> */}
-                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                                        <div>
-                                                          <MatchedSparePartsModalButton complaintId= {row?._id} />
-                        
-                                                        </div>
-                                                        : ""}
+                        {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                          <div>
+                            <MatchedSparePartsModalButton complaintId={row?._id} />
+
+                          </div>
+                          : ""}
                         <div
                           onClick={() => handleDetails(row?._id)}
                           className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -983,7 +987,7 @@ let filteredData = [];
               ></textarea>
               {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
             </div>
-              {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
+            {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
               <div className="mb-4">
                 {!otpSent ? (
                   <button type="button" onClick={() => sendOTP(id)} className="bg-blue-500 text-white px-4 py-2 rounded-md">

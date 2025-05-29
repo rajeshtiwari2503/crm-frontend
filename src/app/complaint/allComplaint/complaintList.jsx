@@ -13,6 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import EditComplaintForm from '../assign/partPendingVideo';
 import MatchedSparePartsModal from '@/app/components/MatchSparepartsModal';
+import UpdateComplaintModal from '../UpdateComplaintModel';
 
 
 const ComplaintList = (props) => {
@@ -739,14 +740,17 @@ const ComplaintList = (props) => {
                             <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                             <TableCell className="p-0">
                               <div className="flex items-center space-x-2">
-                                {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"  ?
                                   <div
                                     onClick={() => handleUpdateStatus(row?._id)}
                                     className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                                   >
                                     <SystemSecurityUpdate />
                                   </div>
-                                  : ""}
+                                  : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                  <UpdateComplaintModal complaintId={row?.id}      />
+                                  :
+                                  ""}
 
                                 {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div

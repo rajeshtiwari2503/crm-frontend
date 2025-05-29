@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { UserProvider } from './components/UserContext';
 import Script from 'next/script';
+import InternetStatusPopup from './components/common/NoInternetPage';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={inter.className}>
         <UserProvider> {/* Wrap children inside UserProvider */}
+          {/* <InternetStatusPopup /> */}
           {children}
         </UserProvider>
       </body>

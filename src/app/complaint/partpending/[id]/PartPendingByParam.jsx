@@ -11,6 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '../../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import UpdateComplaintModal from '../../UpdateComplaintModel';
 
 const PartPendingParamComplaintList = (props) => {
 
@@ -513,14 +514,17 @@ const PartPendingParamComplaintList = (props) => {
                         >
                           Update Status
                         </div> */}
-                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" && userData?.serviceCenterType === "Independent" || userData?.role === "TECHNICIAN" ?
-                          <div
-                            onClick={() => handleUpdateStatus(row?._id)}
-                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                          >
-                            <SystemSecurityUpdate />
-                          </div>
-                          : ""}
+                        {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"  ?
+                                                          <div
+                                                            onClick={() => handleUpdateStatus(row?._id)}
+                                                            className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                                          >
+                                                            <SystemSecurityUpdate />
+                                                          </div>
+                                                          : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                                                          <UpdateComplaintModal complaintId={row?.id}      />
+                                                          :
+                                                          ""}
 
                         {userData?.role === "SERVICE" ?
                           <div

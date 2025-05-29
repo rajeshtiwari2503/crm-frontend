@@ -7,9 +7,11 @@ import { Close, SystemSecurityUpdate } from '@mui/icons-material';
 import http_request from '../../../http-request';
 import { useUser } from '../components/UserContext';
 import { ReactLoader } from '../components/common/Loading';
+import { ToastMessage } from '../components/common/Toastify';
+import { Toaster } from 'react-hot-toast';
 
 
-const UpdateComplaintModal = ({ complaintId }) => {
+const UpdateComplaintModal = ({ complaintId,RefreshData }) => {
     const [open, setOpen] = useState(false);
 
     const [matchedSpareParts, setMatchedSpareParts] = useState([]);
@@ -157,20 +159,36 @@ const UpdateComplaintModal = ({ complaintId }) => {
     //         console.log(err);
     //     }
     // };
-
+    const updateComment = async (data) => {
+        try {
+            // console.log(id);
+            // console.log(data);
+            const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+            const response = await http_request.patch(`/updateComplaintComments/${id}`,
+                sndStatusReq
+            );
+            let { data: responseData } = response;
+            // setUpdateCommm(false)
+            RefreshData(responseData)
+            ToastMessage(responseData);
+            reset()
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const onSubmit = async (data) => {
         if (
             userData?.role === "SERVICE" &&
-            data?.status === "FINAL VERIFICATION" 
-            &&    !otpVerified
+            data?.status === "FINAL VERIFICATION"
+            && !otpVerified
         ) {
             alert("Please verify OTP before submitting.");
             return;
         }
 
         try {
-            const reqdata = userData?.role === "SERVICE"?{ status: data?.status, serviceCenterId: userData._id, serviceCenterName:   userData.serviceCenterName , comments: data?.comments, } :{ status: data?.status, empId: userData._id, empName: userData.name  , comments: data?.comments, }
+            const reqdata = userData?.role === "SERVICE" ? { status: data?.status, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName, comments: data?.comments, } : { status: data?.status, empId: userData._id, empName: userData.name, comments: data?.comments, }
 
             const formData = new FormData();
 
@@ -195,11 +213,11 @@ const UpdateComplaintModal = ({ complaintId }) => {
                 if (data.brandName) formData.append("brandName", data.brandName);
                 if (data.serviceCenterId) formData.append("serviceCenterId", data.serviceCenterId);
                 if (data.serviceCenter) formData.append("serviceCenter", data.serviceCenter);
-               
+
             }
-// for (let pair of formData.entries()) {
-//   console.log(`${pair[0]}:`, pair[1]);
-// }
+            // for (let pair of formData.entries()) {
+            //   console.log(`${pair[0]}:`, pair[1]);
+            // }
 
             // API request
             let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData);
@@ -209,9 +227,8 @@ const UpdateComplaintModal = ({ complaintId }) => {
                 updateComment({ comments: data?.comments });
             }
 
-            setStatus(false);
-            setAssignTech(false);
-            props?.RefreshData(responseData);
+
+            RefreshData(responseData);
             ToastMessage(responseData);
             reset();
         } catch (err) {
@@ -222,7 +239,7 @@ const UpdateComplaintModal = ({ complaintId }) => {
 
     return (
         <>
-
+            <Toaster />
             <div
                 onClick={handleOpen}
                 className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -414,7 +431,7 @@ const UpdateComplaintModal = ({ complaintId }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    // disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
+                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified}
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

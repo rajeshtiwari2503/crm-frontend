@@ -67,11 +67,15 @@ const WarrantyActivationList = ({ data,
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setLimit(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
+  // const handleChangeRowsPerPage = (event) => {
+  //   setLimit(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
+const handleChangeRowsPerPage = (event) => {
+  const newLimit = parseInt(event.target.value, 10);
+  setLimit(newLimit);
+  setPage(0); // Reset to first page when limit changes
+};
 
   const handleSort = (property) => {
     const isAsc = sortBy === property && sortDirection === 'asc';
@@ -110,7 +114,8 @@ const WarrantyActivationList = ({ data,
    const trueData =combinedData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const sortedData = stableSort(trueData, getComparator(sortDirection, sortBy))
-    .slice(page * limit, (page + 1) * limit);
+    // .slice(page * limit, (page + 1) * limit);
+.slice( );
 
   const handleDetails = (id) => {
     router.push(`/warrantyActivations/details/${id}`);

@@ -20,7 +20,7 @@ const WarrantyActivation = (props) => {
   // Pagination state
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10); // You can make this dynamic
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -36,11 +36,11 @@ const WarrantyActivation = (props) => {
     setLoading(true); // Start loading
     try {
       const response = await http_request.get(
-        `/getAllActivationWarrantyWithPage?page=${pageNum}&limit=${limit}`
+        `/getAllActivationWarrantyWithPage?page=${pageNum + 1}&limit=${limit}`
       );
       const { data } = response;
       setWarrantyActivation(data?.data || []);
-      setTotalPages(data?.totalPages || 1);
+      setTotalPages(data?.totalPages || 0);
     } catch (err) {
       console.log(err);
     } finally {

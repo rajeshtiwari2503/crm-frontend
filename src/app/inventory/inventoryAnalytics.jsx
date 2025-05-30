@@ -147,21 +147,21 @@ export default function AnalyticsDashboard() {
                                     </h2>
 
                                     <div className="mt-2 space-y-1 text-sm">
-                                        <div className="flex justify-between">
+                                        <div className="flex  justify-between">
                                             <span>Total Orders:</span>
                                             <span className="font-medium">{center.totalOrders}</span>
                                         </div>
-                                        <div className="flex justify-between text-green-600">
-                                            <span>Approved:</span>
-                                            <span className="font-medium">{center.approvedOrderCount}</span>
+                                        <div className="flex justify-between ">
+                                            <span className="flex justify-between text-green-600">Approved:</span>
+                                            <span className="font-bold">{center.approvedOrderCount}</span>
                                         </div>
-                                        <div className="flex justify-between text-yellow-600">
-                                            <span>Not Approved:</span>
-                                            <span className="font-bold">{center.notApprovedOrderCount}</span>
+                                        <div className="flex justify-between ">
+                                            <span className='text-yellow-600'>Not Approved:</span>
+                                            <span className=" font-bold">{center.notApprovedOrderCount}</span>
                                         </div>
                                         <div className="flex justify-between text-red-600">
                                             <span>Canceled:</span>
-                                            <span className="font-medium">{center.canceledOrderCount}</span>
+                                            <span className="font-bold">{center.canceledOrderCount}</span>
                                         </div>
                                         <div className="flex justify-between">
                                             <span>Order Value:</span>

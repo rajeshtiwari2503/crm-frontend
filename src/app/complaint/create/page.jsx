@@ -297,10 +297,10 @@ const AddComplaint = () => {
     const storedValue = localStorage.getItem("user");
 
     if (storedValue) {
-       const userInfo =  JSON.parse(storedValue)
-      setValue('createEmpName', userInfo?.user?.name ||  userInfo?.user?.brandName);
+      const userInfo = JSON.parse(storedValue)
+      setValue('createEmpName', userInfo?.user?.name || userInfo?.user?.brandName);
       setValue('createEmpId', userInfo?.user?._id);
-// console.log( userInfo?.user?.name,userInfo?.user?._id);
+      // console.log( userInfo?.user?.name,userInfo?.user?._id);
 
       setLocalValue(JSON.parse(storedValue));
     }
@@ -1139,8 +1139,62 @@ const AddComplaint = () => {
                       />
                       {errors.serviceAddress && <p className="text-red-500 text-sm mt-1">{errors.serviceAddress.message}</p>}
                     </div>
+                    <div>
+                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                        In  Warranty
+                      </label>
+                      <div className="flex gap-4 mt-2">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="true"
+                            {...register('warrantyStatus')}
+                            defaultChecked
+                            className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          />
+                          Yes
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="false"
+                            {...register('warrantyStatus')}
+                            className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          />
+                          No
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Stock Complaint - Radio Buttons */}
+                    <div>
+                      <label className="block text-sm font-medium leading-6 text-gray-900">
+                        Stock Complaint
+                      </label>
+                      <div className="flex gap-4 mt-2">
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="true"
+                            {...register('stockComplaint')}
+                            className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          />
+                          Yes
+                        </label>
+                        <label className="flex items-center gap-2">
+                          <input
+                            type="radio"
+                            value="false"
+                            {...register('stockComplaint')}
+                            defaultChecked
+                            className="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                          />
+                          No
+                        </label>
+                      </div>
+                    </div>
                   </form>
-                  <div className='mt-5  '>
+                  <div className='mt-5  flex justify-center '>
                     <button
                       type="button"
                       disabled={loading}

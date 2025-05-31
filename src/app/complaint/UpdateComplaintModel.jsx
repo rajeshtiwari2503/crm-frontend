@@ -181,6 +181,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
     };
 
     const onSubmit = async (data) => {
+        setLoading(true);
         if (
             // userData?.role === "SERVICE" &&
             data?.status === "FINAL VERIFICATION"
@@ -191,6 +192,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
         }
 
         try {
+            setLoading(true);
             const formData = new FormData();
 
             // Build reqdata cleanly
@@ -201,7 +203,8 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                     ? {
                         serviceCenterId: userData._id,
                         serviceCenterName: userData.serviceCenterName,
-                        serviceCenter: userData.serviceCenterName
+                        serviceCenter: userData.serviceCenterName,
+                         useSpareParts: data?.useSpareParts
                     }
                     :
                     data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ? {
@@ -209,11 +212,13 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                         empName: userData.name,
                         serviceCenterId: data.serviceCenterId,
                         serviceCenterName: data.serviceCenter,
-                        serviceCenter: data.serviceCenter
+                        serviceCenter: data.serviceCenter,
+                        useSpareParts: data?.useSpareParts
                     }
                         : {
                             empId: userData._id,
                             empName: userData.name,
+                            useSpareParts: data?.useSpareParts,
                             ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
                         }
 
@@ -225,6 +230,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                 reqdata.spareParts = JSON.stringify(data.spareParts || []);
                 reqdata.brandId = data.brandId;
                 reqdata.brandName = data.brandName;
+                 reqdata.data?.useSpareParts;
             }
 
             // ✅ Append only once per key
@@ -266,6 +272,9 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             reset();
         } catch (err) {
             console.error(err);
+
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -465,7 +474,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    disabled={compStatus === "FINAL VERIFICATION" && !otpVerified || loading === true}
+                                    disabled={(compStatus === "FINAL VERIFICATION" && !otpVerified) || loading}
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

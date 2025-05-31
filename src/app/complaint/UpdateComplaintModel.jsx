@@ -204,7 +204,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                         serviceCenterId: userData._id,
                         serviceCenterName: userData.serviceCenterName,
                         serviceCenter: userData.serviceCenterName,
-                         useSpareParts: data?.useSpareParts
+                        useSpareParts: data?.useSpareParts
                     }
                     :
                     data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ? {
@@ -230,7 +230,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                 reqdata.spareParts = JSON.stringify(data.spareParts || []);
                 reqdata.brandId = data.brandId;
                 reqdata.brandName = data.brandName;
-                 reqdata.data?.useSpareParts;
+                reqdata.data?.useSpareParts;
             }
 
             // ✅ Append only once per key
@@ -400,7 +400,13 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                                                         {/* Quantity */}
                                                         <input
-                                                            {...register(`spareParts.${index}.quantity`, { required: "Enter quantity" })}
+                                                            {...register(`spareParts.${index}.quantity`, {
+                                                                required: "Enter quantity",
+                                                                min: {
+                                                                    value: 1,
+                                                                    message: "Quantity must be at least 1",
+                                                                },
+                                                            })}
                                                             placeholder="Quantity"
                                                             type="number"
                                                             className="w-1/3 p-2 border rounded"

@@ -80,10 +80,10 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
 
     useEffect(() => {
-        if ( complaintId) {
+        if (complaintId) {
             fetchComplaintAndParts(complaintId);
         }
-    }, [  complaintId]);
+    }, [complaintId]);
 
 
     const fetchComplaintAndParts = async (complaintId) => {
@@ -165,13 +165,13 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             // console.log(data);
             const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
             userData?.role === "SERVICE" ? { status: data?.status, sndStatus: data.comments, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name }
-        //    console.log("sndStatusReq",sndStatusReq);
-           
+            //    console.log("sndStatusReq",sndStatusReq);
+
             const response = await http_request.patch(`/updateComplaintComments/${id}`,
                 sndStatusReq
             );
             let { data: responseData } = response;
-           
+
             RefreshData(responseData)
             ToastMessage(responseData);
             reset()
@@ -189,7 +189,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             alert("Please verify OTP before submitting.");
             return;
         }
- 
+
         try {
             const formData = new FormData();
 
@@ -203,19 +203,23 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                         serviceCenterName: userData.serviceCenterName,
                         serviceCenter: userData.serviceCenterName
                     }
-                    : 
-                     data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ?{
+                    :
+                    data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ? {
                         empId: userData._id,
                         empName: userData.name,
-                          serviceCenterId: data.serviceCenterId,
+                        serviceCenterId: data.serviceCenterId,
                         serviceCenterName: data.serviceCenter,
                         serviceCenter: data.serviceCenter
                     }
-                    : {  empId: userData._id,
-                        empName: userData.name}
+                        : {
+                            empId: userData._id,
+                            empName: userData.name,
+                            ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
+                        }
+
                 )
             };
-// console.log("reqdata",reqdata);
+            // console.log("reqdata",reqdata);
             // Add conditional spare part data
             if (data?.useSpareParts === "yes" && data?.status === "FINAL VERIFICATION") {
                 reqdata.spareParts = JSON.stringify(data.spareParts || []);
@@ -242,7 +246,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
 
             for (let pair of formData.entries()) {
-              console.log(`${pair[0]}:`, pair[1]);
+                console.log(`${pair[0]}:`, pair[1]);
             }
 
             // API request
@@ -294,7 +298,8 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                                     <option value="IN PROGRESS">In Progress</option>
                                     <option value="PART PENDING">Awaiting Parts</option>
-
+                                    {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
+                                        : ""}
                                     <option value="FINAL VERIFICATION">Completed</option>
                                     <option value="CANCELED">Canceled</option>
                                 </select>
@@ -324,7 +329,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                             </div>
 
-                            {  compStatus === "FINAL VERIFICATION" && (
+                            {compStatus === "FINAL VERIFICATION" && (
                                 <div className="mb-4">
 
 
@@ -460,7 +465,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    disabled={  compStatus === "FINAL VERIFICATION" && !otpVerified || loading===true }
+                                    disabled={compStatus === "FINAL VERIFICATION" && !otpVerified || loading === true}
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

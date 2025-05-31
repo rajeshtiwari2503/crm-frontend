@@ -209,6 +209,13 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.state}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
+                                  {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'>Purchase Date  : </div>
+                                        <div className='md:text-xl text-sm  '>{new Date(complaint?.purchaseDate).toLocaleString()}   </div> 
+                                    </> : ""
+
+                                }
                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "USER" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'> OTP  : </div>
@@ -223,6 +230,14 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
+                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                    <>
+                                        <div className='md:text-xl text-sm font-semibold'>Cancel Comp  : </div>
+                                        <div className='md:text-xl text-sm  '>{complaint?.cancelComp}   </div> 
+                                    </> : ""
+
+                                }
+                                 
                                    {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'> Emp Id  : </div>

@@ -7,6 +7,7 @@ import Sidenav from '@/app/components/Sidenav';
 import ComplaintList from './complaintList';
 import { useUser } from '@/app/components/UserContext';
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useSearchParams } from 'next/navigation';
 // import SendOtp from './sendOtp';
 
 
@@ -49,71 +50,101 @@ const Service = ({ dashboard }) => {
   // }
 
 
-  // const getAllComplaint = async () => {
-  //   try {
-  //     if (!user?.user?.role || !user?.user?._id) return; // Ensure role & ID exist
+  //  const getAllComplaint = async () => {
+  //     try {
+  //       setComplaintLoading(true);
+  //       if (!user?.user?.role || !user?.user?._id) return;
 
-  //     let role = user.user.role;
-  //     let id = user.user._id;
+  //       let role = user.user.role;
+  //       let id = user.user._id;
 
-  //     // Construct query parameters based on role
-  //     let queryParams = new URLSearchParams();
+  //       let queryParams = new URLSearchParams();
+  //       queryParams.append("page", page);
+  //       queryParams.append("limit", limit);
 
-  //     if (role === "BRAND") queryParams.append("brandId", id);
-  //     else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
-  //     else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
-  //     else if (role === "CUSTOMER") queryParams.append("userId", id);
-  //     else if (role === "DEALER") queryParams.append("dealerId", id);
+  //       if (role === "BRAND") queryParams.append("brandId", id);
+  //       else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
+  //       else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
+  //       else if (role === "CUSTOMER") queryParams.append("userId", id);
+  //       else if (role === "DEALER") queryParams.append("dealerId", id);
 
-  //     let response = role==="ADMIN"||role==="EMPLOYEE"  ?await http_request.get("/getAllComplaint"):await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
-  //     let { data } = response;
+  //       let response =
+  //         role === "ADMIN" || role === "EMPLOYEE"
+  //           ? await http_request.get(`/getAllComplaint?page=${page}&limit=${limit}`)
+  //           : await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
 
-  //     setTotalPages(data?.totalComplaints || 0);
-  //     setComplaint(data?.data);
-  //   } catch (err) {
-  //     console.error("Error fetching complaints:", err);
-  //   }
-  // };
+  //       let { data } = response;
+  //       // console.log("data",data?.data);
+
+  //       setTotalPages(Math.ceil((data?.totalComplaints || 0)));
+  //       setComplaint(data?.data);
+  //     } catch (err) {
+  //       setComplaintLoading(false);
+  //       console.error("Error fetching complaints:", err);
+  //     }
+  //     finally {
+  //       setComplaintLoading(false);
+  //     }
+  //   };
+
+  const searchParams = useSearchParams(); // ✅ use the hook at the top level of component
 
 
 
   const getAllComplaint = async () => {
     try {
       setComplaintLoading(true);
-      if (!user?.user?.role || !user?.user?._id) return;
 
-      let role = user.user.role;
-      let id = user.user._id;
+      const roleFromURL = searchParams.get("role");
+      const idFromURL =
+        searchParams.get("brandId") ||
+        searchParams.get("serviceCenterId") ||
+        searchParams.get("technicianId") ||
+        searchParams.get("userId") ||
+        searchParams.get("dealerId");
+
+      const effectiveRole = roleFromURL || user?.user?.role;
+      const effectiveId = idFromURL || user?.user?._id;
+
+      if (!effectiveRole || !effectiveId) return;
 
       let queryParams = new URLSearchParams();
       queryParams.append("page", page);
       queryParams.append("limit", limit);
 
-      if (role === "BRAND") queryParams.append("brandId", id);
-      else if (role === "SERVICE") queryParams.append("serviceCenterId", id);
-      else if (role === "TECHNICIAN") queryParams.append("technicianId", id);
-      else if (role === "CUSTOMER") queryParams.append("userId", id);
-      else if (role === "DEALER") queryParams.append("dealerId", id);
+      switch (effectiveRole) {
+        case "BRAND":
+          queryParams.append("brandId", effectiveId);
+          break;
+        case "SERVICE":
+          queryParams.append("serviceCenterId", effectiveId);
+          break;
+        case "TECHNICIAN":
+          queryParams.append("technicianId", effectiveId);
+          break;
+        case "CUSTOMER":
+          queryParams.append("userId", effectiveId);
+          break;
+        case "DEALER":
+          queryParams.append("dealerId", effectiveId);
+          break;
+      }
 
-      let response =
-        role === "ADMIN" || role === "EMPLOYEE"
+      // console.log("queryParams", queryParams.toString());
+
+      const response =
+        effectiveRole === "ADMIN" || effectiveRole === "EMPLOYEE"
           ? await http_request.get(`/getAllComplaint?page=${page}&limit=${limit}`)
           : await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
-
       let { data } = response;
-      // console.log("data",data?.data);
-
       setTotalPages(Math.ceil((data?.totalComplaints || 0)));
       setComplaint(data?.data);
-    } catch (err) {
-      setComplaintLoading(false);
-      console.error("Error fetching complaints:", err);
-    }
-    finally {
+    } catch (error) {
+      console.error("Error fetching complaints", error);
+    } finally {
       setComplaintLoading(false);
     }
   };
-
 
 
 

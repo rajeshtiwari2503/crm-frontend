@@ -80,10 +80,10 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
 
     useEffect(() => {
-        if (useSpareParts === "yes" && complaintId) {
+        if ( complaintId) {
             fetchComplaintAndParts(complaintId);
         }
-    }, [useSpareParts === "yes", complaintId]);
+    }, [  complaintId]);
 
 
     const fetchComplaintAndParts = async (complaintId) => {
@@ -165,11 +165,13 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             // console.log(data);
             const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
             userData?.role === "SERVICE" ? { status: data?.status, sndStatus: data.comments, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+        //    console.log("sndStatusReq",sndStatusReq);
+           
             const response = await http_request.patch(`/updateComplaintComments/${id}`,
                 sndStatusReq
             );
             let { data: responseData } = response;
-            // setUpdateCommm(false)
+           
             RefreshData(responseData)
             ToastMessage(responseData);
             reset()
@@ -180,14 +182,14 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
     const onSubmit = async (data) => {
         if (
-            userData?.role === "SERVICE" &&
+            // userData?.role === "SERVICE" &&
             data?.status === "FINAL VERIFICATION"
             && !otpVerified
         ) {
             alert("Please verify OTP before submitting.");
             return;
         }
-
+ 
         try {
             const formData = new FormData();
 
@@ -201,12 +203,19 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                         serviceCenterName: userData.serviceCenterName,
                         serviceCenter: userData.serviceCenterName
                     }
-                    : {
+                    : 
+                     data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ?{
                         empId: userData._id,
-                        empName: userData.name
-                    })
+                        empName: userData.name,
+                          serviceCenterId: data.serviceCenterId,
+                        serviceCenterName: data.serviceCenter,
+                        serviceCenter: data.serviceCenter
+                    }
+                    : {  empId: userData._id,
+                        empName: userData.name}
+                )
             };
-
+// console.log("reqdata",reqdata);
             // Add conditional spare part data
             if (data?.useSpareParts === "yes" && data?.status === "FINAL VERIFICATION") {
                 reqdata.spareParts = JSON.stringify(data.spareParts || []);
@@ -232,11 +241,14 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             }
 
 
-            // for (let pair of formData.entries()) {
-            //   console.log(`${pair[0]}:`, pair[1]);
-            // }
+            for (let pair of formData.entries()) {
+              console.log(`${pair[0]}:`, pair[1]);
+            }
 
             // API request
+
+
+
             let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData);
             let { data: responseData } = response;
 
@@ -312,7 +324,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                             </div>
 
-                            {userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && (
+                            {  compStatus === "FINAL VERIFICATION" && (
                                 <div className="mb-4">
 
 
@@ -448,7 +460,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                             )}
                             <div>
                                 <button type="submit"
-                                    disabled={userData?.role === "SERVICE" && compStatus === "FINAL VERIFICATION" && !otpVerified || loading===true }
+                                    disabled={  compStatus === "FINAL VERIFICATION" && !otpVerified || loading===true }
                                     className="rounded-lg p-2 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                                     Submit
                                 </button>

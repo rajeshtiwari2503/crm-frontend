@@ -71,30 +71,63 @@ const employeeDetails = ({ params }) => {
                             <div className='text-lg font-medium'>{employee?.salary}</div>
                         </div>
                     </div>
-                    <div className='text-1xl font-semibold'>State Zones:</div>
-                    <div className='text-lg font-medium'>
-                        {employee?.stateZone?.length > 0 ? (
-                            employee.stateZone.map((state, index) => (
-                                <div key={index} className="text-gray-700">
-                                    {state}
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-gray-500">No state zones assigned</div>
-                        )}
-                    </div>
-                    <div className='text-1xl font-semibold'>Brands:</div>
-                    <div className='text-lg font-medium'>
-                        {employee?.brand?.length > 0 ? (
-                            employee.brand.map((b, index) => (
-                                <div key={index} className="text-gray-700">
-                                    {b.label} {/* ✅ Now shows brand name */}
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-gray-500"> Brand not assigned</div>
-                        )}
-                    </div>
+                    <div className="m-5 grid md:grid-cols-4 sm:grid-cols-2 xs:grid-cols-1 mt-5 gap-4" >
+                        <div className='text-1xl font-semibold'>State Zones:</div>
+                        <div className='text-lg font-medium'>
+                            {employee?.stateZone?.length > 0 ? (
+                                employee.stateZone.map((state, index) => (
+                                    <div key={index} className="text-gray-700">
+                                        {state}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-gray-500">No state zones assigned</div>
+                            )}
+                        </div>
+                        <div className='text-1xl font-semibold'>Brands:</div>
+                        <div className='text-lg font-medium'>
+                            {employee?.brand?.length > 0 ? (
+                                employee.brand.map((b, index) => (
+                                    <div key={index} className="text-gray-700">
+                                        {b.label} {/* ✅ Now shows brand name */}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-gray-500"> Brand not assigned</div>
+                            )}
+                        </div>
+                        
+                            <div className="text-1xl font-semibold">Team Name:</div>
+                            <div className="text-lg font-medium">{employee?.teamName || "N/A"}</div>
+
+                            <div className="text-1xl font-semibold">Product Categories:</div>
+                            <div className="text-lg font-medium">
+                                {employee?.productCategory?.length > 0 ? (
+                                    employee.productCategory.map((cat, index) => (
+                                        <div key={index} className="text-gray-700">
+                                            {cat.label}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-gray-500">No product category assigned</div>
+                                )}
+                            </div>
+
+                            <div className="text-1xl font-semibold">Product Models:</div>
+                            <div className="text-lg font-medium">
+                                {employee?.productModel?.length > 0 ? (
+                                    employee.productModel.map((model, index) => (
+                                        <div key={index} className="text-gray-700">
+                                            {model.label}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-gray-500">No product model assigned</div>
+                                )}
+                            </div>
+                        </div>
+
+                  
                 </div>
 
 

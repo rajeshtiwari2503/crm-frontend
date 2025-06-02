@@ -15,7 +15,10 @@ const ComplaintDetails = ({ params }) => {
     const [userComplaint, setUserComplaint] = useState([])
     const [loading, setLoading] = useState(false)
     const [value, setLocalValue] = useState('');
-
+    const [showNumber, setShowNumber] = useState(false);
+    const [audioFile, setAudioFile] = useState(null);
+    const [audioUrl, setAudioUrl] = useState("");
+    const [slot, setSlot] = useState("");
 
     useEffect(() => {
         const storedValue = localStorage.getItem("user");
@@ -23,7 +26,7 @@ const ComplaintDetails = ({ params }) => {
             setLocalValue(JSON.parse(storedValue));
         }
         getComplaintById()
-       
+
         getAllSpareParts()
     }, [id])
 
@@ -33,7 +36,7 @@ const ComplaintDetails = ({ params }) => {
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
-             getComplaintByUserId(data?.phoneNumber);
+            getComplaintByUserId(data?.phoneNumber);
             setId(data?.userId)
 
         }
@@ -58,26 +61,26 @@ const ComplaintDetails = ({ params }) => {
     //     }
     // }
 
- 
 
 
- const getComplaintByUserId = async (phoneNumber) => {
-  if (!phoneNumber) {
-    console.warn("Missing phone number, not sending request.");
-    return;
-  }
 
-  try {
-    setLoading(true);
-   const response = await http_request.get(`/getCompleteComplaintByUserContact?phoneNumber=${phoneNumber}` );
+    const getComplaintByUserId = async (phoneNumber) => {
+        if (!phoneNumber) {
+            console.warn("Missing phone number, not sending request.");
+            return;
+        }
 
-    setUserComplaint(response.data);
-  } catch (error) {
-    console.error("Error fetching complaints:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+        try {
+            setLoading(true);
+            const response = await http_request.get(`/getCompleteComplaintByUserContact?phoneNumber=${phoneNumber}`);
+
+            setUserComplaint(response.data);
+        } catch (error) {
+            console.error("Error fetching complaints:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
 
@@ -135,7 +138,41 @@ const ComplaintDetails = ({ params }) => {
     };
 
     // console.log("matchedSpareParts",matchedSpareParts);
-    
+    // const handleAudioUpload = async () => {
+    //     if (!audioFile) return;
+
+    //     const formData = new FormData();
+    //     formData.append("audio", audioFile);
+    //     formData.append("complaintId", complaintId);
+
+    //     try {
+    //         const res = await axios.post("/api/complaints/upload-audio", formData, {
+    //             headers: { "Content-Type": "multipart/form-data" },
+    //         });
+    //         setAudioUrl(res.data.audioUrl);
+    //         alert("Audio uploaded successfully");
+    //     } catch (err) {
+    //         console.error("Audio upload failed:", err);
+    //     }
+
+    // };
+    // const handleSlotChange = async (e) => {
+    //     const selectedSlot = e.target.value;
+    //     setSlot(selectedSlot);
+    //     setLoading(true);
+
+    //     try {
+    //         await http_request.patch(`/updateComplaint/${complaintId}`, {
+    //             assignedTimeSlot: selectedSlot,
+    //         });
+    //         alert("Time slot updated successfully!");
+    //     } catch (err) {
+    //         console.error("Failed to update slot:", err);
+    //         alert("Error updating time slot.");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // }
     return (
         <>
 
@@ -155,6 +192,7 @@ const ComplaintDetails = ({ params }) => {
                         <hr />
                         <div  >
                             <div className="md:m-5 grid md:grid-cols-4   grid-cols-2 mt-5 md:gap-4 gap-2" >
+
                                 <div className='md:text-xl text-sm font-bold'>Created :  </div>
                                 <div className='md:text-xl text-sm  '> {new Date(complaint?.createdAt).toLocaleString()} </div>
                                 {/* <div className='md:text-xl text-sm  '> {new Date(complaint?.assignServiceCenterTime).toLocaleString()} </div>
@@ -165,10 +203,10 @@ const ComplaintDetails = ({ params }) => {
                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <div className='md:text-xl text-sm font-semibold'>UniqueId : </div>
                                     : ""}
-                                      {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <div className='md:text-xl text-sm '>{complaint?.uniqueId}</div>
                                     : ""}
-                               
+
                                 <div className='md:text-xl text-sm font-semibold'>ComplaintId : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.complaintId}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Brand : </div>
@@ -197,7 +235,7 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.emailAddress}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Customer Contact : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.phoneNumber}</div>
-                                   <div className='md:text-xl text-sm font-semibold'> Alternate Contact : </div>
+                                <div className='md:text-xl text-sm font-semibold'> Alternate Contact : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.alternateContactInfo}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Service Address : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.serviceAddress}</div>
@@ -209,10 +247,10 @@ const ComplaintDetails = ({ params }) => {
                                 <div className='md:text-xl text-sm '>{complaint?.state}</div>
                                 <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
-                                  {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'>Purchase Date  : </div>
-                                        <div className='md:text-xl text-sm  '>{new Date(complaint?.purchaseDate).toLocaleString()}   </div> 
+                                        <div className='md:text-xl text-sm  '>{new Date(complaint?.purchaseDate).toLocaleString()}   </div>
                                     </> : ""
 
                                 }
@@ -223,22 +261,22 @@ const ComplaintDetails = ({ params }) => {
                                     </> : ""
 
                                 }
-                                      {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'>Created By  : </div>
-                                        <div className='md:text-xl flex justify-center items-center p-2 bg-[#f7bab7] text-center rounded-md font-bold text-sm'> {complaint?.createEmpName ||complaint?.empName} </div> 
+                                        <div className='md:text-xl flex justify-center items-center p-2 bg-[#f7bab7] text-center rounded-md font-bold text-sm'> {complaint?.createEmpName || complaint?.empName} </div>
                                     </> : ""
 
                                 }
-                                 {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+                                {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'>Cancel Comp  : </div>
-                                        <div className='md:text-xl text-sm  '>{complaint?.cancelComp}   </div> 
+                                        <div className='md:text-xl text-sm  '>{complaint?.cancelComp}   </div>
                                     </> : ""
 
                                 }
-                                 
-                                   {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
+
+                                {/* {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                     <>
                                         <div className='md:text-xl text-sm font-semibold'> Emp Id  : </div>
                                         <div className='md:text-xl text-sm'> {complaint?.empId} </div>
@@ -318,6 +356,68 @@ const ComplaintDetails = ({ params }) => {
                                     )
                                         : "Sparepart not match this product id"}
                                 </div>
+                                {/* <div className='md:text-xl text-sm font-semibold'> Service center fill   : </div>
+                                <div className=" space-y-6 mt-8 bg-gray-100 p-4 rounded-lg shadow hover:bg-blue-50 cursor-pointer">
+
+                                    
+                                    <div>
+                                        <p className="text-sm font-semibold">
+                                            <strong>Assigned Slot:</strong> {complaint?.assignedTimeSlot || "Not Assigned"}
+                                        </p>
+                                    </div>
+
+                                
+                                    <div>
+                                        <button
+                                            onClick={() => setShowNumber(true)}
+                                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                                        >
+                                            {showNumber ? complaint?.phoneNumber : "Show Customer Number"}
+                                        </button>
+                                    </div>
+
+                                  
+                                    <div>
+                                        <label className="block font-medium mb-1">Upload Audio</label>
+                                        <input
+                                            type="file"
+                                            accept="audio/*"
+                                            onChange={(e) => setAudioFile(e.target.files[0])}
+                                            className="mb-2 w-full"
+                                        />
+                                        <button
+                                            onClick={handleAudioUpload}
+                                            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded"
+                                        >
+                                            Upload Audio
+                                        </button>
+                                    </div>
+
+                                   
+                                    {audioUrl && (
+                                        <div>
+                                            <label className="block font-medium mb-1">Audio Recording</label>
+                                            <audio controls src={audioUrl} className="w-full mt-2 rounded border" />
+                                        </div>
+                                    )}
+
+                                   
+                                    <div>
+                                        <label className="block font-semibold mb-1">Update Assigned Time Slot</label>
+                                        <select
+                                            className="w-full border border-gray-300 rounded p-2"
+                                            value={slot}
+                                            onChange={handleSlotChange}
+                                            disabled={loading}
+                                        >
+                                            <option value="">Select Slot</option>
+                                            <option value="10-12">10 AM - 12 PM</option>
+                                            <option value="12-3">12 PM - 3 PM</option>
+                                            <option value="3-6">3 PM - 6 PM</option>
+                                        </select>
+                                    </div>
+
+                                </div> */}
 
                                 <div className='md:text-xl text-sm font-semibold'>Service Center visit : </div>
                                 <div className='md:text-xl text-sm '>{complaint?.visitTechnician}</div>

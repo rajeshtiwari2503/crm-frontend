@@ -299,6 +299,10 @@ const ComplaintDetails = ({ params }) => {
                                             <div className='md:text-xl text-sm '>{complaint?.state}</div>
                                             <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
                                             <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
+                                             <div className='md:text-xl text-sm font-semibold'>Stock Complaint : </div>
+                                            <div className='md:text-xl text-sm '>{complaint?.stockComplaint===true?"Yes" : "No"}</div>
+                                             <div className='md:text-xl text-sm font-semibold'>Warranty Status : </div>
+                                            <div className='md:text-xl text-sm '>{complaint?.warrantyStatus===true?"In Warranty" :"No"}</div>
                                             {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                                 <>
                                                     <div className='md:text-xl text-sm font-semibold'>Purchase Date  : </div>

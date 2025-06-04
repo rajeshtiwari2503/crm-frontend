@@ -5,6 +5,7 @@ import http_request from '../../../../http-request'
 import { useUser } from '@/app/components/UserContext'
 import ServiceTransactionList from './serviceTransactionList'
 import { ReactLoader } from '@/app/components/common/Loading'
+import WalletPaymentReport from '../servicePaymentsAnalytic'
 
 const ServiceTransactions = ({ }) => {
 
@@ -73,7 +74,10 @@ const ServiceTransactions = ({ }) => {
           <ReactLoader />
         </div>
       ) : (
+        <>
         <ServiceTransactionList RefreshData={RefreshData} data={transData} loading={loading} value={value?.user} />
+        {/* <WalletPaymentReport  /> */}
+        </>
       )}
     </Sidenav>
   )

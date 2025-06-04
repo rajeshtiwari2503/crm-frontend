@@ -110,10 +110,10 @@ const ProductList = (props) => {
     setEditData(row)
     setEditModalOpen(true);
   }
-  const handleDetails = (row) => {
-    setEditData(row)
-    setEditModalOpen(true);
-  }
+  // const handleDetails = (row) => {
+  //   setEditData(row)
+  //   setEditModalOpen(true);
+  // }
   const deleteData = async () => {
     try {
       let response = await http_request.deleteData(`/deleteProduct/${cateId}`);
@@ -133,7 +133,9 @@ const ProductList = (props) => {
     setWarranty(data)
     setIsWarranty(true)
   }
-
+ const handleDetails = (id) => {
+    router.push(`/product/details/${id}`)
+  }
   return (
     <div>
       <Toaster />
@@ -181,7 +183,7 @@ const ProductList = (props) => {
                           direction={sortDirection}
                           onClick={() => handleSort('productDescription')}
                         >
-                          Product Description
+                          Product_Description
                         </TableSortLabel>
                       </TableCell>
 
@@ -191,7 +193,7 @@ const ProductList = (props) => {
                           direction={sortDirection}
                           onClick={() => handleSort('categoryName')}
                         >
-                          Category Name
+                          Category_Name
                         </TableSortLabel>
                       </TableCell>
                       <TableCell>
@@ -200,7 +202,7 @@ const ProductList = (props) => {
                           direction={sortDirection}
                           onClick={() => handleSort('categoryName')}
                         >
-                          Sub Category Name
+                          Sub_Category_Name
                         </TableSortLabel>
                       </TableCell>
                       <TableCell>
@@ -218,7 +220,7 @@ const ProductList = (props) => {
                           direction={sortDirection}
                           onClick={() => handleSort('modelNo')}
                         >
-                          Model No.
+                          Model_No.
                         </TableSortLabel>
                       </TableCell>
                       <TableCell>
@@ -227,7 +229,7 @@ const ProductList = (props) => {
                           direction={sortDirection}
                           onClick={() => handleSort('serialNo')}
                         >
-                          Serial No.
+                          Serial_No.
                         </TableSortLabel>
                       </TableCell>
 
@@ -276,8 +278,11 @@ const ProductList = (props) => {
                     {sortedData?.map((row) => (
                       <TableRow key={row?.i} hover>
                         <TableCell>{row?.i}</TableCell>
-                        <TableCell>{row?.productName}</TableCell>
-                        <TableCell>{row?.productDescription}</TableCell>
+                        <TableCell  className="max-w-[200px] truncate whitespace-nowrap overflow-hidden">{row?.productName}</TableCell>
+                        <TableCell className="max-w-[200px] truncate whitespace-nowrap overflow-hidden">
+                          {row?.productDescription}
+                        </TableCell>
+
                         <TableCell>{row?.categoryName}</TableCell>
                         <TableCell>{row?.subCategory}</TableCell>
                         <TableCell>{row?.productBrand || row?.brandName}</TableCell>
@@ -297,9 +302,9 @@ const ProductList = (props) => {
                         <div onClick={() => handleWarranty(row?.warrantyStatus)} className="ms-3 bg-blue-300 text-sm text-black font-semibold rounded-md p-2 cursor-pointer hover:bg-blue-500 hover:font-semibold hover:text-white">
                           View Warranty
                         </div> */}
-                            {/* <IconButton aria-label="view" onClick={() => handleDetails(row)} >
+                            <IconButton aria-label="view" onClick={() => handleDetails(row?._id)} >
                         <Visibility color='primary' />
-                      </IconButton> */}
+                      </IconButton>
                             <IconButton aria-label="edit" onClick={() => handleAdd(row)}>
                               <EditIcon color='success' />
                             </IconButton>

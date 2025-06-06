@@ -5,6 +5,7 @@ import http_request from '../../../../http-request'
 import { useUser } from '@/app/components/UserContext'
 import ServiceTransactionList from './serviceTransactionList'
 import { ReactLoader } from '@/app/components/common/Loading'
+import WalletPaymentReport from '../servicePaymentsAnalytic'
 
 const ServiceTransactions = ({ }) => {
 
@@ -16,6 +17,7 @@ const ServiceTransactions = ({ }) => {
   const [loading, setLoading] = useState(false);
 
   const { user } = useUser();
+console.log(user);
 
 
   useEffect(() => {
@@ -73,7 +75,11 @@ const ServiceTransactions = ({ }) => {
           <ReactLoader />
         </div>
       ) : (
+        <>
         <ServiceTransactionList RefreshData={RefreshData} data={transData} loading={loading} value={value?.user} />
+       {user?.user?.role==="ADMIN"? <WalletPaymentReport  />
+       :""}
+        </>
       )}
     </Sidenav>
   )

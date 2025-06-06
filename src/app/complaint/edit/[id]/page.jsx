@@ -18,7 +18,11 @@ const Editservice = ({ params }) => {
     const [uploadedImage, setUploadedImage] = useState("")
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(false)
-
+ const [pincode, setPincode] = useState('');
+  const [location, setLocation] = useState(null);
+   const [error, setError] = useState('');
+    
+     const [jsonData, setJsonData] = useState([]);
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
   const {user} = useUser()
     useEffect(() => {
@@ -56,6 +60,8 @@ const Editservice = ({ params }) => {
             if (service.preferredServiceDate) {
                 setValue('preferredServiceDate', new Date(service.preferredServiceDate).toISOString().split('T')[0]);
             }
+              setPincode(  service?.pincode || '');
+              
             // if (service.preferredServiceTime) {
             //     setValue('preferredServiceTime', service.preferredServiceTime);
             // }
@@ -146,6 +152,117 @@ const Editservice = ({ params }) => {
             console.log(err);
         }
     }
+
+ useEffect(() => {
+    if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
+      fetchLocation(pincode);
+      setValue('pincode', pincode)
+    }
+  }, [pincode,jsonData]);
+  useEffect(() => {
+    // Fetch the file from the public folder
+    const loadFileFromPublic = async () => {
+      try {
+        const response = await fetch("/INpostalCode.txt");
+        // console.log("response",response);
+        // Adjust filename if needed
+        const text = await response.text();  // Read file content as text
+
+        const lines = text.trim().split("\n");
+        const stateData = {};
+
+        lines.forEach((line) => {
+          const parts = line.split("\t").map((s) => s.trim());
+
+          if (parts.length >= 5) {
+            const pincode = parts[1]; // Pincode
+            const areaName = parts[2]; // Area
+            const state = parts[3]; // State
+            const district = parts[5]; // District
+
+            if (!stateData[state]) {
+              stateData[state] = {};
+            }
+            if (!stateData[state][district]) {
+              stateData[state][district] = [];
+            }
+
+            stateData[state][district].push({ areaName, pincode });
+          }
+        });
+        // console.log("stateData",stateData);
+
+        setJsonData(stateData);
+      } catch (error) {
+        console.error("Error loading file:", error);
+      }
+    };
+
+    loadFileFromPublic();
+  }, []);
+  const fetchLocation = async (pincode) => {
+    try {
+      console.log("pincode", pincode);
+
+      if (!pincode || pincode.toString().trim().length !== 6) {
+        setError('Please enter a valid 6-digit pincode.');
+        return null;
+      }
+
+      const pinStr = pincode.toString().trim();
+
+      // Step 1: Check local file data
+      if (jsonData && Object.keys(jsonData).length > 0) {
+        for (const state in jsonData) {
+          for (const district in jsonData[state]) {
+            const match = jsonData[state][district].find(
+              (entry) => entry.pincode.toString() === pinStr
+            );
+
+            if (match) {
+              console.log("✅ Local match found:", match, district, state);
+              setLocation({ District: district, State: state });
+              setValue('pincode', pinStr);
+              setValue('state', state);
+              setValue('district', district);
+              setError('');
+              return { District: district, State: state, Area: match.areaName };
+            }
+          }
+        }
+      }
+      setError('No location found for the provided pincode.');
+      setError('No location found for the provided pincode.');
+      setLocation(null);
+      setValue('pincode', '');
+      setValue('state', '');
+      setValue('district', '');
+
+      // Step 2: Fallback to external API
+      // const response = await axios.get(`https://api.postalpincode.in/pincode/${pinStr}`);
+      // if (response.data && response.data[0].Status === 'Success') {
+      //   const { PostOffice } = response.data[0];
+      //   const { District, State } = PostOffice[0];
+
+      //   console.log("✅ API match found:", District, State);
+      //   setLocation({ District, State });
+      //   setValue('pincode', pinStr);
+      //   setValue('state', State);
+      //   setValue('district', District);
+      //   setError('');
+      //   return PostOffice[0];
+      // } else {
+      //   setError('No location found for the provided pincode.');
+      //   return null;
+      // }
+
+    } catch (error) {
+      console.error("❌ Error fetching location:", error);
+      setError('Something went wrong while fetching location.');
+      return null;
+    }
+  };
+
 
     return (
         <>
@@ -533,6 +650,52 @@ const Editservice = ({ params }) => {
 
                             }
                         </div> */}
+                        
+                  <div>
+                    <label htmlFor="serviceLocation" className="block text-sm font-medium leading-6 text-gray-900">
+                      Service Pincode
+                    </label>
+
+                    <input
+                      name="pincode"
+                      type="number"
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value)}
+                      placeholder="Enter pincode"
+                      className="border p-2 mb-4 w-full"
+                    />
+                    {error && <p className="text-red-500 mt-1">{error}</p>}
+                  </div>
+                  <div className=' '>
+                    <label htmlFor="district" className="block text-sm font-medium leading-6 text-gray-900">
+                    District
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="district"
+                        name="district"
+                        type="text"
+                        autoComplete="off"
+                        {...register('district')}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6`}
+                      />
+                    </div>
+                  </div>
+                  <div className=' '>
+                    <label htmlFor="state" className="block text-sm font-medium leading-6 text-gray-900">
+                    State
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="state"
+                        name="state"
+                        type="text"
+                        autoComplete="off"
+                        {...register('state')}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
+                      />
+                    </div>
+                  </div>
                     </form>
 
                     <div className='mt-5  '>

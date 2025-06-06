@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 import http_request from "../../../http-request"
+import { ReactLoader } from '../components/common/Loading';
 
 const WalletPaymentSummary = () => {
   const [summary, setSummary] = useState([]);
@@ -29,6 +30,24 @@ const WalletPaymentSummary = () => {
   useEffect(() => {
     fetchData();
   }, [month, year, sortBy]);
+
+  const totalSummary = summary.reduce(
+  (acc, item) => {
+    acc.totalAmount += item.totalAmount;
+    acc.totalUnpaid += item.unpaidCount;
+    acc.totalPaid += item.paidCount;
+    acc.totalComplaints += item.totalComplaints;
+    acc.totalServiceCenters += 1;
+    return acc;
+  },
+  {
+    totalAmount: 0,
+    totalUnpaid: 0,
+    totalPaid: 0,
+    totalComplaints: 0,
+    totalServiceCenters: 0
+  }
+);
 
   return (
     <div className="p-6">
@@ -59,10 +78,37 @@ const WalletPaymentSummary = () => {
 
       {/* Table */}
       {loading ? (
-        <p>Loading...</p>
+    <div className="flex justify-center items-center  h-[80vh]">
+              <ReactLoader />
+            </div>
       ) : (
-     <div className="p-4 max-w-7xl mx-auto">
-      <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(280px,1fr))]">
+     <div className=" ">
+      <div className="max-w-4xl mx-auto p-4">
+  <div className="bg-white border rounded-lg shadow-md p-6 grid grid-cols-5 gap-6 text-gray-800">
+    <div>
+      <h3 className="text-lg font-semibold mb-2"> Service Centers</h3>
+      <p className="text-2xl font-bold">{totalSummary.totalServiceCenters}</p>
+    </div>
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Total_Complaints</h3>
+      <p className="text-2xl font-bold">{totalSummary.totalComplaints}</p>
+    </div>
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Total Payment</h3>
+      <p className="text-2xl font-bold text-green-700">₹{totalSummary.totalAmount.toLocaleString()}</p>
+    </div>
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Total Paid  </h3>
+      <p className="text-2xl font-bold text-green-600">{totalSummary.totalPaid}</p>
+    </div>
+    <div>
+      <h3 className="text-lg font-semibold mb-2">Total Unpaid  </h3>
+      <p className="text-2xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
+    </div>
+  </div>
+</div>
+
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-4 ">
         {summary.map((item) => (
           <div
             key={item._id}
@@ -80,7 +126,7 @@ const WalletPaymentSummary = () => {
             </h2>
 
             {/* Summary Info */}
-            <div className="mb-6 text-sm text-gray-700 space-y-2">
+            <div className="mb-6 text-sm text-gray-700 space-y-1">
               <div className="flex justify-between">
                 <span className="font-medium">Total Complaints:</span>
                 <span>{item.totalComplaints}</span>
@@ -98,12 +144,12 @@ const WalletPaymentSummary = () => {
             {/* Paid / Unpaid Summary */}
             <div className="grid grid-cols-2 gap-4 text-center mb-4">
               <div className="bg-red-50 rounded-md p-3 border border-red-200">
-                <p className="text-sm font-semibold text-red-800">Unpaid Complaints</p>
+                <p className="text-sm font-semibold text-red-800">Unpaid  </p>
                 <p className="text-2xl font-bold text-red-900">{item.unpaidCount}</p>
                 <p className="text-xs text-red-700">{item.percentageUnpaid}% Unpaid</p>
               </div>
               <div className="bg-green-50 rounded-md p-3 border border-green-200">
-                <p className="text-sm font-semibold text-green-800">Paid Complaints</p>
+                <p className="text-sm font-semibold text-green-800">Paid  </p>
                 <p className="text-2xl font-bold text-green-900">{item.paidCount}</p>
                 <p className="text-xs text-green-700">{item.percentagePaid}% Paid</p>
               </div>
@@ -112,12 +158,12 @@ const WalletPaymentSummary = () => {
             {/* TAT Report */}
             <div className="text-sm text-gray-600 border-t border-gray-200 pt-3 space-y-1">
               <p className="font-semibold text-gray-800">TAT Report (days)</p>
-              <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="grid grid-cols-2 gap-1 text-sm">
                 {Object.entries(item.tatReport).map(([range, value]) => (
                   value !== null && (
-                    <div key={range} className="flex justify-between">
-                      <span>{range}</span>
-                      <span>{value}</span>
+                    <div key={range} className="flex text-sm justify-between">
+                      <span>{range} Days</span>
+                      <span className='font-bold'>{value}</span>
                     </div>
                   )
                 ))}
@@ -131,15 +177,7 @@ const WalletPaymentSummary = () => {
 
       )}
 
-      {/* TAT Report */}
-      <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-2">TAT Report</h2>
-        <ul className="list-disc ml-5">
-          {tatReport && Object.keys(tatReport).map(key => (
-            <li key={key}>{key} Days: {tatReport[key]}</li>
-          ))}
-        </ul>
-      </div>
+     
     </div>
   );
 };

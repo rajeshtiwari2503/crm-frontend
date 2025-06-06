@@ -17,6 +17,7 @@ const ServiceTransactions = ({ }) => {
   const [loading, setLoading] = useState(false);
 
   const { user } = useUser();
+console.log(user);
 
 
   useEffect(() => {
@@ -76,7 +77,8 @@ const ServiceTransactions = ({ }) => {
       ) : (
         <>
         <ServiceTransactionList RefreshData={RefreshData} data={transData} loading={loading} value={value?.user} />
-        {/* <WalletPaymentReport  /> */}
+       {user?.user?.role==="ADMIN"? <WalletPaymentReport  />
+       :""}
         </>
       )}
     </Sidenav>

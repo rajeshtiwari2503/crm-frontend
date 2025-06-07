@@ -31,6 +31,7 @@ import { useRouter } from 'next/navigation';
 import DownloadExcel from '@/app/components/DownLoadExcel';
 import { PaymentConfirmBox } from '@/app/components/common/ConfirmBoxPayment';
 import DatePicker from 'react-datepicker';
+import ServicePaymentDialog from './addDeliveryCharges';
 
 const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loading, value }) => {
 
@@ -380,15 +381,15 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                     </div>
 
                     <div className=" flex justify-center">
-                    <div className="  ">
-                        <input
-                            type="text"
-                            placeholder="Search by Name , City,Contact, or Complaint ID"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-md w-full"
-                        />
-                    </div>
+                        <div className="  ">
+                            <input
+                                type="text"
+                                placeholder="Search by Name , City,Contact, or Complaint ID"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="px-4 py-2 border border-gray-300 rounded-md w-full"
+                            />
+                        </div>
                     </div>
 
                 </div>
@@ -423,7 +424,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
                 </div>
 
-                {!data?.length>0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+                {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
                     :
                     <div className='flex justify-center'>
                         <div className="md:w-full  w-[250px]   ">
@@ -563,7 +564,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                     Create_Date
                                                 </TableSortLabel>
                                             </TableCell>
-                                             <TableCell>
+                                            <TableCell>
                                                 <TableSortLabel
                                                     active={sortBy === 'createdAt'}
                                                     direction={sortDirection}
@@ -640,13 +641,16 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                                 </TableCell> */}
                                                     <TableCell>
                                                         {value?.role === "ADMIN" || value?.role === "EMPLOYEE" && row?.status === "UNPAID" ?
-                                                            <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
-                                                                <Payments color='success' />
+                                                            <div className='flex'>
+                                                                <IconButton aria-label="edit" onClick={() => handleUpdateModalOpen(row?._id)}>
+                                                                    <Payments color='success' />
 
-                                                            </IconButton>
-
+                                                                </IconButton>
+                                                                <ServicePaymentDialog rowData={row} RefreshData={RefreshData}/>
+                                                            </div>
                                                             : null
                                                         }
+
                                                     </TableCell>
                                                 </TableRow>
                                             )

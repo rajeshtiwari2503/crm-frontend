@@ -6,6 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav'
 import FeedbackList from './feedbackList';
 import { ReactLoader } from '../components/common/Loading';
+import BrandFeedbackTable from './brandFeedBackList';
 
 
 const Feedback = () => {
@@ -68,7 +69,10 @@ const Feedback = () => {
                        <ReactLoader />
                      </div>
             ) : (
-              <FeedbackList data={data} RefreshData={RefreshData} />
+              <>
+              {/* <FeedbackList data={data} RefreshData={RefreshData} /> */}
+              <BrandFeedbackTable  />
+              </>
             )}
           </div>
         </div>

@@ -45,7 +45,7 @@ const [loading,setLoading]=useState(false)
       formData.append("brandName", data.brandName);
       formData.append("serviceCenterId", data.serviceCenterId);
       formData.append("serviceCenter", data.serviceCenter);
-     if(userData?.user?.role==="ADMIN"){
+     if(userData?.user?.role==="ADMIN" || userData?.user?.role==="EMPLOYEE"){
       formData.append("brandApproval","APPROVED");
      }else{
       formData.append("brandApproval","DISAPPROVED");
@@ -54,7 +54,7 @@ const [loading,setLoading]=useState(false)
       formData.append("trackLink", data.trackLink);
       formData.append("chalanImage", data.chalanImage[0]); 
       formData.append("spareParts", JSON.stringify(data.spareParts));
-    const req=userData?.user?.role==="ADMIN"?"/addOrder":"/addCenterOrder"
+    const req=userData?.user?.role==="ADMIN" || userData?.user?.role==="EMPLOYEE" ?"/addOrder":"/addCenterOrder"
       const response = await http_request.post(req, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });

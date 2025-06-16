@@ -341,7 +341,7 @@ const OrderList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-8'>
         <div className='font-bold text-2xl'>Order Information</div>
-        {props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
+        {props?.userData?.user?.role === "ADMIN"|| props?.userData?.user?.role==="EMPLOYEE" || props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 text-white '>Add Order</div>

@@ -323,14 +323,31 @@ const { user } = useUser();
   data={reportData?.complaints?.map(complaint => {
     const createdAt = new Date(complaint.createdAt);
     const now = new Date(); // current date and time
-    const durationMs = now - createdAt;
+    // const durationMs = now - createdAt;
     
-    const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-    const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
-    const durationDays = Math.floor(durationHours / 24);
+    // const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
+    // const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
+    // const durationDays = Math.floor(durationHours / 24);
     
-    let aging = '';
-    aging = `${durationDays}d`;
+    // let aging = '';
+    // aging = `${durationDays}d`;
+
+const start = new Date(createdAt.setHours(0, 0, 0, 0));
+const end = new Date(now.setHours(0, 0, 0, 0));
+
+let agingDays = 0;
+const current = new Date(start);
+
+while (current <= end) {
+  const dayOfWeek = current.getDay(); // 0 = Sunday
+  if (dayOfWeek !== 0) {
+    agingDays++;
+  }
+  current.setDate(current.getDate() + 1);
+}
+
+let aging = `${agingDays}d`; 
+
     // if (durationDays > 0) {
     //   edge = `${durationDays}d`; // Only show days if it's more than 24h
     // } else if (durationHours > 0) {

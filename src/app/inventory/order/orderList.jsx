@@ -12,6 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import SparePartsForm from './addOrder';
+import SparePartsDefcetiveForm from './addDefectiveOrder';
 
 
 const OrderList = (props) => {
@@ -30,6 +31,7 @@ const OrderList = (props) => {
   const [sortBy, setSortBy] = useState('id');
   const [searchTerm, setSearchTerm] = useState('');
   const [order, setOrder] = useState(false);
+  const [orderDefective, setOrderDefective] = useState(false);
   const [selectedSparepart, setSelectedSparepart] = useState('');
   const [selectedserviceCenter, setSelectedserviceCenter] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -69,7 +71,7 @@ const OrderList = (props) => {
 
 
   // const data = selectedBrandFiltr === "" ? data1 : brandData
-   
+
 
   const filteredOrders = props?.data?.filter((order) => {
     const lowerSearch = searchTerm.toLowerCase();
@@ -125,13 +127,18 @@ const OrderList = (props) => {
   }
 
   const handleAdd = () => {
+    setOrderDefective(false)
     setOrder(true)
   }
-
+  const handleAddDefective = () => {
+    setOrderDefective(true)
+    setOrder(true)
+  }
   const handleOrderClose = () => {
 
     setOrder(false)
   }
+  // console.log("orderDefective", orderDefective);
 
   const handleDetails = (id) => {
     router.push(`/inventory/order/details/${id}`)
@@ -341,10 +348,17 @@ const OrderList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-8'>
         <div className='font-bold text-2xl'>Order Information</div>
-        {props?.userData?.user?.role === "ADMIN"|| props?.userData?.user?.role==="EMPLOYEE" || props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
+        {props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE" || props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 text-white '>Add Order</div>
+          </div>
+          : ""
+        }
+        {props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE" ?
+          <div onClick={handleAddDefective} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 text-white '>Add Defective Order</div>
           </div>
           : ""
         }
@@ -361,7 +375,7 @@ const OrderList = (props) => {
     </div> */}
       {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
         <div className='mb-5'>
-        {/* <FormControl fullWidth style={{ marginBottom: '20px' }}>
+          {/* <FormControl fullWidth style={{ marginBottom: '20px' }}>
           <InputLabel id="brand-select-label">Select Brand</InputLabel>
           <Select
             labelId="brand-select-label"
@@ -379,14 +393,14 @@ const OrderList = (props) => {
             ))}
           </Select>
         </FormControl> */}
-         <input
-        type="text"
-        placeholder="Search by Service Center or Brand"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="border p-2 rounded w-full"
-      />
-      </div>
+          <input
+            type="text"
+            placeholder="Search by Service Center or Brand"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
       )}
       {!filteredOrders?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
@@ -619,8 +633,13 @@ const OrderList = (props) => {
             //   <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
             // </form>
-            <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
+            <>
+              {orderDefective ? <SparePartsDefcetiveForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
+                : <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
+
+              }  </>
           }
+
         </DialogContent>
 
       </Dialog>

@@ -334,6 +334,7 @@ const { user } = useUser();
 
 const start = new Date(createdAt.setHours(0, 0, 0, 0));
 const end = new Date(now.setHours(0, 0, 0, 0));
+end.setDate(end.getDate() - 1);
 
 let agingDays = 0;
 const current = new Date(start);
@@ -346,7 +347,7 @@ while (current <= end) {
   current.setDate(current.getDate() + 1);
 }
 
-let aging = `${agingDays}d`; 
+let aging = `${agingDays}d`;
 
     // if (durationDays > 0) {
     //   edge = `${durationDays}d`; // Only show days if it's more than 24h

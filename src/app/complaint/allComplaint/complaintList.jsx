@@ -22,7 +22,7 @@ const ComplaintList = (props) => {
 
   const [filterSer, setFilterSer] = useState("")
 
-
+  const [selectedDashboardDetails, setSelectedDashboardDetails] = useState(null);
   const serviceCenter = filterSer === "" ? props?.serviceCenter : filterSer
 
 
@@ -230,6 +230,40 @@ const ComplaintList = (props) => {
   // };
 
 
+  // const handleAssignServiceCenter = async (id) => {
+  //   setId(id);
+  //   setAssign(true);
+  //   setLoading(true);
+
+  //   const complaint = data?.find(item => item?._id === id);
+
+  //   if (!complaint || !complaint.pincode) {
+  //     console.log("Pincode not found in the complaint");
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   const targetPincode = complaint.pincode.trim();
+
+  //   const filteredCenters = props?.serviceCenter?.filter(center => {
+  //     const supportedPincodes = [
+  //       ...(Array.isArray(center.pincodeSupported) ? center.pincodeSupported : []),
+  //       ...(typeof center.postalCode === 'string'
+  //         ? center.postalCode.split(',').map(p => p.trim())
+  //         : [])
+  //     ];
+
+  //     return supportedPincodes.includes(targetPincode);
+  //   }) || [];
+
+  //   setFilterSer(filteredCenters);
+  //   setLoading(false);
+
+  //   if (filteredCenters.length === 0) {
+  //     console.log("No service centers found for the given pincode.");
+  //   }
+  // };
+
   const handleAssignServiceCenter = async (id) => {
     setId(id);
     setAssign(true);
@@ -252,18 +286,37 @@ const ComplaintList = (props) => {
           ? center.postalCode.split(',').map(p => p.trim())
           : [])
       ];
-
       return supportedPincodes.includes(targetPincode);
     }) || [];
 
-    setFilterSer(filteredCenters);
+    const centersWithDetails = await Promise.all(
+      filteredCenters.map(async (center) => {
+        const [dashboardRes, tatRes] = await Promise.all([
+          http_request.get(`/dashboardDetailsBySeviceCenterId/${center._id}`),
+          http_request.get(`/getAllTatByServiceCenter?assignServiceCenterId=${center._id}`)
+        ]);
+        // console.log("TAT Response for center:", center.serviceCenterName, tatRes.data);
+        return {
+          ...center,
+          dashboardDetails: dashboardRes.data.complaints || {},
+          tatMetrics: {
+            totalComplaints: tatRes?.data?.totalComplaints || 0,
+            overallTATPercentage: tatRes?.data?.overallTATPercentage || "0.00",
+            overallRTPercentage: tatRes?.data?.overallRTPercentage || "0.00",
+            overallCTPercentage: tatRes?.data?.overallCTPercentage || "0.00",
+          }
+        };
+      })
+    );
+    // console.log("centersWithDetails", centersWithDetails);
+
+    setFilterSer(centersWithDetails);
     setLoading(false);
 
-    if (filteredCenters.length === 0) {
+    if (centersWithDetails.length === 0) {
       console.log("No service centers found for the given pincode.");
     }
   };
-
 
 
 
@@ -298,6 +351,8 @@ const ComplaintList = (props) => {
     setId(id)
     setUpdateCommm(true)
   }
+
+
   const handleServiceChange = (event) => {
     // if (status === true) {
     //   setValue("status", event.target.value)
@@ -307,6 +362,14 @@ const ComplaintList = (props) => {
     const selectedId = event.target.value;
 
 
+    const selectedCenter = filterSer.find(c => c._id === selectedId);
+    if (selectedCenter) {
+      // console.log("selectedCenter", selectedCenter);
+
+      setSelectedDashboardDetails(selectedCenter);
+    } else {
+      setSelectedDashboardDetails(null);
+    }
     const selectedServiceCenter = serviceCenter.find(center => center._id === selectedId);
     setSelectedService(selectedId);
 
@@ -320,6 +383,8 @@ const ComplaintList = (props) => {
     setValue('assignServiceCenterTime', new Date());
 
   };
+
+  // console.log("selectedDashboardDetails", selectedDashboardDetails);
   const sendOTP = async (id) => {
     try {
       const response = await http_request.post("/send-otp", { complaintId: id });
@@ -462,7 +527,7 @@ const ComplaintList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center m-3'>
         <div>
-          <div className='font-bold text-2xl'>Service Information</div>
+          <div className='font-bold text-xl'>Service Information</div>
           <div className="flex items-center  mt-2">
             <Search className="text-gray-500" />
             <input
@@ -484,7 +549,7 @@ const ComplaintList = (props) => {
         }
       </div>
       <div>
-        {loading===true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+        {loading === true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
           : <>
             {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
               :
@@ -740,17 +805,17 @@ const ComplaintList = (props) => {
                             <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                             <TableCell className="p-0">
                               <div className="flex items-center space-x-2">
-                                {userData?.role === "ADMIN"  ?
+                                {userData?.role === "ADMIN" ?
                                   <div
                                     onClick={() => handleUpdateStatus(row?._id)}
                                     className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
                                   >
                                     <SystemSecurityUpdate />
                                   </div>
-                                  : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE"  ?
-                                  <UpdateComplaintModal complaintId={row?._id}   RefreshData={  props?.RefreshData}    />
-                                  :
-                                  ""}
+                                  : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE" ?
+                                    <UpdateComplaintModal complaintId={row?._id} RefreshData={props?.RefreshData} />
+                                    :
+                                    ""}
 
                                 {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div
@@ -1006,7 +1071,8 @@ const ComplaintList = (props) => {
         </DialogContent>
 
       </Dialog>
-      <Dialog open={assign} onClose={handleAssignClose}>
+      <Dialog open={assign} onClose={handleAssignClose} fullWidth
+        maxWidth="md">
         <DialogTitle>  Assign Service Center</DialogTitle>
         <IconButton
           aria-label="close"
@@ -1027,28 +1093,103 @@ const ComplaintList = (props) => {
                 <ReactLoader />
               ) : filterSer?.length > 0 ? (
                 <>
-                  <div className='w-[350px] mb-5'>
-                    <label id="service-center-label" className="block text-sm font-medium text-white ">
-                      Assign  Service Center
-                    </label>
+                  <div className='w-full  '>
+                    <div className='flex justify-between items-center gap-3'>
+                      <div className='md:w-[600px] w-full'>
+                        <label id="service-center-label" className="block text-sm font-medium text-white ">
+                          Assign  Service Center
+                        </label>
 
-                    <select
-                      id="service-center-label"
-                      value={selectedService}
-                      onChange={handleServiceChange}
-                      className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                      <option value="" disabled>Select Service Center</option>
-                      {serviceCenter?.map((center) => (
-                        <option key={center.id} value={center._id}>
-                          {center.serviceCenterName}
-                        </option>
-                      ))}
-                    </select>
+                        <select
+                          id="service-center-label"
+                          value={selectedService}
+                          onChange={handleServiceChange}
+                          className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        >
+                          <option value="" disabled>Select Service Center</option>
+                          {serviceCenter?.map((center) => (
+                            <option key={center.id} value={center._id}>
+                              {center.serviceCenterName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
+                      </div>
+                    </div>
+                    {selectedDashboardDetails && (
+                      <div className="mt-3 space-y-4 w-full max-w-6xl mx-auto px-4 mb-2">
+                        {/* TAT Performance Summary */}
+                        <div className="p-3 bg-white rounded-xl shadow-lg text-gray-800">
+                          <h3 className="text-xl font-bold mb-1  text-gray-900">
+                            TAT Performance Summary
+                          </h3>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
+                            {[
+
+                              { label: "TAT %", key: "overallTATPercentage", color: "bg-blue-100" },
+                              { label: "RT %", key: "overallRTPercentage", color: "bg-green-100" },
+                              { label: "CT %", key: "overallCTPercentage", color: "bg-purple-100" },
+                            ].map((item) => (
+                              <div
+                                key={item.key}
+                                className={`${item.color} p-4 rounded-lg shadow-sm text-center`}
+                              >
+                                <div className="text-sm font-medium text-gray-700 mb-1">{item.label}</div>
+                                <div className="text-md font-semibold text-gray-900">
+                                  {selectedDashboardDetails.tatMetrics?.[item.key] ?? (item.key.includes("Percentage") ? "0.00" : 0)}
+                                  {item.key.includes("Percentage") ? " %" : ""}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Service Center Dashboard Summary */}
+                        <div className="p-3 bg-white rounded-xl shadow-lg text-gray-800">
+                          <h3 className="text-xl font-bold mb-3 text-gray-900">
+                            Service Center Dashboard Summary
+                          </h3>
+
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 text-sm">
+                            {[
+                              { label: "Total Complaints", key: "allComplaints", color: "bg-gray-100" },
+                              { label: "Pending", key: "pending", color: "bg-yellow-100" },
+                              { label: "Assigned", key: "assign", color: "bg-blue-100" },
+
+                              { label: "In Progress", key: "inProgress", color: "bg-purple-100" },
+                              { label: "Part Pending", key: "partPending", color: "bg-orange-100" },
+                              { label: "More Than 5 Days", key: "moreThanFiveDays", color: "bg-orange-100" },
+                              { label: "2–5 Days", key: "twoToFiveDays", color: "bg-orange-100" },
+                              { label: "0–1 Days", key: "zeroToOneDays", color: "bg-orange-100" },
+                              { label: "More Than 5 Days (Part Pending)", key: "moreThanFiveDaysPartPending", color: "bg-orange-100" },
+                              { label: "2–5 Days (Part Pending)", key: "twoToFiveDaysPartPending", color: "bg-orange-100" },
+                              { label: "0–1 Days (Part Pending)", key: "zeroToOneDaysPartPending", color: "bg-orange-100" },
+                              { label: "Customer Side Pending", key: "customerSidePending", color: "bg-cyan-100" },
+                              { label: "Scheduled", key: "schedule", color: "bg-teal-100" },
+                              { label: "Scheduled Upcoming", key: "scheduleUpcomming", color: "bg-teal-100" },
+                              { label: "Cancelled", key: "cancel", color: "bg-red-100" },
+                              { label: "Completed", key: "complete", color: "bg-green-100" },
+                            ].map((item) => (
+                              <div
+                                key={item.key}
+                                className={`${item.color} p-4 rounded-lg shadow-sm text-center`}
+                              >
+                                <div className="text-sm font-medium text-gray-700 mb-1">{item.label}</div>
+                                <div className="text-md font-semibold text-gray-900">
+                                  {selectedDashboardDetails.dashboardDetails?.[item.key] ?? 0}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
 
                   </div>
 
-                  <button type="submit" disabled={loading} onClick={() => asignCenter()} className="rounded-lg w-full p-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"> Assign   Service Center</button>
                 </>
               ) : (
                 <p className="w-[350px] mb-7 text-center text-red-500 text-lg font-bold">No service centers found this complaint pencode .</p>

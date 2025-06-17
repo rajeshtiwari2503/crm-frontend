@@ -36,41 +36,39 @@ const [loading,setLoading]=useState(false)
  
 
   const onSubmit = async (data) => {
-    console.log(data,"data");
+    // console.log(data,"data");
     
-    // try {
-    //   setLoading(true)
-    //   const formData = new FormData();
-    //   formData.append("brandId", data.brandId);
-    //   formData.append("brandName", data.brandName);
-    //   formData.append("serviceCenterId", data.serviceCenterId);
-    //   formData.append("serviceCenter", data.serviceCenter);
-    //  if(userData?.user?.role==="ADMIN" ){
-    //   formData.append("brandApproval","APPROVED");
-    //  }else{
-    //   formData.append("brandApproval","DISAPPROVED");
-    //  } 
-    //   formData.append("docketNo", data.docketNo);
-    //   formData.append("trackLink", data.trackLink);
-    //   formData.append("chalanImage", data.chalanImage[0]); 
-    //   formData.append("spareParts", JSON.stringify(data.spareParts));
-    // const req= "/addCenterOrder"
-    //   const response = await http_request.post(req, formData, {
-    //     headers: { "Content-Type": "multipart/form-data" },
-    //   });
+    try {
+      setLoading(true)
+      const formData = new FormData();
+      formData.append("brandId", data.brandId);
+      formData.append("brandName", data.brandName);
+      formData.append("serviceCenterId", data.serviceCenterId);
+      formData.append("serviceCenter", data.serviceCenter);
+     
+      formData.append("brandApproval","DISAPPROVED");
+     
+      formData.append("docketNo", data.docketNo);
+      formData.append("trackLink", data.trackLink);
+      formData.append("chalanImage", data.chalanImage[0]); 
+      formData.append("spareParts", JSON.stringify(data.spareParts));
+    const req= "/addCenterOrder"
+      const response = await http_request.post(req, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       
-    //   reset();
-    //     RefreshData(response?.data)
-    //     ToastMessage(response?.data);
-    //     setLoading(false)
-    //     onClose()
-    // } catch (error) {
-    //   console.error("Order submission error:", error);
+      reset();
+        RefreshData(response?.data)
+        ToastMessage(response?.data);
+        setLoading(false)
+        onClose()
+    } catch (error) {
+      console.error("Order submission error:", error);
   
-    //      ToastMessage(error?.response?.data);
-    //      onClose()
-    //      setLoading(false)
-    // }
+         ToastMessage(error?.response?.data);
+         onClose()
+         setLoading(false)
+    }
   };
    
   useEffect(() => {

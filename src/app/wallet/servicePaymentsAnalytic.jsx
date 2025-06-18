@@ -32,23 +32,42 @@ const [serviceCenterSearch, setServiceCenterSearch] = useState("");
     fetchData();
   }, [month, year, sortBy]);
 
+  // const totalSummary = summary.reduce(
+  //   (acc, item) => {
+  //     acc.totalAmount += item.totalAmount;
+  //     acc.totalUnpaid += item.unpaidCount;
+  //     acc.totalPaid += item.paidCount;
+  //     acc.totalComplaints += item.totalComplaints;
+  //     acc.totalServiceCenters += 1;
+  //     return acc;
+  //   },
+  //   {
+  //     totalAmount: 0,
+  //     totalUnpaid: 0,
+  //     totalPaid: 0,
+  //     totalComplaints: 0,
+  //     totalServiceCenters: 0
+  //   }
+  // );
+
   const totalSummary = summary.reduce(
-    (acc, item) => {
-      acc.totalAmount += item.totalAmount;
-      acc.totalUnpaid += item.unpaidCount;
-      acc.totalPaid += item.paidCount;
-      acc.totalComplaints += item.totalComplaints;
-      acc.totalServiceCenters += 1;
-      return acc;
-    },
-    {
-      totalAmount: 0,
-      totalUnpaid: 0,
-      totalPaid: 0,
-      totalComplaints: 0,
-      totalServiceCenters: 0
-    }
-  );
+  (acc, item) => {
+    acc.totalAmount += Number(item.totalAmount) || 0;
+    acc.totalUnpaid += Number(item.unpaidCount) || 0;
+    acc.totalPaid += Number(item.paidCount) || 0;
+    acc.totalComplaints += Number(item.totalComplaints) || 0;
+    acc.totalServiceCenters += 1;
+    return acc;
+  },
+  {
+    totalAmount: 0,
+    totalUnpaid: 0,
+    totalPaid: 0,
+    totalComplaints: 0,
+    totalServiceCenters: 0
+  }
+);
+
 const totalSummary1 = summary.reduce(
   (acc, item) => {
     acc.totalServiceCenters++;
@@ -59,11 +78,14 @@ const totalSummary1 = summary.reduce(
     acc.totalPaidAmount += item.paidCount * item.averagePaymentPerComplaint;
     acc.totalUnpaidAmount += item.unpaidCount * item.averagePaymentPerComplaint;
 
-    // Count paid service centers (at least one paid complaint)
-    if (item.paidCount > 0) acc.paidServiceCenters++;
-
-    // Count unpaid service centers (at least one unpaid complaint)
-    if (item.unpaidCount > 0) acc.unpaidServiceCenters++;
+    // ✅ Exclusive categorization of service centers:
+    if (item.unpaidCount > 0) {
+      // If there's at least one unpaid complaint, mark as Unpaid
+      acc.unpaidServiceCenters++;
+    } else if (item.paidCount > 0) {
+      // Only if all are paid, mark as Paid
+      acc.paidServiceCenters++;
+    }
 
     return acc;
   },
@@ -75,10 +97,13 @@ const totalSummary1 = summary.reduce(
     totalUnpaid: 0,
     totalPaidAmount: 0,
     totalUnpaidAmount: 0,
-    paidServiceCenters: 0,   // NEW
-    unpaidServiceCenters: 0  // NEW
+    paidServiceCenters: 0,
+    unpaidServiceCenters: 0
   }
 );
+
+
+
 
 console.log("totalSummary1",totalSummary1);
  const [filter, setFilter] = useState("all");
@@ -89,10 +114,17 @@ console.log("totalSummary1",totalSummary1);
   //   return true;
   // });
 const filteredSummary = summary.filter(item => {
-  const matchesFilter =
-    filter === "all" ||
-    (filter === "paid" && item.paidCount > 0) ||
-    (filter === "unpaid" && item.unpaidCount > 0);
+  let matchesFilter = false;
+
+  if (filter === "all") {
+    matchesFilter = true; // show all service centers
+  } else if (filter === "unpaid") {
+    // show if any unpaid complaints exist
+    matchesFilter = item.unpaidCount > 0;
+  } else if (filter === "paid") {
+    // show only if NO unpaid complaints AND paid complaints exist
+    matchesFilter = item.unpaidCount === 0 && item.paidCount > 0;
+  }
 
   const matchesSearch = item.name
     ?.toLowerCase()
@@ -100,6 +132,7 @@ const filteredSummary = summary.filter(item => {
 
   return matchesFilter && matchesSearch;
 });
+
 
   return (
     <div className="p-6">
@@ -163,51 +196,51 @@ const filteredSummary = summary.filter(item => {
         </div>
       ) : (
         <div className=" ">
-          <div className="max-w-4xl mx-auto p-4">
-            <div className="bg-white border rounded-lg shadow-md p-6 grid grid-cols-5 gap-6 text-gray-800">
+          <div className=" flex justify-center mb-5">
+            <div className="bg-white border rounded-lg shadow-md p-6 grid grid-cols-5 justify-center gap-3 text-gray-800">
               <div>
-                <h3 className="text-lg font-semibold mb-2"> Service Centers</h3>
-                <p className="text-2xl font-bold">{totalSummary.totalServiceCenters}</p>
+                <h3 className="text-sm font-semibold mb-2"> Service Centers</h3>
+                <p className="text-xl font-bold">{totalSummary.totalServiceCenters}</p>
               </div>
                <div>
-                <h3 className="text-lg font-semibold mb-2">Paid Service Centers</h3>
-                <p className="text-2xl font-bold">{totalSummary1.paidServiceCenters}</p>
+                <h3 className="text-sm font-semibold mb-2">Paid Service Centers</h3>
+                <p className="text-xl font-bold">{totalSummary1.paidServiceCenters}</p>
               </div>
                <div>
-                <h3 className="text-lg font-semibold mb-2">Unpaid Service Centers</h3>
-                <p className="text-2xl font-bold">{totalSummary1.unpaidServiceCenters}</p>
+                <h3 className="text-sm font-semibold mb-2">Unpaid Service Centers</h3>
+                <p className="text-xl font-bold">{totalSummary1.unpaidServiceCenters}</p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">Total_Complaints</h3>
-                <p className="text-2xl font-bold">{totalSummary.totalComplaints}</p>
+                <h3 className="text-sm font-semibold mb-2">Total_Complaints</h3>
+                <p className="text-xl font-bold">{totalSummary.totalComplaints}</p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">Total Payment</h3>
-                <p className="text-2xl font-bold text-green-700">₹{totalSummary.totalAmount.toLocaleString()}</p>
+                <h3 className="text-sm font-semibold mb-2">Total Payment</h3>
+                <p className="text-xl font-bold text-green-700">₹{totalSummary.totalAmount.toLocaleString()}</p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">  Paid Amount</h3>
-                <p className="text-2xl font-bold text-green-700">
+                <h3 className="text-sm font-semibold mb-2">  Paid Amount</h3>
+                <p className="text-xl font-bold text-green-700">
                 ₹{Number(totalSummary1?.totalPaidAmount).toFixed(0).toLocaleString()}
 
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">  Unpaid Amount</h3>
-                <p className="text-2xl font-bold text-red-700">
+                <h3 className="text-sm font-semibold mb-2">  Unpaid Amount</h3>
+                <p className="text-xl font-bold text-red-700">
                  ₹{Number(totalSummary1?.totalUnpaidAmount).toFixed(0).toLocaleString()}
 
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Total Paid  </h3>
-                <p className="text-2xl font-bold text-green-600">{totalSummary.totalPaid}</p>
+                <h3 className="text-sm font-semibold mb-2">Total Paid  </h3>
+                <p className="text-xl font-bold text-green-600">{totalSummary.totalPaid}</p>
               </div>
               <div>
-                <h3 className="text-lg font-semibold mb-2">Total Unpaid  </h3>
-                <p className="text-2xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
+                <h3 className="text-sm font-semibold mb-2">Total Unpaid  </h3>
+                <p className="text-xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
               </div>
             </div>
           </div>
@@ -250,12 +283,12 @@ const filteredSummary = summary.filter(item => {
                   <div className="bg-red-50 rounded-md p-3 border border-red-200">
                     <p className="text-sm font-semibold text-red-800">Unpaid  </p>
                     <p className="text-2xl font-bold text-red-900">{item.unpaidCount}</p>
-                    <p className="text-xs text-red-700">{item.percentageUnpaid}% Unpaid</p>
+                    <p className="text-xs text-red-700">{item.percentageUnpaid.toFixed(2)}% Unpaid</p>
                   </div>
                   <div className="bg-green-50 rounded-md p-3 border border-green-200">
                     <p className="text-sm font-semibold text-green-800">Paid  </p>
                     <p className="text-2xl font-bold text-green-900">{item.paidCount}</p>
-                    <p className="text-xs text-green-700">{item.percentagePaid}% Paid</p>
+                    <p className="text-xs text-green-700">{item.percentagePaid.toFixed(2)}% Paid</p>
                   </div>
                 </div>
 

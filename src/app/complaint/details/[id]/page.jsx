@@ -17,9 +17,9 @@ const ComplaintDetails = ({ params }) => {
     const [userComplaint, setUserComplaint] = useState([])
     const [loading, setLoading] = useState(false)
     const [value, setLocalValue] = useState('');
-   
+
     const [audioFile, setAudioFile] = useState(null);
-    
+
     const [slot, setSlot] = useState("");
 
     useEffect(() => {
@@ -151,10 +151,10 @@ const ComplaintDetails = ({ params }) => {
             const res = await http_request.post("/upload-audio", formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
-            
+
             const { data } = res;
             ToastMessage(data);
-                 getComplaintById();
+            getComplaintById();
         } catch (err) {
             console.error("Audio upload failed:", err);
         }
@@ -299,10 +299,10 @@ const ComplaintDetails = ({ params }) => {
                                             <div className='md:text-xl text-sm '>{complaint?.state}</div>
                                             <div className='md:text-xl text-sm font-semibold'>Customer Side Pending : </div>
                                             <div className='md:text-xl text-sm '>{complaint?.cspStatus || "No"}</div>
-                                             <div className='md:text-xl text-sm font-semibold'>Stock Complaint : </div>
-                                            <div className='md:text-xl text-sm '>{complaint?.stockComplaint===true?"Yes" : "No"}</div>
-                                             <div className='md:text-xl text-sm font-semibold'>Warranty Status : </div>
-                                            <div className='md:text-xl text-sm '>{complaint?.warrantyStatus===true?"In Warranty" :"No"}</div>
+                                            <div className='md:text-xl text-sm font-semibold'>Stock Complaint : </div>
+                                            <div className='md:text-xl text-sm '>{complaint?.stockComplaint === true ? "Yes" : "No"}</div>
+                                            <div className='md:text-xl text-sm font-semibold'>Warranty Status : </div>
+                                            <div className='md:text-xl text-sm '>{complaint?.warrantyStatus === true ? "In Warranty" : "No"}</div>
                                             {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ?
                                                 <>
                                                     <div className='md:text-xl text-sm font-semibold'>Purchase Date  : </div>
@@ -611,21 +611,8 @@ const ComplaintDetails = ({ params }) => {
                                             {/* Update History Section */}
                                             <div className="border p-4 rounded-lg">
                                                 <h2 className="text-xl font-bold mb-2">Update History</h2>
-                                                {/* <div className="space-y-3">
-                                        {complaint?.updateHistory?.map((history) => (
-                                            <div key={history._id} className="border-b pb-2">
-                                                <p className="text-sm text-gray-500">
-                                                    <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
-                                                </p>
-                                                {Object.entries(history.changes).map(([key, value]) => (
-                                                    <p key={key} className="text-sm">
-                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
-                                                    </p>
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </div> */}
-                                                <div className="  w-full space-y-3">
+
+                                                {/* <div className="  w-full space-y-3">
                                                     {complaint?.updateHistory?.map((history) => (
                                                         <div key={history._id} className="border-b pb-2">
                                                             <p className="text-sm text-gray-500">
@@ -641,23 +628,25 @@ const ComplaintDetails = ({ params }) => {
                                                             )}
                                                         </div>
                                                     ))}
+                                                </div> */}
+                                                <div className="w-full space-y-3">
+                                                    {complaint?.updateHistory?.map((history) => (
+                                                        <div key={history._id} className="border-b pb-2">
+                                                            <p className="text-sm text-gray-500">
+                                                                <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
+                                                            </p>
+                                                            {Object.entries(history.changes).map(([key, value]) =>
+                                                                !["serviceCenterContact", "assignServiceCenterId", "empId"].includes(key) ? (
+                                                                    <p key={key} className="text-sm">
+                                                                        <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong>{" "}
+                                                                        {typeof value === "string" ? makeLinksClickable(value) : value}
+                                                                    </p>
+                                                                ) : null
+                                                            )}
+                                                        </div>
+                                                    ))}
                                                 </div>
-                                                {/* <div className="space-y-3 ">
-                                        {complaint?.updateHistory?.map((history) => (
-                                            <div key={history._id} className="border-b pb-2">
-                                                <p className="text-sm text-gray-500">
-                                                    <strong>Updated At:</strong> {new Date(history.updatedAt).toLocaleString()}
-                                                </p>
-                                                {Object.entries(history.changes).map(([key, value]) => (
-                                                    key !== "serviceCenterContact" && ( // Exclude serviceCenterContact
-                                                        <p key={key} className="text-sm">
-                                                            <strong>{key.replace(/\b\w/, (char) => char.toUpperCase())}:</strong> {value}
-                                                        </p>
-                                                    )
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </div> */}
+
                                             </div>
                                         </div>
                                     </div>

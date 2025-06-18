@@ -649,7 +649,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
                 <div className='flex items-center'>
                   <PendingActions fontSize='medium' />
                   <div className='ml-2'>
-                    <div className='text-blue-500 font-semibold'>more than week</div>
+                    <div className='text-blue-500 font-semibold'>more than 5 days</div>
                     <div className=' text-2xl font-semibold'>
                       <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
                     </div>
@@ -737,7 +737,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
                 <div className='flex items-center'>
                   <Settings fontSize='medium' />
                   <div className='ml-2'>
-                    <div className='text-blue-500 font-semibold'>more than week</div>
+                    <div className='text-blue-500 font-semibold'>more than 5 days</div>
                     <div className=' text-2xl font-semibold'>
                       <CountUp start={0} end={dashData?.complaints?.moreThanFiveDaysPartPending} delay={1} />
                     </div>

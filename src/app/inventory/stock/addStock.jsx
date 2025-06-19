@@ -45,9 +45,9 @@
 //     }, [existingStock, setValue]);
 
 //     const handleChangeBrand = (id) => {
-        
+
 //         const selectedBrand = products?.find(brand => brand._id === id);
-        
+
 //         setSelectedPart(selectedBrand?.partName)
 //         if (selectedBrand) {
 //             setValue('brandName', selectedBrand?.brandName);
@@ -139,6 +139,8 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm();
     const [selectPart, setSelectedPart] = useState("");
     const [availableProducts, setAvailableProducts] = useState([]); // New state to store available products
+    const [selectedBrand, setSelectedBrand] = useState('');
+// console.log("products",products);
 
     const AddStockData = async (data) => {
         try {
@@ -165,7 +167,7 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
 
     const onSubmit = (data) => {
         // console.log("data",data);
-        
+
         AddStockData(data);
     };
 
@@ -195,66 +197,112 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
             setValue('sparepartName', selectedBrand?.partName);
         }
     }
+    const handleBrandSelect = (brandName) => {
+        setSelectedBrand(brandName);
+
+        // Filter spare parts that match selected brand
+        const filtered = products?.filter(
+            product => product.brandName === brandName 
+        );
+
+        setAvailableProducts(filtered);
+    };
 
     return (
         <div>
-         {loading===true ?  <div className='w-[400px]  '><ReactLoader /></div>
-         :   <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
+            {loading === true ? <div className='w-[400px]  '><ReactLoader /></div>
+                : <form className="grid grid-cols-1 gap-4" onSubmit={handleSubmit(onSubmit)}>
+                    <div className="w-[400px]">
+                        <label htmlFor="productBrand" className="block text-sm font-medium leading-6 text-gray-900">
+                            Product Brand
+                        </label>
 
-                <div className='w-[400px]'>
-                    <label htmlFor="sparepartName" className="block text-sm font-medium leading-6 text-gray-900">
-                        Sparepart
-                    </label>
-                    <div className="mt-2">
-                        <select
-                            id="sparepartName"
-                            name="sparepartName"
-                            onChange={(e) => handleChangeBrand(e.target.value)}
-                            className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
-                        >
-                            <option value="">Select a Sparepart</option>
-                            {availableProducts?.map((spare) => (
-                                <option key={spare._id} value={spare._id}>
-                                    {spare.partName}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="mt-2">
+                            <select
+                                id="productBrand"
+                                name="productBrand"
+                                onChange={(e) => handleBrandSelect(e.target.value)}
+                                className={`block p-3 w-full rounded-md border border-gray-300 text-gray-900 shadow-sm focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors?.productBrand ? 'border-red-500' : ''
+                                    }`}
+                            >
+                                <option value="">Select a Brand</option>
+                                {Array.from(new Set(products?.map(item => item.brandName))).map(brand => (
+                                    <option key={brand} value={brand}>
+                                        {brand}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {errors?.productBrand && (
+                            <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>
+                        )}
                     </div>
-                    {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
-                </div>
 
-                <div className='w-[400px]'>
-                    <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
-                        Stock Quantity
-                    </label>
-                    <div className="mt-2">
-                        <input
-                            id="freshStock"
-                            name="freshStock"
-                            type="number"
-                            autoComplete="off"
-                            {...register('freshStock', { required: '  Stock Quantity is required' })}
-                            className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.freshStock ? 'border-red-500' : ''}`}
-                        />
-                        {errors.freshStock && <p className="text-red-500 text-sm mt-1">{errors.freshStock.message}</p>}
+
+                    <div className='w-[400px]'>
+                        <label htmlFor="sparepartName" className="block text-sm font-medium leading-6 text-gray-900">
+                            Sparepart
+                        </label>
+                        <div className="mt-2">
+                            <select
+                                id="sparepartName"
+                                name="sparepartName"
+                                onChange={(e) => {
+                                    const selectedSpare = availableProducts?.find(spare => spare._id === e.target.value);
+                                    if (selectedSpare) {
+                                        setValue('sparepartId', selectedSpare._id);
+                                        setValue('sparepartName', selectedSpare.partName);
+                                        setValue('brandId', selectedSpare.brandId);
+                                        setValue('brandName', selectedSpare.brandName);
+                                    }
+                                }}
+                                className={`block p-3 w-full rounded-md border border-gray-300 text-gray-900 shadow-sm focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.productBrand ? 'border-red-500' : ''}`}
+                            >
+                                <option value="">Select a Sparepart</option>
+                                {availableProducts?.map((spare) => (
+                                    <option key={spare._id} value={spare._id}>
+                                        {spare.partName}
+                                    </option>
+                                ))}
+                            </select>
+
+                        </div>
+                        {errors.productBrand && <p className="text-red-500 text-sm mt-1">{errors.productBrand.message}</p>}
                     </div>
-                </div>
 
-                <div className='flex justify-between mt-8'>
-                    <Button variant="contained" onClick={() => onClose(true)} className='hover:bg-[#fe3f49] hover:text-white' color="error">
-                        Cancel
-                    </Button>
-                    {existingStock?._id ? (
-                        <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                            Update Stock
+                    <div className='w-[400px]'>
+                        <label htmlFor="serialNo" className="block text-sm font-medium leading-6 text-gray-900">
+                            Stock Quantity
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="freshStock"
+                                name="freshStock"
+                                type="number"
+                                autoComplete="off"
+                                {...register('freshStock', { required: '  Stock Quantity is required' })}
+                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.freshStock ? 'border-red-500' : ''}`}
+                            />
+                            {errors.freshStock && <p className="text-red-500 text-sm mt-1">{errors.freshStock.message}</p>}
+                        </div>
+                    </div>
+
+                    <div className='flex justify-between mt-8'>
+                        <Button variant="contained" onClick={() => onClose(true)} className='hover:bg-[#fe3f49] hover:text-white' color="error">
+                            Cancel
                         </Button>
-                    ) : (
-                        <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
-                            Add Stock
-                        </Button>
-                    )}
-                </div>
-            </form>}
+                        {existingStock?._id ? (
+                            <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+                                Update Stock
+                            </Button>
+                        ) : (
+                            <Button disabled={loading} variant="contained" className='hover:bg-[#2e7d32] hover:text-white' color="success" type="submit">
+                                Add Stock
+                            </Button>
+                        )}
+                    </div>
+                </form>}
         </div>
     );
 };

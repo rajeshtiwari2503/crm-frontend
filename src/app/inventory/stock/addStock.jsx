@@ -164,6 +164,8 @@ const AddStock = ({ existingStock, RefreshData, onClose, products, stockData }) 
     };
 
     const onSubmit = (data) => {
+        // console.log("data",data);
+        
         AddStockData(data);
     };
 

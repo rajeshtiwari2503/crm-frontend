@@ -128,6 +128,10 @@ const ProductWarrantyPage = (props) => {
     setConfirmBoxView(true);
   };
 
+  // Calculate totals before JSX return
+  const totalBrands = brandData?.length || 0;
+  const totalStickers = brandData?.reduce((sum, brand) => sum + (brand.totalStickers || 0), 0);
+  const totalGenerated = brandData?.reduce((sum, brand) => sum + (brand.totalnumberOfGenerate || 0), 0);
 
   // console.log("brandData",brandData);
 
@@ -138,6 +142,27 @@ const ProductWarrantyPage = (props) => {
         <div className=" rounded-xl bg-gray-100 flex flex-col items-center py-5 ">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">Brand Stickers Overview</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full p-4 ">
+            {/* Totals Card */}
+            <div className="bg-white rounded-xl shadow-md p-4 border border-gray-200 w-full">
+
+              <div className="grid grid-cols-1 sm:grid-cols-3  mt-1 divide-gray-200">
+                <div className="flex flex-col items-center justify-center px-4">
+                  <p className="text-sm text-gray-800 font-bold">Brands</p>
+                  <p className="text-md font-bold text-blue-600  mt-5">{totalBrands}</p>
+                </div>
+
+                <div className="flex flex-col items-center justify-center px-4">
+                  <p className="text-sm text-gray-800 font-bold">Generated</p>
+                  <p className="text-md font-bold text-green-600 mt-5">{totalStickers}</p>
+                </div>
+
+                <div className="flex flex-col items-center justify-center px-4">
+                  <p className="text-sm text-gray-800 font-bold">Stickers</p>
+                  <p className="text-md font-bold text-purple-600  mt-5">{totalGenerated}</p>
+                </div>
+              </div>
+            </div>
+
             {brandData?.map((brand) => (
               <div
                 key={brand.brandId}
@@ -178,8 +203,8 @@ const ProductWarrantyPage = (props) => {
       </div>
 
       {loading === true ? (
-       <div className="flex justify-center items-center  h-[80vh]">
-            <ReactLoader />
+        <div className="flex justify-center items-center  h-[80vh]">
+          <ReactLoader />
         </div>
       ) : (
         <>
@@ -274,7 +299,7 @@ const ProductWarrantyPage = (props) => {
                     <TableCell>{row.warrantyInDays}</TableCell>
                     <TableCell>{row?.records[0]?.batchNo}</TableCell>
                     {props?.user?.role === "ADMIN" &&
-                      <TableCell>{row.isDeleted===true? "Yes":"No"}</TableCell>
+                      <TableCell>{row.isDeleted === true ? "Yes" : "No"}</TableCell>
                     }
                     <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="flex">

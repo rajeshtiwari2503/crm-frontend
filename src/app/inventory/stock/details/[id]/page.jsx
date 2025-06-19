@@ -45,7 +45,7 @@ const OrderDetails = ({ params }) => {
 
     const GetStock = async () => {
         try {
-            const req=user?.user?.role==="ADMIN"?`/getStockById/${params?.id}`:`/getStockByCenterId/${params?.id}`
+            const req=user?.user?.role==="ADMIN" || user?.user?.role==="EMPLOYEE"?`/getStockById/${params?.id}`:`/getStockByCenterId/${params?.id}`
             let response = await http_request.get(req)
             let { data } = response
             setOrders(data);
@@ -144,7 +144,7 @@ const OrderDetails = ({ params }) => {
                         <Toaster />
                         <div className='flex justify-between items-center mt-10 mb-3'>
                             <div className='font-bold text-2xl'>Stock Information</div>
-                            {userData?.user?.role === "ADMIN" ? 
+                            {userData?.user?.role === "ADMIN" || userData?.user?.role==="EMPLOYEE"? 
                                  <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
                                     <Add style={{ color: "white" }} />
                                     <div className=' ml-2 '>Add Stock</div>

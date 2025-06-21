@@ -110,64 +110,19 @@ import DealerDashboard from './deallerDashboard';
 import TechnicianDashboard from './technicianDashboard';
 import http_request from "../../../http-request";
 import { useUser } from '../components/UserContext';
-import { Dialog } from '@mui/material';
  
-import { useSocketContext } from '../components/socketContext/SocketContext';
-
-
-
+ 
 
 const Dashboard = () => {
   const { user } = useUser();
-  const { socket, onlineUsers } = useSocketContext();
-
-  const isOnline = onlineUsers.includes(user?.user?._id)
-  // console.log("isOnline", isOnline);
-  // console.log("user",user);
+  
 
   const [value, setValue] = useState(user);
   const [dashData, setData] = useState("");
 
-  // Notification state
-  const [open, setOpen] = useState(false);
-  const [notification, setNotification] = useState(null);
-// console.log("notification",notification);
-
-
-  useEffect(() => {
-    if (!socket || !user?.user?._id) return;
-
-    const currentUserId = user.user._id;
-    const currentUserRole = user.user.role;
-
-    const handleComplaintUpdate = (data) => {
-      // console.log("🔔 Received update via socket:", data);
-
-      const isForServiceCenter = currentUserRole === 'SERVICE' &&
-        data?.assignedTo?.serviceCenterId === currentUserId;
-
-      const isForBrand = currentUserRole === 'BRAND' &&
-        data?.brandId === currentUserId;
-
-      const isForAdmin = currentUserRole === 'ADMIN';
-
-      console.log("🔍 Check Roles =>",
-        { currentUserRole, currentUserId, isForServiceCenter, isForBrand, isForAdmin });
-
-      if (isForServiceCenter || isForBrand || isForAdmin) {
-        setNotification(data);
-        setOpen(true); // ✅ Correct state name
-      } else {
-        console.log("⚠️ Complaint update not for this user.");
-      }
-    };
-
-    socket.on("complaintStatusUpdated", handleComplaintUpdate);
-
-    return () => {
-      socket.off("complaintStatusUpdated", handleComplaintUpdate);
-    };
-  }, [socket, user]);
+  
+ 
+ 
 
   useEffect(() => {
     if (user) {
@@ -240,71 +195,7 @@ const Dashboard = () => {
           ""
         )}
 
-        {/* 🔔 Notification Popup Dialog */}
-        <Dialog open={open} onClose={() => setOpen(false)}>
-          <div className="p-6 w-96">
-            <h2 className="text-lg font-bold text-gray-800 mb-2">🔔 Complaint Update</h2>
-
-            <p className="text-sm text-gray-700">
-              <strong>Complaint Number:</strong> {notification?.complaintNumber}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Status:</strong>{" "}
-              <span className="font-medium text-blue-600">{notification?.status}</span>
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Assigned To (Service Center):</strong>{" "}
-              {notification?.assignServiceCenter || notification?.assignedTo?.serviceCenterId || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Customer Name:</strong> {notification?.fullName || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Phone Number:</strong> {notification?.phoneNumber || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Product Brand:</strong> {notification?.productBrand || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Product Name:</strong> {notification?.productName || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>District:</strong> {notification?.district || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>State:</strong> {notification?.state || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Pincode:</strong> {notification?.pincode || "N/A"}
-            </p>
-
-            <p className="text-sm text-gray-500 mt-2">
-              <strong>Updated At:</strong>{" "}
-              {notification?.updatedAt ? new Date(notification.updatedAt).toLocaleString() : "N/A"}
-            </p>
-
-            <p className="text-xl text-green-600 mt-4">{notification?.message}</p>
-
-            <div className="flex justify-center mt-6">
-              <button
-                onClick={() => setOpen(false)}
-                className="px-4 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-
-        </Dialog>
+     
 
       </>
     </Sidenav>

@@ -54,12 +54,12 @@ export const NotificationProvider = ({ children }) => {
         };
 
         socket.on('complaintStatusUpdated', onComplaintUpdate);
-        // socket.on('warrantyUpdated', onWarrantyUpdate);
+        socket.on('warrantyActivated', onWarrantyUpdate);
         // socket.on('stickerGenerated', onStickerGenerated);
 
         return () => {
             socket.off('complaintStatusUpdated', onComplaintUpdate);
-            //   socket.off('warrantyUpdated', onWarrantyUpdate);
+              socket.off('warrantyActivated', onWarrantyUpdate);
             //   socket.off('stickerGenerated', onStickerGenerated);
         };
     }, [socket, user]);

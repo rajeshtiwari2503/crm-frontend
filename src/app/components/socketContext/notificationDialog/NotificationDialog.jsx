@@ -3,6 +3,7 @@
 import React from 'react';
 import { Dialog } from '@mui/material';
 import AssignService from './AssignServiceCenter';
+import WarrantyActivation from './WarrantyActivation';
 
 const NotificationDialog = ({ notification, onClose }) => {
   if (!notification) return null;
@@ -17,11 +18,7 @@ const NotificationDialog = ({ notification, onClose }) => {
         )}
 
         {type === 'warranty' && (
-          <>
-            <h2 className="text-lg font-bold mb-2">🛡️ Warranty Updated</h2>
-            <p><strong>Product:</strong> {data?.productName}</p>
-            <p><strong>New Warranty Status:</strong> {data?.newWarrantyStatus}</p>
-          </>
+          <WarrantyActivation data={data} />
         )}
 
         {type === 'sticker' && (

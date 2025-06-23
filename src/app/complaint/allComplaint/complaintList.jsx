@@ -1088,13 +1088,13 @@ const ComplaintList = (props) => {
         </IconButton>
         <DialogContent>
           <form onSubmit={handleSubmit(asignCenter)}>
-            <>
+            <div>
               {loading ? (
-                <ReactLoader />
+               <div className="flex items-center justify-center  "> <ReactLoader /></div>
               ) : filterSer?.length > 0 ? (
                 <>
-                  <div className='w-full  '>
-                    <div className='flex justify-between items-center gap-3'>
+                  <div className='w-full mb-10 '>
+                    <div className='flex justify-between items-center  '>
                       <div className='md:w-[600px] w-full'>
                         <label id="service-center-label" className="block text-sm font-medium text-white ">
                           Assign  Service Center
@@ -1194,7 +1194,7 @@ const ComplaintList = (props) => {
               ) : (
                 <p className="w-[350px] mb-7 text-center text-red-500 text-lg font-bold">No service centers found this complaint pencode .</p>
               )}
-            </>
+            </div>
 
           </form>
         </DialogContent>

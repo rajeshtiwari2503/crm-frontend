@@ -3,7 +3,9 @@ import './globals.css';
 import { UserProvider } from './components/UserContext';
 import Script from 'next/script';
 import InternetStatusPopup from './components/common/NoInternetPage';
-
+import { SocketProvider } from './components/socketContext/SocketContext';
+import { NotificationProvider } from './components/socketContext/NotificationContext';
+ 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata = {
@@ -29,9 +31,13 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className={inter.className}>
-        <UserProvider>  
+        <UserProvider> 
+          <SocketProvider>
+             <NotificationProvider>
           <InternetStatusPopup />
           {children}
+          </NotificationProvider>
+          </SocketProvider> 
         </UserProvider>
       </body>
     </html>

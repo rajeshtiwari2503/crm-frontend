@@ -13,6 +13,7 @@ import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '../../components/common/Loading';
 import AddStock from './addStock';
+import DownloadExcel from '@/app/components/DownLoadExcel';
 
 const StockList = (props) => {
 
@@ -100,7 +101,7 @@ const StockList = (props) => {
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Stock Information</div>
-        {userData?.user?.role === "SERVICE"   ? ""
+        {userData?.user?.role === "SERVICE" ? ""
           : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 '>Add Stock</div>
@@ -108,24 +109,46 @@ const StockList = (props) => {
         }
       </div>
       {(userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE") && (
-        <FormControl fullWidth style={{ marginBottom: '20px' }}>
-          <InputLabel id="brand-select-label">Select Brand</InputLabel>
-          <Select
-            labelId="brand-select-label"
-            value={selectedBrand}
-            onChange={(e) => setSelectedBrand(e.target.value)}
-            label="Select Brand"
-          >
-            <MenuItem value="">
-              <em>All Brands</em>
-            </MenuItem>
-            {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
-              <MenuItem key={brand} value={brand}>
-                {brand}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <div className="w-full grid grid-cols-1 md:grid-cols-2  items-center  justify-between gap-4   mb-5">
+          <div className='w-full mt-5'>
+            <FormControl fullWidth style={{ marginBottom: '20px' }}>
+              <InputLabel id="brand-select-label">Select Brand</InputLabel>
+              <Select
+                labelId="brand-select-label"
+                value={selectedBrand}
+                onChange={(e) => setSelectedBrand(e.target.value)}
+                label="Select Brand"
+              >
+                <MenuItem value="">
+                  <em>All Brands</em>
+                </MenuItem>
+                {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
+                  <MenuItem key={brand} value={brand}>
+                    {brand}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <div className="">
+            {sortedData.length > 0 && (
+              <DownloadExcel
+                data={data}
+                fileName="StockList"
+                fieldsToInclude={[
+                  "brandId",
+                  "brandName",
+                  "freshStock",
+                  "defectiveStock",
+                  "sparepartName",
+                  "createdAt",
+                  "updatedAt",
+                ]}
+              />
+            )}
+          </div>
+        </div>
+
       )}
       {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :

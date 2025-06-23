@@ -20,26 +20,26 @@ const originUrl="https://crm-backend-weld-pi.vercel.app"
 
 // const originUrl="http://localhost:5000"
 
-useEffect(()=>{
-   if(user){
-    const socket=io(originUrl,{
-       query:{ userId:user?.user?._id,
-       },
-    });
-    setSocket(socket)
-    socket.on("getOnline",(users)=>{
-        setOnlineUsers(users)
-        console.log("getOnline",users)
-    });
-    return ()=> socket.close();
-   }
-   else{
-    if(socket){
-        socket.close();
-        setSocket(null);
-    }
-   }
-},[user])
+// useEffect(()=>{
+//    if(user){
+//     const socket=io(originUrl,{
+//        query:{ userId:user?.user?._id,
+//        },
+//     });
+//     setSocket(socket)
+//     socket.on("getOnline",(users)=>{
+//         setOnlineUsers(users)
+//         console.log("getOnline",users)
+//     });
+//     return ()=> socket.close();
+//    }
+//    else{
+//     if(socket){
+//         socket.close();
+//         setSocket(null);
+//     }
+//    }
+// },[user])
 return (
     <socketContext.Provider value={{socket,onlineUsers}}>
         {children}

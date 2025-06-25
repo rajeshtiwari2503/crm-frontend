@@ -1,6 +1,6 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { useEffect, useState } from "react";
-import http_request from '.././../../../http-request'
+import http_request from '../../../../http-request'
 import { ToastMessage } from "@/app/components/common/Toastify";
 import { Toaster } from "react-hot-toast";
 import { ReactLoader } from "@/app/components/common/Loading";

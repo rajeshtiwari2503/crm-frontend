@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import { useUser } from '@/app/components/UserContext';
 import { ReactLoader } from '@/app/components/common/Loading';
-import CourierOrderList from './OrderList';
+import CourierOrderList from './CourierOrderList';
  
 
 const DtdcOrderPage = () => {

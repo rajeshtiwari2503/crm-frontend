@@ -16,7 +16,7 @@ import CreateOrderDialog from './addOrder';
 
 
 
-const OrderList = (props) => {
+const CourierOrderList = (props) => {
 
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm();
 
@@ -475,7 +475,7 @@ const handleDownloadLabel = async (awb) => {
   );
 };
 
-export default OrderList;
+export default CourierOrderList;
 
 function stableSort(array, comparator) {
   const stabilizedThis = array?.map((el, index) => [el, index]);

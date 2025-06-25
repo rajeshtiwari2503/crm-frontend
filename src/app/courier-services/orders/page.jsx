@@ -1,5 +1,3 @@
- 
-
 
 'use client';
 
@@ -7,9 +5,9 @@ import React, { useEffect, useState } from 'react';
 import http_request from '../../../../http-request';
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
-import OrderList from './orderList';
 import { useUser } from '@/app/components/UserContext';
 import { ReactLoader } from '@/app/components/common/Loading';
+import CourierOrderList from './OrderList';
  
 
 const DtdcOrderPage = () => {
@@ -119,7 +117,7 @@ const DtdcOrderPage = () => {
           {loading ? (
             <ReactLoader />
           ) : (
-            <OrderList
+            <CourierOrderList
               data={data}
               userData={value}
               brand={brands}

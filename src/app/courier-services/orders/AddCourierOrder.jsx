@@ -39,6 +39,7 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
         try {
             setLoading(true);
 
+
             const pinResponse = await http_request.post('/validate-pincode', {
                 orgPincode: data.origin_pincode,
                 desPincode: data.dest_pincode,
@@ -63,6 +64,13 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                 service_type_id: data.service_type_id || "B2C PRIORITY",
                 load_type: data.load_type || "NON-DOCUMENT",
                 description: data.description || "Spare Parts Shipment",
+
+                // ✅ Added new fields below
+                spareParts: data.spareParts,                // array of spare parts
+                brandId: data.brandId,
+                brandName: data.brandName,
+                serviceCenterId: data.serviceCenterId,
+                serviceCenter: data.serviceCenter,
 
                 declared_value: parseFloat(data.declared_value),
                 num_pieces: parseInt(data.num_pieces),
@@ -302,11 +310,59 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                             {/* Origin */}
                             <div>
                                 <h4 className="font-semibold">Sparepart</h4>
-                                <input {...register('description')} placeholder="Description" className="border p-2 w-full" />
-                                <input {...register('length')} placeholder="Length (cm)" className="border p-2 w-full" />
-                                <input {...register('width')} placeholder="Width (cm)" className="border p-2 w-full" />
-                                <input {...register('height')} placeholder="Height (cm)" className="border p-2 w-full" />
-                                <input {...register('weight')} placeholder="Weight (kg)" className="border p-2 w-full" />
+                                <input
+                                    {...register('description', {
+                                        required: 'Description is required',
+                                        minLength: { value: 3, message: 'Minimum 3 characters' },
+                                    })}
+                                    placeholder="Description"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Length */}
+                                <input
+                                    type="number"
+                                    {...register('length', {
+                                        required: 'Length is required',
+                                        min: { value: 1, message: 'Minimum value is 1 cm' },
+                                    })}
+                                    placeholder="Length (cm)"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Width */}
+                                <input
+                                    type="number"
+                                    {...register('width', {
+                                        required: 'Width is required',
+                                        min: { value: 1, message: 'Minimum value is 1 cm' },
+                                    })}
+                                    placeholder="Width (cm)"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Height */}
+                                <input
+                                    type="number"
+                                    {...register('height', {
+                                        required: 'Height is required',
+                                        min: { value: 1, message: 'Minimum value is 1 cm' },
+                                    })}
+                                    placeholder="Height (cm)"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Weight */}
+                                <input
+                                    type="number"
+                                    step="0.01"
+                                    {...register('weight', {
+                                        required: 'Weight is required',
+                                        min: { value: 0.1, message: 'Minimum weight is 0.1 kg' },
+                                    })}
+                                    placeholder="Weight (kg)"
+                                    className="border p-2 w-full"
+                                />
                                 <input {...register('declared_value')} placeholder="Declared Value" className="border p-2 w-full" />
                                 <input {...register('num_pieces')} placeholder="No. of Pieces" defaultValue="1" className="border p-2 w-full" />
                             </div>
@@ -318,7 +374,24 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                 <input {...register('origin_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
                                 <input {...register('origin_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
                                 <input {...register('origin_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
-                                <input {...register('origin_pincode')} placeholder="Pincode" className="border p-2 w-full" />
+                                <input
+                                    type="number"
+                                    {...register('origin_pincode', {
+                                        required: 'Pincode is required',
+                                        pattern: {
+                                            value: /^[0-9]{6}$/,
+                                            message: 'Pincode must be a 6-digit number',
+                                        },
+                                    })}
+                                    placeholder="Pincode"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Show error if validation fails */}
+                                {errors.origin_pincode && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.origin_pincode.message}</p>
+                                )}
+
                                 <input {...register('origin_city')} placeholder="City" className="border p-2 w-full" />
                                 <input {...register('origin_state')} placeholder="State" className="border p-2 w-full" />
                             </div>
@@ -331,7 +404,25 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                 <input {...register('dest_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
                                 <input {...register('dest_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
                                 <input {...register('dest_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
-                                <input {...register('dest_pincode')} placeholder="Pincode" className="border p-2 w-full" />
+
+                                <input
+                                    type="number"
+                                    {...register('dest_pincode', {
+                                        required: 'Pincode is required',
+                                        pattern: {
+                                            value: /^[0-9]{6}$/,
+                                            message: 'Pincode must be a 6-digit number',
+                                        },
+                                    })}
+                                    placeholder="Pincode"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Show error if validation fails */}
+                                {errors.dest_pincode && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.dest_pincode.message}</p>
+                                )}
+
                                 <input {...register('dest_city')} placeholder="City" className="border p-2 w-full" />
                                 <input {...register('dest_state')} placeholder="State" className="border p-2 w-full" />
                             </div>
@@ -343,7 +434,25 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                 <input {...register('return_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
                                 <input {...register('return_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
                                 <input {...register('return_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
-                                <input {...register('return_pincode')} placeholder="Pincode" className="border p-2 w-full" />
+ 
+                                <input
+                                    type="number"
+                                    {...register('return_pincode', {
+                                        required: 'Pincode is required',
+                                        pattern: {
+                                            value: /^[0-9]{6}$/,
+                                            message: 'Pincode must be a 6-digit number',
+                                        },
+                                    })}
+                                    placeholder="Pincode"
+                                    className="border p-2 w-full"
+                                />
+
+                                {/* Show error if validation fails */}
+                                {errors.return_pincode && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.return_pincod.message}</p>
+                                )}
+
                                 <input {...register('return_city')} placeholder="City" className="border p-2 w-full" />
                                 <input {...register('return_state')} placeholder="State" className="border p-2 w-full" />
                             </div>

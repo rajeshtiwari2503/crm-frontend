@@ -322,6 +322,7 @@ const { user } = useUser();
   userData={user}
   data={reportData?.complaints?.map(complaint => {
     const createdAt = new Date(complaint.createdAt);
+    const updatedAt = new Date(complaint.updatedAt);
     const now = new Date(); // current date and time
     // const durationMs = now - createdAt;
     
@@ -333,7 +334,7 @@ const { user } = useUser();
     // aging = `${durationDays}d`;
 
 const start = new Date(createdAt.setHours(0, 0, 0, 0));
-const end = new Date(now.setHours(0, 0, 0, 0));
+const end = new Date(updatedAt.setHours(0, 0, 0, 0));
 end.setDate(end.getDate() - 1);
 
 let agingDays = 0;
@@ -382,6 +383,7 @@ let aging = `${agingDays}d`;
   fileName="ComplaintsList"
   fieldsToInclude={[ 
     "complaintId",
+    "uniqueId",
     "productBrand",   
     "categoryName",
     "subCategoryName",

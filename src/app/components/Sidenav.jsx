@@ -396,10 +396,10 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending',  'In Progress', 'Part Pending','Assign', 'Upcomming', 'Final Verification', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming',  'Final Verification','Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Upcomming', 'Close', 'All Service']
+  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'In Progress', 'Part Pending', 'Assign', 'Upcomming', 'Final Verification', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Final Verification', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Upcomming', 'Close', 'All Service']
   const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Employee', 'Dealer', 'Customer', 'Technician'] : (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES") ? ['Service', 'Dealer', 'Customer', 'Employee'] : value?.user?.role === "BRAND" ? ['Dealer', 'Customer',] : value?.user?.role === "EMPLOYEE" ? ['Service'] : []
   const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
-  const inventory = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? [ "inventory","Stock", "Order"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
+  const inventory = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ["inventory", "Stock", "Order"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
     <>
       {value ?
@@ -898,8 +898,20 @@ function Sidenav(props) {
             }
 
 
-         
 
+            {/* {value?.user?.role === "ADMIN"
+              ? <ListItem onClick={(event) => {
+                router.push(`/courier-services/orders`)
+              }} disablePadding className={pathname.startsWith("/courier-services/orders") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/courier-services/orders") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <LocalShipping style={{ color: pathname.startsWith("/courier-services/orders") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Courier Services "} />
+                 
+                </ListItemButton>
+              </ListItem>
+              : ""} */}
 
             {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE"
               ?
@@ -1109,7 +1121,7 @@ function Sidenav(props) {
               </ListItem>
               : ""}
 
-   {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER"|| value?.user?.role === "SERVICE"
+            {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER" || value?.user?.role === "SERVICE"
               ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
                 <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                   <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>

@@ -318,6 +318,9 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                     placeholder="Description"
                                     className="border p-2 w-full"
                                 />
+                                {errors.description && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
+                                )}
 
                                 {/* Length */}
                                 <input
@@ -329,6 +332,9 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                     placeholder="Length (cm)"
                                     className="border p-2 w-full"
                                 />
+                                {errors.length && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.length.message}</p>
+                                )}
 
                                 {/* Width */}
                                 <input
@@ -340,6 +346,9 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                     placeholder="Width (cm)"
                                     className="border p-2 w-full"
                                 />
+                                {errors.width && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.width.message}</p>
+                                )}
 
                                 {/* Height */}
                                 <input
@@ -351,6 +360,9 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                     placeholder="Height (cm)"
                                     className="border p-2 w-full"
                                 />
+                                {errors.height && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.height.message}</p>
+                                )}
 
                                 {/* Weight */}
                                 <input
@@ -363,6 +375,10 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                                     placeholder="Weight (kg)"
                                     className="border p-2 w-full"
                                 />
+                                {errors.weight && (
+                                    <p className="text-red-500 text-sm mt-1">{errors.weight.message}</p>
+                                )}
+
                                 <input {...register('declared_value')} placeholder="Declared Value" className="border p-2 w-full" />
                                 <input {...register('num_pieces')} placeholder="No. of Pieces" defaultValue="1" className="border p-2 w-full" />
                             </div>
@@ -370,9 +386,39 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                             <div>
                                 <h4 className="font-semibold">Origin</h4>
                                 <input {...register('origin_name')} placeholder="Name" className="border p-2 w-full" />
-                                <input {...register('origin_phone')} placeholder="Phone" className="border p-2 w-full" />
+
+                                <input
+                                    type="tel"
+                                    {...register('origin_phone', {
+                                        required: 'Phone number is required',
+                                        pattern: {
+                                            value: /^[6-9]\d{9}$/,
+                                            message: 'Enter a valid 10-digit phone number',
+                                        },
+                                    })}
+                                    placeholder="Phone"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.origin_phone && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.origin_phone.message}</p>
+                                )}
                                 <input {...register('origin_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
-                                <input {...register('origin_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
+
+                                <input
+                                    type="text"
+                                    {...register('origin_address1', {
+                                        required: 'Address Line 1 is required',
+                                        minLength: {
+                                            value: 5,
+                                            message: 'Address should be at least 5 characters',
+                                        },
+                                    })}
+                                    placeholder="Address Line 1"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.origin_address1 && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.origin_address1.message}</p>
+                                )}
                                 <input {...register('origin_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
                                 <input
                                     type="number"
@@ -400,9 +446,39 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                             <div>
                                 <h4 className="font-semibold">Destination</h4>
                                 <input {...register('dest_name')} placeholder="Name" className="border p-2 w-full" />
-                                <input {...register('dest_phone')} placeholder="Phone" className="border p-2 w-full" />
+                                <input
+                                    type="tel"
+                                    {...register('dest_phone', {
+                                        required: 'Phone number is required',
+                                        pattern: {
+                                            value: /^[6-9]\d{9}$/,
+                                            message: 'Enter a valid 10-digit phone number',
+                                        },
+                                    })}
+                                    placeholder="Phone"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.dest_phone && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.dest_phone.message}</p>
+                                )}
+
                                 <input {...register('dest_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
-                                <input {...register('dest_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
+                                <input
+                                    type="text"
+                                    {...register('dest_address1', {
+                                        required: 'Address Line 1 is required',
+                                        minLength: {
+                                            value: 5,
+                                            message: 'Address should be at least 5 characters',
+                                        },
+                                    })}
+                                    placeholder="Address Line 1"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.dest_address1 && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.dest_address1.message}</p>
+                                )}
+
                                 <input {...register('dest_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
 
                                 <input
@@ -430,11 +506,42 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                             <div>
                                 <h4 className="font-semibold">Return</h4>
                                 <input {...register('return_name')} placeholder="Name" className="border p-2 w-full" />
-                                <input {...register('return_phone')} placeholder="Phone" className="border p-2 w-full" />
+
+                                <input
+                                    type="tel"
+                                    {...register('return_phone', {
+                                        required: 'Phone number is required',
+                                        pattern: {
+                                            value: /^[6-9]\d{9}$/,
+                                            message: 'Enter a valid 10-digit phone number',
+                                        },
+                                    })}
+                                    placeholder="Phone"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.return_phone && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.return_phone.message}</p>
+                                )}
                                 <input {...register('return_alt_phone')} placeholder="Alternate Phone" className="border p-2 w-full" />
-                                <input {...register('return_address1')} placeholder="Address Line 1" className="border p-2 w-full" />
+
+                                <input
+                                    type="text"
+                                    {...register('return_address1', {
+                                        required: 'Address Line 1 is required',
+                                        minLength: {
+                                            value: 5,
+                                            message: 'Address should be at least 5 characters',
+                                        },
+                                    })}
+                                    placeholder="Address Line 1"
+                                    className="border p-2 w-full"
+                                />
+                                {errors.return_address1 && (
+                                    <p className="text-red-600 text-sm mt-1">{errors.return_address1.message}</p>
+                                )}
+
                                 <input {...register('return_address2')} placeholder="Address Line 2" className="border p-2 w-full" />
- 
+
                                 <input
                                     type="number"
                                     {...register('return_pincode', {
@@ -460,7 +567,7 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
 
                         </fieldset>
                         {/* Section 3: Invoice & Reference */}
-                        <fieldset className="grid grid-cols-3 gap-4 border p-4 rounded">
+                        <fieldset className="grid grid-cols-3 gap-4 border p-4 mt-3 rounded">
                             <legend className="font-semibold col-span-2">🧾 Invoice & Reference</legend>
                             <input {...register('customer_reference_number')} placeholder="Customer Reference Number (Order ID)" className="border p-2" />
                             <input {...register('cod_collection_mode')} placeholder="COD Mode" className="border p-2" />
@@ -488,7 +595,7 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
                             </button>
                         </div>
                     </form>
-                </div>
+                </div >
             }
         </>
     );

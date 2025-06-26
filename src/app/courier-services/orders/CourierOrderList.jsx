@@ -11,7 +11,7 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '../../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
- 
+
 import CreateOrderDialog from './AddCourierOrder';
 
 
@@ -39,6 +39,9 @@ const CourierOrderList = (props) => {
   const [stockType, setStockType] = useState('Fresh Stock'); // Initialize stockType with "Fresh Stock"
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedBrandFiltr, setSelectedBrandFiltr] = useState("");
+
+  const [openTrackDialog, setOpenTrackDialog] = useState(false);
+  const [trackingData, setTrackingData] = useState(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -96,7 +99,7 @@ const CourierOrderList = (props) => {
       console.log(err);
     }
   }
- 
+
 
   const handleDelete = (id) => {
     setConfirmBoxView(true);
@@ -121,56 +124,61 @@ const CourierOrderList = (props) => {
     router.push(`/inventory/order/details/${id}`)
   }
 
- 
-const handleCancelShipment = async (awb) => {
-  try {
-    const res = await axios.post(`/dtdc/cancel`, {
-      AWBNo: [awb],
-      customer_code: "GL017",
-    });
-    console.log("🛑 Shipment Cancelled:", res.data);
-    ToastMessage({ status: true, msg: "Consignment cancelled" });
-  } catch (err) {
-    console.error("❌ Error cancelling shipment:", err.response?.data || err.message);
-    ToastMessage({ status: false, msg:"Error cancelling consignment"});
-  }
-};
 
-const handleTrackShipment = async (awb) => {
-  try {
-    const res = await axios.get(`/dtdc/track?awb=${awb}`);
-    console.log("📦 Tracking Info:", res.data);
-    ToastMessage({ status: true, msg: "Tracking data fetched" });
-  } catch (err) {
-    console.error("❌ Error tracking shipment:", err.response?.data || err.message);
-    ToastMessage({ status: false, msg: "Error fetching tracking info" });
-  }
-};
+  const handleCancelShipment = async (awb) => {
+    try {
+      const res = await axios.post(`/dtdc/cancel`, {
+        AWBNo: [awb],
+        customer_code: "GL017",
+      });
+      console.log("🛑 Shipment Cancelled:", res.data);
+      ToastMessage({ status: true, msg: "Consignment cancelled" });
+    } catch (err) {
+      console.error("❌ Error cancelling shipment:", err.response?.data || err.message);
+      ToastMessage({ status: false, msg: "Error cancelling consignment" });
+    }
+  };
 
-const handleDownloadLabel = async (awb) => {
-  try {
-    const res = await http_request.get(`/dtdc/label?awb=${awb}`, {
-      responseType: "blob", // Important for PDF
-    });
-    const url = window.URL.createObjectURL(new Blob([res.data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute("download", `${awb}_label.pdf`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  } catch (err) {
-    console.error("❌ Error downloading label:", err.response?.data || err.message);
-    ToastMessage({ status: false, msg:"Error downloading label"});
-  }
-};
-   
+  const handleTrackShipment = async (awb) => {
+    try {
+      const res = await http_request.get(`/dtdc/track/${awb}`);
+      console.log("📦 Tracking Info:", res.data);
+
+      setTrackingData(res.data); // set tracking response
+      setOpenTrackDialog(true);  // open dialog
+
+      ToastMessage({ status: true, msg: "Tracking data fetched" });
+    } catch (err) {
+      console.error("❌ Error tracking shipment:", err.response?.data || err.message);
+      ToastMessage({ status: false, msg: "Error fetching tracking info" });
+    }
+  };
 
 
-  
-  
-  
-  
+  const handleDownloadLabel = async (awb) => {
+    try {
+      const res = await http_request.get(`/dtdc/label?awb=${awb}`, {
+        responseType: "blob", // Important for PDF
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `${awb}_label.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error("❌ Error downloading label:", err.response?.data || err.message);
+      ToastMessage({ status: false, msg: "Error downloading label" });
+    }
+  };
+
+
+
+
+
+
+
 
   return (
     <div>
@@ -246,9 +254,9 @@ const handleDownloadLabel = async (awb) => {
                   <TableCell>Quantity</TableCell>
                   <TableCell>Total_Price</TableCell>
                   <TableCell>Status</TableCell>
-                
+
                   <TableCell>Docket_No.</TableCell>
-               
+
                   <TableCell>Order Date</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -269,43 +277,43 @@ const handleDownloadLabel = async (awb) => {
                     <TableCell>{row.spareParts.reduce((sum, part) => sum + part.quantity, 0)}</TableCell>
                     <TableCell>  ₹{row.spareParts.reduce((sum, part) => sum + part.price, 0).toLocaleString()}</TableCell>
                     <TableCell>{row.status}</TableCell>
-                   
+
                     <TableCell>{row.docketNo}</TableCell>
-                  
-                    
+
+
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
                     <TableCell className="flex">
                       <div className='flex'>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                        <Visibility color="primary" />
-                      </IconButton>
-                      <button
-                        onClick={() => handleDownloadLabel(row._id)}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 shadow-sm transition"
-                      >
-                        🏷️ Label
-                      </button>
+                        <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                          <Visibility color="primary" />
+                        </IconButton>
+                        <button
+                          onClick={() => handleDownloadLabel("D1002099994")}
+                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 shadow-sm transition"
+                        >
+                          🏷️ Label
+                        </button>
 
-                      {/* Track */}
-                      <button
-                        onClick={() => handleTrackShipment(row._id)}
-                        className="flex items-center mx-2 gap-2 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 shadow-sm transition"
-                      >
-                        🚚 Track
-                      </button>
+                        {/* Track */}
+                        <button
+                          onClick={() => handleTrackShipment("D1002099994")}
+                          className="flex items-center mx-2 gap-2 px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 shadow-sm transition"
+                        >
+                          🚚 Track
+                        </button>
 
-                      {/* Cancel */}
-                      <button
-                        onClick={() => handleCancelShipment(row._id)}
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 shadow-sm transition"
-                      >
-                        ❌ Cancel
-                      </button>
-                      {props?.userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                        <DeleteIcon color="error" />
-                      </IconButton>
-                        : ""}
-                        </div>
+                        {/* Cancel */}
+                        <button
+                          onClick={() => handleCancelShipment(row._id)}
+                          className="flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 shadow-sm transition"
+                        >
+                          ❌ Cancel
+                        </button>
+                        {props?.userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                          <DeleteIcon color="error" />
+                        </IconButton>
+                          : ""}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -324,6 +332,22 @@ const handleDownloadLabel = async (awb) => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </>}
+      <Dialog open={openTrackDialog} onClose={() => setOpenTrackDialog(false)} fullWidth maxWidth="md">
+        <DialogTitle>📦 Tracking Info</DialogTitle>
+        <DialogContent dividers>
+          {trackingData ? (
+            <pre className="whitespace-pre-wrap text-sm text-gray-800">
+              {JSON.stringify(trackingData, null, 2)}
+            </pre>
+          ) : (
+            <p>No tracking data available</p>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenTrackDialog(false)} color="primary">Close</Button>
+        </DialogActions>
+      </Dialog>
+
       <Dialog open={order} maxWidth="md" fullWidth onClose={handleOrderClose}>
         <DialogTitle> Courier Order</DialogTitle>
         <IconButton

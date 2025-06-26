@@ -322,19 +322,19 @@ const { user } = useUser();
   userData={user}
   data={reportData?.complaints?.map(complaint => {
     const createdAt = new Date(complaint.createdAt);
-    const updatedAt = new Date(complaint.updatedAt);
-    const now = new Date(); // current date and time
-    // const durationMs = now - createdAt;
-    
-    // const durationHours = Math.floor(durationMs / (1000 * 60 * 60));
-    // const durationMinutes = Math.floor((durationMs / (1000 * 60)) % 60);
-    // const durationDays = Math.floor(durationHours / 24);
-    
-    // let aging = '';
-    // aging = `${durationDays}d`;
+const now = new Date();
 
+// Use complaintCloseTime if available, else use today
+const isClosed = !!complaint.complaintCloseTime;
+const endDate = isClosed
+  ? new Date(complaint.complaintCloseTime)
+  : new Date(now);
+
+// Normalize both dates to midnight
 const start = new Date(createdAt.setHours(0, 0, 0, 0));
-const end = new Date(updatedAt.setHours(0, 0, 0, 0));
+const end = new Date(endDate.setHours(0, 0, 0, 0));
+
+// Exclude the closing day or today
 end.setDate(end.getDate() - 1);
 
 let agingDays = 0;

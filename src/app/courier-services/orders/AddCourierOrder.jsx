@@ -450,7 +450,7 @@ export default function CreateOrderDialog({ sparepart, userData, RefreshData, on
 
                                 {/* Show error if validation fails */}
                                 {errors.return_pincode && (
-                                    <p className="text-red-600 text-sm mt-1">{errors.return_pincod.message}</p>
+                                    <p className="text-red-600 text-sm mt-1">{errors.return_pincode.message}</p>
                                 )}
 
                                 <input {...register('return_city')} placeholder="City" className="border p-2 w-full" />

@@ -1,4 +1,4 @@
- 
+
 "use client"
 import React, { useEffect, useState } from 'react'
 import http_request from "../../../http-request"
@@ -7,14 +7,17 @@ import Sidenav from '@/app/components/Sidenav'
 import FeedbackList from './feedbackList';
 import { ReactLoader } from '../components/common/Loading';
 import BrandFeedbackTable from './brandFeedBackList';
+import { useUser } from '../components/UserContext';
 
 
 const Feedback = () => {
 
+  const { user } = useUser();
+
   const [feedbacks, setFeedbacks] = useState([])
 
   const [refresh, setRefresh] = useState("")
-   const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getAllFeedback()
@@ -26,52 +29,55 @@ const Feedback = () => {
       setLoading(true);
       let user = localStorage.getItem("user");
       let obj = JSON.parse(user);
-  
+
       // Construct the correct API endpoint based on user role
       const endpoint =
         obj?.user?.role === "ADMIN"
           ? `/getAllFeedback`
           : obj?.user?.role === "BRAND"
-          ? `/getFeedbackByBrandId/${obj?.user?._id}`
-          : obj?.user?.role === "SERVICE"
-          ? `/getFeedbackByServiceCenterId/${obj?.user?._id}`
-          : obj?.user?.role === "TECHNICIAN"
-          ? `/getFeedbackByTechnicianId/${obj?.user?._id}`
-          : `/getFeedbackByUserId/${obj?.user?._id}`;
-  
+            ? `/getFeedbackByBrandId/${obj?.user?._id}`
+            : obj?.user?.role === "SERVICE"
+              ? `/getFeedbackByServiceCenterId/${obj?.user?._id}`
+              : obj?.user?.role === "TECHNICIAN"
+                ? `/getFeedbackByTechnicianId/${obj?.user?._id}`
+                : `/getFeedbackByUserId/${obj?.user?._id}`;
+
       // Make the API call with the correct endpoint
       let response = await http_request.get(endpoint);
       let { data } = response;
-  
+
       setFeedbacks(data);
-       setLoading(false);
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       console.log(err);
     }
   };
-  
- 
-  const data = feedbacks?.map((item, index) => ({ ...item, i: index + 1}));
+
+
+  const data = feedbacks?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const RefreshData = (data) => {
     setRefresh(data)
   }
- 
+
   return (
     <Sidenav>
-        <>
+      <>
         <Toaster />
         <div className="flex justify-center">
           <div className="md:w-full w-[260px]">
-            {loading===true ? (
+            {loading === true ? (
               <div className="flex items-center justify-center h-[80vh]">
-                       <ReactLoader />
-                     </div>
+                <ReactLoader />
+              </div>
             ) : (
               <>
-              {/* <FeedbackList data={data} RefreshData={RefreshData} /> */}
-              <BrandFeedbackTable  />
+                <FeedbackList data={data} RefreshData={RefreshData} />
+                {user?.user?.role === "ADMIN" || user?.user?.role === "BRAND" ?
+                 <div className='mt-5'><BrandFeedbackTable /></div> 
+                  : ""
+                }
               </>
             )}
           </div>

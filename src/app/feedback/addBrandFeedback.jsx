@@ -29,7 +29,7 @@ export default function BrandFeedbackForm({ onClose ,RefreshData}) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-xl space-y-4">
       <h1 className="text-2xl font-bold">Servsy | Brand Feedback Form</h1>
       <p className="text-gray-600">Help us improve our service quality by sharing your honest feedback.</p>
 
@@ -44,8 +44,8 @@ export default function BrandFeedbackForm({ onClose ,RefreshData}) {
       <div>
         <h2 className="font-semibold text-lg">A. Overall Service Quality (1-5)</h2>
         {["installation", "repair", "sparePartHandling", "reverseLogistics", "technicalSupport"].map((field) => (
-          <div key={field} className="space-x-2 mt-2">
-            <label className="capitalize">{field.replace(/([A-Z])/g, ' $1')}: </label>
+          <div key={field} className="space-x-1 mt-2">
+            <label className="capitalize ">{field.replace(/([A-Z])/g, ' $1')}: </label>
             {[1, 2, 3, 4, 5].map((num) => (
               <label key={num}>
                 <input type="radio" value={num} {...register(`serviceRatings.${field}`)} required /> {num}
@@ -57,7 +57,7 @@ export default function BrandFeedbackForm({ onClose ,RefreshData}) {
 
       <div>
         <h2 className="font-semibold text-lg">B. Timeliness & SLA Adherence</h2>
-        <select {...register("timeliness")} className="border p-2 rounded mt-2">
+        <select {...register("timeliness")} className="border p-2 rounded w-full mt-2">
           <option>Always</option>
           <option>Sometimes</option>
           <option>Rarely</option>
@@ -67,7 +67,7 @@ export default function BrandFeedbackForm({ onClose ,RefreshData}) {
 
       <div>
         <h2 className="font-semibold text-lg">C. Customer Satisfaction Reports</h2>
-        <select {...register("customerSatisfaction")} className="border p-2 rounded mt-2">
+        <select {...register("customerSatisfaction")} className="border p-2 rounded w-full mt-2 mb-2">
           <option>Yes</option>
           <option>No</option>
           <option>Sometimes</option>
@@ -82,7 +82,7 @@ export default function BrandFeedbackForm({ onClose ,RefreshData}) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <input {...register("authorizedPersonName")} placeholder="Authorized Person Name" className="border p-2 rounded" required />
         <input {...register("signature")} placeholder="Signature" className="border p-2 rounded" />
-        <input {...register("date")} type="date" className="border p-2 rounded" required />
+        <input {...register("date")} type="date" className="border w-full md:col-span-2 p-2 rounded" required />
       </div>
       <div className="mt-4 flex justify-between  gap-4">
         <button

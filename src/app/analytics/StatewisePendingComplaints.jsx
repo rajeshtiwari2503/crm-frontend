@@ -346,6 +346,9 @@ const ComplaintAnalyticsPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [statewiseData, setStatewiseData] = useState([]);
+  const [productName, setProductName] = useState("");
+  const [detailedDescription, setDetailedDescription] = useState("");
+
 
   useEffect(() => {
     // Fetch data from the backend API
@@ -381,6 +384,21 @@ const ComplaintAnalyticsPage = () => {
       setLoadingSBT(false);
     }
   };
+  // const filteredData = data.filter((item) => {
+  //   const itemDate = new Date(item.date);
+  //   const start = startDate ? new Date(startDate) : null;
+  //   const end = endDate ? new Date(endDate) : null;
+
+  //   if (brand && item.brandName !== brand) return false;
+  //   if (state && item.state !== state) return false;
+  //   if (district && item.district !== district) return false;
+  //   if (start && itemDate < start) return false;
+  //   if (end && itemDate > end) return false;
+
+  //   return true;
+  // });
+
+
   const filteredData = data.filter((item) => {
     const itemDate = new Date(item.date);
     const start = startDate ? new Date(startDate) : null;
@@ -389,11 +407,14 @@ const ComplaintAnalyticsPage = () => {
     if (brand && item.brandName !== brand) return false;
     if (state && item.state !== state) return false;
     if (district && item.district !== district) return false;
+    if (productName && item.productName !== productName) return false;
+    if (detailedDescription && item.detailedDescription !== detailedDescription) return false;
     if (start && itemDate < start) return false;
     if (end && itemDate > end) return false;
 
     return true;
   });
+
   // console.log("filteredData",filteredData);
 
   const aggregateByKey = (items, key) => {
@@ -433,6 +454,8 @@ const ComplaintAnalyticsPage = () => {
   const brandChartData = aggregateByKey(filteredData, "brandName");
   const stateChartData = aggregateByKey(filteredData, "state");
   const districtChartData = aggregateByKey(filteredData, "district");
+  const productChartData = aggregateByKey(filteredData, "productName");
+  const issueChartData = aggregateByKey(filteredData, "detailedDescription");
 
   const chartOptions = (title) => ({
     title,
@@ -509,6 +532,31 @@ const ComplaintAnalyticsPage = () => {
                 </option>
               ))}
             </select>
+            <select
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              className="border border-gray-300 rounded p-2"
+            >
+              <option value="">Select Product</option>
+              {[...new Set(data.map((d) => d.productName).filter(Boolean))].map((p, i) => (
+                <option key={i} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={detailedDescription}
+              onChange={(e) => setDetailedDescription(e.target.value)}
+              className="border border-gray-300 rounded p-2"
+            >
+              <option value="">Select Issue</option>
+              {[...new Set(data.map((d) => d.detailedDescription).filter(Boolean))].map((desc, i) => (
+                <option key={i} value={desc}>
+                  {desc}
+                </option>
+              ))}
+            </select>
 
             <input
               type="date"
@@ -570,6 +618,26 @@ const ComplaintAnalyticsPage = () => {
                   options={chartOptions("Complaints by District")}
                 />
               )}
+              {productChartData.length > 1 && (
+                <Chart
+                  chartType="PieChart"
+                  width="100%"
+                  height="350px"
+                  data={productChartData}
+                  options={chartOptions("Complaints by Product")}
+                />
+              )}
+
+              {issueChartData.length > 1 && (
+                <Chart
+                  chartType="PieChart"
+                  width="100%"
+                  height="350px"
+                  data={issueChartData}
+                  options={chartOptions("Complaints by Issue Description")}
+                />
+              )}
+
             </div>
           )}
         </div>

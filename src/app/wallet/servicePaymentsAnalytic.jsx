@@ -7,11 +7,15 @@ import { ReactLoader } from '../components/common/Loading';
 const WalletPaymentSummary = () => {
   const [summary, setSummary] = useState([]);
   const [tatReport, setTatReport] = useState({});
-  const [month, setMonth] = useState('06');
-  const [year, setYear] = useState('2025');
+  // const [month, setMonth] = useState('06');
+  // const [year, setYear] = useState('2025');
+  const currentDate = new Date();
+  const [month, setMonth] = useState(String(currentDate.getMonth() + 1).padStart(2, '0')); // '07' for July
+  const [year, setYear] = useState(String(currentDate.getFullYear())); // '2025'
+
   const [sortBy, setSortBy] = useState('high');
   const [loading, setLoading] = useState(false);
-const [serviceCenterSearch, setServiceCenterSearch] = useState("");
+  const [serviceCenterSearch, setServiceCenterSearch] = useState("");
 
   const fetchData = async () => {
     setLoading(true);
@@ -51,87 +55,87 @@ const [serviceCenterSearch, setServiceCenterSearch] = useState("");
   // );
 
   const totalSummary = summary.reduce(
-  (acc, item) => {
-    acc.totalAmount += Number(item.totalAmount) || 0;
-    acc.totalUnpaid += Number(item.unpaidCount) || 0;
-    acc.totalPaid += Number(item.paidCount) || 0;
-    acc.totalComplaints += Number(item.totalComplaints) || 0;
-    acc.totalServiceCenters += 1;
-    return acc;
-  },
-  {
-    totalAmount: 0,
-    totalUnpaid: 0,
-    totalPaid: 0,
-    totalComplaints: 0,
-    totalServiceCenters: 0
-  }
-);
-
-const totalSummary1 = summary.reduce(
-  (acc, item) => {
-    acc.totalServiceCenters++;
-    acc.totalAmount += item.totalAmount;
-    acc.totalComplaints += item.totalComplaints || (item.paidCount + item.unpaidCount);
-    acc.totalPaid += item.paidCount;
-    acc.totalUnpaid += item.unpaidCount;
-    acc.totalPaidAmount += item.paidCount * item.averagePaymentPerComplaint;
-    acc.totalUnpaidAmount += item.unpaidCount * item.averagePaymentPerComplaint;
-
-    // ✅ Exclusive categorization of service centers:
-    if (item.unpaidCount > 0) {
-      // If there's at least one unpaid complaint, mark as Unpaid
-      acc.unpaidServiceCenters++;
-    } else if (item.paidCount > 0) {
-      // Only if all are paid, mark as Paid
-      acc.paidServiceCenters++;
+    (acc, item) => {
+      acc.totalAmount += Number(item.totalAmount) || 0;
+      acc.totalUnpaid += Number(item.unpaidCount) || 0;
+      acc.totalPaid += Number(item.paidCount) || 0;
+      acc.totalComplaints += Number(item.totalComplaints) || 0;
+      acc.totalServiceCenters += 1;
+      return acc;
+    },
+    {
+      totalAmount: 0,
+      totalUnpaid: 0,
+      totalPaid: 0,
+      totalComplaints: 0,
+      totalServiceCenters: 0
     }
+  );
 
-    return acc;
-  },
-  {
-    totalServiceCenters: 0,
-    totalAmount: 0,
-    totalComplaints: 0,
-    totalPaid: 0,
-    totalUnpaid: 0,
-    totalPaidAmount: 0,
-    totalUnpaidAmount: 0,
-    paidServiceCenters: 0,
-    unpaidServiceCenters: 0
-  }
-);
+  const totalSummary1 = summary.reduce(
+    (acc, item) => {
+      acc.totalServiceCenters++;
+      acc.totalAmount += item.totalAmount;
+      acc.totalComplaints += item.totalComplaints || (item.paidCount + item.unpaidCount);
+      acc.totalPaid += item.paidCount;
+      acc.totalUnpaid += item.unpaidCount;
+      acc.totalPaidAmount += item.paidCount * item.averagePaymentPerComplaint;
+      acc.totalUnpaidAmount += item.unpaidCount * item.averagePaymentPerComplaint;
+
+      // ✅ Exclusive categorization of service centers:
+      if (item.unpaidCount > 0) {
+        // If there's at least one unpaid complaint, mark as Unpaid
+        acc.unpaidServiceCenters++;
+      } else if (item.paidCount > 0) {
+        // Only if all are paid, mark as Paid
+        acc.paidServiceCenters++;
+      }
+
+      return acc;
+    },
+    {
+      totalServiceCenters: 0,
+      totalAmount: 0,
+      totalComplaints: 0,
+      totalPaid: 0,
+      totalUnpaid: 0,
+      totalPaidAmount: 0,
+      totalUnpaidAmount: 0,
+      paidServiceCenters: 0,
+      unpaidServiceCenters: 0
+    }
+  );
 
 
 
 
-console.log("totalSummary1",totalSummary1);
- const [filter, setFilter] = useState("all");
+  console.log("totalSummary1", totalSummary1);
+  const [filter, setFilter] = useState("all");
 
   // const filteredSummary = summary.filter(item => {
   //   if (filter === "paid") return item.paidCount > 0;
   //   if (filter === "unpaid") return item.unpaidCount > 0;
   //   return true;
   // });
-const filteredSummary = summary.filter(item => {
-  let matchesFilter = false;
+  const filteredSummary = summary.filter(item => {
+    let matchesFilter = false;
 
-  if (filter === "all") {
-    matchesFilter = true; // show all service centers
-  } else if (filter === "unpaid") {
-    // show if any unpaid complaints exist
-    matchesFilter = item.unpaidCount > 0;
-  } else if (filter === "paid") {
-    // show only if NO unpaid complaints AND paid complaints exist
-    matchesFilter = item.unpaidCount === 0 && item.paidCount > 0;
-  }
+    if (filter === "all") {
+      matchesFilter = true; // show all service centers
+    } else if (filter === "unpaid") {
+      // show if any unpaid complaints exist
+      matchesFilter = item.unpaidCount > 0;
+    } else if (filter === "paid") {
+      // show only if NO unpaid complaints AND paid complaints exist
+      matchesFilter = item.unpaidCount === 0 && item.paidCount > 0;
+    }
 
-  const matchesSearch = item.name
-    ?.toLowerCase()
-    .includes(serviceCenterSearch.toLowerCase());
+    const matchesSearch = item.name
+      ?.toLowerCase()
+      .includes(serviceCenterSearch.toLowerCase());
 
-  return matchesFilter && matchesSearch;
-});
+    return matchesFilter && matchesSearch;
+  });
 
 
   return (
@@ -160,33 +164,33 @@ const filteredSummary = summary.filter(item => {
           <option value="alpha">A-Z</option>
         </select>
         <input
-  type="text"
-  value={serviceCenterSearch}
-  onChange={(e) => setServiceCenterSearch(e.target.value)}
-  className="border p-2 rounded"
-  placeholder="Search Service Center..."
-/>
+          type="text"
+          value={serviceCenterSearch}
+          onChange={(e) => setServiceCenterSearch(e.target.value)}
+          className="border p-2 rounded"
+          placeholder="Search Service Center..."
+        />
 
-          <div className="flex justify-center gap-4 mt-6 mb-4">
-        <button
-          onClick={() => setFilter("all")}
-          className={`px-4 py-2 rounded ${filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-        >
-          All
-        </button>
-        <button
-          onClick={() => setFilter("paid")}
-          className={`px-4 py-2 rounded ${filter === "paid" ? "bg-green-600 text-white" : "bg-gray-200"}`}
-        >
-          Paid
-        </button>
-        <button
-          onClick={() => setFilter("unpaid")}
-          className={`px-4 py-2 rounded ${filter === "unpaid" ? "bg-red-600 text-white" : "bg-gray-200"}`}
-        >
-          Unpaid
-        </button>
-      </div>
+        <div className="flex justify-center gap-4  ">
+          <button
+            onClick={() => setFilter("all")}
+            className={`px-4 py-2 rounded ${filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilter("paid")}
+            className={`px-4 py-2 rounded ${filter === "paid" ? "bg-green-600 text-white" : "bg-gray-200"}`}
+          >
+            Paid
+          </button>
+          <button
+            onClick={() => setFilter("unpaid")}
+            className={`px-4 py-2 rounded ${filter === "unpaid" ? "bg-red-600 text-white" : "bg-gray-200"}`}
+          >
+            Unpaid
+          </button>
+        </div>
       </div>
 
       {/* Table */}
@@ -202,11 +206,11 @@ const filteredSummary = summary.filter(item => {
                 <h3 className="text-sm font-semibold mb-2"> Service Centers</h3>
                 <p className="text-xl font-bold">{totalSummary.totalServiceCenters}</p>
               </div>
-               <div>
+              <div>
                 <h3 className="text-sm font-semibold mb-2">Paid Service Centers</h3>
                 <p className="text-xl font-bold">{totalSummary1.paidServiceCenters}</p>
               </div>
-               <div>
+              <div>
                 <h3 className="text-sm font-semibold mb-2">Unpaid Service Centers</h3>
                 <p className="text-xl font-bold">{totalSummary1.unpaidServiceCenters}</p>
               </div>
@@ -221,7 +225,7 @@ const filteredSummary = summary.filter(item => {
               <div>
                 <h3 className="text-sm font-semibold mb-2">  Paid Amount</h3>
                 <p className="text-xl font-bold text-green-700">
-                ₹{Number(totalSummary1?.totalPaidAmount).toFixed(0).toLocaleString()}
+                  ₹{Number(totalSummary1?.totalPaidAmount).toFixed(0).toLocaleString()}
 
                 </p>
               </div>
@@ -229,7 +233,7 @@ const filteredSummary = summary.filter(item => {
               <div>
                 <h3 className="text-sm font-semibold mb-2">  Unpaid Amount</h3>
                 <p className="text-xl font-bold text-red-700">
-                 ₹{Number(totalSummary1?.totalUnpaidAmount).toFixed(0).toLocaleString()}
+                  ₹{Number(totalSummary1?.totalUnpaidAmount).toFixed(0).toLocaleString()}
 
                 </p>
               </div>

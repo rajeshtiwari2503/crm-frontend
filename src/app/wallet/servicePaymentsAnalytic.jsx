@@ -109,7 +109,7 @@ const WalletPaymentSummary = () => {
 
 
 
-  console.log("totalSummary1", totalSummary1);
+  // console.log("totalSummary1", totalSummary1);
   const [filter, setFilter] = useState("all");
 
   // const filteredSummary = summary.filter(item => {
@@ -136,6 +136,8 @@ const WalletPaymentSummary = () => {
 
     return matchesFilter && matchesSearch;
   });
+
+  // console.log("filteredSummary",filteredSummary);
 
 
   return (
@@ -265,9 +267,13 @@ const WalletPaymentSummary = () => {
                 >
                   {item.name}
                 </h2>
-
+               
                 {/* Summary Info */}
                 <div className="mb-6 text-sm text-gray-700 space-y-1">
+                   <div className="flex justify-between">
+                    <span className="font-medium">Contact No.:</span>
+                    <span>{item.contactNo}</span>
+                  </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Total Complaints:</span>
                     <span>{item.totalComplaints}</span>

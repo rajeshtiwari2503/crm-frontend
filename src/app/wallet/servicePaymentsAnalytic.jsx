@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import http_request from "../../../http-request"
 import { ReactLoader } from '../components/common/Loading';
 
-const WalletPaymentSummary = () => {
+const WalletPaymentSummary = ({ user }) => {
   const [summary, setSummary] = useState([]);
   const [tatReport, setTatReport] = useState({});
   // const [month, setMonth] = useState('06');
@@ -23,8 +23,12 @@ const WalletPaymentSummary = () => {
       const res = await http_request.get(
         `/wallet-payment-summary?month=${month}&year=${year}&sortBy=${sortBy}`
       );
+      const allSummaries = res.data.summary;
+      const matched = user?.user?.role === "ADMIN" || user?.user?.role === "EMPLOYEE" ? allSummaries : allSummaries.filter(
+        (center) => center._id === user?.user?._id
+      );
 
-      setSummary(res.data.summary);
+      setSummary(matched);
       setTatReport(res.data.tatReport);
     } catch (err) {
       console.error("API error", err);
@@ -72,44 +76,90 @@ const WalletPaymentSummary = () => {
     }
   );
 
-  const totalSummary1 = summary.reduce(
-    (acc, item) => {
-      acc.totalServiceCenters++;
-      acc.totalAmount += item.totalAmount;
-      acc.totalComplaints += item.totalComplaints || (item.paidCount + item.unpaidCount);
-      acc.totalPaid += item.paidCount;
-      acc.totalUnpaid += item.unpaidCount;
-      acc.totalPaidAmount += item.paidCount * item.averagePaymentPerComplaint;
-      acc.totalUnpaidAmount += item.unpaidCount * item.averagePaymentPerComplaint;
+  // const totalSummary1 = summary.reduce(
+  //   (acc, item) => {
+  //     acc.totalServiceCenters++;
+  //     acc.totalAmount += item.totalAmount;
+  //     acc.totalComplaints += item.totalComplaints || (item.paidCount + item.unpaidCount);
+  //     acc.totalPaid += item.paidCount;
+  //     acc.totalUnpaid += item.unpaidCount;
+  //     acc.totalPaidAmount += item.paidCount * item.averagePaymentPerComplaint;
+  //     acc.totalUnpaidAmount += item.unpaidCount * item.averagePaymentPerComplaint;
 
-      // ✅ Exclusive categorization of service centers:
-      if (item.unpaidCount > 0) {
-        // If there's at least one unpaid complaint, mark as Unpaid
-        acc.unpaidServiceCenters++;
-      } else if (item.paidCount > 0) {
-        // Only if all are paid, mark as Paid
-        acc.paidServiceCenters++;
-      }
+  //     // ✅ Exclusive categorization of service centers:
+  //     if (item.unpaidCount > 0) {
+  //       // If there's at least one unpaid complaint, mark as Unpaid
+  //       acc.unpaidServiceCenters++;
+  //     } else if (item.paidCount > 0) {
+  //       // Only if all are paid, mark as Paid
+  //       acc.paidServiceCenters++;
+  //     }
 
-      return acc;
-    },
-    {
-      totalServiceCenters: 0,
-      totalAmount: 0,
-      totalComplaints: 0,
-      totalPaid: 0,
-      totalUnpaid: 0,
-      totalPaidAmount: 0,
-      totalUnpaidAmount: 0,
-      paidServiceCenters: 0,
-      unpaidServiceCenters: 0
+  //     return acc;
+  //   },
+  //   {
+  //     totalServiceCenters: 0,
+  //     totalAmount: 0,
+  //     totalComplaints: 0,
+  //     totalPaid: 0,
+  //     totalUnpaid: 0,
+  //     totalPaidAmount: 0,
+  //     totalUnpaidAmount: 0,
+  //     paidServiceCenters: 0,
+  //     unpaidServiceCenters: 0
+  //   }
+  // );
+
+ const totalSummary1 = summary.reduce(
+  (acc, item) => {
+    const totalCount = item.paidCount + item.unpaidCount;
+
+    acc.totalServiceCenters++;
+    acc.totalAmount += item.totalAmount;
+    acc.totalComplaints += totalCount;
+    acc.totalPaid += item.paidCount;
+    acc.totalUnpaid += item.unpaidCount;
+
+    const paidAmount = totalCount > 0 ? (item.totalAmount * item.paidCount) / totalCount : 0;
+    const unpaidAmount = totalCount > 0 ? (item.totalAmount * item.unpaidCount) / totalCount : 0;
+
+    acc.totalPaidAmount += paidAmount;
+    acc.totalUnpaidAmount += unpaidAmount;
+ 
+    // ✅ Delivery Charges (if exists)
+    acc.totalDeliveryCharges += item.nonComplaintAmount || 0;
+
+    // ✅ Spare Part Count (if exists)
+    acc.totalSpareParts += item.totalNonComplaintPayments || 0;
+
+    if (item.unpaidCount > 0) {
+      acc.unpaidServiceCenters++;
+    } else if (item.paidCount > 0) {
+      acc.paidServiceCenters++;
     }
-  );
+
+    return acc;
+  },
+  {
+    totalServiceCenters: 0,
+    totalAmount: 0,
+    totalComplaints: 0,
+    totalPaid: 0,
+    totalUnpaid: 0,
+    totalPaidAmount: 0,
+    totalUnpaidAmount: 0,
+    
+    totalDeliveryCharges: 0,
+    totalSpareParts: 0,
+    paidServiceCenters: 0,
+    unpaidServiceCenters: 0,
+  }
+);
 
 
 
 
-  // console.log("totalSummary1", totalSummary1);
+  console.log("totalSummary1", totalSummary1);
   const [filter, setFilter] = useState("all");
 
   // const filteredSummary = summary.filter(item => {
@@ -137,7 +187,7 @@ const WalletPaymentSummary = () => {
     return matchesFilter && matchesSearch;
   });
 
-  // console.log("filteredSummary",filteredSummary);
+  console.log("filteredSummary",filteredSummary);
 
 
   return (
@@ -202,24 +252,44 @@ const WalletPaymentSummary = () => {
         </div>
       ) : (
         <div className=" ">
-          <div className=" flex justify-center mb-5">
-            <div className="bg-white border rounded-lg shadow-md p-6 grid grid-cols-5 justify-center gap-3 text-gray-800">
-              <div>
-                <h3 className="text-sm font-semibold mb-2"> Service Centers</h3>
-                <p className="text-xl font-bold">{totalSummary.totalServiceCenters}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Paid Service Centers</h3>
-                <p className="text-xl font-bold">{totalSummary1.paidServiceCenters}</p>
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold mb-2">Unpaid Service Centers</h3>
-                <p className="text-xl font-bold">{totalSummary1.unpaidServiceCenters}</p>
-              </div>
+          <div className=" flex justify-center  mb-5">
+            <div className="bg-white border w-full  rounded-lg shadow-md p-3  grid grid-cols-2 md:grid-cols-6 justify-center items-center gap-3 text-gray-800">
+
+
+              {user?.user?.role === "SERVICE" ? ""
+                : <div>
+                  <h3 className="text-sm font-semibold mb-2"> Service Centers</h3>
+                  <p className="text-xl font-bold">{totalSummary.totalServiceCenters}</p>
+                </div>
+              }
+              {user?.user?.role === "SERVICE" ? ""
+                :
+                <div>
+                  <h3 className="text-sm font-semibold mb-2">Paid Service Centers</h3>
+                  <p className="text-xl font-bold">{totalSummary1.paidServiceCenters}</p>
+                </div>
+              }
+              {user?.user?.role === "SERVICE" ? ""
+                :
+                <div>
+                  <h3 className="text-sm font-semibold mb-2">Unpaid Service Centers</h3>
+                  <p className="text-xl font-bold">{totalSummary1.unpaidServiceCenters}</p>
+                </div>
+              }
+
               <div>
                 <h3 className="text-sm font-semibold mb-2">Total_Complaints</h3>
                 <p className="text-xl font-bold">{totalSummary.totalComplaints}</p>
               </div>
+                 <div>
+                <h3 className="text-sm font-semibold mb-2">Spareparts</h3>
+                <p className="text-xl font-bold">{totalSummary1.totalSpareParts}</p>
+              </div>
+                <div>
+                <h3 className="text-sm font-semibold mb-2">Delivery_Charges</h3>
+                <p className="text-xl font-bold">{totalSummary1.totalDeliveryCharges}</p>
+              </div>
+             
               <div>
                 <h3 className="text-sm font-semibold mb-2">Total Payment</h3>
                 <p className="text-xl font-bold text-green-700">₹{totalSummary.totalAmount.toLocaleString()}</p>
@@ -267,25 +337,34 @@ const WalletPaymentSummary = () => {
                 >
                   {item.name}
                 </h2>
-               
+
                 {/* Summary Info */}
                 <div className="mb-6 text-sm text-gray-700 space-y-1">
-                   <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-medium">Contact No.:</span>
                     <span>{item.contactNo}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="font-medium">Total Complaints:</span>
+                    <span className="font-medium">Total Complaints :</span>
                     <span>{item.totalComplaints}</span>
+                  </div>
+                   <div className="flex justify-between">
+                    <span className="font-medium"> Complaint Payment:</span>
+                    <span className="text-green-600 font-semibold">₹{item.totalAmount -item.duplicatePaymentsSum}</span>
+                  </div>
+                   <div className="flex justify-between">
+                    <span className="font-medium">Average Cost:</span>
+                    <span>₹{Math.round(item.averagePaymentPerComplaint)}</span>
+                  </div>
+                   <div className="flex justify-between">
+                    <span className="font-medium"> Delivery Charges:</span>
+                    <span> Sparepart({item?.totalNonComplaintPayments}) {item.duplicatePaymentsSum || 0}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Total Payment:</span>
                     <span className="text-green-600 font-semibold">₹{item.totalAmount}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="font-medium">Average Cost:</span>
-                    <span>₹{Math.round(item.averagePaymentPerComplaint)}</span>
-                  </div>
+                 
                 </div>
 
                 {/* Paid / Unpaid Summary */}

@@ -17,7 +17,7 @@ const ServiceTransactions = ({ }) => {
   const [loading, setLoading] = useState(false);
 
   const { user } = useUser();
-console.log(user);
+// console.log(user);
 
 
   useEffect(() => {
@@ -77,7 +77,7 @@ console.log(user);
       ) : (
         <>
         <ServiceTransactionList RefreshData={RefreshData} data={transData} loading={loading} value={value?.user} />
-       {user?.user?.role==="ADMIN"? <WalletPaymentReport  />
+       {user?.user?.role==="ADMIN" || user?.user?.role==="EMPLOYEE"|| user?.user?.role==="SERVICE"? <WalletPaymentReport  user={user}/>
        :""}
         </>
       )}

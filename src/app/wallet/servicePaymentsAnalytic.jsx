@@ -386,6 +386,14 @@ const WalletPaymentSummary = ({ user }) => {
                 {/* Summary Info */}
                 <div className="mb-6 text-sm text-gray-700 space-y-1">
                   <div className="flex justify-between">
+                    <span className="font-medium">City:</span>
+                    <span>{item.city}</span>
+                  </div>
+                   {/* <div className="flex justify-between">
+                    <span className="font-medium">State:</span>
+                    <span>{item.state}</span>
+                  </div> */}
+                   <div className="flex justify-between">
                     <span className="font-medium">Contact No.:</span>
                     <span>{item.contactNo}</span>
                   </div>

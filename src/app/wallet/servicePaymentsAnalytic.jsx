@@ -331,8 +331,8 @@ const WalletPaymentSummary = ({ user }) => {
                 <h3 className="text-sm font-semibold mb-2">Total Unpaid  </h3>
                 <p className="text-xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
               </div>
-              {user?.user?.role === "ADMIN" ?  
-                 <div className="">
+              {user?.user?.role === "ADMIN" ?
+                <div className="">
                   {formattedData.length > 0 && (
                     <DownloadExcel
                       data={formattedData}
@@ -361,7 +361,7 @@ const WalletPaymentSummary = ({ user }) => {
 
                   )}
                 </div>
-                :""
+                : ""
               }
             </div>
           </div>
@@ -389,11 +389,11 @@ const WalletPaymentSummary = ({ user }) => {
                     <span className="font-medium">City:</span>
                     <span>{item.city}</span>
                   </div>
-                   {/* <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="font-medium">State:</span>
                     <span>{item.state}</span>
                   </div> */}
-                   <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-medium">Contact No.:</span>
                     <span>{item.contactNo}</span>
                   </div>
@@ -403,7 +403,8 @@ const WalletPaymentSummary = ({ user }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium"> Complaint Payment:</span>
-                    <span className="text-green-600 font-semibold">₹{item.totalAmount - item.duplicatePaymentsSum}</span>
+                    <span  className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00" ? "text-red-600" : "text-green-600"
+                        }`}>₹{item.totalAmount - item.duplicatePaymentsSum}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Average Cost:</span>
@@ -413,9 +414,18 @@ const WalletPaymentSummary = ({ user }) => {
                     <span className="font-medium"> Delivery Charges:</span>
                     <span> Sparepart({item?.totalNonComplaintPayments}) {item.duplicatePaymentsSum || 0}</span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="font-medium">Total Payment:</span>
                     <span className="text-green-600 font-semibold">₹{item.totalAmount}</span>
+                  </div> */}
+                  <div className="flex justify-between">
+                    <span className="font-medium">Total Payment:</span>
+                    <span
+                      className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00" ? "text-red-600" : "text-green-600"
+                        }`}
+                    >
+                      ₹{item.totalAmount}
+                    </span>
                   </div>
 
                 </div>

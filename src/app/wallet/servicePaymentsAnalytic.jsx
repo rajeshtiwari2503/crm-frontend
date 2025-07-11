@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 
 import http_request from "../../../http-request"
 import { ReactLoader } from '../components/common/Loading';
+import DownloadExcel from '../components/DownLoadExcel';
 
 const WalletPaymentSummary = ({ user }) => {
   const [summary, setSummary] = useState([]);
@@ -110,56 +111,56 @@ const WalletPaymentSummary = ({ user }) => {
   //   }
   // );
 
- const totalSummary1 = summary.reduce(
-  (acc, item) => {
-    const totalCount = item.paidCount + item.unpaidCount;
+  const totalSummary1 = summary.reduce(
+    (acc, item) => {
+      const totalCount = item.paidCount + item.unpaidCount;
 
-    acc.totalServiceCenters++;
-    acc.totalAmount += item.totalAmount;
-    acc.totalComplaints += totalCount;
-    acc.totalPaid += item.paidCount;
-    acc.totalUnpaid += item.unpaidCount;
+      acc.totalServiceCenters++;
+      acc.totalAmount += item.totalAmount;
+      acc.totalComplaints += totalCount;
+      acc.totalPaid += item.paidCount;
+      acc.totalUnpaid += item.unpaidCount;
 
-    const paidAmount = totalCount > 0 ? (item.totalAmount * item.paidCount) / totalCount : 0;
-    const unpaidAmount = totalCount > 0 ? (item.totalAmount * item.unpaidCount) / totalCount : 0;
+      const paidAmount = totalCount > 0 ? (item.totalAmount * item.paidCount) / totalCount : 0;
+      const unpaidAmount = totalCount > 0 ? (item.totalAmount * item.unpaidCount) / totalCount : 0;
 
-    acc.totalPaidAmount += paidAmount;
-    acc.totalUnpaidAmount += unpaidAmount;
- 
-    // ✅ Delivery Charges (if exists)
-    acc.totalDeliveryCharges += item.nonComplaintAmount || 0;
+      acc.totalPaidAmount += paidAmount;
+      acc.totalUnpaidAmount += unpaidAmount;
 
-    // ✅ Spare Part Count (if exists)
-    acc.totalSpareParts += item.totalNonComplaintPayments || 0;
+      // ✅ Delivery Charges (if exists)
+      acc.totalDeliveryCharges += item.nonComplaintAmount || 0;
 
-    if (item.unpaidCount > 0) {
-      acc.unpaidServiceCenters++;
-    } else if (item.paidCount > 0) {
-      acc.paidServiceCenters++;
+      // ✅ Spare Part Count (if exists)
+      acc.totalSpareParts += item.totalNonComplaintPayments || 0;
+
+      if (item.unpaidCount > 0) {
+        acc.unpaidServiceCenters++;
+      } else if (item.paidCount > 0) {
+        acc.paidServiceCenters++;
+      }
+
+      return acc;
+    },
+    {
+      totalServiceCenters: 0,
+      totalAmount: 0,
+      totalComplaints: 0,
+      totalPaid: 0,
+      totalUnpaid: 0,
+      totalPaidAmount: 0,
+      totalUnpaidAmount: 0,
+
+      totalDeliveryCharges: 0,
+      totalSpareParts: 0,
+      paidServiceCenters: 0,
+      unpaidServiceCenters: 0,
     }
-
-    return acc;
-  },
-  {
-    totalServiceCenters: 0,
-    totalAmount: 0,
-    totalComplaints: 0,
-    totalPaid: 0,
-    totalUnpaid: 0,
-    totalPaidAmount: 0,
-    totalUnpaidAmount: 0,
-    
-    totalDeliveryCharges: 0,
-    totalSpareParts: 0,
-    paidServiceCenters: 0,
-    unpaidServiceCenters: 0,
-  }
-);
+  );
 
 
 
 
-  console.log("totalSummary1", totalSummary1);
+  // console.log("totalSummary1", totalSummary1);
   const [filter, setFilter] = useState("all");
 
   // const filteredSummary = summary.filter(item => {
@@ -187,7 +188,19 @@ const WalletPaymentSummary = ({ user }) => {
     return matchesFilter && matchesSearch;
   });
 
-  console.log("filteredSummary",filteredSummary);
+  const formattedData = filteredSummary.map(item => ({
+    ...item,
+    tat_0: item.tatReport?.["0"] ?? "",
+    tat_1: item.tatReport?.["1"] ?? "",
+    tat_1_2: item.tatReport?.["1-2"] ?? "",
+    tat_2_3: item.tatReport?.["2-3"] ?? "",
+    tat_3_4: item.tatReport?.["3-4"] ?? "",
+    tat_4_5: item.tatReport?.["4-5"] ?? "",
+    tat_greater_5: item.tatReport?.[">5"] ?? ""
+  }));
+
+
+  console.log("formattedData", formattedData);
 
 
   return (
@@ -281,15 +294,15 @@ const WalletPaymentSummary = ({ user }) => {
                 <h3 className="text-sm font-semibold mb-2">Total_Complaints</h3>
                 <p className="text-xl font-bold">{totalSummary.totalComplaints}</p>
               </div>
-                 <div>
+              <div>
                 <h3 className="text-sm font-semibold mb-2">Spareparts</h3>
                 <p className="text-xl font-bold">{totalSummary1.totalSpareParts}</p>
               </div>
-                <div>
+              <div>
                 <h3 className="text-sm font-semibold mb-2">Delivery_Charges</h3>
                 <p className="text-xl font-bold">{totalSummary1.totalDeliveryCharges}</p>
               </div>
-             
+
               <div>
                 <h3 className="text-sm font-semibold mb-2">Total Payment</h3>
                 <p className="text-xl font-bold text-green-700">₹{totalSummary.totalAmount.toLocaleString()}</p>
@@ -318,6 +331,38 @@ const WalletPaymentSummary = ({ user }) => {
                 <h3 className="text-sm font-semibold mb-2">Total Unpaid  </h3>
                 <p className="text-xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
               </div>
+              {user?.user?.role === "ADMIN" ?  
+                 <div className="">
+                  {formattedData.length > 0 && (
+                    <DownloadExcel
+                      data={formattedData}
+                      fileName="Service Center PaymentList"
+                      fieldsToInclude={[
+                        "name",
+                        "contactNo",
+                        "totalAmount",
+                        "unpaidCount",
+                        "paidCount",
+                        "totalComplaints",
+                        "averagePaymentPerComplaint",
+                        "totalComplaintPayments",
+                        "totalNonComplaintPayments",
+                        "nonComplaintAmount",
+                        "tat_0",
+                        "tat_1",
+                        "tat_1_2",
+                        "tat_2_3",
+                        "tat_3_4",
+                        "tat_4_5",
+                        "tat_greater_5"
+                      ]}
+                    />
+
+
+                  )}
+                </div>
+                :""
+              }
             </div>
           </div>
 
@@ -348,15 +393,15 @@ const WalletPaymentSummary = ({ user }) => {
                     <span className="font-medium">Total Complaints :</span>
                     <span>{item.totalComplaints}</span>
                   </div>
-                   <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-medium"> Complaint Payment:</span>
-                    <span className="text-green-600 font-semibold">₹{item.totalAmount -item.duplicatePaymentsSum}</span>
+                    <span className="text-green-600 font-semibold">₹{item.totalAmount - item.duplicatePaymentsSum}</span>
                   </div>
-                   <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-medium">Average Cost:</span>
                     <span>₹{Math.round(item.averagePaymentPerComplaint)}</span>
                   </div>
-                   <div className="flex justify-between">
+                  <div className="flex justify-between">
                     <span className="font-medium"> Delivery Charges:</span>
                     <span> Sparepart({item?.totalNonComplaintPayments}) {item.duplicatePaymentsSum || 0}</span>
                   </div>
@@ -364,7 +409,7 @@ const WalletPaymentSummary = ({ user }) => {
                     <span className="font-medium">Total Payment:</span>
                     <span className="text-green-600 font-semibold">₹{item.totalAmount}</span>
                   </div>
-                 
+
                 </div>
 
                 {/* Paid / Unpaid Summary */}

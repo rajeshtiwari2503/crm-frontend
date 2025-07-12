@@ -5,7 +5,7 @@ import http_request from "../../../http-request";
 import { ToastMessage } from '../components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 import { ReactLoader } from '../components/common/Loading';
- 
+
 
 
 export default function Clock({ userId }) {
@@ -16,7 +16,7 @@ export default function Clock({ userId }) {
   const [isClockedOut, setIsClockedOut] = useState(false);
   const [comment, setComment] = useState('');
   const [userAttendance, setUserAttendance] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
 
   useEffect(() => {
     const today = new Date();
@@ -29,17 +29,18 @@ export default function Clock({ userId }) {
 
     const checkStatus = async () => {
       try {
-        setIsLoading(true);
+        setAttendanceLoading(true);
+        // console.log("attendanceLoading setAttendanceLoading to:", attendanceLoading);
         const res = await http_request.get(`/attendance/getTodayStatus/${user?.user?._id}`);
         const { data } = res;
-        console.log(data);
+        // console.log(data);
         setUserAttendance(data?.record?.taskComment)
         if (res.data.clockOut) {
           setStatus(`Clocked Out at ${new Date(res.data.clockOut).toLocaleTimeString()}`);
           setIsClockedOut(true);
           setIsClockedIn(true);
         } else if (res.data.clockIn) {
-          setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()} `);
+          setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()} ${data?.record?.location}`);
           // setStatus(`Clocked In at ${new Date(res.data.clockIn).toLocaleTimeString()} from ${res?.data?.record?.location}`);
           setIsClockedIn(true);
         } else {
@@ -49,7 +50,7 @@ export default function Clock({ userId }) {
         console.error('Status Check Error:', err);
         setStatus('Error fetching status.');
       } finally {
-        setIsLoading(false);
+        setAttendanceLoading(false);
       }
     };
 
@@ -57,10 +58,10 @@ export default function Clock({ userId }) {
       checkStatus();
     }
   }, [user]);
-
+ 
   // const handleClockIn = async () => {
   //   try {
-  //     setIsLoading(true);
+  //     setAttendanceLoading(true);
   //     const res = await http_request.post('/attendance/clock-in', {
   //       userId: user?.user?._id,
   //       user: user?.user?.name
@@ -70,76 +71,80 @@ export default function Clock({ userId }) {
   //   } catch (error) {
   //     console.error('Clock In Error:', error);
   //   } finally {
-  //     setIsLoading(false);
+  //     setAttendanceLoading(false);
   //   }
   // };
- 
+
+
 
   const handleClockIn = async () => {
     try {
-      setIsLoading(true);
-  
+      setAttendanceLoading(true);
+        //  console.log("attendanceLoading setAttendanceLoading in login to:", attendanceLoading);
       if (!navigator.geolocation) {
         alert('Geolocation is not supported by your browser.');
-        setIsLoading(false);
+        // setAttendanceLoading(false);
         return;
       }
-  
+
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
-  
+
           if (latitude && longitude) {
             // console.log("Latitude:", latitude, "Longitude:", longitude);
-  
+
             try {
               const response = await fetch(
                 `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyC_L9VzjnWL4ent9VzCRAabM52RCcJJd2k`
               );
               const data = await response.json();
-  
+
               if (data.results && data.results.length > 0) {
                 const bestMatch = data.results[0]; // Most accurate match
-  
+
                 const address = bestMatch.formatted_address;
-  
+
                 // Extract district
                 const districtComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_2")
                 );
                 const district = districtComponent ? districtComponent.long_name : "District not found";
-  
+
                 // Extract state
                 const stateComponent = bestMatch.address_components.find((component) =>
                   component.types.includes("administrative_area_level_1")
                 );
                 const state = stateComponent ? stateComponent.long_name : "State not found";
-  
+
                 // console.log("Address:", address);
                 // console.log("District:", district);
                 // console.log("State:", state);
-  
+
                 // Now call your Clock-In API with address, district, state, latitude, longitude
                 const res = await http_request.post('/attendance/clock-in', {
                   userId: user?.user?._id,
                   user: user?.user?.name,
                   location: address
                 });
-  
-                setStatus(`Clocked In at ${new Date( ).toLocaleTimeString()} from ${address}`);
+
+                setStatus(`Clocked In at ${new Date().toLocaleTimeString()} from ${address}`);
                 setIsClockedIn(true);
-  
+                ToastMessage({ status: true, msg: "You  Clocked In successfully!" });
               } else {
                 console.warn("No location results found for the given coordinates.");
-                alert("Unable to fetch your location. Please try again.");
+                ToastMessage({ status: false, msg: "Unable to fetch your location. Please try again.!" });
+                // alert("Unable to fetch your location. Please try again.");
               }
             } catch (error) {
               console.error("Error fetching address: ", error);
-              alert("Failed to fetch location details. Please try again.");
+              ToastMessage({ status: false, msg: "Failed to fetch location details. Please try again.!" });
+              // alert("Failed to fetch location details. Please try again.");
             }
           } else {
             console.warn("Latitude and Longitude are missing.");
-            alert("Unable to retrieve your location.");
+            ToastMessage({ status: false, msg: "Unable to retrieve your location.!" });
+            // alert("Unable to retrieve your location.");
           }
         },
         (error) => {
@@ -162,28 +167,32 @@ export default function Clock({ userId }) {
       );
     } catch (error) {
       console.error('Clock In Error:', error);
+      ToastMessage({ status: false, msg: "Clock In Error.!" });
     } finally {
-      setIsLoading(false);
-    }
+     await new Promise(resolve => setTimeout(resolve, 2000)); // ✅ Delay 2 seconds
+    setAttendanceLoading(false); // ✅ This now works
+  }
   };
-  
+
 
 
 
   const handleClockOut = async () => {
     try {
-      setIsLoading(true);
+      setAttendanceLoading(true);
       const res = await http_request.post('/attendance/clock-out', {
         userId: user?.user?._id,
         user: user?.user?.name
       });
       setStatus('Clocked Out at ' + new Date(res.data.clockOut).toLocaleTimeString());
+      ToastMessage({ status: true, msg: "You  Clocked Out successfully!" });
       setIsClockedOut(true);
     } catch (error) {
       console.error('Clock Out Error:', error);
     } finally {
-      setIsLoading(false);
-    }
+     await new Promise(resolve => setTimeout(resolve, 2000)); // ✅ Delay 2 seconds
+    setAttendanceLoading(false); // ✅ This now works
+  }
   };
 
   const handleAddComment = async () => {
@@ -193,33 +202,36 @@ export default function Clock({ userId }) {
     }
 
     try {
-      setIsLoading(true);
+      setAttendanceLoading(true);
       const response = await http_request.put('/attendance/addDailyComment', {
         userId: user?.user?._id,
         taskComment: comment,
       });
       const { data } = response;
       setUserAttendance(comment)
-      ToastMessage(data);
+      ToastMessage({ status: true, msg: "Comment added successfully" });
       setComment();
     } catch (error) {
       console.error('Add Comment Error:', error);
       ToastMessage({ status: false, msg: "Failed to add comment." });
     } finally {
-      setIsLoading(false);
-    }
+     await new Promise(resolve => setTimeout(resolve, 2000)); // ✅ Delay 2 seconds
+    setAttendanceLoading(false); // ✅ This now works
+  }
   };
 
   // console.log("userAttendance",userAttendance);
-
+  // console.log("attendanceLoading", attendanceLoading);
 
   return (
     <>
       <Toaster />
-      {isLoading === true ? <div className='h-screen flex justify-center items-center'>
-        <ReactLoader />
-      </div>
-        : <>
+      {attendanceLoading ? (
+        <div className='h-[400px] flex justify-center items-center'>
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
 
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
 
@@ -229,7 +241,7 @@ export default function Clock({ userId }) {
               <button
                 className="bg-green-500 text-white p-2 rounded mr-2 disabled:opacity-50"
                 onClick={handleClockIn}
-                disabled={isClockedIn ||isLoading}
+                disabled={isClockedIn || attendanceLoading}
               >
                 Clock In
               </button>
@@ -263,9 +275,9 @@ export default function Clock({ userId }) {
               }
             </div>
           </div>
-       
+
         </>
-      }
+      )}
     </>
   );
 }

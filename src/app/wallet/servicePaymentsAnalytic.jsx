@@ -403,8 +403,13 @@ const WalletPaymentSummary = ({ user }) => {
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium"> Complaint Payment:</span>
-                    <span  className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00" ? "text-red-600" : "text-green-600"
-                        }`}>₹{item.totalAmount - item.duplicatePaymentsSum}</span>
+                    <span className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00"
+                        ? "text-red-600"
+                        : item.percentagePaid.toFixed(2) !== "100.00"
+                          ? "text-yellow-600"
+                          : "text-green-600"
+                      }`}
+                    >₹{item.totalAmount - item.duplicatePaymentsSum}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-medium">Average Cost:</span>
@@ -421,8 +426,12 @@ const WalletPaymentSummary = ({ user }) => {
                   <div className="flex justify-between">
                     <span className="font-medium">Total Payment:</span>
                     <span
-                      className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00" ? "text-red-600" : "text-green-600"
-                        }`}
+                     className={`font-semibold ${item.percentagePaid.toFixed(2) === "0.00"
+                        ? "text-red-600"
+                        : item.percentagePaid.toFixed(2) !== "100.00"
+                          ? "text-yellow-600"
+                          : "text-green-600"
+                      }`}
                     >
                       ₹{item.totalAmount}
                     </span>

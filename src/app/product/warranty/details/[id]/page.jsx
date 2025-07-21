@@ -498,7 +498,7 @@ body {
             printWindow.document.write(`
                 <div class="record-container">
                 <div class="item1">
-                    <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+                    <div class="text-12">${["687b60524784729ee719776e"].includes(brand?._id) ?"Warranty QR Code"  :"QR Code warranty is powered by Servsy.in"}</div>
                     <div class="text-12">${filtRecord?.productName || 'Product Name'}</div>
                     <div class="logo-and-qr">
                         <img src="${logoUrl}" alt="Company Logo" width="40" height="40" />
@@ -623,7 +623,7 @@ body {
                         {filtRecord?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
                                 <div className=' mb-5 '>
-                                    <div className='  mt-3 mb-3 font-bold text-[12px]'>  QR Code warranty is powered by Servsy.in</div>
+                                    <div className='  mt-3 mb-3 font-bold text-[12px]'> {["687b60524784729ee719776e"].includes(brand?._id) ?"Warranty QR Code"  :"QR Code warranty is powered by Servsy.in"}</div>
                                     {/* <div>{warranty?.brandLogo}</div> */}
                                     <div className='flex justify-center items-center'>
                                         <img src={brand?.brandLogo ? brand?.brandLogo : "/Logo.png"} alt="image" width={100} height={100} />

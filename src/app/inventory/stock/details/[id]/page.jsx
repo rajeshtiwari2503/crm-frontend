@@ -178,6 +178,15 @@ const OrderDetails = ({ params }) => {
                                                         Fresh Stock
                                                     </TableSortLabel>
                                                 </TableCell>
+                                                  <TableCell>
+                                                    <TableSortLabel
+                                                        active={sortBy === 'defective'}
+                                                        direction={sortDirection}
+                                                        onClick={() => handleSort('defective')}
+                                                    >
+                                                        Defective Stock
+                                                    </TableSortLabel>
+                                                </TableCell>
                                                 <TableCell>
                                                     <TableSortLabel
                                                         active={sortBy === 'defectiveStock'}
@@ -211,7 +220,8 @@ const OrderDetails = ({ params }) => {
                                                 <TableRow key={row?.i} hover>
                                                     <TableCell>{row?.i}</TableCell>
                                                     
-                                                    <TableCell>{row?.fresh }</TableCell>
+                                                    <TableCell>{row?.fresh || 0}</TableCell>
+                                                    <TableCell>{row?.defective || 0 }</TableCell>
                                                     <TableCell>{row?.title}</TableCell>
                                                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                                                 </TableRow>

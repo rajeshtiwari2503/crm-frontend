@@ -101,6 +101,7 @@ const Service = ({ dashboard }) => {
         searchParams.get("serviceCenterId") ||
         searchParams.get("technicianId") ||
         searchParams.get("userId") ||
+        searchParams.get("employeeId")||
         searchParams.get("dealerId");
 
       const effectiveRole = roleFromURL || user?.user?.role;
@@ -128,12 +129,16 @@ const Service = ({ dashboard }) => {
         case "DEALER":
           queryParams.append("dealerId", effectiveId);
           break;
+           case "EMPLOYEE":
+            queryParams.append("employeeId", effectiveId);
+            break;
+        
       }
 
       //  UY1906KI457  console.log("queryParams", queryParams.toString());
 
       const response =
-        effectiveRole === "ADMIN" || effectiveRole === "EMPLOYEE"
+        effectiveRole === "ADMIN"  
           ? await http_request.get(`/getAllComplaint?page=${page}&limit=${limit}`)
           : await http_request.get(`/getAllComplaintByRole?${queryParams.toString()}`);
       let { data } = response;

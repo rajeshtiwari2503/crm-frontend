@@ -106,6 +106,7 @@ const [transactions, setTransactions] = useState([]);
           searchParams.get("serviceCenterId") ||
           searchParams.get("technicianId") ||
           searchParams.get("userId") ||
+          searchParams.get("employeeId") ||
           searchParams.get("dealerId");
   
         const effectiveRole = roleFromURL || user?.user?.role;
@@ -133,12 +134,15 @@ const [transactions, setTransactions] = useState([]);
           case "DEALER":
             queryParams.append("dealerId", effectiveId);
             break;
+            case "EMPLOYEE":
+            queryParams.append("employeeId", effectiveId);
+            break;
         }
   
         // console.log("queryParams", queryParams.toString());
   
         const response =
-          effectiveRole === "ADMIN" || effectiveRole === "EMPLOYEE"
+          effectiveRole === "ADMIN"  
             ? await http_request.get(`/getComplaintsByComplete?page=${page}&limit=${limit}`)
          : await http_request.get(`/getCompleteComplaintByRole?page=${page}&limit=${limit}?${queryParams.toString()}`);
         let { data } = response;

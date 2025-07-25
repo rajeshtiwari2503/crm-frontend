@@ -5,6 +5,7 @@ import http_request from '.././../../../http-request'
 import StockList from './stockList'
 import { useUser } from '@/app/components/UserContext'
 import { ReactLoader } from '@/app/components/common/Loading'
+import StockRequestList from './stockRequestList'
 const Stock = () => {
   const [stocks, setStocks] = useState([])
   const [products, setProducts] = useState([])
@@ -67,7 +68,11 @@ const Stock = () => {
             {loading === true ? <div className="flex items-center justify-center h-[80vh]">
               <ReactLoader />
             </div>
-              : <StockList data={data} products={filterProduct} userData={user} RefreshData={RefreshData} />
+              : 
+              <>
+              <StockList data={data} products={filterProduct} userData={user} RefreshData={RefreshData} />
+              <StockRequestList  />
+              </>
             }
           </div>
         </div>

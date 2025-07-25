@@ -866,7 +866,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
                        <div className='ml-2'>
                          <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
                          <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.totalOrderPrice} delay={1} />
+                           <CountUp start={0} end={Math.max(0, (serviceDetails?.totalOrderPrice || 0) - (serviceDetails?.totalStockPrice || 0))} delay={1} />
                          </div>
                        </div>
                      </div>

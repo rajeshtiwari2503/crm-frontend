@@ -72,7 +72,7 @@ const OrderDetails = ({ params }) => {
 
         }
     }
-    console.log("stockReq", stockReq);
+    // console.log("stockReq", stockReq);
 
 
     const GetStockRequest = async (id) => {
@@ -143,7 +143,7 @@ const OrderDetails = ({ params }) => {
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);
-            GetStock()
+            // GetStockRequest()
             setRefresh(responseData);
             setEditModalOpen(false);
         } catch (err) {
@@ -477,7 +477,7 @@ const OrderDetails = ({ params }) => {
 
 
                     </div>
-                         <StockRequestList reqStock={params?.id} />
+                         <StockRequestList reqStock={params?.id} refre={refresh} />
                 </>
             }
         </Sidenav>

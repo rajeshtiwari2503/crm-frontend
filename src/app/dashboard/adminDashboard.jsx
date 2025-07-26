@@ -48,7 +48,7 @@ const AdminDashboard = (props) => {
   const getOrderPriceAndDepositsByServiceCenter = async () => {
     try {
 
-setServiceLoading(true)
+      setServiceLoading(true)
       const response = await http_request.get(`/getAllServiceCenterOrdersAndDeposits`);
 
       let { data } = response;
@@ -57,11 +57,11 @@ setServiceLoading(true)
       setServiceDetails(data);
       setServiceLoading(false)
     } catch (err) {
-        setServiceLoading(false)
+      setServiceLoading(false)
       console.error("Error fetching transactions:", err);
     } finally {
       // setLoading(false);
-        setServiceLoading(false)
+      setServiceLoading(false)
     }
   };
   // console.log("serviceDetails", serviceDetails);
@@ -655,11 +655,11 @@ setServiceLoading(true)
 
       </div>
       <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
-     
-     <> {serviceLoading===true ?  <div className="flex justify-center items-center   ">
-                <ReactLoader />
-            </div>
-    : <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+
+      <> {serviceLoading === true ? <div className="flex justify-center items-center   ">
+        <ReactLoader />
+      </div>
+        : <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
           <div className=''>
             <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
@@ -687,14 +687,30 @@ setServiceLoading(true)
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={serviceDetails?.totalOrderPriceAll} delay={1} />
+                      <CountUp start={0} end={Math.max(0, (serviceDetails?.totalOrderPriceAll || 0) - (serviceDetails?.totalStockPriceAll || 0))} delay={1} />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
+          <div className=''>
+            <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <CurrencyRupee fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Return  Sparepart Amount </div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={serviceDetails?.totalStockPriceAll} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
           <div className=''>
             <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>

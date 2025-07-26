@@ -1,10 +1,10 @@
- 
+
 import React, { useEffect, useState } from 'react';
 import http_request from '../../../http-request'; // Assuming this is your API utility
 import CountUp from 'react-countup'; // For counting animations
 import { Chart } from 'react-google-charts'; // For charts
 import RecentServicesList from '../complaint/RecentServices'; // Assuming this component displays recent services
- 
+
 import { useRouter } from 'next/navigation';
 import { ToastMessage } from '../components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
@@ -18,10 +18,10 @@ const ServiceDashboard = (props) => {
   const [complaint, setComplaint] = useState([]); // State to hold complaint data
   const [refresh, setRefresh] = useState(""); // State for triggering data refresh
   const [serviceDetails, setServiceDetails] = useState(""); // State for triggering data refresh
-   // State for average TAT
-   const [averageCT, setAverageCT] = useState(0);
-    const [averageRT, setAverageRT] = useState(0);
-    const [averageTAT, setAverageTAT] = useState(0);
+  // State for average TAT
+  const [averageCT, setAverageCT] = useState(0);
+  const [averageRT, setAverageRT] = useState(0);
+  const [averageTAT, setAverageTAT] = useState(0);
   const [transactions, setTransactions] = useState([])
 
   const actualTAT = 12;
@@ -37,15 +37,15 @@ const ServiceDashboard = (props) => {
     getTransactions()
     getOrderPriceAndDepositsByServiceCenter()
   }, [refresh]);
-const getTransactions = async () => {
+  const getTransactions = async () => {
     try {
-      const endPoint =   `/getAllServicePaymentByCenterId/${userData?._id}` 
- 
+      const endPoint = `/getAllServicePaymentByCenterId/${userData?._id}`
+
       const response = await http_request.get(endPoint);
-      
+
       let { data } = response;
       // console.log("data",data);
-      
+
       setTransactions(data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
@@ -53,15 +53,15 @@ const getTransactions = async () => {
       // setLoading(false);
     }
   };
-const getOrderPriceAndDepositsByServiceCenter = async () => {
+  const getOrderPriceAndDepositsByServiceCenter = async () => {
     try {
-      
- 
+
+
       const response = await http_request.get(`/getOrderPriceAndDepositsByServiceCenter/${userData?._id}`);
-      
+
       let { data } = response;
       // console.log("data",data);
-      
+
       setServiceDetails(data);
     } catch (err) {
       console.error("Error fetching transactions:", err);
@@ -70,18 +70,18 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
     }
   };
 
-// console.log("serviceDetails",serviceDetails);
+  // console.log("serviceDetails",serviceDetails);
 
 
   const totals = transactions.reduce((acc, item) => {
     const amount = parseFloat(item.payment); // Convert string to number
     if (item.status === "PAID") {
-        acc.totalPaid += amount;
+      acc.totalPaid += amount;
     } else if (item.status === "UNPAID") {
-        acc.totalUnpaid += amount;
+      acc.totalUnpaid += amount;
     }
     return acc;
-}, { totalPaid: 0, totalUnpaid: 0 });
+  }, { totalPaid: 0, totalUnpaid: 0 });
   // const getWalletById = async () => {
   //   try {
   //     let response = await http_request.get(`/getWalletByCenterId/${userData?._id}`);
@@ -98,22 +98,22 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
       let response = await http_request.get(`/getAllTatByServiceCenter?assignServiceCenterId=${userData?._id}`);
       let { data } = response;
       // console.log("data",data);
-      
-  setAverageTAT(data?.overallTATPercentage)
-  setAverageRT(data?.overallRTPercentage)
-  setAverageCT(data?.overallCTPercentage)
-      
+
+      setAverageTAT(data?.overallTATPercentage)
+      setAverageRT(data?.overallRTPercentage)
+      setAverageCT(data?.overallCTPercentage)
+
     } catch (err) {
       console.log("Error fetching complaints:", err);
     }
   };
-  
+
   // const getAllComplaint = async () => {
   //   try {
   //     let response = await http_request.get("/getAllComplaint");
   //     let { data } = response;
   //     setComplaint(data?.data);
-  
+
   //     // Filter complaints for the brand and required statuses
   //     const filteredComplaints = data?.data?.filter(
   //       (item) =>
@@ -121,7 +121,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //         ["COMPLETED", "FINAL VERIFICATION"].includes(item.status)&&
   //               item?.cspStatus === "NO"
   //     );
-  
+
   //     // Function to calculate time difference in hours and days
   //     const getTimeDifference = (start, end) => {
   //       if (!start || !end) return { days: 0, hours: 0 };
@@ -131,19 +131,19 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //       let hours = Math.round(totalHours % 24);
   //       return { days, hours };
   //     };
-  
+
   //     // Function to calculate percentage
   //     const calculatePercentage = (count, total) =>
   //       total > 0 ? ((count / total) * 100).toFixed(2) : "0.00";
-  
+
   //     let totalTATCount = 0;
   //     let totalRTCount = 0;
   //     let totalCTCount = 0;
   //     let totalComplaints = filteredComplaints.length;
-  
+
   //     let monthlyReport = {};
   //     let yearlyReport = {};
-  
+
   //     // Process complaints
   //     const complaintsWithMetrics = filteredComplaints.map((c) => {
   //       const complaintDate = new Date(c.createdAt);
@@ -159,7 +159,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //       const serviceCompletionTime = c.complaintCloseTime
   //         ? new Date(c.complaintCloseTime)
   //         : null;
-  
+
   //       // ** Debugging logs **
   //       // console.log("📝 Complaint ID:", c._id);
   //       // console.log("Created At:", complaintDate.toISOString());
@@ -167,25 +167,25 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //       //   "Response Time:",
   //       //   responseTime ? responseTime.toISOString() : "N/A"
   //       // );
-  
+
   //       const monthYear = complaintDate.toLocaleString("default", {
   //         month: "long",
   //         year: "numeric",
   //       });
   //       const year = complaintDate.getFullYear();
-  
+
   //       // Calculate TAT, RT, and CT
   //       let tat = getTimeDifference(complaintDate, complaintCloseDate);
   //       let rt = getTimeDifference(serviceStartTime,  responseTime);
   //       let ct = getTimeDifference(complaintDate, complaintCloseDate);
-  
+
   //       // console.log(`🕒 RT: ${rt.days} days, ${rt.hours} hours`);
-  
+
   //       // Check if TAT, RT, and CT ≤ threshold
   //       if (tat.days === 0 && tat.hours <= 24) totalTATCount++;
   //       if (rt.days === 0 && rt.hours <= 2) totalRTCount++;
   //       if (ct.days === 0 && ct.hours <= 24) totalCTCount++;
-  
+
   //       // Update Monthly Report
   //       if (!monthlyReport[monthYear]) {
   //         monthlyReport[monthYear] = {
@@ -210,7 +210,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //       if (tat.days === 0 && tat.hours <= 24) monthlyReport[monthYear].tatCount++;
   //       if (rt.days === 0 && rt.hours <= 2) monthlyReport[monthYear].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) monthlyReport[monthYear].ctCount++;
-  
+
   //       // Update Yearly Report
   //       if (!yearlyReport[year]) {
   //         yearlyReport[year] = {
@@ -235,15 +235,15 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //       if (tat.days === 0 && tat.hours <= 24) yearlyReport[year].tatCount++;
   //       if (rt.days === 0 && rt.hours <= 2) yearlyReport[year].rtCount++;
   //       if (ct.days === 0 && ct.hours <= 24) yearlyReport[year].ctCount++;
-  
+
   //       return { complaintId: c._id, ct, rt, tat };
   //     });
-  
+
   //     // Calculate Overall Percentages
   //     let overallTATPercentage = calculatePercentage(totalTATCount, totalComplaints);
   //     let overallRTPercentage = calculatePercentage(totalRTCount, totalComplaints);
   //     let overallCTPercentage = calculatePercentage(totalCTCount, totalComplaints);
-  
+
   //     // Process final reports with TAT%, CT, RT averages
   //     const processReport = (report) =>
   //       Object.keys(report).map((key) => {
@@ -256,7 +256,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //           totalCT,
   //           totalRT,
   //         } = report[key];
-  
+
   //         return {
   //           period: key,
   //           tatPercentage: calculatePercentage(tatCount, totalComplaints),
@@ -271,7 +271,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //           complaints, // Includes per-complaint CT, RT, TAT
   //         };
   //       });
-  
+
   //     let finalMonthlyReport = processReport(monthlyReport);
   //     let finalYearlyReport = processReport(yearlyReport);
   // setAverageTAT(overallTATPercentage)
@@ -288,7 +288,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
   //   }
   // };
   // console.log("complaint",complaint);
-  
+
   // Filter complaints based on user role for displaying in the list
   const filterData = userData?.role === "ADMIN" ? complaint
     : userData?.role === "BRAND" ? complaint.filter((item) => item?.brandId === userData._id)
@@ -370,14 +370,14 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
       console.log(err);
     }
   }
-// console.log("dashData",dashData);
+  // console.log("dashData",dashData);
 
   return (
     <div className='   '>
-       
+
       <Toaster />
 
-     
+
       <div className='mb-10'>
         <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
 
@@ -484,7 +484,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
               </div>
             </div>
           </div>
-          
+
           <div className=' '>
             <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
@@ -573,38 +573,38 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
               </div>
             </div>
           </div>
-           <div className=''>
-                    <div onClick={() => router.push(`/complaint/todayCloseComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-          
-                      <div className='pl-5 py-1 flex justify-between items-center'>
-                        <div className='flex items-center'>
-                          <AssignmentTurnedIn fontSize='medium' />
-                          <div className='ml-2'>
-                            <div className='text-blue-500 font-semibold'>Today completed</div>
-                            <div className=' text-2xl font-semibold'>
-                              <CountUp start={0} end={dashData?.complaints?.completedToday} delay={1} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+          <div className=''>
+            <div onClick={() => router.push(`/complaint/todayCloseComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AssignmentTurnedIn fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Today completed</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.completedToday} delay={1} />
                     </div>
                   </div>
-                  <div className=''>
-                    <div onClick={() => router.push(`/complaint/todayCreateComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-          
-                      <div className='pl-5 py-1 flex justify-between items-center'>
-                        <div className='flex items-center'>
-                          <Assignment fontSize='medium' />
-                          <div className='ml-2'>
-                            <div className='text-blue-500 font-semibold'>Today created</div>
-                            <div className=' text-2xl font-semibold'>
-                              <CountUp start={0} end={dashData?.complaints?.createdToday} delay={1} />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=''>
+            <div onClick={() => router.push(`/complaint/todayCreateComplaint`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Assignment fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Today created</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.createdToday} delay={1} />
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
@@ -694,7 +694,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
         <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
 
         <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
-        
+
           <div className=' '>
             <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
@@ -748,10 +748,10 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
           </div>
           <div className=' h-8  md:col-span-5 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other details</div>
 
-           
-            
+
+
           <div className=' '>
-            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -768,7 +768,7 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
             </div>
           </div>
           <div className=' '>
-            <div  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
               <div className='flex justify-between'>
               </div>
               <div className='pl-5 py-1 flex justify-between items-center'>
@@ -836,130 +836,147 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
+      <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5 '>
+        <div className=''>
+          <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <CurrencyRupee fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>  Deposite Amount </div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.totalDeposit} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other Details </div>
-             <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4 mb-5 '>
-               <div className=''>
-                 <div onClick={() => router.push(`/profile/${userData?._id}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <CurrencyRupee fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>  Deposite Amount </div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.totalDeposit} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-                <div className=''>
-                 <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <CurrencyRupee fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>  Sparepart Amount </div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={Math.max(0, (serviceDetails?.totalOrderPrice || 0) - (serviceDetails?.totalStockPrice || 0))} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-                 <div className=''>
-                          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                            <div className='flex justify-between'>
-                            </div>
-                            <div className='pl-5 py-1 flex justify-between items-center'>
-                              <div className='flex items-center'>
-                                <CurrencyRupee fontSize='medium' />
-                                <div className='ml-2'>
-                                  <div className='text-blue-500 font-semibold'>Return  Sparepart Amount </div>
-                                  <div className=' text-2xl font-semibold'>
-                                    <CountUp start={0} end={serviceDetails?.totalStockPrice} delay={1} />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-               <div className=''>
-                 <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <ShoppingBag fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>Approved</div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.approvedOrderCount} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <div className=''>
-                 <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <ShoppingBag fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>Not Approved</div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.notApprovedOrderCount} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-                <div className=''>
-                 <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <ShoppingBag fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>Cancel Order</div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.canceledOrderCount} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-               <div className=''>
-                 <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
-                   <div className='flex justify-between'>
-                   </div>
-                   <div className='pl-5 py-1 flex justify-between items-center'>
-                     <div className='flex items-center'>
-                       <ShoppingBag fontSize='medium' />
-                       <div className='ml-2'>
-                         <div className='text-blue-500 font-semibold'>Total Orders</div>
-                         <div className=' text-2xl font-semibold'>
-                           <CountUp start={0} end={serviceDetails?.totalOrders} delay={1} />
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               </div>
-       
-             </div>
+
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <ShoppingBag fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Approved</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.approvedOrderCount} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <ShoppingBag fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Not Approved</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.notApprovedOrderCount} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <ShoppingBag fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Cancel Order</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.canceledOrderCount} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <ShoppingBag fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Total Orders</div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.totalOrders} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <CurrencyRupee fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Total  Sparepart Amount </div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.totalOrderPrice} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <CurrencyRupee fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Remaining  Sparepart Amount </div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={Math.max(0, (serviceDetails?.totalOrderPrice || 0) - (serviceDetails?.totalStockPrice || 0))} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=''>
+          <div onClick={() => router.push("/inventory/stock")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+            <div className='flex justify-between'>
+            </div>
+            <div className='pl-5 py-1 flex justify-between items-center'>
+              <div className='flex items-center'>
+                <CurrencyRupee fontSize='medium' />
+                <div className='ml-2'>
+                  <div className='text-blue-500 font-semibold'>Return  Sparepart Amount </div>
+                  <div className=' text-2xl font-semibold'>
+                    <CountUp start={0} end={serviceDetails?.totalStockPrice} delay={1} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Display charts for visualization */}
       <div className='grid md:grid-cols-2 grid-cols-1 md:gap-4'>
@@ -1020,9 +1037,9 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
       </div>
       {/* Display recent services list */}
       <div className="mt-8 flex justify-center ">
-      <div className="  md:w-full w-[260px] ">
-        <RecentServicesList data={data} userData={props?.userData}/>
-      </div>
+        <div className="  md:w-full w-[260px] ">
+          <RecentServicesList data={data} userData={props?.userData} />
+        </div>
       </div>
 
       {/* Include other components or sections as required */}

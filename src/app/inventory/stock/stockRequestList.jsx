@@ -12,7 +12,7 @@ import { useForm } from 'react-hook-form';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useUser } from '@/app/components/UserContext';
 
-const StockRequestList = ({ reqStock }) => {
+const StockRequestList = ({ reqStock ,refre}) => {
     // console.log("reqStock", reqStock);
 
     const [stockReq, setStockReq] = useState([])
@@ -26,7 +26,7 @@ const StockRequestList = ({ reqStock }) => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [sortDirection, setSortDirection] = useState('asc');
     const [sortBy, setSortBy] = useState('id');
-    const [refresh, setRefresh] = useState("")
+    const [refresh, setRefresh] = useState(refre)
     const { user } = useUser()
 
 
@@ -35,7 +35,7 @@ const StockRequestList = ({ reqStock }) => {
 
         GetStockRequest()
 
-    }, [refresh, reqStock]);
+    }, [refresh,refre, reqStock]);
 
 
 
@@ -64,11 +64,16 @@ const StockRequestList = ({ reqStock }) => {
         if (userRole === "ADMIN") {
             // Admin gets all stock requests
             response = await http_request.get("/getAllStockRequests");
-        } else if (reqStock?._id) {
+        } else if (reqStock) {
             // Others get requests by specific stockId
-            const req = `/getStockRequestByStockId/${reqStock._id}`;
+            const req = `/getStockRequestByStockId/${reqStock}`;
             response = await http_request.get(req);
-        } else {
+        } else if (userRole === "SERVICE" && !reqStock){
+            const req = `/getAllCenterStockRequests/${user?.user?._id}`;
+            response = await http_request.get(req); 
+        }
+        
+        else {
             console.warn("No stock ID provided and user is not admin.");
             return;
         }
@@ -106,7 +111,7 @@ const StockRequestList = ({ reqStock }) => {
 
             ToastMessage({ status: true, msg: "Stock approved and updated successfully" });
  
-            await http_request.patch(`/updateRequestStatus/${request._id}`, { status: "approved" });
+            // await http_request.patch(`/updateRequestStatus/${request._id}`, { status: "approved" });
 
             setRefresh(Date.now());
             setLoading(false);

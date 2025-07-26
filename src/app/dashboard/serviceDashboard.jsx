@@ -873,7 +873,23 @@ const getOrderPriceAndDepositsByServiceCenter = async () => {
                    </div>
                  </div>
                </div>
-              
+                 <div className=''>
+                          <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+                            <div className='flex justify-between'>
+                            </div>
+                            <div className='pl-5 py-1 flex justify-between items-center'>
+                              <div className='flex items-center'>
+                                <CurrencyRupee fontSize='medium' />
+                                <div className='ml-2'>
+                                  <div className='text-blue-500 font-semibold'>Return  Sparepart Amount </div>
+                                  <div className=' text-2xl font-semibold'>
+                                    <CountUp start={0} end={serviceDetails?.totalStockPrice} delay={1} />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                <div className=''>
                  <div onClick={() => router.push("/inventory/order")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
                    <div className='flex justify-between'>

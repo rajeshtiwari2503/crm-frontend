@@ -120,7 +120,7 @@ const ServiceTransactions = () => {
     if (value) {
       getTransactions();
     }
-  }, []);
+  }, [value]);
 // refresh, value, user
   const getTransactions = async () => {
     try {
@@ -130,14 +130,17 @@ const ServiceTransactions = () => {
       if (role === "SERVICE") {
         endPoint = `/getAllServicePaymentByCenterId/${user?.user?._id}`;
       } else {
-        endPoint = `/getAllServicePaymentsWithPage1?page=${page}&limit=${limit}`;
+        // endPoint = `/getAllServicePaymentsWithPage?page=${page}&limit=${limit}`;
+        endPoint = `/getAllServicePaymentByCenterId/${user?.user?._id}`;
+        setLoading(true);
+
       }
 
       setLoading(true);
       const response = await http_request.get(endPoint);
       const { data, total } = response.data;
 
-      setTransactions(data);
+      setTransactions(response.data);
       setTotalPages(total);
     } catch (err) {
       console.error("Error fetching transactions:", err);

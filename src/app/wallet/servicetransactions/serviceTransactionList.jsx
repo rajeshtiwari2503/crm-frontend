@@ -303,7 +303,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
 
 
 
-    const totals = filteredData.reduce((acc, item) => {
+    const totals = filteredData?.reduce((acc, item) => {
         const amount = parseFloat(item.payment); // Convert string to number
         if (item.status === "PAID") {
             acc.totalPaid += amount;

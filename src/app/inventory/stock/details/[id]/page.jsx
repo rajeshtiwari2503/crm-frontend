@@ -15,6 +15,7 @@ import { useForm } from 'react-hook-form';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useUser } from '@/app/components/UserContext';
 import StockRequestList from '../../stockRequestList';
+
 const OrderDetails = ({ params }) => {
 
     const router = useRouter()
@@ -60,15 +61,17 @@ const OrderDetails = ({ params }) => {
 
     const GetStock = async () => {
         try {
-            const req = user?.user?.role === "ADMIN" || user?.user?.role === "EMPLOYEE" ? `/getStockById/${params?.id}` : `/getStockByCenterId/${params?.id}`
+            setLoading(true)
+            const req = user?.user?.role === "ADMIN" || user?.user?.role === "EMPLOYEE" || user?.user?.role === "BRAND" ? `/getStockById/${params?.id}` : `/getStockByCenterId/${params?.id}`
             let response = await http_request.get(req)
             let { data } = response
             GetStockRequest(data?._id)
             setOrders(data);
+            setLoading(false)
         }
         catch (err) {
             console.log(err)
-
+            setLoading(false)
 
         }
     }
@@ -77,15 +80,17 @@ const OrderDetails = ({ params }) => {
 
     const GetStockRequest = async (id) => {
         try {
+            setLoading(true)
             const req = `/getStockRequestByStockId/${id}`
             let response = await http_request.get(req)
             let { data } = response
             setStockReq(data);
+            setLoading(false)
         }
         catch (err) {
             console.log(err)
 
-
+            setLoading(false)
         }
     }
     const handleChangeRowsPerPage = (event) => {
@@ -139,7 +144,7 @@ const OrderDetails = ({ params }) => {
             // console.log("reqData", reqData);
 
             const endpoint = userData?.user?.role === "SERVICE" ? `/requestCenterStock` : `/editStock/${params?.id}`
-            const response = userData?.user?.role === "SERVICE" ? await http_request.post(endpoint, reqData)  : await http_request.patch(endpoint, reqData);
+            const response = userData?.user?.role === "SERVICE" ? await http_request.post(endpoint, reqData) : await http_request.patch(endpoint, reqData);
             const { data: responseData } = response;
             ToastMessage(responseData);
             setLoading(false);
@@ -157,10 +162,14 @@ const OrderDetails = ({ params }) => {
     const onSubmit = (data) => {
         AddStockData(data);
     };
+
+    console.log("orders", orders);
+    console.log("sorted", sortedData);
+
     return (
         <Sidenav>
 
-            {!orders ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+            {loading === true ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
                 :
                 <>
                     <div>
@@ -184,7 +193,7 @@ const OrderDetails = ({ params }) => {
 
                         </div>
                     </div>
-                    <div>
+                    <div >
                         <Toaster />
                         <div className='flex justify-between items-center mt-10 mb-3'>
                             <div className='font-bold text-2xl'>Stock Information</div>
@@ -198,94 +207,127 @@ const OrderDetails = ({ params }) => {
                         </div>
                         {!sortedData ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
                             :
-                            <>
-                                <TableContainer component={Paper}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>
-                                                    <TableSortLabel
-                                                        active={sortBy === '_id'}
-                                                        direction={sortDirection}
-                                                        onClick={() => handleSort('_id')}
-                                                    >
-                                                        ID
-                                                    </TableSortLabel>
-                                                </TableCell>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <TableContainer component={Paper}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === '_id'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('_id')}
+                                                        >
+                                                            ID
+                                                        </TableSortLabel>
+                                                    </TableCell>
 
-                                                <TableCell>
-                                                    <TableSortLabel
-                                                        active={sortBy === 'freshStock'}
-                                                        direction={sortDirection}
-                                                        onClick={() => handleSort('freshStock')}
-                                                    >
-                                                        Fresh Stock
-                                                    </TableSortLabel>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <TableSortLabel
-                                                        active={sortBy === 'defective'}
-                                                        direction={sortDirection}
-                                                        onClick={() => handleSort('defective')}
-                                                    >
-                                                        Defective Stock
-                                                    </TableSortLabel>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <TableSortLabel
-                                                        active={sortBy === 'defectiveStock'}
-                                                        direction={sortDirection}
-                                                        onClick={() => handleSort('defectiveStock')}
-                                                    >
-                                                        Title
-                                                    </TableSortLabel>
-                                                </TableCell>
-
-
-
+                                                    <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === 'freshStock'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('freshStock')}
+                                                        >
+                                                            Fresh Stock
+                                                        </TableSortLabel>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === 'defective'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('defective')}
+                                                        >
+                                                            Defective Stock
+                                                        </TableSortLabel>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === 'defectiveStock'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('defectiveStock')}
+                                                        >
+                                                            Title
+                                                        </TableSortLabel>
+                                                    </TableCell>
 
 
-                                                <TableCell>
-                                                    <TableSortLabel
-                                                        active={sortBy === 'createdAt'}
-                                                        direction={sortDirection}
-                                                        onClick={() => handleSort('createdAt')}
-                                                    >
-                                                        CreatedAt
-                                                    </TableSortLabel>
-                                                </TableCell>
 
 
-                                            </TableRow>
-                                        </TableHead>
 
-                                        <TableBody>
-                                            {sortedData?.map((row) => (
-                                                <TableRow key={row?.i} hover>
-                                                    <TableCell>{row?.i}</TableCell>
+                                                    <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === 'createdAt'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('createdAt')}
+                                                        >
+                                                            CreatedAt
+                                                        </TableSortLabel>
+                                                    </TableCell>
 
-                                                    <TableCell>{row?.fresh || 0}</TableCell>
-                                                    <TableCell>{row?.defective || 0}</TableCell>
-                                                    <TableCell>{row?.title}</TableCell>
-                                                    <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
+
                                                 </TableRow>
+                                            </TableHead>
+
+                                            <TableBody>
+                                                {sortedData?.map((row) => (
+                                                    <TableRow key={row?.i} hover>
+                                                        <TableCell>{row?.i}</TableCell>
+
+                                                        <TableCell>{row?.fresh || 0}</TableCell>
+                                                        <TableCell>{row?.defective || 0}</TableCell>
+                                                        <TableCell>{row?.title}</TableCell>
+                                                        <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+
+                                    <TablePagination
+                                        rowsPerPageOptions={[5, 10, 25]}
+                                        component="div"
+                                        count={data?.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+                                    />
+                                </div>
+                                <div>
+                                    {orders.serviceCenters && (
+                                        <div className="grid grid-cols-1 md:grid-cols-2   gap-4">
+                                            {orders.serviceCenters.map((sc) => (
+                                                <div
+                                                    key={sc.serviceCenterId}
+                                                    className="border rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col"
+                                                >
+                                                    <h3 className="text-lg font-semibold">{sc.serviceCenterName}</h3>
+                                                    <p>
+                                                        Fresh Stock: <span className="font-medium">{sc.freshStock}</span>
+                                                    </p>
+                                                    <p>
+                                                        Defective Stock: <span className="font-medium">{sc.defectiveStock}</span>
+                                                    </p>
+
+                                                    <h4 className="mt-2 font-semibold">Stock Details:</h4>
+                                                    <ul className="list-disc ml-5  ">
+                                                        {sc.stock.map((item, index) => (
+                                                            <li key={index}>
+                                                                {item.title} - Fresh: {item.fresh || 0}, Defective: {item.defective || 0}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
                                             ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                        </div>
+                                    )}
 
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 25]}
-                                    component="div"
-                                    count={data?.length}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                />
-                            </>}
+                                </div>
+                            </div>
+                        }
 
-                       
+
                         {/* Edit Modal */}
                         <Dialog open={editModalOpen} onClose={handleEditModalClose}>
                             <DialogTitle>{editData?._id ? "Edit Stock" : "Add Stock"}</DialogTitle>
@@ -477,7 +519,7 @@ const OrderDetails = ({ params }) => {
 
 
                     </div>
-                         <StockRequestList reqStock={params?.id} refre={refresh} />
+                    {user?.user.role !== "BRAND" && <StockRequestList reqStock={params?.id} refre={refresh} />}
                 </>
             }
         </Sidenav>

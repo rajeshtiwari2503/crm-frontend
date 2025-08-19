@@ -71,7 +71,7 @@ const Stock = () => {
               : 
               <>
               <StockList data={data} products={filterProduct} userData={user} RefreshData={RefreshData} />
-              <StockRequestList  />
+              {user?.user.role!=="BRAND" && <StockRequestList  />}
               </>
             }
           </div>

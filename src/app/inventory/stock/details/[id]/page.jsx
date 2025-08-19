@@ -274,8 +274,8 @@ const OrderDetails = ({ params }) => {
                                                     <TableRow key={row?.i} hover>
                                                         <TableCell>{row?.i}</TableCell>
 
-                                                        <TableCell>{row?.fresh || 0}</TableCell>
-                                                        <TableCell>{row?.defective || 0}</TableCell>
+                                                        <TableCell>  {user.user.role === "BRAND" ? Math.abs(row?.fresh || 0) : row?.fresh || 0}</TableCell>
+                                                        <TableCell>   {user.user.role === "BRAND" ? Math.abs(row?.defective || 0) : row?.defective || 0}</TableCell>
                                                         <TableCell>{row?.title}</TableCell>
                                                         <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                                                     </TableRow>

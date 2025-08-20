@@ -184,17 +184,37 @@ const StockList = (props) => {
                       Fresh Stock
                     </TableSortLabel>
                   </TableCell>
+                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" &&
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'freshStock'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('freshStock')}
+                      >
+                        Send_To_Service_CenterFresh_Stock
+                      </TableSortLabel>
+                    </TableCell>
+                  }
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'defectiveStock'}
                       direction={sortDirection}
                       onClick={() => handleSort('defectiveStock')}
                     >
-                      Defective Stock
+                      Defective_Stock
                     </TableSortLabel>
                   </TableCell>
-
-
+                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" &&
+                    <TableCell>
+                      <TableSortLabel
+                        active={sortBy === 'freshStock'}
+                        direction={sortDirection}
+                        onClick={() => handleSort('freshStock')}
+                      >
+                        Service_center_Send_Defective_Stock
+                      </TableSortLabel>
+                    </TableCell>
+                  }
                   {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                     <>
                       <TableCell>
@@ -241,7 +261,21 @@ const StockList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
+                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" && <TableCell>
+                      {Math.abs(
+                        row?.stock
+                          ?.filter((item) => item.fresh < 0)   // take only negatives
+                          .reduce((sum, item) => sum + item.fresh, 0) // sum them
+                      ) || 0}
+                    </TableCell>
+                    }
+
                     <TableCell>{row?.defectiveStock}</TableCell>
+                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" && <TableCell>
+                      {row?.stock
+                        ?.filter((item) => item.defective) // only items with defective
+                        .reduce((sum, item) => sum + (item.defective || 0), 0) || 0}
+                    </TableCell>}
                     {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                       <>
                         <TableCell>{row?.serviceCenterName || row?.serviceCenter}</TableCell>

@@ -207,7 +207,7 @@ const OrderDetails = ({ params }) => {
                         </div>
                         {!sortedData ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
                             :
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
                                 <div>
                                     <TableContainer component={Paper}>
                                         <Table>
@@ -241,6 +241,16 @@ const OrderDetails = ({ params }) => {
                                                             Defective Stock
                                                         </TableSortLabel>
                                                     </TableCell>
+                                                    {user.user.role !== "SERVICE" && <TableCell>
+                                                        <TableSortLabel
+                                                            active={sortBy === 'defective'}
+                                                            direction={sortDirection}
+                                                            onClick={() => handleSort('defective')}
+                                                        >
+                                                            Service Center Name
+                                                        </TableSortLabel>
+                                                    </TableCell>
+                                                    }
                                                     <TableCell>
                                                         <TableSortLabel
                                                             active={sortBy === 'defectiveStock'}
@@ -274,8 +284,9 @@ const OrderDetails = ({ params }) => {
                                                     <TableRow key={row?.i} hover>
                                                         <TableCell>{row?.i}</TableCell>
 
-                                                        <TableCell>  {user.user.role === "BRAND" ? Math.abs(row?.fresh || 0) : row?.fresh || 0}</TableCell>
-                                                        <TableCell>   {user.user.role === "BRAND" ? Math.abs(row?.defective || 0) : row?.defective || 0}</TableCell>
+                                                        <TableCell>  {Math.abs(row?.fresh)}</TableCell>
+                                                        <TableCell>   {Math.abs(row?.defective || 0)}</TableCell>
+                                                        {user.user.role !== "SERVICE" && <TableCell>  {row.serviceCenterName ? row.serviceCenterName : " "}</TableCell>}
                                                         <TableCell>{row?.title}</TableCell>
                                                         <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                                                     </TableRow>
@@ -294,7 +305,7 @@ const OrderDetails = ({ params }) => {
                                         onRowsPerPageChange={handleChangeRowsPerPage}
                                     />
                                 </div>
-                                <div>
+                                {/* <div>
                                     {orders.serviceCenters && (
                                         <div className="grid grid-cols-1 md:grid-cols-2   gap-4">
                                             {orders.serviceCenters.map((sc) => (
@@ -323,7 +334,7 @@ const OrderDetails = ({ params }) => {
                                         </div>
                                     )}
 
-                                </div>
+                                </div> */}
                             </div>
                         }
 

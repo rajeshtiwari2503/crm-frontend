@@ -184,7 +184,7 @@ const StockList = (props) => {
                       Fresh Stock
                     </TableSortLabel>
                   </TableCell>
-                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" &&
+                  {(userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND") &&
                     <TableCell>
                       <TableSortLabel
                         active={sortBy === 'freshStock'}
@@ -204,7 +204,7 @@ const StockList = (props) => {
                       Defective_Stock
                     </TableSortLabel>
                   </TableCell>
-                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" &&
+                  {(userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND") &&
                     <TableCell>
                       <TableSortLabel
                         active={sortBy === 'freshStock'}
@@ -215,7 +215,7 @@ const StockList = (props) => {
                       </TableSortLabel>
                     </TableCell>
                   }
-                  {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
+                  {/* {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                     <>
                       <TableCell>
                         <TableSortLabel
@@ -230,7 +230,7 @@ const StockList = (props) => {
                     </>
                     : ""
 
-                  }
+                  } */}
 
                   <TableCell>
                     <TableSortLabel
@@ -261,7 +261,7 @@ const StockList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.sparepartName}</TableCell>
                     <TableCell>{row?.freshStock}</TableCell>
-                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" && <TableCell>
+                    {(userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND") && <TableCell>
                       {Math.abs(
                         row?.stock
                           ?.filter((item) => item.fresh < 0)   // take only negatives
@@ -271,19 +271,19 @@ const StockList = (props) => {
                     }
 
                     <TableCell>{row?.defectiveStock}</TableCell>
-                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND" && <TableCell>
+                    {(userData?.user?.role === "ADMIN" || userData?.user?.role === "BRAND") &&<TableCell>
                       {row?.stock
                         ?.filter((item) => item.defective) // only items with defective
                         .reduce((sum, item) => sum + (item.defective || 0), 0) || 0}
                     </TableCell>}
-                    {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
+                    {/* {userData?.user?.role === "ADMIN" || userData?.user?.role === "EMPLOYEE" || userData?.user?.role === "SERVICE" ?
                       <>
                         <TableCell>{row?.serviceCenterName || row?.serviceCenter}</TableCell>
 
 
                       </>
                       : ""
-                    }
+                    } */}
                     <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{new Date(row?.createdAt)?.toLocaleString()}</TableCell>
                     <TableCell className='flex'>

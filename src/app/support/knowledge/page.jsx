@@ -9,7 +9,7 @@ const Knowledge = () => {
             <div className="bg-white p-6 rounded shadow-md">
                 <h2 className="text-2xl font-semibold mb-4">Welcome to Servsy Inc. Knowledge Hub</h2>
                 <p className="text-lg mb-4">
-                    Lybley India Pvt. Ltd. is committed to delivering exceptional services and innovative solutions to meet the diverse needs of our customers. Our expertise spans across various domains, including technology, customer support, and after-sales services.
+                    Servsy is committed to delivering exceptional services and innovative solutions to meet the diverse needs of our customers. Our expertise spans across various domains, including technology, customer support, and after-sales services.
                 </p>
                 <h3 className="text-xl font-semibold mb-2">Our Expertise</h3>
                 <ul className="list-disc list-inside mb-4">

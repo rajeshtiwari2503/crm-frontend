@@ -286,7 +286,8 @@ const UserDashboard = (props) => {
 
       <div className="mt-8 flex justify-center ">
       <div className="  md:w-full w-[260px] ">
-      <UserAllServicesList data={userComp} />
+      {/* <UserAllServicesList data={userComp} /> */}
+        <RecentServicesList data={complaint} userData={userData} />
       </div>
       </div>
     </>

@@ -19,6 +19,7 @@ const ComplaintDetails = ({ params }) => {
     const [value, setLocalValue] = useState('');
 
     const [audioFile, setAudioFile] = useState(null);
+    const [serviceCenter, setServiceCenter] = useState(null);
 
     const [slot, setSlot] = useState("");
 
@@ -32,6 +33,25 @@ const ComplaintDetails = ({ params }) => {
         getAllSpareParts()
     }, [id])
 
+    useEffect(() => {
+
+        if (complaint.assignServiceCenterId) {
+            getServiceBy(complaint.assignServiceCenterId)
+        }
+
+    }, [complaint.assignServiceCenterId])
+    const getServiceBy = async (cenId) => {
+        try {
+
+            let response = await http_request.get(`/getServiceBy/${cenId}`)
+            let { data } = response;
+            setServiceCenter(data)
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+    }
     const getComplaintById = async () => {
         try {
 
@@ -39,6 +59,9 @@ const ComplaintDetails = ({ params }) => {
             let { data } = response;
             setComplaint(data)
             getComplaintByUserId(data?.phoneNumber);
+            // if (data?.assignServiceCenterId) {
+            //     getServiceBy(data?.assignServiceCenterId)
+            // }
             setId(data?.userId)
 
         }
@@ -47,6 +70,8 @@ const ComplaintDetails = ({ params }) => {
 
         }
     }
+
+
     // const getComplaintByUserId = async () => {
     //     try {
     //         setLoading(true)
@@ -341,6 +366,21 @@ const ComplaintDetails = ({ params }) => {
                                 } */}
                                             <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter : </div>
                                             <div className='md:text-xl text-sm '>{complaint?.assignServiceCenter}</div>
+                                            {value?.user?._id === "67cabc9ce8b5a90df33f977a" && (<div className="md:text-xl text-sm font-semibold">
+                                                Assign Service Center Address:
+                                            </div>
+                                            )}
+                                            {value?.user?._id === "67cabc9ce8b5a90df33f977a" && (
+                                                <div className="p-4 border rounded-lg shadow-md bg-white space-y-1">
+
+                                                    <div className="md:text-xl text-sm">Street: {serviceCenter?.streetAddress}</div>
+                                                    <div className="md:text-xl text-sm">City: {serviceCenter?.city}</div>
+                                                    <div className="md:text-xl text-sm">State: {serviceCenter?.state}</div>
+                                                    <div className="md:text-xl text-sm">Postal Code: {serviceCenter?.postalCode}</div>
+                                                    <div className="md:text-xl text-sm">Country: India</div>
+                                                </div>
+                                            )}
+
                                             {value?.user?.role === "BRAND" ? ""
                                                 : <>
                                                     <div className='md:text-xl text-sm font-semibold'>AssignServiceCenter contact : </div>

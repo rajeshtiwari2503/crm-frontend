@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import EditComplaintForm from '../assign/partPendingVideo';
 import MatchedSparePartsModal from '@/app/components/MatchSparepartsModal';
 import UpdateComplaintModal from '../UpdateComplaintModel';
+import AddServicePaymentModal from '../AddServicePayment';
 
 
 const ComplaintList = (props) => {
@@ -804,7 +805,14 @@ const ComplaintList = (props) => {
                             <TableCell>{row?.status}</TableCell>
                             <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                             <TableCell className="p-0">
+                              
                               <div className="flex items-center space-x-2">
+                                 <div
+                                  onClick={() => handleDetails(row?._id)}
+                                  className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                >
+                                  <Visibility />
+                                </div>
                                 {userData?.role === "ADMIN" ?
                                   <div
                                     onClick={() => handleUpdateStatus(row?._id)}
@@ -816,7 +824,7 @@ const ComplaintList = (props) => {
                                     <UpdateComplaintModal complaintId={row?._id} RefreshData={props?.RefreshData} />
                                     :
                                     ""}
-
+                               
                                 {/* {userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
                             <div
                               onClick={() => handleOrderPart(row?._id)}
@@ -879,12 +887,13 @@ const ComplaintList = (props) => {
                                       : ""}
                                   </>
                                 }
-                                <div
-                                  onClick={() => handleDetails(row?._id)}
-                                  className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                                >
-                                  <Visibility />
-                                </div>
+                                 {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
+                                  
+                                    <AddServicePaymentModal complaint={row} RefreshData={props?.RefreshData} />
+                                  
+                                  :
+                                  ""}
+                               
                                 {userData?.role === "ADMIN" || userData?.role === "BRAND" ?
                                   <>
                                     <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
@@ -1090,7 +1099,7 @@ const ComplaintList = (props) => {
           <form onSubmit={handleSubmit(asignCenter)}>
             <div>
               {loading ? (
-               <div className="flex items-center justify-center  "> <ReactLoader /></div>
+                <div className="flex items-center justify-center  "> <ReactLoader /></div>
               ) : filterSer?.length > 0 ? (
                 <>
                   <div className='w-full mb-10 '>

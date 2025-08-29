@@ -569,43 +569,81 @@ const ComplaintDetails = ({ params }) => {
                                     </div>
                                 ))}
                                 </div> */}
+                                            {complaint?.issueImages && (
+                                                <>
+                                                    <div className='md:text-xl text-sm font-semibold'>Image : </div>
+                                                    <div>
+                                                        <img
 
-                                            <div className='md:text-xl text-sm font-semibold'>Image : </div>
-                                            <div>
-                                                <img
+                                                            src={complaint?.issueImages}
+                                                            height="200px"
+                                                            width="200px"
+                                                            className='m-2'
+                                                            alt='image'
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                            {complaint?.partImage && (
+                                                <>
+                                                    <div className='md:text-xl text-sm font-semibold'>Replace Part Image : </div>
+                                                    <div>
+                                                        <img
 
-                                                    src={complaint?.issueImages}
-                                                    height="200px"
-                                                    width="200px"
-                                                    className='m-2'
-                                                    alt='image'
-                                                />
-                                            </div>
+                                                            src={complaint?.partImage}
+                                                            height="200px"
+                                                            width="200px"
+                                                            className='m-2'
+                                                            alt='image'
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                            {complaint?.partPendingImage && (
+                                                <>
+                                                    <div className='md:text-xl text-sm font-semibold'> Part Pending Image : </div>
+                                                    <div>
+                                                        <img
 
-                                            <div className='md:text-xl text-sm font-semibold'>Replace Part Image : </div>
-                                            <div>
-                                                <img
+                                                            src={complaint?.partPendingImage}
+                                                            height="200px"
+                                                            width="200px"
+                                                            className='m-2'
+                                                            alt='image'
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                            {complaint?.defectivePartImage && (
+                                                <>
+                                                    <div className='md:text-xl text-sm font-semibold'> Goods Image : </div>
+                                                    <div>
+                                                        <img
 
-                                                    src={complaint?.partImage}
-                                                    height="200px"
-                                                    width="200px"
-                                                    className='m-2'
-                                                    alt='image'
-                                                />
-                                            </div>
-                                            <div className='md:text-xl text-sm font-semibold'> Part Pending Image : </div>
-                                            <div>
-                                                <img
+                                                            src={complaint?.goodsImage}
+                                                            height="200px"
+                                                            width="200px"
+                                                            className='m-2'
+                                                            alt='image'
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                            {complaint?.defectivePartImage && (
+                                                <>
+                                                    <div className='md:text-xl text-sm font-semibold'> Defective Part Image : </div>
+                                                    <div>
+                                                        <img
 
-                                                    src={complaint?.partPendingImage}
-                                                    height="200px"
-                                                    width="200px"
-                                                    className='m-2'
-                                                    alt='image'
-                                                />
-                                            </div>
-
-
+                                                            src={complaint?.defectivePartImage}
+                                                            height="200px"
+                                                            width="200px"
+                                                            className='m-2'
+                                                            alt='image'
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
 
                                     </div>
@@ -706,7 +744,7 @@ const ComplaintDetails = ({ params }) => {
                     }
                 </div>
 
-            </Sidenav>
+            </Sidenav >
         </>
 
     )

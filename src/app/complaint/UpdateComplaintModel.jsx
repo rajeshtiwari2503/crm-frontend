@@ -246,10 +246,12 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             });
 
             // ✅ Append file separately
-            if (data?.partPendingImage?.[0]) {
-                formData.append("partPendingImage", data.partPendingImage[0]);
+            if (data?.goodsImage?.[0]) {
+                formData.append("goodsImage", data.goodsImage[0]);
             }
-
+            if (data?.defectivePartImage?.[0]) {
+                formData.append("defectivePartImage", data.defectivePartImage[0]);
+            }
 
             for (let pair of formData.entries()) {
                 console.log(`${pair[0]}:`, pair[1]);
@@ -259,7 +261,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
 
 
-            let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData);
+            let response = await http_request.patch(`/updateMultiImageImage/${complaintId}`, formData);
             let { data: responseData } = response;
 
             if (data.comments) {
@@ -330,14 +332,25 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    {...register('partPendingImage'
+                                    {...register('goodsImage'
 
                                     )}
                                     className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
                                 />
 
                             </div>
+                            <div className="w-[350px] mb-5">
+                                <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    {...register('defectivePartImage'
 
+                                    )}
+                                    className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
+                                />
+
+                            </div>
                             {compStatus === "FINAL VERIFICATION" && (
                                 <div className="mb-4">
 

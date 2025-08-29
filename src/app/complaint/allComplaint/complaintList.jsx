@@ -15,6 +15,7 @@ import EditComplaintForm from '../assign/partPendingVideo';
 import MatchedSparePartsModal from '@/app/components/MatchSparepartsModal';
 import UpdateComplaintModal from '../UpdateComplaintModel';
 import AddServicePaymentModal from '../AddServicePayment';
+import AssignServiceCenterModal from '../AssignServiceCenter';
 
 
 const ComplaintList = (props) => {
@@ -834,12 +835,13 @@ const ComplaintList = (props) => {
                             </div>
                             : ""} */}
                                 {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
-                                  <div
-                                    onClick={() => handleAssignServiceCenter(row?._id)}
-                                    className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                                  >
-                                    <AssignmentTurnedIn />
-                                  </div>
+                                  // <div
+                                  //   onClick={() => handleAssignServiceCenter(row?._id)}
+                                  //   className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                  // >
+                                  //   <AssignmentTurnedIn />
+                                  // </div>
+                                  <><AssignServiceCenterModal  complaint={row} RefreshData={props?.RefreshData} /></>
                                   : ""}
                                 {(userData?.role === "ADMIN" || userData?.role === "EMPLOYEE") &&
                                   (row?.status === "PENDING" || row?.status === "ASSIGN" || row?.status === "PART PENDING" || row?.status === "IN PROGRESS") ? (

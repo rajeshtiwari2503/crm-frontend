@@ -13,6 +13,7 @@ import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
 import MatchedSparePartsModalButton from '@/app/components/MatchSparepartsModal';
 import UpdateComplaintModal from '../UpdateComplaintModel';
+import AssignServiceCenterModal from '../AssignServiceCenter';
 
 const PendingComplaintList = (props) => {
 
@@ -23,18 +24,18 @@ const PendingComplaintList = (props) => {
   const complaint = props?.data;
 
   const userData = props?.userData
-const searchParams = useSearchParams();
-const brandId = searchParams.get('brandId');
-const role = searchParams.get('role');
+  const searchParams = useSearchParams();
+  const brandId = searchParams.get('brandId');
+  const role = searchParams.get('role');
 
-      useEffect(() => {
-     
-       
+  useEffect(() => {
+
+
   }, [searchParams])
 
   // console.log("brandId",brandId);
   // console.log("role",role);
-  
+
   // const data = userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? complaint
   //   : userData?.role === "BRAND" ? complaint?.filter((item) => item?.brandId === userData._id)
   //     : userData?.role === "BRAND EMPLOYEE" ? complaint?.filter((item) => item?.brandId === userData.brandId)
@@ -47,7 +48,7 @@ const role = searchParams.get('role');
 
   const effectiveRole = role || userData?.role;
 
-let data = [];
+  let data = [];
   if (userData?.role === "ADMIN" && role === "BRAND" && brandId) {
     // Admin overriding to view a brand's complaints
     data = complaint?.filter(item => item?.brandId === brandId);
@@ -124,7 +125,7 @@ let data = [];
       item?.district?.toLowerCase().includes(search) ||
       item?.assignServiceCenter?.toLowerCase().includes(search) ||
       item?.state?.toLowerCase().includes(search) ||
-      item?.phoneNumber?.includes(searchTerm)||
+      item?.phoneNumber?.includes(searchTerm) ||
       item?.pincode?.includes(searchTerm);
   });
   const sortedData = stableSort(dataSearch, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -196,7 +197,7 @@ let data = [];
         }
         : {
           status: data?.status,
-          comments:data?.comments,
+          comments: data?.comments,
           empId: userData._id,
           empName: userData.name,
         };
@@ -215,8 +216,8 @@ let data = [];
       }
 
       // Send the request using FormData
-      let response = await http_request.patch(`/updateComplaintWithImage/${id}`, formData 
-        );
+      let response = await http_request.patch(`/updateComplaintWithImage/${id}`, formData
+      );
 
       if (data.comments) {
         updateComment({ comments: data?.comments })
@@ -580,17 +581,17 @@ let data = [];
                         >
                           Update Status
                         </div> */}
-                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"  ?
-                                                            <div
-                                                              onClick={() => handleUpdateStatus(row?._id)}
-                                                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                                                            >
-                                                              <SystemSecurityUpdate />
-                                                            </div>
-                                                            : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
-                                                            <UpdateComplaintModal complaintId={row?._id}    RefreshData={  props?.RefreshData}   />
-                                                            :
-                                                            ""}
+                          {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ?
+                            <div
+                              onClick={() => handleUpdateStatus(row?._id)}
+                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            >
+                              <SystemSecurityUpdate />
+                            </div>
+                            : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" ?
+                              <UpdateComplaintModal complaintId={row?._id} RefreshData={props?.RefreshData} />
+                              :
+                              ""}
 
                           {userData?.role === "SERVICE" ?
                             <div
@@ -602,19 +603,20 @@ let data = [];
                             </div>
                             : ""}
                           {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" || userData?.role === "SERVICE" || userData?.role === "BRAND" && userData?.brandSaas === "YES" ?
-                            <div
-                              onClick={() => handleAssignTechnician(row?._id)}
-                              className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                            >
-                              <AssignmentTurnedIn />
+                            // <div
+                            //   onClick={() => handleAssignTechnician(row?._id)}
+                            //   className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                            // >
+                            //   <AssignmentTurnedIn />
+                            // </div>
+                            <><AssignServiceCenterModal complaint={row} RefreshData={props?.RefreshData} /></>
+                            : ""}
+                          {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
+                            <div>
+                              <MatchedSparePartsModalButton complaintId={row?._id} />
+
                             </div>
                             : ""}
-                              {userData?.role === "SERVICE" || userData?.role === "EMPLOYEE" || userData?.role === "ADMIN" ?
-                                                            <div>
-                                                              <MatchedSparePartsModalButton complaintId= {row?._id} />
-                            
-                                                            </div>
-                                                            : ""}
                           <div
                             onClick={() => handleDetails(row?._id)}
                             className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
@@ -704,8 +706,8 @@ let data = [];
                   //   fileSize: (value) =>
                   //     value[0]?.size < 2 * 1024 * 1024 || "File size must be under 2MB",
                   // },
-                // }
-              )}
+                  // }
+                )}
                 className="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none focus:border-indigo-500 focus:ring-indigo-500 file:bg-indigo-500 file:text-white file:px-4 file:py-2 file:rounded-md"
               />
               {/* {errors.partPendingImage && (

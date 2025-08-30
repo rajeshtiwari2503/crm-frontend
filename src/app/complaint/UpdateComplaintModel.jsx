@@ -328,7 +328,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                                 {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
                             </div>
                             <div className="w-[350px] mb-5">
-                                <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+                                <label className="block text-sm font-medium text-gray-700">Upload Goods Image</label>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -340,7 +340,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                             </div>
                             <div className="w-[350px] mb-5">
-                                <label className="block text-sm font-medium text-gray-700">Upload Image</label>
+                                <label className="block text-sm font-medium text-gray-700">Upload Defective Part Image</label>
                                 <input
                                     type="file"
                                     accept="image/*"

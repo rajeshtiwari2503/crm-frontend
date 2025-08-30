@@ -11,10 +11,14 @@ import { useForm } from "react-hook-form";
 import { ReactLoader } from "../components/common/Loading";
 import { AssignmentTurnedIn } from "@mui/icons-material";
 import http_request from '../../../http-request';
+import { useUser } from "../components/UserContext";
+import { Toaster } from "react-hot-toast";
 
 const AssignServiceCenterModal = ({
     complaint, RefreshData
 }) => {
+    const { user } = useUser()
+    const userData = user?.user
 
     const { handleSubmit, setValue, getValues, reset } = useForm();
 
@@ -34,12 +38,19 @@ const AssignServiceCenterModal = ({
         reset();
     };
 
- useEffect(() => {
-    if (open && complaint?._id) {
-      getAllServiceCenter();
-      getServiceCenterData(complaint._id);
-    }
-  }, [open, complaint?._id]);
+   useEffect(() => {
+  if (open && complaint?._id) {
+    getAllServiceCenter();
+  }
+}, [open, complaint?._id]);
+
+useEffect(() => {
+  if (open && complaint?._id && serviceCenterData.length > 0) {
+    getServiceCenterData();
+  }
+}, [open, complaint?._id, serviceCenterData]);
+
+
 
     const getAllServiceCenter = async () => {
         try {
@@ -57,62 +68,13 @@ const AssignServiceCenterModal = ({
     const handleAssignServiceCenter = async (id) => {
         setId(id);
         setOpen(true);
-        // setLoading(true);
-  
-        // const complaint = complaint?.find(item => item?._id === id);
 
-//         if (!complaint || !complaint.pincode) {
-//             console.log("Pincode not found in the complaint");
-//             setLoading(false);
-//             return;
-//         }
-
-//         const targetPincode = complaint.pincode.trim();
-//  console.log("targetPincode",targetPincode);
-//         const filteredCenters =  serviceCenter?.filter(center => {
-//             const supportedPincodes = [
-//                 ...(Array.isArray(center.pincodeSupported) ? center.pincodeSupported : []),
-//                 ...(typeof center.postalCode === 'string'
-//                     ? center.postalCode.split(',').map(p => p.trim())
-//                     : [])
-//             ];
-//             return supportedPincodes.includes(targetPincode);
-//         }) || [];
-//   console.log("filteredCenters",filteredCenters);
-  
-//         const centersWithDetails = await Promise.all(
-//             filteredCenters.map(async (center) => {
-//                 const [dashboardRes, tatRes] = await Promise.all([
-//                     http_request.get(`/dashboardDetailsBySeviceCenterId/${center._id}`),
-//                     http_request.get(`/getAllTatByServiceCenter?assignServiceCenterId=${center._id}`)
-//                 ]);
-//                 // console.log("TAT Response for center:", center.serviceCenterName, tatRes.data);
-//                 return {
-//                     ...center,
-//                     dashboardDetails: dashboardRes.data.complaints || {},
-//                     tatMetrics: {
-//                         totalComplaints: tatRes?.data?.totalComplaints || 0,
-//                         overallTATPercentage: tatRes?.data?.overallTATPercentage || "0.00",
-//                         overallRTPercentage: tatRes?.data?.overallRTPercentage || "0.00",
-//                         overallCTPercentage: tatRes?.data?.overallCTPercentage || "0.00",
-//                     }
-//                 };
-//             })
-//         );
-//         // console.log("centersWithDetails", centersWithDetails);
-
-//         setFilterSer(centersWithDetails);
-//         setLoading(false);
-
-//         if (centersWithDetails.length === 0) {
-//             console.log("No service centers found for the given pincode.");
-//         }
     };
-const getServiceCenterData = async ( ) => {
+    const getServiceCenterData = async () => {
         setId(id);
         // setOpen(true);
         setLoading(true);
-//  console.log("id",id);
+        //  console.log("id",id);
         // const complaint = complaint?.find(item => item?._id === id);
 
         if (!complaint || !complaint.pincode) {
@@ -122,8 +84,8 @@ const getServiceCenterData = async ( ) => {
         }
 
         const targetPincode = complaint.pincode.trim();
-//  console.log("targetPincode",targetPincode);
-        const filteredCenters =  serviceCenterData?.filter(center => {
+        //  console.log("targetPincode",targetPincode);
+        const filteredCenters = serviceCenterData?.filter(center => {
             const supportedPincodes = [
                 ...(Array.isArray(center.pincodeSupported) ? center.pincodeSupported : []),
                 ...(typeof center.postalCode === 'string'
@@ -132,8 +94,8 @@ const getServiceCenterData = async ( ) => {
             ];
             return supportedPincodes.includes(targetPincode);
         }) || [];
-//   console.log("filteredCenters",filteredCenters);
-  
+        //   console.log("filteredCenters",filteredCenters);
+
         const centersWithDetails = await Promise.all(
             filteredCenters.map(async (center) => {
                 const [dashboardRes, tatRes] = await Promise.all([
@@ -163,11 +125,11 @@ const getServiceCenterData = async ( ) => {
         }
     };
     const handleServiceChange = (event) => {
-        
+
 
         const selectedId = event.target.value;
 
-// console.log("selectedId",selectedId);
+        // console.log("selectedId",selectedId);
 
         const selectedCenter = filterSer.find(c => c._id === selectedId);
         if (selectedCenter) {
@@ -197,14 +159,14 @@ const getServiceCenterData = async ( ) => {
             setLoading(true);
 
             const reqdata = { empId: userData._id, empName: userData.name, status: data?.status, assignServiceCenterId: data?.assignServiceCenterId, serviceCenterContact: data?.serviceCenterContact, assignServiceCenter: data?.assignServiceCenter, assignServiceCenterTime: data?.assignServiceCenterTime }
-            // console.log(reqdata);
+            console.log(reqdata);
 
             let response = await http_request.patch(`/editComplaint/${id}`, reqdata);
 
             let { data: responseData } = response;
 
             setOpen(false)
-            setStatus(false)
+
             RefreshData(responseData)
             ToastMessage(responseData);
             setLoading(false);
@@ -217,14 +179,15 @@ const getServiceCenterData = async ( ) => {
         }
     };
 
- const serviceCenter = filterSer === "" ? serviceCenterData : filterSer
+    const serviceCenter = filterSer === "" ? serviceCenterData : filterSer
 
     // console.log("serviceCenter",serviceCenter);
     // console.log("filterSer",filterSer);
     // console.log("filterSer",filterSer);
-    
+
     return (
         <div>
+            <Toaster />
             <div
 
                 onClick={() => handleAssignServiceCenter(complaint?._id)}
@@ -257,7 +220,7 @@ const getServiceCenterData = async ( ) => {
                         ) : filterSer?.length > 0 ? (
                             <>
                                 {/* Service center select */}
-                                <div className="flex justify-between items-center mb-6">
+                                <div className="flex justify-between gap-4 items-center mb-6">
                                     <div className="w-full md:w-[600px]">
                                         <label
                                             htmlFor="service-center-label"
@@ -283,13 +246,13 @@ const getServiceCenterData = async ( ) => {
                                         </select>
                                     </div>
 
-                                    <div>
+                                    <div >
                                         <button
                                             type="submit"
                                             disabled={loading || !selectedService}
                                             className="rounded-lg px-5 py-3 mt-5 border border-gray-500 bg-[#09090b] text-white hover:bg-white hover:text-black hover:border-black transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            Assign Service Center
+                                            Assign
                                         </button>
                                     </div>
                                 </div>

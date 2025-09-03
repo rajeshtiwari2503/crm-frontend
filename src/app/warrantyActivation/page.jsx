@@ -578,6 +578,7 @@ const pincode = watch('pincode');
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
   // console.log(filterProduct);
   const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  // const filterProductByBrand = product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId)
   // console.log(filterProductByBrand);
 
   const handleProductChange = (e) => {

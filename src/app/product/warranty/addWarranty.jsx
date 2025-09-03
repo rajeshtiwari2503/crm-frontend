@@ -36,25 +36,25 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
     const AddProductWarranty = async (data) => {
         try {
             setLoading(true);
-    console.log(data);
-    
+            console.log(data);
+
             // Validate the brandId
             if (!data.brandId) {
                 alert("Please select Brand");
                 setLoading(false);
                 return; // Stop further execution
             }
-    
+
             // Determine endpoint and method
             const endpoint = existingProduct?._id
                 ? `/editProductWarranty/${existingProduct._id}`
                 : '/addProductWarranty';
             const method = existingProduct?._id ? 'patch' : 'post';
-    
+
             // Make API request
             const response = await http_request[method](endpoint, data);
             const { data: responseData } = response;
-    
+
             // Handle success
             ToastMessage(responseData);
             RefreshData(responseData);
@@ -69,7 +69,7 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
             setLoading(false);
         }
     };
-    
+
     const onSubmit = (data) => {
         AddProductWarranty(data)
         // console.log(data);
@@ -89,13 +89,15 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
             setValue('brandId', selectedProduct.brandId);
             setValue('categoryId', selectedProduct.categoryId);
             setValue('categoryName', selectedProduct.categoryName);
+            setValue('subCategoryId', selectedProduct?.subCategoryId);
+            setValue('subCategoryName', selectedProduct?.subCategory);
             setValue('year', new Date());
         }
     };
     const handleBrandChange = (e) => {
         const selectedBrandId = e.target.value;
         const selectedBrand = brand?.find(prod => prod._id === selectedBrandId);
- 
+
 
         const selectedProduct = product?.filter(prod => prod?.brandId === selectedBrand?._id);
         if (selectedProduct) {
@@ -111,7 +113,7 @@ const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshDat
     };
 
 
-    const brandData = user?.role === "ADMIN" ? brand :user?.role === "BRAND EMPLOYEE" ? brand?.filter((f) => f?._id === user?.brandId):brand?.filter((f) => f?._id === user?._id)
+    const brandData = user?.role === "ADMIN" ? brand : user?.role === "BRAND EMPLOYEE" ? brand?.filter((f) => f?._id === user?.brandId) : brand?.filter((f) => f?._id === user?._id)
     return (
         <div className="max-w-4xl mx-auto">
             {loadind === true ? <div className='w-[400px]'><ReactLoader /></div>

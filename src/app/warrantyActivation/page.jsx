@@ -576,8 +576,8 @@ const pincode = watch('pincode');
   // console.log(filterWarranty);
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
-  // console.log(filterProduct);
-  const filterProductByBrand = product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  // console.log("filterProduct",filterProduct);
+  const filterProductByBrand = filterWarranty?.brandId==="68a2fec108ab22c128f63b9f" ? product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId) :product?.filter((f) => f?.brandId === filterWarranty?.brandId)
   // const filterProductByBrand = product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId)
   // console.log(filterProductByBrand);
 

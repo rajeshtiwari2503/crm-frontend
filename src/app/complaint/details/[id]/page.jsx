@@ -54,7 +54,7 @@ const ComplaintDetails = ({ params }) => {
     }
     const getComplaintById = async () => {
         try {
-
+            setLoading(true)
             let response = await http_request.get(`/getComplaintById/${params.id}`)
             let { data } = response;
             setComplaint(data)
@@ -67,7 +67,7 @@ const ComplaintDetails = ({ params }) => {
         }
         catch (err) {
             console.log(err);
-
+            setLoading(false)
         }
     }
 

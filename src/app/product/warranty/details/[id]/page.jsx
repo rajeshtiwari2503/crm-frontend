@@ -498,7 +498,7 @@ body {
             printWindow.document.write(`
                 <div class="record-container">
                 <div class="item1">
-                    <div class="text-12">${["687b60524784729ee719776e"].includes(brand?._id) ?"Warranty QR Code"  :"QR Code warranty is powered by Servsy.in"}</div>
+                    <div class="text-12">${["687b60524784729ee719776e"].includes(brand?._id) ? "Warranty QR Code" : "QR Code warranty is powered by Servsy.in"}</div>
                     <div class="text-12">${filtRecord?.productName || 'Product Name'}</div>
                     <div class="logo-and-qr">
                         <img src="${logoUrl}" alt="Company Logo" width="40" height="40" />
@@ -531,6 +531,201 @@ body {
         printWindow.focus();
         printWindow.print();
     };
+
+//     const print13_19CmRecords = () => {
+//         const printWindow = window.open('', '', 'height=700,width=1100');
+
+//         printWindow.document.write('<html><head><title>Print Stickers</title>');
+//         printWindow.document.write('<style>');
+//         printWindow.document.write(`
+   
+// @page {
+//     size: 13cm 19cm;
+//     margin: 0; /* no page margin */
+// }
+
+// html, body {
+//     margin: 0;
+//     padding: 2px;
+//     width: 13cm;
+//     height: 19cm;
+// }
+
+// body {
+//     display: grid;
+//     grid-template-columns: repeat(6, 1fr); /* equal fractions */
+//     grid-template-rows: repeat(6, 1fr);
+//     box-sizing: border-box;
+// }
+// .sticker {
+//     width: 100%;
+//     height: 100%;
+//     border: 1px solid #000;  /* just for testing, remove if not needed */
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     font-size: 7px;
+//     box-sizing: border-box;
+// }
+
+//         .section {
+//             width: 100%;
+//             flex: 1;
+//             display: flex;
+//             flex-direction: column;
+//             justify-content: center;
+//             align-items: center;
+//             border-top: 1px dashed #aaa;
+//         }
+//         .section:first-child {
+//             border-top: none;
+//         }
+//         .section img {
+//              width: 60%;   
+//     height: 60%;
+//             object-fit: contain;
+//         }
+//         .font-bold { font-weight: bold; }
+//         .text-6 { font-size: 5px; }
+//         .page-break { page-break-before: always; }
+//     `);
+//         printWindow.document.write('</style></head><body>');
+
+//         const records = warranty?.records || [];
+
+//         records.forEach((item, index) => {
+//             // New page after 36 stickers (6×6 grid)
+//             if (index > 0 && index % 36 === 0) {
+//                 printWindow.document.write('</body><div class="page-break"></div><body>');
+//             }
+
+//             printWindow.document.write(`
+//             <div class="sticker">
+//                 <!-- Section A -->
+//                 <div class="section">
+//                     <div class="font-bold">+91 ${brand?.tollfree}</div>
+//                     <div>(10 AM - 6 PM)</div>
+//                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+//                 </div>
+//                 <!-- Section B -->
+//                 <div class="section">
+//                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+//                 </div>
+//             </div>
+//         `);
+//         });
+
+//         printWindow.document.write('</body></html>');
+//         printWindow.document.close();
+//         printWindow.focus();
+//         printWindow.print();
+//     };
+
+ const print13_19CmRecords = () => {
+    const printWindow = window.open('', '', 'height=700,width=1100');
+
+    printWindow.document.write('<html><head><title>Print Stickers</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write(`
+@page {
+    size: 13cm 19cm;
+    margin: 2px;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 13cm;
+    height: 19cm;
+}
+
+body {
+    display: grid;
+   grid-template-columns: repeat(9, 1fr);  /* 9 equal columns */
+  grid-template-rows: repeat(8, 1fr);     /* 8 equal rows */
+    box-sizing: border-box;
+}
+
+.sticker {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #000; /* debug */
+    display: flex;
+    
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* top = 2/3 of the cell */
+.section-top {
+    flex: 2;
+    border-bottom: 1px dashed #aaa;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 6px;
+}
+
+/* bottom = 1/3 of the cell */
+.section-bottom {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.section-top img,
+.section-bottom img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+}
+
+.font-bold { font-weight: bold; }
+.text-small { font-size: 5px; }
+.page-break { page-break-before: always; }
+    `);
+    printWindow.document.write('</style></head><body>');
+
+    const records = warranty?.records || [];
+
+    records.forEach((item, index) => {
+         
+        if (index > 0 && index % 72 === 0) {
+             printWindow.document.write('</body><div class="page-break"></div><body>');
+        }
+
+        printWindow.document.write(`
+            <div class="sticker">
+                <!-- Top section -->
+                <div class="section-top">
+                    <div class="font-bold">+91 ${brand?.tollfree}</div>
+                    <div class="text-small">(10 AM - 6 PM)</div>
+                    <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+                </div>
+                <!-- Bottom section -->
+                <div class="section-bottom">
+                    <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+                </div>
+            </div>
+        `);
+    });
+
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+};
+
+
+
+
+
+
+
+
 
 
 
@@ -612,18 +807,22 @@ body {
                         <button onClick={printA4Records} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                             Print Records
                         </button>
-                    ) : (
-                        <button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                            Print Records
+                    ) : ["68a2fec108ab22c128f63b9f"].includes(brand?._id) ? (
+                        <button onClick={print13_19CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print
                         </button>
-                    )}
+                    )
+                        : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            Print Records
+                        </button>)
+                    }
 
                     <div className='font-bold mt-5'>Generated QR codes</div>
                     <div className=' grid md:grid-cols-4 sm:grid-cols-1 gap-4'>
                         {filtRecord?.records?.map((item, i) => (
                             <div key={i} className='mt-3 flex justify-center items-center'>
                                 <div className=' mb-5 '>
-                                    <div className='  mt-3 mb-3 font-bold text-[12px]'> {["687b60524784729ee719776e"].includes(brand?._id) ?"Warranty QR Code"  :"QR Code warranty is powered by Servsy.in"}</div>
+                                    <div className='  mt-3 mb-3 font-bold text-[12px]'> {["687b60524784729ee719776e"].includes(brand?._id) ? "Warranty QR Code" : "QR Code warranty is powered by Servsy.in"}</div>
                                     {/* <div>{warranty?.brandLogo}</div> */}
                                     <div className='flex justify-center items-center'>
                                         <img src={brand?.brandLogo ? brand?.brandLogo : "/Logo.png"} alt="image" width={100} height={100} />

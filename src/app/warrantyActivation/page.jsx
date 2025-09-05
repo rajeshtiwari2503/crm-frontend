@@ -74,7 +74,7 @@ const ActivateWarrantyButton = () => {
   };
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-  console.log("filterWarranty", filterWarranty);
+  // console.log("filterWarranty", filterWarranty);
   // console.log("warrantyDetails",warrantyDetails);
 
 
@@ -584,20 +584,20 @@ const ActivateWarrantyButton = () => {
   // }, [product, filterWarranty, setValue]);
 
   useEffect(() => {
-  if (product && filterWarranty) {
-    const selectedProduct = product.find((f) => f?._id === filterWarranty?.productId);
+    if (product && filterWarranty) {
+      const selectedProduct = product.find((f) => f?._id === filterWarranty?.productId);
 
-    if (selectedProduct) {
-      setValue('productId', selectedProduct._id);
-      setValue('productName', selectedProduct.productName);
-      setValue('categoryId', selectedProduct.categoryId);
-      setValue('subCategoryId', selectedProduct.subCategoryId);
-      setValue('categoryName', selectedProduct.categoryName);
-      setValue('year', new Date());
-      setProductID(selectedProduct._id)
+      if (selectedProduct) {
+        setValue('productId', selectedProduct._id);
+        setValue('productName', selectedProduct.productName);
+        setValue('categoryId', selectedProduct.categoryId);
+        setValue('subCategoryId', selectedProduct.subCategoryId);
+        setValue('categoryName', selectedProduct.categoryName);
+        setValue('year', new Date());
+        setProductID(selectedProduct._id)
+      }
     }
-  }
-}, [product, filterWarranty, setValue]);
+  }, [product, filterWarranty, setValue]);
 
 
   const getAllProduct = async () => {
@@ -627,44 +627,56 @@ const ActivateWarrantyButton = () => {
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
 
-   // Step 1: Find the main subCategory from filterWarranty
-const mainSubCat = subCategories.find(sc => sc._id === filterWarranty.subCategoryId);
+  // Step 1: Find the main subCategory from filterWarranty
+  const mainSubCat = subCategories.find(sc => sc?._id === filterWarranty?.subCategoryId);
 
-//  console.log("mainSubCat",mainSubCat);
+  // console.log("mainSubCat", mainSubCat);
 
-if (!mainSubCat) {
-  console.log("SubCategory not found!");
-  // return;
-}
+  if (!mainSubCat) {
+    console.log("SubCategory not found!");
+    // return;
+  }
 
-// Step 2: Find all subCategories with the same stickerPrice
-const matchingSubCatIds = subCategories
-  .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
-  .map(sc => sc?._id);
+  // Step 2: Find all subCategories with the same stickerPrice
+  const matchingSubCatIds = subCategories
+    .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
+    .map(sc => sc?._id);
 
-// console.log("Matching subCategory IDs:", matchingSubCatIds);
+  // console.log("Matching subCategory IDs:", matchingSubCatIds);
 
-// Step 3: Filter products by brandId and matching subCategoryIds
-const filteredProducts1 = product.filter(p => {
-  if (p.brandId !== filterWarranty.brandId) return false;
-  if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
-  return true;
-});
+  // Step 3: Filter products by brandId and matching subCategoryIds
+  const filteredProducts1 = product.filter(p => {
+    if (p.brandId !== filterWarranty.brandId) return false;
+    if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
+    return true;
+  });
 
-// console.log("Filtered Products:", filteredProducts1);
+  // console.log("Filtered Products:", filteredProducts1);
 
   // console.log("filterProduct",filterProduct);
-  const filterProductByBrand = filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ? product.filter(p => {
-  if (p.brandId !== filterWarranty.brandId) return false;
-  if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
-  // return true;
-}) : product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  //   const filterProductByBrand = filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ? product.filter(p => {
+  //   if (p.brandId !== filterWarranty.brandId) return false;
+  //   if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
+  //   // return true;
+  // }) : product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+
+  const filterProductByBrand = product?.filter((p) => {
+    // Brand must always match
+    if (p.brandId !== filterWarranty?.brandId) return false;
+
+    // Special case: if brandId is "68a2fec108ab22c128f63b9f", 
+    // then filter by matchingSubCatIds as well
+    if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
+      return matchingSubCatIds.includes(p.subCategoryId);
+    }
+
+    // Default case: allow product if brandId matches
+    return true;
+  });
+
 
   // const filterProductByBrand = product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId)
-  console.log(filterProductByBrand);
-
-
-
+  // console.log(filterProductByBrand);
 
 
   const handleProductChange = (e) => {

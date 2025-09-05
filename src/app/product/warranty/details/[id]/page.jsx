@@ -531,193 +531,214 @@ body {
         printWindow.focus();
         printWindow.print();
     };
+ 
+//  const print13_19CmRecords = () => {
+//     const printWindow = window.open('', '', 'height=700,width=1100');
 
-//     const print13_19CmRecords = () => {
-//         const printWindow = window.open('', '', 'height=700,width=1100');
-
-//         printWindow.document.write('<html><head><title>Print Stickers</title>');
-//         printWindow.document.write('<style>');
-//         printWindow.document.write(`
-   
+//     printWindow.document.write('<html><head><title>Print Stickers</title>');
+//     printWindow.document.write('<style>');
+//     printWindow.document.write(`
 // @page {
 //     size: 13cm 19cm;
-//     margin: 0; /* no page margin */
+//     margin: 2px 2px 4px 2px;
 // }
 
 // html, body {
 //     margin: 0;
-//     padding: 2px;
+//     padding: 0;
 //     width: 13cm;
 //     height: 19cm;
 // }
 
 // body {
 //     display: grid;
-//     grid-template-columns: repeat(6, 1fr); /* equal fractions */
-//     grid-template-rows: repeat(6, 1fr);
+//    grid-template-columns: repeat(9, 1fr);  /* 9 equal columns */
+//   grid-template-rows: repeat(8, 1fr);     /* 8 equal rows */
 //     box-sizing: border-box;
+//     page-break-after: always;
 // }
+
 // .sticker {
 //     width: 100%;
 //     height: 100%;
-//     border: 1px solid #000;  /* just for testing, remove if not needed */
+//     border: 1px solid #000; /* debug */
+//     display: flex;
+    
+//     flex-direction: column;
+//     box-sizing: border-box;
+// }
+
+// /* top = 2/3 of the cell */
+// .section-top {
+//     flex: 2;
+//     border-bottom: 1px dashed #aaa;
 //     display: flex;
 //     flex-direction: column;
 //     justify-content: center;
 //     align-items: center;
-//     font-size: 7px;
-//     box-sizing: border-box;
+//     font-size: 6px;
 // }
 
-//         .section {
-//             width: 100%;
-//             flex: 1;
-//             display: flex;
-//             flex-direction: column;
-//             justify-content: center;
-//             align-items: center;
-//             border-top: 1px dashed #aaa;
-//         }
-//         .section:first-child {
-//             border-top: none;
-//         }
-//         .section img {
-//              width: 60%;   
-//     height: 60%;
-//             object-fit: contain;
-//         }
-//         .font-bold { font-weight: bold; }
-//         .text-6 { font-size: 5px; }
-//         .page-break { page-break-before: always; }
+// /* bottom = 1/3 of the cell */
+// .section-bottom {
+//     flex: 1;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// }
+
+// .section-top img,
+// .section-bottom img {
+//     width: 70%;
+//     height: 70%;
+//     object-fit: contain;
+// }
+
+// .font-bold { font-weight: bold; }
+// .text-small { font-size: 5px; }
+// .page-break { page-break-before: always; }
 //     `);
-//         printWindow.document.write('</style></head><body>');
+//     printWindow.document.write('</style></head><body>');
 
-//         const records = warranty?.records || [];
+//     const records = warranty?.records || [];
 
-//         records.forEach((item, index) => {
-//             // New page after 36 stickers (6×6 grid)
-//             if (index > 0 && index % 36 === 0) {
-//                 printWindow.document.write('</body><div class="page-break"></div><body>');
-//             }
+//     records.forEach((item, index) => {
+         
+//         if (index > 0 && index % 72 === 0) {
+//              printWindow.document.write('</body><div class="page-break"></div><body>');
+//         }
 
-//             printWindow.document.write(`
+//         printWindow.document.write(`
 //             <div class="sticker">
-//                 <!-- Section A -->
-//                 <div class="section">
+//                 <!-- Top section -->
+//                 <div class="section-top">
 //                     <div class="font-bold">+91 ${brand?.tollfree}</div>
-//                     <div>(10 AM - 6 PM)</div>
+//                     <div class="text-small">(10 AM - 6 PM)</div>
 //                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
 //                 </div>
-//                 <!-- Section B -->
-//                 <div class="section">
+//                 <!-- Bottom section -->
+//                 <div class="section-bottom">
 //                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
 //                 </div>
 //             </div>
 //         `);
-//         });
+//     });
 
-//         printWindow.document.write('</body></html>');
-//         printWindow.document.close();
-//         printWindow.focus();
-//         printWindow.print();
-//     };
+//     printWindow.document.write('</body></html>');
+//     printWindow.document.close();
+//     printWindow.focus();
+//     printWindow.print();
+// };
+
 
  const print13_19CmRecords = () => {
-    const printWindow = window.open('', '', 'height=700,width=1100');
+  const printWindow = window.open('', '', 'height=700,width=1100');
 
-    printWindow.document.write('<html><head><title>Print Stickers</title>');
-    printWindow.document.write('<style>');
-    printWindow.document.write(`
+  printWindow.document.write('<html><head><title>Print Stickers</title>');
+  printWindow.document.write('<style>');
+  printWindow.document.write(`
 @page {
-    size: 13cm 19cm;
-    margin: 2px;
+  size: 13cm 19cm;
+  margin: 2px 4px 10px 2px;
 }
 
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 13cm;
-    height: 19cm;
+  margin: 0;
+  padding: 0;
+  width: 13cm;
+  height: 19cm;
 }
 
-body {
-    display: grid;
-   grid-template-columns: repeat(9, 1fr);  /* 9 equal columns */
-  grid-template-rows: repeat(8, 1fr);     /* 8 equal rows */
-    box-sizing: border-box;
+.sticker-sheet {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr); /* 9 columns */
+  grid-template-rows: repeat(8, 1fr);   /* 8 rows */
+  box-sizing: border-box;
+  page-break-after: always; /* force new page */
+}
+
+.sticker-sheet:last-child {
+  page-break-after: auto; /* no blank page at end */
 }
 
 .sticker {
-    width: 100%;
-    height: 100%;
-    border: 1px solid #000; /* debug */
-    display: flex;
-    
-    flex-direction: column;
-    box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000; /* debug */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
-/* top = 2/3 of the cell */
 .section-top {
-    flex: 2;
-    border-bottom: 1px dashed #aaa;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 6px;
+  flex: 2;
+  border-bottom: 1px dashed #aaa;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 6px;
 }
 
-/* bottom = 1/3 of the cell */
 .section-bottom {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .section-top img,
 .section-bottom img {
-    width: 70%;
-    height: 70%;
-    object-fit: contain;
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
 }
 
 .font-bold { font-weight: bold; }
 .text-small { font-size: 5px; }
-.page-break { page-break-before: always; }
-    `);
-    printWindow.document.write('</style></head><body>');
+  `);
+  printWindow.document.write('</style></head><body>');
 
-    const records = warranty?.records || [];
+  const records = warranty?.records || [];
 
-    records.forEach((item, index) => {
-         
-        if (index > 0 && index % 72 === 0) {
-             printWindow.document.write('</body><div class="page-break"></div><body>');
-        }
+  // ✅ helper to chunk into pages of 72
+  function chunkArray(arr, size) {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  }
 
-        printWindow.document.write(`
-            <div class="sticker">
-                <!-- Top section -->
-                <div class="section-top">
-                    <div class="font-bold">+91 ${brand?.tollfree}</div>
-                    <div class="text-small">(10 AM - 6 PM)</div>
-                    <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-                </div>
-                <!-- Bottom section -->
-                <div class="section-bottom">
-                    <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-                </div>
-            </div>
-        `);
+  const pages = chunkArray(records, 72);
+
+  pages.forEach((page) => {
+    printWindow.document.write('<div class="sticker-sheet">');
+
+    page.forEach((item) => {
+      printWindow.document.write(`
+        <div class="sticker">
+          <div class="section-top">
+            <div class="font-bold">+91 ${brand?.tollfree}</div>
+            <div class="text-small">(10 AM - 6 PM)</div>
+            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+          </div>
+          <div class="section-bottom">
+            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+          </div>
+        </div>
+      `);
     });
 
-    printWindow.document.write('</body></html>');
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+    printWindow.document.write('</div>'); // close sticker-sheet
+  });
+
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
 };
+
 
 
 

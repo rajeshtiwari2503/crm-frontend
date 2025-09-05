@@ -23,15 +23,16 @@ const ActivateWarrantyButton = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [product, setProduct] = useState([])
+  const [subCategories, setSubCategories] = useState([])
   const [productID, setProductID] = useState("")
   const [users, setUsers] = useState(null);
 
   const [location, setLocation] = useState(null);
-   const [jsonData, setJsonData] = useState([]);
-     const [error, setError] = useState('');
+  const [jsonData, setJsonData] = useState([]);
+  const [error, setError] = useState('');
   // const [pincode, setPincode] = useState('');
   // Set up react-hook-form
-  const { register, handleSubmit, formState: { errors }, setValue ,watch} = useForm({
+  const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
     mode: 'onBlur', // or 'onChange' for real-time validation
   });
   useEffect(() => {
@@ -40,6 +41,7 @@ const ActivateWarrantyButton = () => {
       setQrCodeUrl(qrCode);
       getwarrantyDetails(qrCode);
       getAllProduct()// Call only once after setting the QR code
+      getAllSubCategories()
     }
   }, [searchParams, refresh]);
 
@@ -72,7 +74,7 @@ const ActivateWarrantyButton = () => {
   };
   const filterWarranty = warrantyDetails?.records?.find((f) => f?.uniqueId === qrCodeUrl)
 
-  // console.log("filterWarranty",filterWarranty);
+  // console.log("filterWarranty", filterWarranty);
   // console.log("warrantyDetails",warrantyDetails);
 
 
@@ -112,7 +114,7 @@ const ActivateWarrantyButton = () => {
         alert("Please enter valid pincode!");
         return;
       }
-        setLoading(true)
+      setLoading(true)
       const response = await http_request.post('/activateWarranty', {
         uniqueId: qrCodeUrl,
         ...data,
@@ -123,16 +125,16 @@ const ActivateWarrantyButton = () => {
       if (result.status) {
         ToastMessage(result)
         setRefresh(result)
-  // setLoading(false)
+        // setLoading(false)
       } else {
 
         setRefresh(result)
         ToastMessage(result)
-          setLoading(false)
+        setLoading(false)
       }
     } catch (error) {
       console.log(error);
-  setLoading(false)
+      setLoading(false)
       ToastMessage(error?.response?.data)
 
     }
@@ -260,7 +262,7 @@ const ActivateWarrantyButton = () => {
   // console.log(filterWarranty);
 
   const getLocation = (e) => {
-   e.preventDefault();
+    e.preventDefault();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
@@ -349,14 +351,16 @@ const ActivateWarrantyButton = () => {
       alert("Geolocation is not supported by this browser.");
     }
   };
-const pincode = watch('pincode');
+  const pincode = watch('pincode');
 
- useEffect(() => {
+  useEffect(() => {
     if (pincode?.length === 6) { // Ensure the pincode is valid (assuming 6 digits)
       fetchLocation(pincode);
       setValue('pincode', pincode)
     }
   }, [pincode]);
+
+
   useEffect(() => {
     // Fetch the file from the public folder
     const loadFileFromPublic = async () => {
@@ -398,6 +402,8 @@ const pincode = watch('pincode');
 
     loadFileFromPublic();
   }, []);
+
+
   const fetchLocation = async (pincode) => {
     try {
       // console.log("pincode", pincode);
@@ -419,7 +425,7 @@ const pincode = watch('pincode');
 
             if (match) {
               // console.log(" District: district, State: state ",   district,   state );
-              
+
               console.log("✅ Local match found:", match, district, state);
               setLocation({ District: district, State: state });
               setValue('pincode', pinStr);
@@ -527,7 +533,7 @@ const pincode = watch('pincode');
     const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
 
     try {
-         
+
       const response = await axios.get(url);
       const result = response.data.results[0];
 
@@ -559,27 +565,119 @@ const pincode = watch('pincode');
     }
   };
 
+  // useEffect(() => {
+  //   if (product && filterWarranty) {
+  //     const selectedProduct = product.find((f) => f?._id === filterWarranty?.productId);
+
+  //     if (selectedProduct) {
+  //       setValue('productId', selectedProduct._id);
+  //       setValue('productName', selectedProduct.productName);
+  //       // setValue('brandName', selectedProduct.productBrand);
+  //       // setValue('brandId', selectedProduct.brandId);
+  //       setValue('categoryId', selectedProduct.categoryId);
+  //       setValue('subCategoryId', selectedProduct.subCategoryId);
+  //       setValue('categoryName', selectedProduct.categoryName);
+  //       setValue('year', new Date());
+  //       setProductID(selectedProduct._id)
+  //     }
+  //   }
+  // }, [product, filterWarranty, setValue]);
+
+  useEffect(() => {
+    if (product && filterWarranty) {
+      const selectedProduct = product.find((f) => f?._id === filterWarranty?.productId);
+
+      if (selectedProduct) {
+        setValue('productId', selectedProduct._id);
+        setValue('productName', selectedProduct.productName);
+        setValue('categoryId', selectedProduct.categoryId);
+        setValue('subCategoryId', selectedProduct.subCategoryId);
+        setValue('categoryName', selectedProduct.categoryName);
+        setValue('year', new Date());
+        setProductID(selectedProduct._id)
+      }
+    }
+  }, [product, filterWarranty, setValue]);
 
 
   const getAllProduct = async () => {
     try {
-      let response = await http_request.get("/getAllProduct")
-      let { data } = response;
-
-      setProduct(data)
-    }
-    catch (err) {
+      setLoading(true); // start loading
+      const response = await http_request.get("/getAllProduct");
+      setProduct(response.data);
+    } catch (err) {
       console.log(err);
-
+    } finally {
+      setLoading(false); // stop loading
     }
-  }
-  // console.log(filterWarranty);
+  };
+
+  const getAllSubCategories = async () => {
+    try {
+      setLoading(true); // start loading
+      const response = await http_request.get("/getAllSubCategory"); // fixed endpoint
+      setSubCategories(response.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false); // stop loading
+    }
+  };
+  // console.log("gdhhsgh", filterWarranty);
 
   const filterProduct = product?.find((f) => f?._id === filterWarranty?.productId)
+
+  // Step 1: Find the main subCategory from filterWarranty
+  const mainSubCat = subCategories.find(sc => sc?._id === filterWarranty?.subCategoryId);
+
+  // console.log("mainSubCat", mainSubCat);
+
+  if (!mainSubCat) {
+    console.log("SubCategory not found!");
+    // return;
+  }
+
+  // Step 2: Find all subCategories with the same stickerPrice
+  const matchingSubCatIds = subCategories
+    .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
+    .map(sc => sc?._id);
+
+  // console.log("Matching subCategory IDs:", matchingSubCatIds);
+
+  // Step 3: Filter products by brandId and matching subCategoryIds
+  const filteredProducts1 = product.filter(p => {
+    if (p.brandId !== filterWarranty.brandId) return false;
+    if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
+    return true;
+  });
+
+  // console.log("Filtered Products:", filteredProducts1);
+
   // console.log("filterProduct",filterProduct);
-  const filterProductByBrand = filterWarranty?.brandId==="68a2fec108ab22c128f63b9f" ? product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId) :product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  //   const filterProductByBrand = filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ? product.filter(p => {
+  //   if (p.brandId !== filterWarranty.brandId) return false;
+  //   if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
+  //   // return true;
+  // }) : product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+
+  const filterProductByBrand = product?.filter((p) => {
+    // Brand must always match
+    if (p.brandId !== filterWarranty?.brandId) return false;
+
+    // Special case: if brandId is "68a2fec108ab22c128f63b9f", 
+    // then filter by matchingSubCatIds as well
+    if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
+      return matchingSubCatIds.includes(p.subCategoryId);
+    }
+
+    // Default case: allow product if brandId matches
+    return true;
+  });
+
+
   // const filterProductByBrand = product?.filter((f) => f?.subCategoryId === filterWarranty?.subCategoryId)
   // console.log(filterProductByBrand);
+
 
   const handleProductChange = (e) => {
     const selectedProductId = e.target.value;
@@ -598,23 +696,6 @@ const pincode = watch('pincode');
       setProductID(selectedProduct._id)
     }
   };
-  useEffect(() => {
-    if (product && filterWarranty) {
-      const selectedProduct = product.find((f) => f?._id === filterWarranty?.productId);
-
-      if (selectedProduct) {
-        setValue('productId', selectedProduct._id);
-        setValue('productName', selectedProduct.productName);
-        // setValue('brandName', selectedProduct.productBrand);
-        // setValue('brandId', selectedProduct.brandId);
-        setValue('categoryId', selectedProduct.categoryId);
-        setValue('subCategoryId', selectedProduct.subCategoryId);
-        setValue('categoryName', selectedProduct.categoryName);
-        setValue('year', new Date());
-        setProductID(selectedProduct._id)
-      }
-    }
-  }, [product, filterWarranty, setValue]);
 
   const handleComplaint = async () => {
 
@@ -901,16 +982,16 @@ const pincode = watch('pincode');
                       id="pincode"
                       type="number"
                       {...register('pincode', { required: 'Pincode is required' })}
-                        placeholder="Enter 6-digit pincode"
-                        className="border p-2 mb-4 w-full"
-                        maxLength={6}
-                      // className="w-full  p-0.5 border border-gray-300 rounded-md"
+                      placeholder="Enter 6-digit pincode"
+                      className="border p-2 mb-4 w-full"
+                      maxLength={6}
+                    // className="w-full  p-0.5 border border-gray-300 rounded-md"
                     />
                     {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
-                     {error && <p className="text-red-500 mt-1">{error}</p>}
+                    {error && <p className="text-red-500 mt-1">{error}</p>}
                   </div>
                 </form>
-  
+
                 <div className="flex w-full max-w-md mt-6 space-x-3">
                   <input
                     type="text"

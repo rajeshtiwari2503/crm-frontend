@@ -147,7 +147,7 @@ const {user}=useUser()
                 <div className=" ">
                     <div  >
                         <h2 className=" text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                            Create a new Employee
+                            Create a new Service Center
                         </h2>
 
                         <>

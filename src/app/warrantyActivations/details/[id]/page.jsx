@@ -57,13 +57,15 @@ const WarrantyActivationDetails = ({ params }) => {
     // Fetch user data by userId
     const getUserById = async (userId) => {
         try {
+              setLoading(true)
             const response = await http_request.get(`/getUserBy/${userId}`);
             const userData = response.data;
             // console.log("userData",userData);
-            
+              setLoading(false)
             // setUser(userData);
             setSetUserId(userData?._id);
         } catch (err) {
+             setLoading(false)
             console.log('Error fetching user details', err);
         }
     };
@@ -71,13 +73,15 @@ const WarrantyActivationDetails = ({ params }) => {
     // Fetch dashboard details by userId
     const getAllDashboard = async (userId) => {
         try {
+             setLoading(true)
             const endPoint = `/dashboardDetailsByUserId/${userId}`;
             const response = await http_request.get(endPoint);
             const dashboardData = response.data;
             // console.log("dashboardData",dashboardData);
-            
+             setLoading(false)
             setData(dashboardData);
         } catch (err) {
+             setLoading(false)
             console.log('Error fetching dashboard details', err);
         }
     };

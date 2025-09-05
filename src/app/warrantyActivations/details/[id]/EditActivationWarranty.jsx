@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import http_request from "../../../../../http-request";
+import { ReactLoader } from '@/app/components/common/Loading';
 
-const EditWarrantyDetails = ({ data ,handleEdit}) => {
+const EditWarrantyDetails = ({ data, handleEdit }) => {
   const [formData, setFormData] = useState({
     userName: '',
     contact: '',
@@ -80,108 +81,113 @@ const EditWarrantyDetails = ({ data ,handleEdit}) => {
       <h1 className="text-2xl font-bold mb-4">Edit Warranty Details</h1>
 
       {message && <p className="mb-4 text-green-500">{message}</p>}
+      <div>
+        {loading === true ?
+          <div className='h-[400px] flex justify-center items-center'>
+            <ReactLoader />
+          </div> : <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2">User Name:</label>
+              <input
+                type="text"
+                name="userName"
+                value={formData.userName}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block mb-2">User Name:</label>
-          <input
-            type="text"
-            name="userName"
-            value={formData.userName}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Contact:</label>
+              <input
+                type="text"
+                name="contact"
+                value={formData.contact}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Contact:</label>
-          <input
-            type="text"
-            name="contact"
-            value={formData.contact}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Address:</label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Address:</label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Latitude:</label>
+              <input
+                type="text"
+                name="lat"
+                value={formData.lat}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Latitude:</label>
-          <input
-            type="text"
-            name="lat"
-            value={formData.lat}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Longitude:</label>
+              <input
+                type="text"
+                name="long"
+                value={formData.long}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Longitude:</label>
-          <input
-            type="text"
-            name="long"
-            value={formData.long}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div>
+              <label className="block mb-2">Pincode:</label>
+              <input
+                type="text"
+                name="pincode"
+                value={formData.pincode}
+                onChange={handleChange}
+                className="border p-2 w-full"
+              />
+            </div>
 
-        <div>
-          <label className="block mb-2">Pincode:</label>
-          <input
-            type="text"
-            name="pincode"
-            value={formData.pincode}
-            onChange={handleChange}
-            className="border p-2 w-full"
-          />
-        </div>
+            <div className="col-span-2">
+              <label className="block mb-2">
+                <input
+                  type="checkbox"
+                  name="isActivated"
+                  checked={formData.isActivated}
+                  onChange={handleChange}
+                  className="mr-2"
+                />
+                Is Activated
+              </label>
+            </div>
 
-        <div className="col-span-2">
-          <label className="block mb-2">
-            <input
-              type="checkbox"
-              name="isActivated"
-              checked={formData.isActivated}
-              onChange={handleChange}
-              className="mr-2"
-            />
-            Is Activated
-          </label>
-        </div>
-
-        <div className="col-span-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            {loading ? 'Updating...' : 'Update Details'}
-          </button>
-        </div>
-      </form>
+            <div className="col-span-2">
+              <button
+                type="submit"
+                disabled={loading}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+              >
+                {loading ? 'Updating...' : 'Update Details'}
+              </button>
+            </div>
+          </form>
+        }
+      </div>
     </div>
   );
 };

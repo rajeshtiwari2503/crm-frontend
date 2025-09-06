@@ -110,7 +110,7 @@ const WarrantyDetails = ({ params }) => {
     }
 
 
-    const printA4Records = () => {
+    const printA4RecordsPure = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
         const printWindow = window.open('', '', 'height=600,width=800');
 
@@ -227,6 +227,92 @@ const WarrantyDetails = ({ params }) => {
         printWindow.print();
     };
 
+const printA4Records = () => { 
+  const logoUrl = brand?.brandLogo || "/Logo.png";
+  const printWindow = window.open('', '', 'height=700,width=1100');
+
+  printWindow.document.write('<html><head><title>Print Warranty Records</title>');
+  printWindow.document.write('<style>');
+  printWindow.document.write(`
+    @page {
+      size: 13cm 19cm;   /* ✅ force custom sheet size */
+      margin: 0;         /* remove default printer margins */
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 2mm;
+      width: 13cm;
+      height: 19cm;
+      box-sizing: border-box;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr); /* 9 columns */
+      grid-template-rows: repeat(4, 1fr);    /* 8 rows */
+      width: 100%;
+      height: 100%;
+      gap: 2px;
+      
+    }
+    .item {
+      border: 1px solid #ddd;
+      padding: 1px;
+      text-align: center;
+      font-size: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top:8px;
+    }
+    .item img {
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+    }
+    .text-12 { font-size: 6px; margin: 1px 0; }
+    .font-bold { font-weight: bold; }
+    @media print {
+      .page-break { page-break-before: always; }
+    }
+  `);
+  printWindow.document.write('</style></head><body>');
+
+  const records = warranty?.records || [];
+  const itemsPerPage = 20; // 9 cols × 8 rows = 72 stickers
+
+  for (let i = 0; i < records.length; i += itemsPerPage) {
+    printWindow.document.write('<div class="container">');
+    for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
+      const item = records[j];
+      printWindow.document.write(`
+        <div class="item">
+          <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+          <div class="text-12">${warranty?.productName || 'Product Name'}</div>
+          <img src="${logoUrl}" alt="Company Logo" />
+          <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" />
+          <div class="text-12">Call or WhatsApp</div>
+          <div class="font-bold text-12">+91 ${brand?.tollfree}</div>
+          <div class="text-12">(10 AM - 6 PM)</div>
+          <div class="text-12">Monday to Saturday</div>
+          <div class="text-12">Product Bill & Unique Code No.</div>
+          <div class="text-12">Address & Pincode</div>
+          <div class="font-bold text-12">Unique Code: ${item?.uniqueId || 'N/A'}</div>
+        </div>
+      `);
+    }
+    printWindow.document.write('</div>');
+    if (i + itemsPerPage < records.length) {
+      printWindow.document.write('<div class="page-break"></div>');
+    }
+  }
+
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
 
     const print5_11CmRecords1 = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL

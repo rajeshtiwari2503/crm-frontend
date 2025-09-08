@@ -647,21 +647,44 @@ const ComplaintDetails = ({ params }) => {
                                         </div>
 
                                     </div>
-                                    <div className='md:p-4 p-2'>
-                                        <div className='md:text-xl text-sm font-semibold'> Part Pending Video : </div>
-                                        {complaint.partPendingVideo ? (
-                                            <div className="mt-4">
+                                    <div>
+                                        {complaint.issueVideo &&
+                                            <div className='md:p-4 p-2'>
+                                                <div className='md:text-xl text-sm font-semibold'> Part   Video : </div>
+                                                {complaint.issueVideo ? (
+                                                    <div className="mt-4">
 
-                                                <iframe
-                                                    src={`https://drive.google.com/file/d/${getGoogleDriveFileId(complaint.partPendingVideo)}/preview`}
-                                                    width="50%"
-                                                    height="300px"
-                                                    allow="autoplay"
-                                                    allowFullScreen
-                                                    className="rounded shadow"
-                                                />
-                                            </div>)
-                                            : "Part Pending Video not uploaded."
+                                                        <iframe
+                                                            src={`https://drive.google.com/file/d/${getGoogleDriveFileId(complaint.issueVideo)}/preview`}
+                                                            width="50%"
+                                                            height="300px"
+                                                            allow="autoplay"
+                                                            allowFullScreen
+                                                            className="rounded shadow"
+                                                        />
+                                                    </div>)
+                                                    : "Part Video not uploaded."
+                                                }
+                                            </div>
+                                        }
+                                        {complaint.partPendingVideo && <div className='md:p-4 p-2'>
+
+                                            <div className='md:text-xl text-sm font-semibold'> Part Pending Video : </div>
+                                            {complaint.partPendingVideo ? (
+                                                <div className="mt-4">
+
+                                                    <iframe
+                                                        src={`https://drive.google.com/file/d/${getGoogleDriveFileId(complaint.partPendingVideo)}/preview`}
+                                                        width="50%"
+                                                        height="300px"
+                                                        allow="autoplay"
+                                                        allowFullScreen
+                                                        className="rounded shadow"
+                                                    />
+                                                </div>)
+                                                : "Part Pending Video not uploaded."
+                                            }
+                                        </div>
                                         }
                                     </div>
                                     <div className="md:p-4 p-2">

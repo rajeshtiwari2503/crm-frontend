@@ -942,7 +942,7 @@ const ComplaintList = (props) => {
         }
       </div>
       <Dialog open={order} onClose={handleOrderClose}>
-        <DialogTitle> Part Order</DialogTitle>
+        <DialogTitle> Part Video</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={handleOrderClose}

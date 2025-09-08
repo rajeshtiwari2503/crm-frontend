@@ -19,8 +19,9 @@ const AddComplaint = () => {
   const [loading, setLoading] = useState(false)
   const [productName, setProductName] = useState("")
   const [image, setImage] = useState("")
+  const [video, setVideo] = useState("")
 
-  const { register, handleSubmit, formState: { errors }, getValues, reset, watch, setValue } = useForm();
+  const { register, handleSubmit, setError, formState: { errors }, getValues, reset, watch, setValue } = useForm();
   const [products, setProducts] = useState([])
   const [brand, setBrands] = useState([])
   const [subCategory, setSubCategory] = useState([])
@@ -33,7 +34,7 @@ const AddComplaint = () => {
 
   const [pincode, setPincode] = useState('');
   const [location, setLocation] = useState(null);
-  const [error, setError] = useState('');
+  const [error, setCustError] = useState('');
   const [warrantyStatus, setWarrantyStatus] = useState('');
   const [warrantyInDays, setWarrantyInDays] = useState(0);
   const [warrantyInDaysRem, setWarrantyInDaysRem] = useState(0);
@@ -193,18 +194,59 @@ const AddComplaint = () => {
 
         setLoading(true)
         const formData = new FormData();
-
         for (const key in reqdata) {
           if (reqdata.hasOwnProperty(key)) {
             formData.append(key, reqdata[key]);
           }
         }
-        const issueImages = image;
-        // console.log("dhhh",issueImages);
-        if (issueImages) {
-          formData.append('issueImages', issueImages);
+
+        // console.log("reqdata", reqdata);
+        // console.log("image", image);
+        console.log("video", video);
+
+        // append single image
+        if (image) {
+          formData.append("issueImages", image); // 🔥 must match `issueImages`
         }
-        let response = await http_request.post('/createComplaint', formData)
+        if (video) {
+          const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
+          const maxSize = 51 * 1024 * 1024; // 10MB
+
+          if (!allowedTypes.includes(video.type)) {
+            setError("issueVideo", {
+              type: "manual",
+              message: "Only MP4, WebM, or OGG videos are allowed",
+            });
+             setLoading(false);
+            return;
+          }
+
+          if (video.size > maxSize) {
+            setError("issueVideo", {
+              type: "manual",
+              message: "Video size must be less than 50MB",
+            });
+             setLoading(false);
+            return;
+          }
+
+          // ✅ If valid → append
+          formData.append("issueVideo", video);
+        }
+
+        // Append image
+        if (image) {
+          formData.append("issueImages", image);
+        }
+        // append single video
+        // if (video) {
+        //   formData.append("issueVideo", video); // 🔥 must match `issueVideo`
+        // }
+
+        // let response = await http_request.post('/createComplaint', formData)
+        let response = await http_request.post('/createComplaintWithVideo', formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
         const { data } = response
         ToastMessage(data)
         setLoading(false)
@@ -227,6 +269,14 @@ const AddComplaint = () => {
 
   }
 
+  // ✅ Validate max 5MB video
+  const handleVideoValidation = (e) => {
+    const file = e.target.files[0];
+    setVideo(file)
+
+  };
+  
+
   // console.log(nature);
 
   const onSubmit = async (data) => {
@@ -236,7 +286,7 @@ const AddComplaint = () => {
       //   const locationResponse = await fetchLocation();
 
       //   if (!locationResponse) {
-      //     setError('Failed to fetch location details.');
+      //     setCustError('Failed to fetch location details.');
       //     return;
       //   }
 
@@ -245,11 +295,11 @@ const AddComplaint = () => {
 
       // } 
       // else {
-      //   setError('Please enter a pincode.');
+      //   setCustError('Please enter a pincode.');
       // }
     } catch (error) {
       // Handle unexpected errors
-      setError('An error occurred while submitting the complaint. Please try again.');
+      setCustError('An error occurred while submitting the complaint. Please try again.');
       console.error(error);
     }
   };
@@ -400,7 +450,7 @@ const AddComplaint = () => {
       console.log("pincode", pincode);
 
       if (!pincode || pincode.toString().trim().length !== 6) {
-        setError('Please enter a valid 6-digit pincode.');
+        setCustError('Please enter a valid 6-digit pincode.');
         return null;
       }
 
@@ -420,14 +470,14 @@ const AddComplaint = () => {
               setValue('pincode', pinStr);
               setValue('state', state);
               setValue('district', district);
-              setError('');
+              setCustError('');
               return { District: district, State: state, Area: match.areaName };
             }
           }
         }
       }
-      setError('No location found for the provided pincode.');
-      setError('No location found for the provided pincode.');
+      setCustError('No location found for the provided pincode.');
+      setCustError('No location found for the provided pincode.');
       setLocation(null);
       setValue('pincode', '');
       setValue('state', '');
@@ -444,16 +494,16 @@ const AddComplaint = () => {
       //   setValue('pincode', pinStr);
       //   setValue('state', State);
       //   setValue('district', District);
-      //   setError('');
+      //   setCustError('');
       //   return PostOffice[0];
       // } else {
-      //   setError('No location found for the provided pincode.');
+      //   setCustError('No location found for the provided pincode.');
       //   return null;
       // }
 
     } catch (error) {
       console.error("❌ Error fetching location:", error);
-      setError('Something went wrong while fetching location.');
+      setCustError('Something went wrong while fetching location.');
       return null;
     }
   };
@@ -885,22 +935,7 @@ const AddComplaint = () => {
 
                       {errors.issueType && <p className="text-red-500">{errors.issueType.message}</p>}
                     </div>
-                    <div>
-                      <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                        Upload Product / Warranty Images/Videos
-                      </label>
-                      <input
-                        id="images"
-                        name="images"
-                        type="file"
-                        onChange={(e) => handleFileChange(e)}
-                        multiple
-                        accept="image/*, video/*"
-                        // {...register('issueImages', { required: 'Images/Videos are required' })}
-                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
-                      />
-                      {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
-                    </div>
+
                     <div>
                       <label htmlFor="preferredServiceDate" className="block text-sm font-medium leading-6 text-gray-900">
                         Preferred Service Date
@@ -1138,6 +1173,35 @@ const AddComplaint = () => {
                         className={`block p-3 w-full rounded-md border-0 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.serviceAddress ? 'border-red-500' : ''}`}
                       />
                       {errors.serviceAddress && <p className="text-red-500 text-sm mt-1">{errors.serviceAddress.message}</p>}
+                    </div>
+                    <div>
+                      <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
+                        Upload Product / Warranty Images/Videos
+                      </label>
+                      <input
+                        id="images"
+                        name="images"
+                        type="file"
+                        onChange={(e) => handleFileChange(e)}
+                        multiple
+                        accept="image/*, video/*"
+                        // {...register('issueImages', { required: 'Images/Videos are required' })}
+                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
+                      />
+                      {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
+                    </div>
+                    <div>
+                      <label className="block mb-1 font-medium">Upload Video (Max 5MB)</label>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        {...register("issueVideo")}
+                        onChange={handleVideoValidation}
+                        className="w-full"
+                      />
+                      {errors.issueVideo && (
+                        <p className="text-red-500 text-sm">{errors.issueVideo.message}</p>
+                      )}
                     </div>
                     <div>
                       <label className="block text-sm font-medium leading-6 text-gray-900">

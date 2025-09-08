@@ -36,7 +36,7 @@ import ServicePaymentDialog from './addDeliveryCharges';
 const ServiceTransactionListWithPage = (props) => {
 
     const { data, RefreshData, loading, value } = props;
-
+  const router = useRouter()
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');

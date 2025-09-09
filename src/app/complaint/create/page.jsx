@@ -1182,6 +1182,7 @@ const AddComplaint = () => {
                         id="images"
                         name="images"
                         type="file"
+                        
                         onChange={(e) => handleFileChange(e)}
                         multiple
                         accept="image/*"

@@ -202,37 +202,34 @@ const AddComplaint = () => {
 
         // console.log("reqdata", reqdata);
         // console.log("image", image);
-        console.log("video", video);
+        // console.log("video", video);
 
-        // append single image
-        // if (image) {
-        //   formData.append("issueImages", image); // 🔥 must match `issueImages`
+        
+        // if (video) {
+        //   const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
+        //   const maxSize = 51 * 1024 * 1024; // 10MB
+
+        //   if (!allowedTypes.includes(video.type)) {
+        //     setError("issueVideo", {
+        //       type: "manual",
+        //       message: "Only MP4, WebM, or OGG videos are allowed",
+        //     });
+        //      setLoading(false);
+        //     return;
+        //   }
+
+        //   if (video.size > maxSize) {
+        //     setError("issueVideo", {
+        //       type: "manual",
+        //       message: "Video size must be less than 50MB",
+        //     });
+        //      setLoading(false);
+        //     return;
+        //   }
+
+        //   // ✅ If valid → append
+        //   formData.append("issueVideo", video);
         // }
-        if (video) {
-          const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
-          const maxSize = 51 * 1024 * 1024; // 10MB
-
-          if (!allowedTypes.includes(video.type)) {
-            setError("issueVideo", {
-              type: "manual",
-              message: "Only MP4, WebM, or OGG videos are allowed",
-            });
-             setLoading(false);
-            return;
-          }
-
-          if (video.size > maxSize) {
-            setError("issueVideo", {
-              type: "manual",
-              message: "Video size must be less than 50MB",
-            });
-             setLoading(false);
-            return;
-          }
-
-          // ✅ If valid → append
-          formData.append("issueVideo", video);
-        }
 
         // Append image
         if (image) {
@@ -243,10 +240,10 @@ const AddComplaint = () => {
         //   formData.append("issueVideo", video); // 🔥 must match `issueVideo`
         // }
 
-        // let response = await http_request.post('/createComplaint', formData)
-        let response = await http_request.post('/createComplaintWithVideo', formData, {
-          headers: { "Content-Type": "multipart/form-data" },
-        })
+        let response = await http_request.post('/createComplaint', formData)
+        // let response = await http_request.post('/createComplaintWithVideo', formData, {
+        //   headers: { "Content-Type": "multipart/form-data" },
+        // })
         const { data } = response
         ToastMessage(data)
         setLoading(false)
@@ -1191,7 +1188,7 @@ const AddComplaint = () => {
                       />
                       {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
                     </div>
-                    <div>
+                    {/* <div>
                       <label className="block text-sm font-medium leading-6 text-gray-900">Upload Video  </label>
                       <input
                         type="file"
@@ -1203,7 +1200,7 @@ const AddComplaint = () => {
                       {errors.issueVideo && (
                         <p className="text-red-500 text-sm">{errors.issueVideo.message}</p>
                       )}
-                    </div>
+                    </div> */}
                     <div>
                       <label className="block text-sm font-medium leading-6 text-gray-900">
                         In  Warranty

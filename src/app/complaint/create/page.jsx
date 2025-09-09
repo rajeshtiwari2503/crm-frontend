@@ -186,93 +186,189 @@ const AddComplaint = () => {
 
     }
   }
+  // const RegiterComplaint = async (reqdata) => {
+  //   // console.log("jdfshjgjh", reqdata);
+
+  //   try {
+  //     if (location) {
+
+  //       setLoading(true)
+  //       const formData = new FormData();
+  //       for (const key in reqdata) {
+  //         if (reqdata.hasOwnProperty(key)) {
+  //           formData.append(key, reqdata[key]);
+  //         }
+  //       }
+
+  //       // console.log("reqdata", reqdata);
+  //       // console.log("image", image);
+  //       console.log("video", video);
+
+  //       // append single image
+  //       // if (image) {
+  //       //   formData.append("issueImages", image); // 🔥 must match `issueImages`
+  //       // }
+  //       if (video) {
+  //         const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
+  //         const maxSize = 51 * 1024 * 1024; // 10MB
+
+  //         if (!allowedTypes.includes(video.type)) {
+  //           setError("issueVideo", {
+  //             type: "manual",
+  //             message: "Only MP4, WebM, or OGG videos are allowed",
+  //           });
+  //            setLoading(false);
+  //           return;
+  //         }
+
+  //         if (video.size > maxSize) {
+  //           setError("issueVideo", {
+  //             type: "manual",
+  //             message: "Video size must be less than 50MB",
+  //           });
+  //            setLoading(false);
+  //           return;
+  //         }
+
+  //         // ✅ If valid → append
+  //         formData.append("issueVideo", video);
+  //       }
+
+  //       // Append image
+  //       if (image) {
+  //         formData.append("issueImages", image);
+  //       }
+  //       // append single video
+  //       // if (video) {
+  //       //   formData.append("issueVideo", video); // 🔥 must match `issueVideo`
+  //       // }
+
+  //       // let response = await http_request.post('/createComplaint', formData)
+  //       let response = await http_request.post('/createComplaintWithVideo', formData, {
+  //         headers: { "Content-Type": "multipart/form-data" },
+  //       })
+  //       const { data } = response
+  //       ToastMessage(data)
+  //       setLoading(false)
+  //       reset()
+  //       router.push("/complaint/allComplaint")
+  //     }
+  //     else {
+
+  //       setLoading(false);
+  //       return;
+
+  //     }
+  //   }
+  //   catch (err) {
+  //     setLoading(false)
+  //     ToastMessage(err?.response?.data)
+
+  //     console.log(err);
+  //   }
+
+  // }
+
+
   const RegiterComplaint = async (reqdata) => {
-    // console.log("jdfshjgjh", reqdata);
-
     try {
-      if (location) {
+      if (!location) return;
 
-        setLoading(true)
-        const formData = new FormData();
-        for (const key in reqdata) {
-          if (reqdata.hasOwnProperty(key)) {
-            formData.append(key, reqdata[key]);
-          }
+      setLoading(true);
+
+      let videoUrl = null;
+
+      // 1️⃣ If video exists, upload it first to Google Drive
+      if (video) {
+        const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
+        const maxSize = 50 * 1024 * 1024; // 50MB
+
+        if (!allowedTypes.includes(video.type)) {
+          setError("issueVideo", {
+            type: "manual",
+            message: "Only MP4, WebM, or OGG videos are allowed",
+          });
+          setLoading(false);
+          return;
         }
 
-        // console.log("reqdata", reqdata);
-        // console.log("image", image);
-        // console.log("video", video);
-
-        
-        // if (video) {
-        //   const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
-        //   const maxSize = 51 * 1024 * 1024; // 10MB
-
-        //   if (!allowedTypes.includes(video.type)) {
-        //     setError("issueVideo", {
-        //       type: "manual",
-        //       message: "Only MP4, WebM, or OGG videos are allowed",
-        //     });
-        //      setLoading(false);
-        //     return;
-        //   }
-
-        //   if (video.size > maxSize) {
-        //     setError("issueVideo", {
-        //       type: "manual",
-        //       message: "Video size must be less than 50MB",
-        //     });
-        //      setLoading(false);
-        //     return;
-        //   }
-
-        //   // ✅ If valid → append
-        //   formData.append("issueVideo", video);
-        // }
-
-        // Append image
-        if (image) {
-          formData.append("issueImages", image);
+        if (video.size > maxSize) {
+          setError("issueVideo", {
+            type: "manual",
+            message: "Video size must be less than 50MB",
+          });
+          setLoading(false);
+          return;
         }
-        // append single video
-        // if (video) {
-        //   formData.append("issueVideo", video); // 🔥 must match `issueVideo`
-        // }
 
-        let response = await http_request.post('/createComplaint', formData)
-        // let response = await http_request.post('/createComplaintWithVideo', formData, {
-        //   headers: { "Content-Type": "multipart/form-data" },
-        // })
-        const { data } = response
-        ToastMessage(data)
-        setLoading(false)
-        reset()
-        router.push("/complaint/allComplaint")
+        // ✅ Upload video to your Next.js API
+        const videoForm = new FormData();
+        videoForm.append("video", video);
+
+        try {
+          const videoResp = await axios.post("/api/upload/video", videoForm, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          videoUrl = videoResp.data.videoLink; // ✅ get URL from Google Drive
+        } catch (err) {
+          console.error("Video upload failed:", err);
+          setError("issueVideo", {
+            type: "manual",
+            message: "Video upload failed. Please try again.",
+          });
+          setLoading(false);
+          return; // stop here if upload fails
+        }
       }
-      else {
 
-        setLoading(false);
-        return;
+      // 2️⃣ Prepare complaint form
+      const formData = new FormData();
+      for (const key in reqdata) {
+        if (reqdata.hasOwnProperty(key)) {
+          // 🚫 Skip issueVideo if it's already a File/FileList
+          if (key === "issueVideo") continue;
 
+          formData.append(key, reqdata[key]);
+        }
       }
+
+      // Append image if present
+      if (image) {
+        formData.append("issueImages", image); // ✅ S3 will handle in backend
+      }
+
+      // Append Google Drive video URL (string only)
+      if (videoUrl) {
+        formData.append("issueVideo", videoUrl);
+      }
+
+      // 3️⃣ Send complaint request
+      const response = await http_request.post("/createComplaint", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const { data } = response;
+      ToastMessage(data);
+      reset();
+      router.push("/complaint/allComplaint");
+
+    } catch (err) {
+      ToastMessage(err?.response?.data);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
-    catch (err) {
-      setLoading(false)
-      ToastMessage(err?.response?.data)
+  };
 
-      console.log(err);
-    }
 
-  }
 
-  // ✅ Validate max 5MB video
   const handleVideoValidation = (e) => {
     const file = e.target.files[0];
     setVideo(file)
 
   };
-  
+
 
   // console.log(nature);
 
@@ -1173,13 +1269,13 @@ const AddComplaint = () => {
                     </div>
                     <div>
                       <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                        Upload Product / Warranty Images 
+                        Upload Product / Warranty Images
                       </label>
                       <input
                         id="images"
                         name="images"
                         type="file"
-                        
+
                         onChange={(e) => handleFileChange(e)}
                         multiple
                         accept="image/*"
@@ -1188,7 +1284,7 @@ const AddComplaint = () => {
                       />
                       {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
                     </div>
-                    {/* <div>
+                    <div>
                       <label className="block text-sm font-medium leading-6 text-gray-900">Upload Video  </label>
                       <input
                         type="file"
@@ -1200,7 +1296,7 @@ const AddComplaint = () => {
                       {errors.issueVideo && (
                         <p className="text-red-500 text-sm">{errors.issueVideo.message}</p>
                       )}
-                    </div> */}
+                    </div>
                     <div>
                       <label className="block text-sm font-medium leading-6 text-gray-900">
                         In  Warranty

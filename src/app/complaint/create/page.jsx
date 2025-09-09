@@ -205,9 +205,9 @@ const AddComplaint = () => {
         console.log("video", video);
 
         // append single image
-        if (image) {
-          formData.append("issueImages", image); // 🔥 must match `issueImages`
-        }
+        // if (image) {
+        //   formData.append("issueImages", image); // 🔥 must match `issueImages`
+        // }
         if (video) {
           const allowedTypes = ["video/mp4", "video/webm", "video/ogg"];
           const maxSize = 51 * 1024 * 1024; // 10MB
@@ -1176,7 +1176,7 @@ const AddComplaint = () => {
                     </div>
                     <div>
                       <label htmlFor="images" className="block text-sm font-medium leading-6 text-gray-900">
-                        Upload Product / Warranty Images/Videos
+                        Upload Product / Warranty Images 
                       </label>
                       <input
                         id="images"
@@ -1184,14 +1184,14 @@ const AddComplaint = () => {
                         type="file"
                         onChange={(e) => handleFileChange(e)}
                         multiple
-                        accept="image/*, video/*"
+                        accept="image/*"
                         // {...register('issueImages', { required: 'Images/Videos are required' })}
                         className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6  `}
                       />
                       {/* {image === "" ? <p className="text-red-500 text-sm mt-1">{"Uploade Image"}</p> : ""} */}
                     </div>
                     <div>
-                      <label className="block mb-1 font-medium">Upload Video (Max 5MB)</label>
+                      <label className="block text-sm font-medium leading-6 text-gray-900">Upload Video  </label>
                       <input
                         type="file"
                         accept="video/*"

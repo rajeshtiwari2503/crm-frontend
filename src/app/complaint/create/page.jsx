@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import Select from 'react-select';
 import { ReactLoader } from '@/app/components/common/Loading';
 import UserAllServicesListByUniqueId from '../details/[id]/GetUserComplaintByUniqueId';
+ 
+ 
 const AddComplaint = () => {
 
   const router = useRouter()
@@ -318,8 +320,12 @@ const AddComplaint = () => {
             message: "Video upload failed. Please try again.",
           });
           setLoading(false);
+          setVideo("")
           return; // stop here if upload fails
         }
+
+         
+
       }
 
       // 2️⃣ Prepare complaint form

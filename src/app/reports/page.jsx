@@ -262,7 +262,7 @@ const { user } = useUser();
             {reportType === "USER" ?
               <>{reportData?.data?.brands?.length > 0 || reportData?.data?.customers?.length > 0 || reportData?.data?.serviceCenters?.length > 0 || reportData?.data?.technicians?.length > 0 ?
                <div> 
-                <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /></div>
+                <DownloadFiterDataExcel reportData={reportData} fileName="User_Report" /></div>
                  : ""}
                
               </>

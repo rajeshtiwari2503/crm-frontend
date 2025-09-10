@@ -290,7 +290,9 @@ const WalletPaymentSummary = ({ user }) => {
                 </div>
               }
 
-              <div>
+              {user?.user?.role === "ADMIN" ?
+              <>
+               <div>
                 <h3 className="text-sm font-semibold mb-2">Total_Complaints</h3>
                 <p className="text-xl font-bold">{totalSummary.totalComplaints}</p>
               </div>
@@ -331,6 +333,9 @@ const WalletPaymentSummary = ({ user }) => {
                 <h3 className="text-sm font-semibold mb-2">Total Unpaid  </h3>
                 <p className="text-xl font-bold text-red-600">{totalSummary.totalUnpaid}</p>
               </div>
+              </>
+              :""
+}
               {user?.user?.role === "ADMIN" ?
                 <div className="">
                   {formattedData.length > 0 && (

@@ -357,6 +357,32 @@ let aging = `${agingDays}d`;
     // } else {
     //   edge = `${durationMinutes}m`;
     // }
+// 🔑 Build UpdateFullHistory string with date & details
+  const updateFullHistory = complaint.updateHistory?.map(update => {
+    const updatedAt = update.updatedAt
+      ? new Date(update.updatedAt).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      : "";
+
+    const status = update.changes?.status || "";
+    const empName = update.changes?.empName || "";
+    const comments =
+      update.changes?.comments || update.changes?.finalComments || "";
+    const assignServiceCenter = update.changes?.assignServiceCenter || "";
+    const kilometer = update.changes?.kilometer || "";
+    const spareParts = update.changes?.spareParts || "";
+
+    return `${updatedAt} → Status: ${status} (By ${empName}${
+      comments ? `, Comments: ${comments}` : ""
+    }${assignServiceCenter ? `, ServiceCenter: ${assignServiceCenter}` : ""}${
+      kilometer ? `, Km: ${kilometer}` : ""
+    }${spareParts ? `, SpareParts: ${spareParts}` : ""})`;
+  }).join("\n") || "";
 
     return {
       ...complaint,
@@ -377,7 +403,8 @@ let aging = `${agingDays}d`;
       kilometer:complaint.updateHistory?.find(entry => 
         entry.changes?.status === "COMPLETED"
       )?.changes?.kilometer || " ",
-      aging:aging // ⏳ Add the computed edge field to the exported row
+      aging:aging ,// ⏳ Add the computed edge field to the exported row
+      UpdateFullHistory: updateFullHistory 
     };
   })}
   fileName="ComplaintsList"
@@ -413,7 +440,8 @@ let aging = `${agingDays}d`;
     "closerComment",
     "updatedAt",
     "createdAt",
-    "sndStatus"
+    "sndStatus",
+    "UpdateFullHistory"
    
   ]}
 

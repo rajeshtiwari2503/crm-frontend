@@ -36,7 +36,7 @@ import ServicePaymentDialog from './addDeliveryCharges';
 const ServiceTransactionListWithPage = (props) => {
 
     const { data, RefreshData, loading, value } = props;
-  const router = useRouter()
+    const router = useRouter()
 
     const [sortBy, setSortBy] = useState('id');
     const [sortDirection, setSortDirection] = useState('asc');
@@ -77,6 +77,7 @@ const ServiceTransactionListWithPage = (props) => {
     const [getAllData, setAllData] = useState({ totalDocs: 0, totalPages: 0, currentPage: 1, totalPaidAmount: 0, totalUnpaidAmount: 0 });
     const [page, setPage] = useState(0); // zero-based
     const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [hasSearched, setHasSearched] = useState(false);
 
     // Fetch data
     const fetchFilteredData = async () => {
@@ -105,11 +106,16 @@ const ServiceTransactionListWithPage = (props) => {
                 currentPage: responseData.currentPage || 1,
             });
             setFilteredData(responseData.data || []);
+            if (debouncedSearchTerm) {
+                setHasSearched(true);
+            } else {
+                setHasSearched(false);
+            }
             setPayLoading(false)
         } catch (error) {
             console.error("Failed to fetch filtered data:", error);
             setPayLoading(false)
-
+            setHasSearched(false);
         }
     };
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
@@ -154,6 +160,7 @@ const ServiceTransactionListWithPage = (props) => {
             )
         )
         : filteredData;
+    console.log("searchTerm", searchTerm);
 
     // But pagination slicing should be handled by backend, so don't slice here
     const sortedData = stableSort(displayedData, getComparator(sortDirection, sortBy));
@@ -312,16 +319,66 @@ const ServiceTransactionListWithPage = (props) => {
                                     {/* <h2 className="text-2xl font-bold text-center mb-4 text-gray-700">
                                 Payment Summary
                             </h2> */}
-                                    <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
-                                        <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
-                                            <span className="text-lg font-semibold text-green-600">Total Paid:</span>
-                                            <span className="text-lg font-bold text-green-700">{getAllData?.totalPaidAmount}</span>
+                                    {/* {value?.role === "ADMIN" ?
+                                        <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
+                                            <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
+                                                <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                                <span className="text-lg font-bold text-green-700">{getAllData?.totalPaidAmount}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg  ">
+                                                <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                                <span className="text-lg font-bold text-red-700">{getAllData?.totalUnpaidAmount}</span>
+                                            </div>
                                         </div>
-                                        <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg  ">
-                                            <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
-                                            <span className="text-lg font-bold text-red-700">{getAllData?.totalUnpaidAmount}</span>
+                                        : searchTerm.length>3 && filteredData.length > 0 ? <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
+                                            <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg  ">
+                                                <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                                <span className="text-lg font-bold text-green-700">{getAllData?.totalPaidAmount}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center bg-red-100 p-4 rounded-lg  ">
+                                                <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                                <span className="text-lg font-bold text-red-700">{getAllData?.totalUnpaidAmount}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                        :""
+                                    } */}
+
+                                    {value?.role === "ADMIN" ? (
+                                        // ✅ Always show for admin
+                                        <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
+                                            <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg">
+                                                <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                                <span className="text-lg font-bold text-green-700">
+                                                    {getAllData?.totalPaidAmount}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center bg-red-100 p-2 rounded-lg">
+                                                <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                                <span className="text-lg font-bold text-red-700">
+                                                    {getAllData?.totalUnpaidAmount}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        // ✅ Employee case → only after search + API response (not just typing)
+                                        hasSearched && !payLoading && filteredData.length > 0 && (
+                                            <div className='grid grid-cols-1 md:grid-cols-2 gap-2 justify-center'>
+                                                <div className="flex justify-between items-center bg-green-100 p-2 rounded-lg">
+                                                    <span className="text-lg font-semibold text-green-600">Total Paid:</span>
+                                                    <span className="text-lg font-bold text-green-700">
+                                                        {getAllData?.totalPaidAmount}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center bg-red-100 p-2 rounded-lg">
+                                                    <span className="text-lg font-semibold text-red-600">Total Unpaid:</span>
+                                                    <span className="text-lg font-bold text-red-700">
+                                                        {getAllData?.totalUnpaidAmount}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        )
+                                    )}
+
                                 </div>
                             </div>
                             <div className="md:col-span-3 mb-4 border-gray-300 rounded-md mt-4">

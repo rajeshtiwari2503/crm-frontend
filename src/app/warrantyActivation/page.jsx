@@ -103,42 +103,42 @@ const ActivateWarrantyButton = () => {
     return null;
   };
 
-  const onSubmit = async (data) => {
-    // console.log(data);
-    try {
-      if (!productID) {
-        alert("Please select a product model");
-        return;
-      }
-      if (!location) {
-        alert("Please enter valid pincode!");
-        return;
-      }
-      setLoading(true)
-      const response = await http_request.post('/activateWarranty', {
-        uniqueId: qrCodeUrl,
-        ...data,
-      });
+  // const onSubmit = async (data) => {
+  //   // console.log(data);
+  //   try {
+  //     if (!productID) {
+  //       alert("Please select a product model");
+  //       return;
+  //     }
+  //     if (!location) {
+  //       alert("Please enter valid pincode!");
+  //       return;
+  //     }
+  //     setLoading(true)
+  //     const response = await http_request.post('/activateWarranty', {
+  //       uniqueId: qrCodeUrl,
+  //       ...data,
+  //     });
 
-      const result = response.data;
+  //     const result = response.data;
 
-      if (result.status) {
-        ToastMessage(result)
-        setRefresh(result)
-        // setLoading(false)
-      } else {
+  //     if (result.status) {
+  //       ToastMessage(result)
+  //       setRefresh(result)
+  //       // setLoading(false)
+  //     } else {
 
-        setRefresh(result)
-        ToastMessage(result)
-        setLoading(false)
-      }
-    } catch (error) {
-      console.log(error);
-      setLoading(false)
-      ToastMessage(error?.response?.data)
+  //       setRefresh(result)
+  //       ToastMessage(result)
+  //       setLoading(false)
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     setLoading(false)
+  //     ToastMessage(error?.response?.data)
 
-    }
-  };
+  //   }
+  // };
 
 
   // const getLocation = () => {
@@ -260,6 +260,52 @@ const ActivateWarrantyButton = () => {
 
 
   // console.log(filterWarranty);
+  const onSubmit = async (data) => {
+    try {
+      if (!productID) {
+        alert("Please select a product model");
+        return;
+      }
+      if (!location) {
+        alert("Please enter valid pincode!");
+        return;
+      }
+
+      setLoading(true);
+
+      // Build FormData for image + other fields
+      const formData = new FormData();
+      formData.append("uniqueId", qrCodeUrl);
+
+      // Append all other text fields
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      // Append image (if selected in file input)
+      if (data.warrantyImage && data.warrantyImage[0]) {
+        formData.append("warrantyImage", data.warrantyImage[0]); // file
+      }
+
+      const response = await http_request.post("/activateWarrantyWithImage", formData
+      );
+
+      const result = response.data;
+
+      if (result.status) {
+        ToastMessage(result);
+        setRefresh(result);
+      } else {
+        setRefresh(result);
+        ToastMessage(result);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      ToastMessage(error?.response?.data);
+    }
+  };
 
   const getLocation = (e) => {
     e.preventDefault();
@@ -646,8 +692,8 @@ const ActivateWarrantyButton = () => {
 
   // Step 3: Filter products by brandId and matching subCategoryIds
   const filteredProducts1 = product.filter(p => {
-    if (p.brandId !== filterWarranty.brandId) return false;
-    if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
+    if (p.brandId !== filterWarranty?.brandId) return false;
+    if (!matchingSubCatIds.includes(p?.subCategoryId)) return false;
     return true;
   });
 
@@ -827,42 +873,114 @@ const ActivateWarrantyButton = () => {
                 <p className="text-gray-600 text-sm">{filterWarranty?.isActivated === true ? "Yes" : "No"}  </p>
               </div>
             </div>
-            {filterWarranty?.isActivated === true ?
-
-              <div>
-                <div className='mb-5 mt-5 '>
-                  <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
-                  <input
-                    id="contact"
-                    type="text"
-                    value={contactNo}
-                    onChange={(e) => setContactNo(e.target.value)}
-                    placeholder='Please enter your register number'
-                    className="w-full  p-0.5 border border-gray-300 rounded-md"
-                  />
-                  {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
-                </div>
-                <div className='flex justify-between '>
-
-                  <div>
-                    <button
-                      onClick={() => handleDashboard(filterWarranty?.userId)}
-                      className="w-full bg-green-500 text-white p-1 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                    >
-                      Go Dashboard
-                    </button>
+            {/* {filterWarranty?.isActivated === true ?
+             
+                <div>
+                  <div className='mb-5 mt-5 '>
+                    <label htmlFor="contact" className="block text-gray-700 ">Contact:</label>
+                    <input
+                      id="contact"
+                      type="text"
+                      value={contactNo}
+                      onChange={(e) => setContactNo(e.target.value)}
+                      placeholder='Please enter your register number'
+                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    />
+                    {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                   </div>
+                  <div className='flex justify-between '>
 
-                  <div>
-                    <button
-                      onClick={handleComplaint}
-                      className="ms-2 w-full bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    >
-                      Create Complaint
-                    </button>
+                    <div>
+                      <button
+                        onClick={() => handleDashboard(filterWarranty?.userId)}
+                        className="w-full bg-green-500 text-white p-1 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                      >
+                        Go Dashboard
+                      </button>
+                    </div>
+
+                    <div>
+                      <button
+                        onClick={handleComplaint}
+                        className="ms-2 w-full bg-blue-500 text-white p-1 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                      >
+                        Create Complaint
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+               */}
+              {filterWarranty?.isActivated ? (
+  <>
+    {filterWarranty?.status === "PENDING" ? (
+      // 🟡 Show pending card
+      <div className="flex items-start mt-5 gap-3 p-4 bg-yellow-50 border border-yellow-300 rounded-md text-yellow-700 shadow-sm">
+        <span className="text-xl">⏳</span>
+        <div>
+          <h3 className="font-semibold">Warranty Pending</h3>
+          <p className="text-sm">
+            Your warranty activation request has been submitted and is awaiting admin approval. 
+            Please check back later.
+          </p>
+        </div>
+      </div>
+    ) : filterWarranty?.status === "APPROVE" ? (
+      // 🟢 Approved → show dashboard/complaint actions
+      <div>
+         <div className="flex mt-5 items-start gap-3 p-4 bg-green-50 border border-green-300 rounded-md text-green-700 shadow-sm">
+        <span className="text-xl">✅</span>
+        <div>
+          <h3 className="font-semibold">Warranty Approved</h3>
+          <p className="text-sm">
+            Congratulations! Your warranty has been approved successfully.
+          </p>
+        </div>
+      </div>
+        <div className="mb-5 mt-5">
+          <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+          <input
+            id="contact"
+            type="text"
+            value={contactNo}
+            onChange={(e) => setContactNo(e.target.value)}
+            placeholder="Please enter your registered number"
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+          {errors.contact && (
+            <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>
+          )}
+        </div>
+
+        <div className="flex justify-between gap-3">
+          <button
+            onClick={() => handleDashboard(filterWarranty?.userId)}
+            className="flex-1 bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+          >
+            Go Dashboard
+          </button>
+
+          <button
+            onClick={handleComplaint}
+            className="flex-1 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+          >
+            Create Complaint
+          </button>
+        </div>
+      </div>
+    ) : filterWarranty?.status === "DISAPPROVE" ? (
+      // 🔴 Disapproved
+      <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-300 rounded-md text-red-700 shadow-sm">
+        <span className="text-xl">❌</span>
+        <div>
+          <h3 className="font-semibold">Warranty Disapproved</h3>
+          <p className="text-sm">
+            Unfortunately, your warranty request has been rejected. Please contact support.
+          </p>
+        </div>
+      </div>
+    ) : null}
+  </>
+)
               :
               <div>
                 {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
@@ -983,12 +1101,31 @@ const ActivateWarrantyButton = () => {
                       type="number"
                       {...register('pincode', { required: 'Pincode is required' })}
                       placeholder="Enter 6-digit pincode"
-                      className="border p-2 mb-4 w-full"
+                      className="border p-1 rounded-md  w-full"
                       maxLength={6}
                     // className="w-full  p-0.5 border border-gray-300 rounded-md"
                     />
                     {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
                     {error && <p className="text-red-500 mt-1">{error}</p>}
+                  </div>
+                  <div className="mt-5">
+                    <label htmlFor="warrantyImage" className="block text-gray-700">
+                      Warranty Image (Bill/Invoice/Certificate)
+                    </label>
+                    <input
+                      id="warrantyImage"
+                      type="file"
+                      accept="image/*" // only images
+                      {...register("warrantyImage", {
+                        required: "Warranty image is required",
+                      })}
+                      className="w-full p-1 border border-gray-300 rounded-md file:mr-3 file:py-1 file:px-3 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                    />
+                    {errors.warrantyImage && (
+                      <p className="text-red-500 text-sm mt-1">
+                        {errors.warrantyImage.message}
+                      </p>
+                    )}
                   </div>
                 </form>
 

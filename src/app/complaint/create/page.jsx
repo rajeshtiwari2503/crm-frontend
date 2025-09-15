@@ -12,8 +12,8 @@ import dayjs from 'dayjs';
 import Select from 'react-select';
 import { ReactLoader } from '@/app/components/common/Loading';
 import UserAllServicesListByUniqueId from '../details/[id]/GetUserComplaintByUniqueId';
- 
- 
+
+
 const AddComplaint = () => {
 
   const router = useRouter()
@@ -64,6 +64,7 @@ const AddComplaint = () => {
         // console.log("filterWarranty", filterWarranty);
         const selectedProductId = filterWarranty?.productId;
         setValue('productBrand', filterWarranty?.brandName);
+        setSelectedBrand(filterWarranty?.brandId)
         // console.log(" filterWarranty?.brandName", filterWarranty?.brandName);
         setProductName(selectedProductId)
         const selectedProduct = products?.find(product => product._id === selectedProductId);
@@ -297,7 +298,7 @@ const AddComplaint = () => {
         if (video.size > maxSize) {
           setError("issueVideo", {
             type: "manual",
-            message: "Video size must be less than 50MB",
+            message: "Video size must be less than 5MB",
           });
           setLoading(false);
           return;
@@ -317,14 +318,14 @@ const AddComplaint = () => {
           console.error("Video upload failed:", err);
           setError("issueVideo", {
             type: "manual",
-            message: "Video upload failed. Please try again.",
+            message: "Video size must be less than 5MB , Video upload failed. Please try again.",
           });
           setLoading(false);
           setVideo("")
           return; // stop here if upload fails
         }
 
-         
+
 
       }
 
@@ -613,6 +614,7 @@ const AddComplaint = () => {
 
   // Watch the 'purchaseDate' field from your form
   const purchaseDate = watch('purchaseDate');
+  const daysOfWaranty = watch('warrantyYears')
 
   // UseEffect to automatically calculate warranty when purchaseDate or warrantyInDays change
   useEffect(() => {
@@ -621,8 +623,11 @@ const AddComplaint = () => {
     }
   }, [purchaseDate]); // Add dependencies to re-calculate when these values change
 
+  // console.log("daysOfWaranty", daysOfWaranty);
+
+
   const calculateWarranty = () => {
-    if (searchValue === "") {
+    if (searchValue === "" || daysOfWaranty) {
       const currentDate = dayjs(); // Get the current date
       const purchaseDateParsed = dayjs(purchaseDate); // Parse the purchase date
 
@@ -637,9 +642,17 @@ const AddComplaint = () => {
       console.log("purchaseDate:", purchaseDate);
 
       // Fallback in case warrantyInDays is not set correctly (set to 365 if undefined or invalid)
-      const validWarrantyInDays = typeof warrantyInDays === 'number' && warrantyInDays > 0
-        ? warrantyInDays
-        : warrantyInDays;  // Fallback to default 365 days warranty
+      // const validWarrantyInDays = typeof warrantyInDays === 'number' && warrantyInDays > 0
+      //   ? warrantyInDays
+      //   : warrantyInDays;   
+
+      const validWarrantyInDays =
+        typeof daysOfWaranty === "number" && daysOfWaranty > 0
+          ? daysOfWaranty
+          : (typeof warrantyInDays === "number" && warrantyInDays > 0
+            ? warrantyInDays
+            : 365);
+
 
       console.log("Valid Warranty (in days):", validWarrantyInDays);
 

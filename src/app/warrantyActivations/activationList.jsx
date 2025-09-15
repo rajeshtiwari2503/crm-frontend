@@ -11,6 +11,7 @@ import http_request from '.././../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '../components/common/Loading';
 import { useUser } from '../components/UserContext';
+import WarrantyImageCell from './WarrantyImageView';
 
 const WarrantyActivationList = ({ data,
   page,
@@ -31,6 +32,7 @@ const WarrantyActivationList = ({ data,
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const { user } = useUser();
 
@@ -271,6 +273,16 @@ const WarrantyActivationList = ({ data,
                           Status
                         </TableSortLabel>
                       </TableCell>
+                       <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'status'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('status')}
+                        >
+                          Image
+                        </TableSortLabel>
+                      </TableCell>
+                     
                       <TableCell>
                         <TableSortLabel
                           active={sortBy === 'createdAt'}
@@ -303,6 +315,8 @@ const WarrantyActivationList = ({ data,
                         >
                           {row.status}
                         </span></TableCell>
+                        
+                      <WarrantyImageCell row={row} />
                         <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
 
                         <TableCell>
@@ -357,7 +371,7 @@ const WarrantyActivationList = ({ data,
     </div>
   );
 };
-
+ 
 export default WarrantyActivationList;
 
 function stableSort(array, comparator) {

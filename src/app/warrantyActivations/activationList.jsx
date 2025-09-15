@@ -3,13 +3,14 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogTitle
 } from '@mui/material';
-import { Add, Delete, Visibility } from '@mui/icons-material';
+import { Add, Cancel, CheckCircle, Delete, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 
 import http_request from '.././../../http-request';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { ReactLoader } from '../components/common/Loading';
+import { useUser } from '../components/UserContext';
 
 const WarrantyActivationList = ({ data,
   page,
@@ -31,12 +32,14 @@ const WarrantyActivationList = ({ data,
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState([]);
 
+  const { user } = useUser();
+
   useEffect(() => {
     if (!searchTerm || searchTerm.length < 3) {
       setSearchData([]);
       return;
     }
-  
+
     const delayDebounceFn = setTimeout(() => {
       setLoading(true);
       console.log("searchTerm", searchTerm);
@@ -71,11 +74,11 @@ const WarrantyActivationList = ({ data,
   //   setLimit(parseInt(event.target.value, 10));
   //   setPage(0);
   // };
-const handleChangeRowsPerPage = (event) => {
-  const newLimit = parseInt(event.target.value, 10);
-  setLimit(newLimit);
-  setPage(0); // Reset to first page when limit changes
-};
+  const handleChangeRowsPerPage = (event) => {
+    const newLimit = parseInt(event.target.value, 10);
+    setLimit(newLimit);
+    setPage(0); // Reset to first page when limit changes
+  };
 
   const handleSort = (property) => {
     const isAsc = sortBy === property && sortDirection === 'asc';
@@ -111,11 +114,11 @@ const handleChangeRowsPerPage = (event) => {
     }
   }, [searchTerm, searchData, data]);
 
-   const trueData =combinedData?.map((item, index) => ({ ...item, i: index + 1 }));
+  const trueData = combinedData?.map((item, index) => ({ ...item, i: index + 1 }));
 
   const sortedData = stableSort(trueData, getComparator(sortDirection, sortBy))
     // .slice(page * limit, (page + 1) * limit);
-.slice( );
+    .slice();
 
   const handleDetails = (id) => {
     router.push(`/warrantyActivations/details/${id}`);
@@ -137,7 +140,28 @@ const handleChangeRowsPerPage = (event) => {
     setCateId(id);
     setConfirmBoxView(true);
   };
-  // console.log(data);
+  // console.log("data,sor",sortedData);
+
+
+  const handleApproval = async (uniqueId, status) => {
+    try {
+      const adminName = user?.user?.name; // your admin name from state/context
+
+      const response = await http_request.put(`/warranty/${uniqueId}/status`, {
+        status,
+        adminName
+      });
+
+      if (response.data.success) {
+        ToastMessage(response.data);
+        RefreshData(response.data); // refresh table
+      }
+    } catch (error) {
+      console.error(error);
+      ToastMessage({ status: false, msg: error?.response?.data?.msg || "Something went wrong", type: "error" });
+    }
+  };
+
 
   return (
     <div>
@@ -159,7 +183,7 @@ const handleChangeRowsPerPage = (event) => {
         </div>
 
       </div>
-      {loading===true > 0 ? (
+      {loading === true > 0 ? (
         <div className='h-[400px] flex justify-center items-center'>
           <ReactLoader />
         </div>
@@ -240,6 +264,15 @@ const handleChangeRowsPerPage = (event) => {
                       </TableCell>
                       <TableCell>
                         <TableSortLabel
+                          active={sortBy === 'status'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('status')}
+                        >
+                          Status
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
                           active={sortBy === 'createdAt'}
                           direction={sortDirection}
                           onClick={() => handleSort('createdAt')}
@@ -260,16 +293,46 @@ const handleChangeRowsPerPage = (event) => {
                         {/* <TableCell>{row.numberOfGenerate}</TableCell> */}
                         <TableCell>{row.warrantyInDays}</TableCell>
                         <TableCell>{row?.batchNo}</TableCell>
+                        <TableCell>  <span
+                          className={`px-2 py-1 text-xs font-semibold rounded ${row.status === "APPROVE"
+                            ? "bg-green-100 text-green-700"
+                            : row.status === "DISAPPROVE"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-gray-100 text-gray-700"
+                            }`}
+                        >
+                          {row.status}
+                        </span></TableCell>
                         <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
-                        <TableCell className='flex'>
-                          <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                            <Visibility color='primary' />
-                          </IconButton>
-                          {/* <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
-                        <Delete color='error' />
-                      </IconButton> */}
 
+                        <TableCell>
+                          <div className="flex items-center gap-1">
+                            {/* View button */}
+                            <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                              <Visibility color="primary" />
+                            </IconButton>
+
+                            {/* Approve / Disapprove buttons for ADMIN */}
+                            {user?.user?.role === "ADMIN" && (
+                              <>
+                                <IconButton
+                                  aria-label="approve"
+                                  onClick={() => handleApproval(row.uniqueId, "APPROVE")}
+                                >
+                                  <CheckCircle sx={{ color: "green" }} />
+                                </IconButton>
+
+                                <IconButton
+                                  aria-label="disapprove"
+                                  onClick={() => handleApproval(row.uniqueId, "DISAPPROVE")}
+                                >
+                                  <Cancel sx={{ color: "red" }} />
+                                </IconButton>
+                              </>
+                            )}
+                          </div>
                         </TableCell>
+
                       </TableRow>
                     ))}
                   </TableBody>

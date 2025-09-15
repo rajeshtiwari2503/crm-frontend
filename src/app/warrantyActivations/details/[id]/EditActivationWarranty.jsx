@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import http_request from "../../../../../http-request";
 import { ReactLoader } from '@/app/components/common/Loading';
+import { Toaster } from 'react-hot-toast';
+import { ToastMessage } from '@/app/components/common/Toastify';
 
 const EditWarrantyDetails = ({ data, handleEdit }) => {
   const [formData, setFormData] = useState({
@@ -51,10 +53,11 @@ const EditWarrantyDetails = ({ data, handleEdit }) => {
         updates: { ...formData }, // Send the updated formData including isActivated
       });
       handleEdit(false)
+      ToastMessage(response.data)
       setMessage(response.data.message);
     } catch (error) {
       handleEdit(false)
-
+      ToastMessage(error.response?.data?.message)
       console.error('Error updating details:', error);
       setMessage(error.response?.data?.message || 'An error occurred while updating the details.');
     } finally {
@@ -78,6 +81,7 @@ const EditWarrantyDetails = ({ data, handleEdit }) => {
 
   return (
     <div className="container mx-auto p-4">
+      <Toaster />
       <h1 className="text-2xl font-bold mb-4">Edit Warranty Details</h1>
 
       {message && <p className="mb-4 text-green-500">{message}</p>}

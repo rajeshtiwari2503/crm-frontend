@@ -384,6 +384,12 @@ let aging = `${agingDays}d`;
     }${spareParts ? `, SpareParts: ${spareParts}` : ""})`;
   }).join("\n") || "";
 
+ const assignedByEmp =
+    complaint.updateHistory?.find(entry =>
+      entry.changes?.assignServiceCenter
+    )?.changes?.empName || " ";
+
+
     return {
       ...complaint,
       sndStatus: complaint.updateComments?.map(comment => 
@@ -404,7 +410,8 @@ let aging = `${agingDays}d`;
         entry.changes?.status === "COMPLETED"
       )?.changes?.kilometer || " ",
       aging:aging ,// ⏳ Add the computed edge field to the exported row
-      UpdateFullHistory: updateFullHistory 
+      UpdateFullHistory: updateFullHistory ,
+       assignedByEmp: assignedByEmp
     };
   })}
   fileName="ComplaintsList"
@@ -424,6 +431,7 @@ let aging = `${agingDays}d`;
     "detailedDescription",
     "status",
     "empName",
+      "assignedByEmp",
     "state",
     "district",
     "pincode",

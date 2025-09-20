@@ -51,12 +51,12 @@ const SparepartDetails = ({ params }) => {
             <div>{spareParts?.partNo}</div>
             <div className='font-bold'>category  </div>
             <div>{spareParts?.category}</div>
-            
+
             <div className='font-bold'>productModel  </div>
             <div>
-            {spareParts?.products?.map((item,i)=>
-              <div key={i}>{item?.productName}</div>
-            )}
+              {spareParts?.products?.map((item, i) =>
+                <div key={i}>{item?.productName}</div>
+              )}
             </div>
             <div className='font-bold'>Brand Name  </div>
             <div>{spareParts?.brandName}</div>
@@ -81,9 +81,19 @@ const SparepartDetails = ({ params }) => {
             <div className='font-bold'>updatedAt  </div>
             <div>{new Date(spareParts?.updatedAt).toLocaleString()}</div>
             <div className='font-bold'>Image  </div>
-            <div> 
-              <img src={spareParts?.images} alt="image" width={200} height={200} />
+            <div className="flex flex-wrap">
+              {spareParts?.images?.map((url, index) => (
+                <img
+                  key={index}
+                  src={url}
+                  alt={`image-${index}`}
+                  width={200}
+                  height={200}
+                  className="m-2 rounded border"
+                />
+              ))}
             </div>
+
           </div>
         </>
       }

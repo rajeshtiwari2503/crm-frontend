@@ -287,51 +287,51 @@ function BasicInformation(props) {
                                 value={skuNo}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.skuNo ? <div className="text-red-600">{props?.errors?.skuNo}</div> : ""}
+                            {/* {props?.errors?.skuNo ? <div className="text-red-600">{props?.errors?.skuNo}</div> : ""} */}
                         </div>
                         <div className="w-full     px-3">
                             <label className="block text-sm font-medium text-gray-700">Length <span className="text-gray-400">(in cm)</span></label>
                             <input
-                                type="text"
+                                type="number"
                                 className=" block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 name="length"
                                 value={length}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.length ? <div className="text-red-600">{props?.errors?.length}</div> : ""}
+                            {/* {props?.errors?.length ? <div className="text-red-600">{props?.errors?.length}</div> : ""} */}
                         </div>
                         <div className="w-full     px-3">
                             <label className="block text-sm font-medium text-gray-700">Breadth <span className="text-gray-400">(in cm)</span></label>
                             <input
-                                type="text"
+                                type="number"
                                 className=" block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 name="breadth"
                                 value={breadth}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.breadth ? <div className="text-red-600">{props?.errors?.breadth}</div> : ""}
+                            {/* {props?.errors?.breadth ? <div className="text-red-600">{props?.errors?.breadth}</div> : ""} */}
                         </div>
                         <div className="w-full     px-3">
                             <label className="block text-sm font-medium text-gray-700">Height <span className="text-gray-400">(in cm)</span></label>
                             <input
-                                type="text"
+                                type="number"
                                 className=" block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 name="height"
                                 value={height}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.height ? <div className="text-red-600">{props?.errors?.height}</div> : ""}
+                            {/* {props?.errors?.height ? <div className="text-red-600">{props?.errors?.height}</div> : ""} */}
                         </div>
                         <div className="w-full px-3">
                             <label className="block text-sm font-medium text-gray-700">Weight <span className="text-gray-400">(in kg)</span></label>
                             <input
-                                type="text"
+                                type="number"
                                 className=" block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                 name="weight"
                                 value={weight}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.weight ? <div className="text-red-600">{props?.errors?.weight}</div> : ""}
+                            {/* {props?.errors?.weight ? <div className="text-red-600">{props?.errors?.weight}</div> : ""} */}
                         </div>
                         <div className="w-full px-3">
                             <label className="block text-sm font-medium text-gray-700">Description</label>
@@ -351,7 +351,7 @@ function BasicInformation(props) {
                                 value={MRP}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.MRP ? <div className="text-red-600">{props?.errors?.MRP}</div> : ""}
+                            {/* {props?.errors?.MRP ? <div className="text-red-600">{props?.errors?.MRP}</div> : ""} */}
                         </div>
                         <div className="w-full px-3">
                             <label className="block text-sm font-medium text-gray-700">Best Price</label>
@@ -362,7 +362,7 @@ function BasicInformation(props) {
                                 value={bestPrice}
                                 onChange={(e) => { props.onChange(e) }}
                             />
-                            {props?.errors?.bestPrice ? <div className="text-red-600">{props?.errors?.bestPrice}</div> : ""}
+                            {/* {props?.errors?.bestPrice ? <div className="text-red-600">{props?.errors?.bestPrice}</div> : ""} */}
                         </div>
                         {(props?.user?.role === "RESELLER" || props?.user?.role === "ADMIN") && (
                             <div className="w-full px-3">

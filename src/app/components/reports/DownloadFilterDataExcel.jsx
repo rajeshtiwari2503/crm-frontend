@@ -41,7 +41,8 @@ const DownloadFiterDataExcel = ({ reportData, fileName }) => {
 const fetchDataAndExportToExcel = async () => {
   try {
     const data = reportData?.data;
-
+// console.log("data",data);
+ 
     // Extract data for each user type
     const customers = data.customers || [];
     const serviceCenters = data.serviceCenters || [];

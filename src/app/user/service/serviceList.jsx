@@ -12,6 +12,7 @@ import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import DownloadFiterDataExcel from '@/app/components/reports/DownloadFilterDataExcel';
 
 const ServiceList = (props) => {
 
@@ -50,7 +51,7 @@ const ServiceList = (props) => {
     return data.filter(
       (item) =>
         item?.city?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item?.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item?.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item?.contact?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item?.serviceCenterName?.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -114,7 +115,7 @@ const ServiceList = (props) => {
     doc.text("All Service Centers", 10, 10);
     doc.autoTable({
       startY: 20,
-      head: [["ID", "Service Name", "Address", "City", "Pincode", "Contact","Service Type"]],
+      head: [["ID", "Service Name", "Address", "City", "Pincode", "Contact", "Service Type"]],
       body: filteredData.map((row, index) => [
         index + 1,
         row?.serviceCenterName,
@@ -128,6 +129,8 @@ const ServiceList = (props) => {
     doc.save("All_Service_Centers.pdf");
   };
 
+const excelData={data:{serviceCenters:filteredData}}
+// console.log("excelData",excelData);
 
   return (
     <div>
@@ -135,10 +138,15 @@ const ServiceList = (props) => {
       <div className='flex justify-between items-center mb-3'>
         <div className='font-bold text-2xl'>Service Information</div>
         <div className="flex">
-          {props?.user?.role === "ADMIN" && <button onClick={downloadAllPDF} className="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
-            <PictureAsPdf className="mr-2" />
+          {props?.user?.role === "ADMIN" && <button onClick={downloadAllPDF} className="bg-red-600 mx-3  hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+            <PictureAsPdf className=" " />
           </button>
           }
+          {props?.user?.role === "ADMIN" &&  
+            <DownloadFiterDataExcel reportData={excelData} fileName="Service_Centers" />
+          
+          }
+
           {!props?.report && (
             <div
               onClick={() => router.push("/user/service/add")}

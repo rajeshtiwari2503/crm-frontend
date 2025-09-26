@@ -244,10 +244,10 @@ const BrandReport = (props) => {
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [selectedStatuses, setSelectedStatuses] = useState([]);
   const [loading, setLoading] = useState(false);
-  
+    
   const statusOptions = [
-    "PENDING", "PART PENDING", "ASSIGN", "IN PROGRESS",
-    "COMPLETED", "CANCELED", "FINAL VERIFICATION"
+    "PENDING", "PART PENDING", "ASSIGN", "IN PROGRESS","CUSTOMER SIDE PENDING",
+     "FINAL VERIFICATION" ,"COMPLETED","CANCELED"
   ];
 
   useEffect(() => {

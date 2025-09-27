@@ -911,7 +911,7 @@ html, body {
                         </button>
                     } */}
                     {["67bd89f4ee5adb6d9ee17ce7", "68022760acb4c657889b254a"].includes(brand?._id) ? (
-                        <button onClick={printA4Records} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                        <button onClick={printA4RecordsPure} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                             Print Records
                         </button>
                     ) : ["68a2fec108ab22c128f63b9f"].includes(brand?._id) ? (

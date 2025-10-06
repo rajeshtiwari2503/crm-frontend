@@ -256,13 +256,28 @@
      try {
          
          setLoading(true)
-       const requestData = {
-         userData: props?.userData,
-         startDate: startDate ? startDate.toISOString() : null,
-         endDate: endDate ? endDate.toISOString() : null,
-         selectedStatuses
-       };
+      //  const requestData = {
+      //    userData: props?.userData,
+      //    startDate: startDate ? startDate.toISOString() : null,
+      //    endDate: endDate ? endDate.toISOString() : null,
+      //    selectedStatuses
+      //  };
  
+    // Utility to format date as YYYY-MM-DD (no timezone shift)
+    const formatDateWithoutTimezone = (date) => {
+      const local = new Date(date);
+      const year = local.getFullYear();
+      const month = String(local.getMonth() + 1).padStart(2, "0");
+      const day = String(local.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const requestData = {
+      userData: props?.userData,
+      startDate: startDate ? formatDateWithoutTimezone(startDate) : null,
+      endDate: endDate ? formatDateWithoutTimezone(endDate) : null,
+      selectedStatuses,
+    };
        const response = await http_request.post("/getFilteredComplaintsByServiceCenter", requestData);
        setFilteredComplaints(response.data);
        setLoading(false)

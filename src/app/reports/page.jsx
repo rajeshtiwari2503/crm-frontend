@@ -87,14 +87,28 @@ const Report = () => {
          const userRole =brand?.user?.role;  
          const brandId =brand?.user?._id;   
   
-      const payload = {
-        reportType,
-        startDate,
-        endDate,
-        filters,
-        includeCharts,
-      };
-  
+      // const payload = {
+      //   reportType,
+      //   startDate,
+      //   endDate,
+      //   filters,
+      //   includeCharts,
+      // };
+   const formatDateWithoutTimezone = (date) => {
+      if (!date) return null;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const payload = {
+      reportType,
+      startDate: startDate ? formatDateWithoutTimezone(startDate) : null,
+      endDate: endDate ? formatDateWithoutTimezone(endDate) : null,
+      filters,
+      includeCharts, // e.g., true/false
+    };
       // Add brandId to filters if user role is "brand"
       if (userRole === "BRAND") {
         payload.filters = {

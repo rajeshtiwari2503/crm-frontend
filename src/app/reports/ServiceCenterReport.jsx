@@ -230,7 +230,7 @@
  
  // export default BrandReport;
  
- import React, { useEffect, useState } from "react";
+ import React, {   useState } from "react";
  import DatePicker from "react-datepicker";
  import "react-datepicker/dist/react-datepicker.css";
  import http_request from "../../../http-request";
@@ -250,12 +250,7 @@
      "COMPLETED", "CANCELED", "FINAL VERIFICATION"
    ];
  
-   useEffect(() => {
-      
-         fetchComplaints();
-     
-      // Load complaints on initial render
-   }, [ ]);
+    
  
    const fetchComplaints = async () => {
      try {
@@ -339,7 +334,7 @@
        <div className="flex">
          <button
            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-           onClick={fetchComplaints}
+           onClick={()=>fetchComplaints()}
          >
           {loading?"Filtering.....": "Apply Filters"}
          </button>

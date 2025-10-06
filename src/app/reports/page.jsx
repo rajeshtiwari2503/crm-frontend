@@ -357,6 +357,39 @@ let aging = `${agingDays}d`;
     // } else {
     //   edge = `${durationMinutes}m`;
     // }
+
+
+ // 🔑 Calculate aging per status
+ const statusAging = {};
+
+complaint.updateHistory?.forEach((update, index) => {
+  // Determine start and end of the period for this status
+  const prevDate = index === 0 
+    ? new Date(complaint.createdAt) 
+    : new Date(complaint.updateHistory[index - 1].updatedAt);
+  const currDate = new Date(update.updatedAt);
+
+  // Normalize dates to midnight
+  const temp = new Date(prevDate.setHours(0, 0, 0, 0));
+  const endTemp = new Date(currDate.setHours(0, 0, 0, 0));
+  endTemp.setDate(endTemp.getDate() - 1); // Exclude the closing day
+
+  // Count days excluding Sundays
+  let days = 0;
+  while (temp <= endTemp) {
+    if (temp.getDay() !== 0) days++; // Skip Sundays
+    temp.setDate(temp.getDate() + 1);
+  }
+
+  const status = update.changes?.status || "UNKNOWN";
+  statusAging[status] = (statusAging[status] || 0) + days;
+});
+
+console.log(statusAging);
+
+
+
+
 // 🔑 Build UpdateFullHistory string with date & details
   const updateFullHistory = complaint.updateHistory?.map(update => {
     const updatedAt = update.updatedAt
@@ -410,6 +443,7 @@ let aging = `${agingDays}d`;
         entry.changes?.status === "COMPLETED"
       )?.changes?.kilometer || " ",
       aging:aging ,// ⏳ Add the computed edge field to the exported row
+       agingPerStatus: JSON.stringify(statusAging),
       UpdateFullHistory: updateFullHistory ,
        assignedByEmp: assignedByEmp
     };
@@ -438,6 +472,7 @@ let aging = `${agingDays}d`;
     "serialNo",
     "purchaseDate",
     "aging" ,// ⏳ Include the edge (duration) field in Excel
+    "agingPerStatus",
     "assignServiceCenter", 
     "serviceCenterContact", 
     "assignTechnician", 

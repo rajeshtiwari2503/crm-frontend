@@ -227,13 +227,13 @@ const WarrantyDetails = ({ params }) => {
         printWindow.print();
     };
 
-const printA4Records = () => { 
-  const logoUrl = brand?.brandLogo || "/Logo.png";
-  const printWindow = window.open('', '', 'height=700,width=1100');
+    const printA4Records = () => {
+        const logoUrl = brand?.brandLogo || "/Logo.png";
+        const printWindow = window.open('', '', 'height=700,width=1100');
 
-  printWindow.document.write('<html><head><title>Print Warranty Records</title>');
-  printWindow.document.write('<style>');
-  printWindow.document.write(`
+        printWindow.document.write('<html><head><title>Print Warranty Records</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
     @page {
       size: 13cm 19cm;   /* ✅ force custom sheet size */
       margin: 0;         /* remove default printer margins */
@@ -277,16 +277,16 @@ const printA4Records = () => {
       .page-break { page-break-before: always; }
     }
   `);
-  printWindow.document.write('</style></head><body>');
+        printWindow.document.write('</style></head><body>');
 
-  const records = warranty?.records || [];
-  const itemsPerPage = 20; // 9 cols × 8 rows = 72 stickers
+        const records = warranty?.records || [];
+        const itemsPerPage = 20; // 9 cols × 8 rows = 72 stickers
 
-  for (let i = 0; i < records.length; i += itemsPerPage) {
-    printWindow.document.write('<div class="container">');
-    for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
-      const item = records[j];
-      printWindow.document.write(`
+        for (let i = 0; i < records.length; i += itemsPerPage) {
+            printWindow.document.write('<div class="container">');
+            for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
+                const item = records[j];
+                printWindow.document.write(`
         <div class="item">
           <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
           <div class="text-12">${warranty?.productName || 'Product Name'}</div>
@@ -301,18 +301,18 @@ const printA4Records = () => {
           <div class="font-bold text-12">Unique Code: ${item?.uniqueId || 'N/A'}</div>
         </div>
       `);
-    }
-    printWindow.document.write('</div>');
-    if (i + itemsPerPage < records.length) {
-      printWindow.document.write('<div class="page-break"></div>');
-    }
-  }
+            }
+            printWindow.document.write('</div>');
+            if (i + itemsPerPage < records.length) {
+                printWindow.document.write('<div class="page-break"></div>');
+            }
+        }
 
-  printWindow.document.write('</body></html>');
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-};
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
 
     const print5_11CmRecords1 = () => {
         const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
@@ -617,213 +617,400 @@ body {
         printWindow.focus();
         printWindow.print();
     };
- 
-//  const print13_19CmRecords = () => {
-//     const printWindow = window.open('', '', 'height=700,width=1100');
-
-//     printWindow.document.write('<html><head><title>Print Stickers</title>');
-//     printWindow.document.write('<style>');
-//     printWindow.document.write(`
-// @page {
-//     size: 13cm 19cm;
-//     margin: 2px 2px 4px 2px;
-// }
-
-// html, body {
-//     margin: 0;
-//     padding: 0;
-//     width: 13cm;
-//     height: 19cm;
-// }
-
-// body {
-//     display: grid;
-//    grid-template-columns: repeat(9, 1fr);  /* 9 equal columns */
-//   grid-template-rows: repeat(8, 1fr);     /* 8 equal rows */
-//     box-sizing: border-box;
-//     page-break-after: always;
-// }
-
-// .sticker {
-//     width: 100%;
-//     height: 100%;
-//     border: 1px solid #000; /* debug */
-//     display: flex;
-    
-//     flex-direction: column;
-//     box-sizing: border-box;
-// }
-
-// /* top = 2/3 of the cell */
-// .section-top {
-//     flex: 2;
-//     border-bottom: 1px dashed #aaa;
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     font-size: 6px;
-// }
-
-// /* bottom = 1/3 of the cell */
-// .section-bottom {
-//     flex: 1;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-// }
-
-// .section-top img,
-// .section-bottom img {
-//     width: 70%;
-//     height: 70%;
-//     object-fit: contain;
-// }
-
-// .font-bold { font-weight: bold; }
-// .text-small { font-size: 5px; }
-// .page-break { page-break-before: always; }
-//     `);
-//     printWindow.document.write('</style></head><body>');
-
-//     const records = warranty?.records || [];
-
-//     records.forEach((item, index) => {
-         
-//         if (index > 0 && index % 72 === 0) {
-//              printWindow.document.write('</body><div class="page-break"></div><body>');
-//         }
-
-//         printWindow.document.write(`
-//             <div class="sticker">
-//                 <!-- Top section -->
-//                 <div class="section-top">
-//                     <div class="font-bold">+91 ${brand?.tollfree}</div>
-//                     <div class="text-small">(10 AM - 6 PM)</div>
-//                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-//                 </div>
-//                 <!-- Bottom section -->
-//                 <div class="section-bottom">
-//                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-//                 </div>
-//             </div>
-//         `);
-//     });
-
-//     printWindow.document.write('</body></html>');
-//     printWindow.document.close();
-//     printWindow.focus();
-//     printWindow.print();
-// };
 
 
- const print13_19CmRecords = () => {
-  const printWindow = window.open('', '', 'height=700,width=1100');
+    //old
+    //  const print13_19CmRecords = () => {
+    //     const printWindow = window.open('', '', 'height=700,width=1100');
 
-  printWindow.document.write('<html><head><title>Print Stickers</title>');
-  printWindow.document.write('<style>');
-  printWindow.document.write(`
-@page {
-  size: 13cm 19cm;
-  margin: 2px 4px 10px 2px;
-}
+    //     printWindow.document.write('<html><head><title>Print Stickers</title>');
+    //     printWindow.document.write('<style>');
+    //     printWindow.document.write(`
+    // @page {
+    //     size: 13cm 19cm;
+    //     margin: 2px 2px 4px 2px;
+    // }
 
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 13cm;
-  height: 19cm;
-}
+    // html, body {
+    //     margin: 0;
+    //     padding: 0;
+    //     width: 13cm;
+    //     height: 19cm;
+    // }
 
-.sticker-sheet {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr); /* 9 columns */
-  grid-template-rows: repeat(8, 1fr);   /* 8 rows */
-  box-sizing: border-box;
-  page-break-after: always; /* force new page */
-}
+    // body {
+    //     display: grid;
+    //    grid-template-columns: repeat(9, 1fr);  /* 9 equal columns */
+    //   grid-template-rows: repeat(8, 1fr);     /* 8 equal rows */
+    //     box-sizing: border-box;
+    //     page-break-after: always;
+    // }
 
-.sticker-sheet:last-child {
-  page-break-after: auto; /* no blank page at end */
-}
+    // .sticker {
+    //     width: 100%;
+    //     height: 100%;
+    //     border: 1px solid #000; /* debug */
+    //     display: flex;
 
-.sticker {
-  width: 100%;
-  height: 100%;
-  border: 1px solid #000; /* debug */
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
+    //     flex-direction: column;
+    //     box-sizing: border-box;
+    // }
 
-.section-top {
-  flex: 2;
-  border-bottom: 1px dashed #aaa;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-size: 6px;
-}
+    // /* top = 2/3 of the cell */
+    // .section-top {
+    //     flex: 2;
+    //     border-bottom: 1px dashed #aaa;
+    //     display: flex;
+    //     flex-direction: column;
+    //     justify-content: center;
+    //     align-items: center;
+    //     font-size: 6px;
+    // }
 
-.section-bottom {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+    // /* bottom = 1/3 of the cell */
+    // .section-bottom {
+    //     flex: 1;
+    //     display: flex;
+    //     justify-content: center;
+    //     align-items: center;
+    // }
 
-.section-top img,
-.section-bottom img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
-}
+    // .section-top img,
+    // .section-bottom img {
+    //     width: 70%;
+    //     height: 70%;
+    //     object-fit: contain;
+    // }
 
-.font-bold { font-weight: bold; }
-.text-small { font-size: 5px; }
-  `);
-  printWindow.document.write('</style></head><body>');
+    // .font-bold { font-weight: bold; }
+    // .text-small { font-size: 5px; }
+    // .page-break { page-break-before: always; }
+    //     `);
+    //     printWindow.document.write('</style></head><body>');
 
-  const records = warranty?.records || [];
+    //     const records = warranty?.records || [];
 
-  // ✅ helper to chunk into pages of 72
-  function chunkArray(arr, size) {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
+    //     records.forEach((item, index) => {
+
+    //         if (index > 0 && index % 72 === 0) {
+    //              printWindow.document.write('</body><div class="page-break"></div><body>');
+    //         }
+
+    //         printWindow.document.write(`
+    //             <div class="sticker">
+    //                 <!-- Top section -->
+    //                 <div class="section-top">
+    //                     <div class="font-bold">+91 ${brand?.tollfree}</div>
+    //                     <div class="text-small">(10 AM - 6 PM)</div>
+    //                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //                 </div>
+    //                 <!-- Bottom section -->
+    //                 <div class="section-bottom">
+    //                     <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //                 </div>
+    //             </div>
+    //         `);
+    //     });
+
+    //     printWindow.document.write('</body></html>');
+    //     printWindow.document.close();
+    //     printWindow.focus();
+    //     printWindow.print();
+    // };
+
+    //11Oct2025
+
+
+    //  const print13_19CmRecords = () => {
+    //   const printWindow = window.open('', '', 'height=700,width=1100');
+
+    //   printWindow.document.write('<html><head><title>Print Stickers</title>');
+    //   printWindow.document.write('<style>');
+    //   printWindow.document.write(`
+    // @page {
+    //   size: 13cm 19cm;
+    //   margin: 2px 4px 10px 2px;
+    // }
+
+    // html, body {
+    //   margin: 0;
+    //   padding: 0;
+    //   width: 13cm;
+    //   height: 19cm;
+    // }
+
+    // .sticker-sheet {
+    //   display: grid;
+    //   grid-template-columns: repeat(9, 1fr); /* 9 columns */
+    //   grid-template-rows: repeat(8, 1fr);   /* 8 rows */
+    //   box-sizing: border-box;
+    //   page-break-after: always; /* force new page */
+    // }
+
+    // .sticker-sheet:last-child {
+    //   page-break-after: auto; /* no blank page at end */
+    // }
+
+    // .sticker {
+    //   width: 100%;
+    //   height: 100%;
+    //   border: 1px solid #000; /* debug */
+    //   display: flex;
+    //   flex-direction: column;
+    //   box-sizing: border-box;
+    // }
+
+    // .section-top {
+    //   flex: 2;
+    //   border-bottom: 1px dashed #aaa;
+    //   display: flex;
+    //   flex-direction: column;
+    //   justify-content: center;
+    //   align-items: center;
+    //   font-size: 6px;
+    // }
+
+    // .section-bottom {
+    //   flex: 1;
+    //   display: flex;
+    //   justify-content: center;
+    //   align-items: center;
+    // }
+
+    // .section-top img,
+    // .section-bottom img {
+    //   width: 70%;
+    //   height: 70%;
+    //   object-fit: contain;
+    // }
+
+    // .font-bold { font-weight: bold; }
+    // .text-small { font-size: 5px; }
+    //   `);
+    //   printWindow.document.write('</style></head><body>');
+
+    //   const records = warranty?.records || [];
+
+    //   // ✅ helper to chunk into pages of 72
+    //   function chunkArray(arr, size) {
+    //     const result = [];
+    //     for (let i = 0; i < arr.length; i += size) {
+    //       result.push(arr.slice(i, i + size));
+    //     }
+    //     return result;
+    //   }
+
+    //   const pages = chunkArray(records, 72);
+
+    //   pages.forEach((page) => {
+    //     printWindow.document.write('<div class="sticker-sheet">');
+
+    //     page.forEach((item) => {
+    //       printWindow.document.write(`
+    //         <div class="sticker">
+    //           <div class="section-top">
+    //             <div class="font-bold">+91 ${brand?.tollfree}</div>
+    //             <div class="text-small">(10 AM - 6 PM)</div>
+    //             <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //           </div>
+    //           <div class="section-bottom">
+    //             <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //           </div>
+    //         </div>
+    //       `);
+    //     });
+
+    //     printWindow.document.write('</div>'); // close sticker-sheet
+    //   });
+
+    //   printWindow.document.write('</body></html>');
+    //   printWindow.document.close();
+    //   printWindow.focus();
+    //   printWindow.print();
+    // };
+
+
+
+    const print13_19CmRecords = () => {
+        if (!warranty?.records?.length) {
+            alert("No records to print.");
+            return;
+        }
+
+        const printWindow = window.open('', '', 'height=700,width=1100');
+        printWindow.document.write('<html><head><title>Print Stickers</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+    @page {
+      size: 13cm 19cm;
+      margin: 2px 4px 10px 2px;
     }
-    return result;
-  }
 
-  const pages = chunkArray(records, 72);
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 13cm;
+      height: 19cm;
+    }
 
-  pages.forEach((page) => {
-    printWindow.document.write('<div class="sticker-sheet">');
+    .sticker-sheet {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      box-sizing: border-box;
+      page-break-after: always;
+    }
 
-    page.forEach((item) => {
-      printWindow.document.write(`
+    .sticker-sheet:last-child {
+      page-break-after: auto;
+    }
+
+    .sticker {
+      width: 100%;
+      height: 100%;
+      border: 1px solid #000;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    .section-top {
+      flex: 0 0 auto;
+      border-bottom: 1px dashed #aaa;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center; /* vertically center everything */
+      font-size: 6px;
+      margin: 2px 0;
+      gap: 10px; 
+      padding: 2px 0;
+    }
+
+    .section-bottom {
+      flex: 0 0 auto; 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2px 0;
+    }
+
+    .qr-column {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* top-align QR and uniqueId */
+      align-items: center;
+    }
+
+    .info-column {
+       width: 50px; /* same as QR column */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center; 
+     
+    }
+
+    .qr-container {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .qr-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    .unique-id {
+      font-size: 6px;
+      margin-top: 2px; /* minimal space under QR */
+      text-align: center;
+      line-height: 1;
+    }
+ .unique-id2 {
+      font-size: 6px;
+      margin-top: -3px; /* minimal space under QR */
+      text-align: center;
+      line-height: 1;
+    }
+    .text-small {
+      font-size: 5px;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .font-bold { font-weight: bold; }
+  `);
+        printWindow.document.write('</style></head><body>');
+
+        const records = warranty.records || [];
+
+        function chunkArray(arr, size) {
+            const result = [];
+            for (let i = 0; i < arr.length; i += size) {
+                result.push(arr.slice(i, i + size));
+            }
+            return result;
+        }
+
+        const pages = chunkArray(records, 48);
+
+        pages.forEach((page) => {
+            printWindow.document.write('<div class="sticker-sheet">');
+            page.forEach((item) => {
+                printWindow.document.write(`
         <div class="sticker">
+          <!-- Top Section -->
           <div class="section-top">
-            <div class="font-bold">+91 ${brand?.tollfree}</div>
-            <div class="text-small">(10 AM - 6 PM)</div>
-            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+            <!-- QR + uniqueId column -->
+            <div class="qr-column">
+              <div class="qr-container">
+                <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+              </div>
+            
+            </div>
+
+            <!-- Toll-free info column -->
+            <div class="  info-column">
+              <div class="text-small">+91 ${brand?.tollfree || ''}</div>
+              <div class="text-small">(10 AM - 6 PM)</div>
+                <div class="unique-id">${item?.uniqueId || ''}</div>
+            </div>
           </div>
+
+          <!-- Bottom Section -->
           <div class="section-bottom">
-            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+            <div class="qr-column">
+              <div class="qr-container">
+                <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+              </div>
+              <div class="unique-id2">${item?.uniqueId || ''}</div>
+            </div>
           </div>
         </div>
       `);
-    });
+            });
+            printWindow.document.write('</div>');
+        });
 
-    printWindow.document.write('</div>'); // close sticker-sheet
-  });
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
 
-  printWindow.document.write('</body></html>');
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-};
+
 
 
 

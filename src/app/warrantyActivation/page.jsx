@@ -684,18 +684,29 @@ const ActivateWarrantyButton = () => {
   }
 
   // Step 2: Find all subCategories with the same stickerPrice
-  const matchingSubCatIds = subCategories
-    .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
-    .map(sc => sc?._id);
+  // const matchingSubCatIds = 
+  // subCategories
+  //   .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
+  //   .map(sc => sc?._id);
+    
+  let matchingSubCatIds = [];
+
+const filteredSubs = subCategories?.filter(
+  (sc) => sc?.stickerPrice === mainSubCat?.stickerPrice
+);
+
+if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
+  matchingSubCatIds = filteredSubs.map((sc) => ({
+    _id: sc?._id,
+    subCategoryName: sc?.subCategoryName,
+  }));
+} else {
+  matchingSubCatIds = filteredSubs.map((sc) => sc?._id);
+}
 
   // console.log("Matching subCategory IDs:", matchingSubCatIds);
 
-  // Step 3: Filter products by brandId and matching subCategoryIds
-  const filteredProducts1 = product.filter(p => {
-    if (p.brandId !== filterWarranty?.brandId) return false;
-    if (!matchingSubCatIds.includes(p?.subCategoryId)) return false;
-    return true;
-  });
+ 
 
   // console.log("Filtered Products:", filteredProducts1);
 
@@ -705,7 +716,12 @@ const ActivateWarrantyButton = () => {
   //   if (!matchingSubCatIds.includes(p.subCategoryId)) return false;
   //   // return true;
   // }) : product?.filter((f) => f?.brandId === filterWarranty?.brandId)
+  const [selectedSubCategory, setSelectedSubCategory] = useState("");
 
+  // Handle select change
+  const handleSubCategoryChange = (e) => {
+    setSelectedSubCategory(e.target.value);
+  };
   const filterProductByBrand = product?.filter((p) => {
     // Brand must always match
     if (p.brandId !== filterWarranty?.brandId) return false;
@@ -713,6 +729,9 @@ const ActivateWarrantyButton = () => {
     // Special case: if brandId is "68a2fec108ab22c128f63b9f", 
     // then filter by matchingSubCatIds as well
     if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
+      if (selectedSubCategory) {
+        return p.subCategoryId === selectedSubCategory;
+      }
       return matchingSubCatIds.includes(p.subCategoryId);
     }
 
@@ -910,114 +929,142 @@ const ActivateWarrantyButton = () => {
                   </div>
                 </div>
                */}
-              {filterWarranty?.isActivated ? (
-  <>
-    {filterWarranty?.status === "PENDING" ? (
-      // 🟡 Show pending card
-      <div className="flex items-start mt-5 gap-3 p-4 bg-yellow-50 border border-yellow-300 rounded-md text-yellow-700 shadow-sm">
-        <span className="text-xl">⏳</span>
-        <div>
-          <h3 className="font-semibold">Warranty Pending</h3>
-          <p className="text-sm">
-            Your warranty activation request has been submitted and is awaiting admin approval. 
-            Please check back later.
-          </p>
-        </div>
-      </div>
-    ) : filterWarranty?.status === "APPROVE" ? (
-      // 🟢 Approved → show dashboard/complaint actions
-      <div>
-         <div className="flex mt-5 items-start gap-3 p-4 bg-green-50 border border-green-300 rounded-md text-green-700 shadow-sm">
-        <span className="text-xl">✅</span>
-        <div>
-          <h3 className="font-semibold">Warranty Approved</h3>
-          <p className="text-sm">
-            Congratulations! Your warranty has been approved successfully.
-          </p>
-        </div>
-      </div>
-        <div className="mb-5 mt-5">
-          <label htmlFor="contact" className="block text-gray-700">Contact:</label>
-          <input
-            id="contact"
-            type="text"
-            value={contactNo}
-            onChange={(e) => setContactNo(e.target.value)}
-            placeholder="Please enter your registered number"
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
-          {errors.contact && (
-            <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>
-          )}
-        </div>
+            {filterWarranty?.isActivated ? (
+              <>
+                {filterWarranty?.status === "PENDING" ? (
+                  // 🟡 Show pending card
+                  <div className="flex items-start mt-5 gap-3 p-4 bg-yellow-50 border border-yellow-300 rounded-md text-yellow-700 shadow-sm">
+                    <span className="text-xl">⏳</span>
+                    <div>
+                      <h3 className="font-semibold">Warranty Pending</h3>
+                      <p className="text-sm">
+                        Your warranty activation request has been submitted and is awaiting admin approval.
+                        Please check back later.
+                      </p>
+                    </div>
+                  </div>
+                ) : filterWarranty?.status === "APPROVE" ? (
+                  // 🟢 Approved → show dashboard/complaint actions
+                  <div>
+                    <div className="flex mt-5 items-start gap-3 p-4 bg-green-50 border border-green-300 rounded-md text-green-700 shadow-sm">
+                      <span className="text-xl">✅</span>
+                      <div>
+                        <h3 className="font-semibold">Warranty Approved</h3>
+                        <p className="text-sm">
+                          Congratulations! Your warranty has been approved successfully.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mb-5 mt-5">
+                      <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+                      <input
+                        id="contact"
+                        type="text"
+                        value={contactNo}
+                        onChange={(e) => setContactNo(e.target.value)}
+                        placeholder="Please enter your registered number"
+                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                      />
+                      {errors.contact && (
+                        <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>
+                      )}
+                    </div>
 
-        <div className="flex justify-between gap-3">
-          <button
-            onClick={() => handleDashboard(filterWarranty?.userId)}
-            className="flex-1 bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-          >
-            Go Dashboard
-          </button>
+                    <div className="flex justify-between gap-3">
+                      <button
+                        onClick={() => handleDashboard(filterWarranty?.userId)}
+                        className="flex-1 bg-green-500 text-white p-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+                      >
+                        Go Dashboard
+                      </button>
 
-          <button
-            onClick={handleComplaint}
-            className="flex-1 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
-          >
-            Create Complaint
-          </button>
-        </div>
-      </div>
-    ) : filterWarranty?.status === "DISAPPROVE" ? (
-      // 🔴 Disapproved
-      <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-300 rounded-md text-red-700 shadow-sm">
-        <span className="text-xl">❌</span>
-        <div>
-          <h3 className="font-semibold">Warranty Disapproved</h3>
-          <p className="text-sm">
-            Unfortunately, your warranty request has been rejected. Please contact support.
-          </p>
-        </div>
-      </div>
-    ) : null}
-  </>
-)
+                      <button
+                        onClick={handleComplaint}
+                        className="flex-1 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                      >
+                        Create Complaint
+                      </button>
+                    </div>
+                  </div>
+                ) : filterWarranty?.status === "DISAPPROVE" ? (
+                  // 🔴 Disapproved
+                  <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-300 rounded-md text-red-700 shadow-sm">
+                    <span className="text-xl">❌</span>
+                    <div>
+                      <h3 className="font-semibold">Warranty Disapproved</h3>
+                      <p className="text-sm">
+                        Unfortunately, your warranty request has been rejected. Please contact support.
+                      </p>
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            )
               :
               <div>
                 {/* <h2 className="text-xl font-semibold mb-4 mt-5  text-gray-800">Activate Warranty</h2> */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 
                   {filterWarranty?.isActivated === false && !filterWarranty?.productId ?
-                    <div className='mt-5'>
-                      <label className="block text-sm font-medium text-gray-700">
-                        Product Name
-                      </label>
-                      <select
-                        id="productName"
-                        // {...register("productName", {
-                        //   required: "Please select a product",
-                        // })}
-                        onChange={handleProductChange}
-                        defaultValue=""
-                        className={`mt-1 block w-full px-3 text-black py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? "border-red-500" : ""
-                          }`}
-                      >
-                        <option value="" disabled>
-                          Select a product
-                        </option>
-                        {filterProductByBrand?.map((prod) => (
-                          <option key={prod._id} value={prod._id}>
-                            {prod.productName}
+                    <>
+                     {filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ?
+                      <div className="mt-5">
+                        <label className="block text-sm font-medium text-gray-700">
+                          Category
+                        </label>
+                        <select
+                          id="category"
+                          {...register("category", { required: "Please select a category" })}
+                          onChange={handleSubCategoryChange}
+                          defaultValue=""
+                          className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.category ? "border-red-500" : ""
+                            }`}
+                        >
+                          <option value="" disabled>
+                            Select a category
                           </option>
-                        ))}
-                      </select>
+                          {matchingSubCatIds?.map((cat) => (
+                            <option key={cat._id} value={cat._id}>
+                              {cat.subCategoryName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      :""
+                        }
+                      <div className='mt-5'>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Product Name
+                        </label>
+                        <select
+                          id="productName"
+                          // {...register("productName", {
+                          //   required: "Please select a product",
+                          // })}
+                          onChange={handleProductChange}
+                          defaultValue=""
+                          className={`mt-1 block w-full px-3 text-black py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? "border-red-500" : ""
+                            }`}
+                        >
+                          <option value="" disabled>
+                            Select a product
+                          </option>
+                          {filterProductByBrand?.map((prod) => (
+                            <option key={prod._id} value={prod._id}>
+                              {prod.productName}
+                            </option>
+                          ))}
+                        </select>
 
-                      {productID === "" &&
-                        <p className="text-red-500 text-sm text-center mt-1">
-                          {"Please Select Product Model"}
-                        </p>
-                      }
-                    </div>
+                        {productID === "" &&
+                          <p className="text-red-500 text-sm text-center mt-1">
+                            {"Please Select Product Model"}
+                          </p>
+                        }
+                      </div>
+                    </>
                     : ""
+
                   }
                   <div className='mt-5'>
                     <label htmlFor="name" className="block text-gray-700">Full Name:</label>

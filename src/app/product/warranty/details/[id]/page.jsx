@@ -843,21 +843,25 @@ body {
         printWindow.document.write(`
     @page {
       size: 13cm 19cm;
-      margin: 2px 4px 10px 2px;
+      margin: 2mm;
     }
-
     html, body {
       margin: 0;
       padding: 0;
       width: 13cm;
       height: 19cm;
+      
     }
 
+    /* === Each page grid === */
     .sticker-sheet {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      grid-template-rows: repeat(8, 1fr);
-      box-sizing: border-box;
+      grid-template-columns: repeat(2, 3in); /* each sticker 3in wide */
+      grid-template-rows: repeat(8, 1in);   /* each sticker 1in tall */
+      gap: 2mm;
+      width: 13cm;
+      height: 19cm;
+      
       page-break-after: always;
     }
 
@@ -865,139 +869,146 @@ body {
       page-break-after: auto;
     }
 
+    /* === Sticker === */
     .sticker {
-      width: 100%;
-      height: 100%;
-      border: 1px solid #000;
-      display: flex;
-      flex-direction: column;
-      box-sizing: border-box;
-    }
-
-    .section-top {
-      flex: 0 0 auto;
-      border-bottom: 1px dashed #aaa;
+      width: 3in;
+      height: 1in;
+      border: 0.25mm solid #000;
       display: flex;
       flex-direction: row;
-      justify-content: center;
-      align-items: center; /* vertically center everything */
-      font-size: 6px;
-      margin: 2px 0;
-      gap: 10px; 
-      padding: 2px 0;
-    }
-
-    .section-bottom {
-      flex: 0 0 auto; 
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      padding: 2px 0;
-    }
-
-    .qr-column {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start; /* top-align QR and uniqueId */
-      align-items: center;
-    }
-
-    .info-column {
-       width: 50px; /* same as QR column */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center; 
      
     }
 
-    .qr-container {
-      width: 50px;
-      height: 50px;
+    /* === Left section (2in × 1in) === */
+    .section-left {
+      width: 2in;
+      height: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-right: 0.2mm dashed #aaa;
+     
+    }
+
+    /* Inside left section (50/50 split for QR + info) */
+    .section-left-inner {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+    }
+
+    .qr-half {
+      width: 50%;
+      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0;
+    }
+
+    .info-half {
+      width: 50%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    /* === Right section (1in × 1in) === */
+    .section-right {
+      width: 1in;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      
+    }
+
+    /* === QR styling === */
+    .qr-container {
+      width: 0.7in;
+      height: 0.7in;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .qr-container img {
-      max-width: 100%;
-      max-height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: contain;
       display: block;
+    }
+
+    /* === Text === */
+    .text-small {
+      font-size: 8px;
       margin: 0;
       padding: 0;
+      text-align: center;
+      line-height: 1.1;
     }
 
     .unique-id {
-      font-size: 6px;
-      margin-top: 2px; /* minimal space under QR */
+      font-size: 8px;
+      font-weight: bold;
       text-align: center;
       line-height: 1;
     }
- .unique-id2 {
-      font-size: 6px;
-      margin-top: -3px; /* minimal space under QR */
-      text-align: center;
-      line-height: 1;
-    }
-    .text-small {
-      font-size: 5px;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      line-height: 1;
-    }
-
-    .font-bold { font-weight: bold; }
   `);
         printWindow.document.write('</style></head><body>');
 
         const records = warranty.records || [];
 
-        function chunkArray(arr, size) {
+        // Split array into pages of 12 stickers (2 columns × 6 rows)
+        const chunkArray = (arr, size) => {
             const result = [];
             for (let i = 0; i < arr.length; i += size) {
                 result.push(arr.slice(i, i + size));
             }
             return result;
-        }
+        };
 
-        const pages = chunkArray(records, 48);
+        const pages = chunkArray(records, 16);
 
         pages.forEach((page) => {
             printWindow.document.write('<div class="sticker-sheet">');
             page.forEach((item) => {
                 printWindow.document.write(`
         <div class="sticker">
-          <!-- Top Section -->
-          <div class="section-top">
-            <!-- QR + uniqueId column -->
-            <div class="qr-column">
-              <div class="qr-container">
-                <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-              </div>
-            
-            </div>
 
-            <!-- Toll-free info column -->
-            <div class="  info-column">
-              <div class="text-small">+91 ${brand?.tollfree || ''}</div>
-              <div class="text-small">(10 AM - 6 PM)</div>
+          <!-- Left Section (2in × 1in) -->
+          <div class="section-left">
+            <div class="section-left-inner">
+              <!-- QR (left half) -->
+              <div class="qr-half">
+                <div class="qr-container">
+                  <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+                </div>
+              </div>
+              <!-- Info (right half) -->
+              <div class="info-half">
+                <div class="text-small">+91 ${brand?.tollfree || ''}</div>
+                <div class="text-small">(10 AM - 6 PM)</div>
                 <div class="unique-id">${item?.uniqueId || ''}</div>
+              </div>
             </div>
           </div>
 
-          <!-- Bottom Section -->
-          <div class="section-bottom">
-            <div class="qr-column">
-              <div class="qr-container">
-                <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
-              </div>
-              <div class="unique-id2">${item?.uniqueId || ''}</div>
+          <!-- Right Section (1in × 1in) -->
+          <div class="section-right">
+            <div class="qr-container">
+              <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
             </div>
+            <div class="unique-id">${item?.uniqueId || ''}</div>
           </div>
+
         </div>
       `);
             });
@@ -1012,14 +1023,12 @@ body {
 
 
 
+    const updatedFiltRecord = {
+        ...filtRecord,
 
-
-
-
-
-
-
-
+        productId: filtRecord.productId || filtRecord.records?.[0]?.productId,
+        productName: brand.productName || filtRecord.records?.[0]?.productName,
+    };
 
 
 
@@ -1106,9 +1115,20 @@ body {
                             Print
                         </button>
                     )
+                        : 
+                            ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.brandId) &&
+                                ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.productId) ? (
+                                <button
+                                    onClick={print13_19CmRecords}
+                                    className="mt-5 p-2 bg-blue-500 text-white rounded"
+                                >
+                                    Print
+                                </button>
+                            )  
+
                         : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                            Print Records
-                        </button>)
+                        Print Records
+                    </button>)
                     }
 
                     <div className='font-bold mt-5'>Generated QR codes</div>

@@ -688,25 +688,25 @@ const ActivateWarrantyButton = () => {
   // subCategories
   //   .filter(sc => sc?.stickerPrice === mainSubCat?.stickerPrice)
   //   .map(sc => sc?._id);
-    
+
   let matchingSubCatIds = [];
 
-const filteredSubs = subCategories?.filter(
-  (sc) => sc?.stickerPrice === mainSubCat?.stickerPrice
-);
+  const filteredSubs = subCategories?.filter(
+    (sc) => sc?.stickerPrice === mainSubCat?.stickerPrice
+  );
 
-if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
-  matchingSubCatIds = filteredSubs.map((sc) => ({
-    _id: sc?._id,
-    subCategoryName: sc?.subCategoryName,
-  }));
-} else {
-  matchingSubCatIds = filteredSubs.map((sc) => sc?._id);
-}
+  if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
+    matchingSubCatIds = filteredSubs.map((sc) => ({
+      _id: sc?._id,
+      subCategoryName: sc?.subCategoryName,
+    }));
+  } else {
+    matchingSubCatIds = filteredSubs.map((sc) => sc?._id);
+  }
 
   // console.log("Matching subCategory IDs:", matchingSubCatIds);
 
- 
+
 
   // console.log("Filtered Products:", filteredProducts1);
 
@@ -832,7 +832,7 @@ if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
     }
   }
 
-  // console.log(filterWarranty)
+  console.log("filterWarranty", filterWarranty)
 
   return (
     <>
@@ -845,7 +845,11 @@ if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
           <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
             <div className="flex justify-center mb-3 ">
               <img
-                src="/Logo.png" // Replace with actual logo path
+                src={users?._id === "687b60524784729ee719776e"
+                  ? (users?.brandLogo || "/Logo.png")
+                  : "/Logo.png"}
+
+
                 alt="Servsy Logo"
                 className="h-16 w-auto rounded-md" // Adjust size as needed
               />
@@ -1007,31 +1011,31 @@ if (filterWarranty?.brandId === "68a2fec108ab22c128f63b9f") {
 
                   {filterWarranty?.isActivated === false && !filterWarranty?.productId ?
                     <>
-                     {filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ?
-                      <div className="mt-5">
-                        <label className="block text-sm font-medium text-gray-700">
-                          Category
-                        </label>
-                        <select
-                          id="category"
-                          {...register("category", { required: "Please select a category" })}
-                          onChange={handleSubCategoryChange}
-                          defaultValue=""
-                          className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.category ? "border-red-500" : ""
-                            }`}
-                        >
-                          <option value="" disabled>
-                            Select a category
-                          </option>
-                          {matchingSubCatIds?.map((cat) => (
-                            <option key={cat._id} value={cat._id}>
-                              {cat.subCategoryName}
+                      {filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ?
+                        <div className="mt-5">
+                          <label className="block text-sm font-medium text-gray-700">
+                            Category
+                          </label>
+                          <select
+                            id="category"
+                            {...register("category", { required: "Please select a category" })}
+                            onChange={handleSubCategoryChange}
+                            defaultValue=""
+                            className={`mt-1 block w-full px-3 py-2 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.category ? "border-red-500" : ""
+                              }`}
+                          >
+                            <option value="" disabled>
+                              Select a category
                             </option>
-                          ))}
-                        </select>
-                      </div>
-                      :""
-                        }
+                            {matchingSubCatIds?.map((cat) => (
+                              <option key={cat._id} value={cat._id}>
+                                {cat.subCategoryName}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        : ""
+                      }
                       <div className='mt-5'>
                         <label className="block text-sm font-medium text-gray-700">
                           Product Name

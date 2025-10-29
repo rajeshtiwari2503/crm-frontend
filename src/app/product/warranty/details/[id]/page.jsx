@@ -864,7 +864,7 @@ body {
 
     const filtersubCategories = subCategories?.find((f) => f?._id === updatedFiltRecord?.subCategoryId)
 
-    // console.log("filtersubCategories", filtersubCategories);
+    console.log("filtersubCategories", filtersubCategories);
     // console.log("filtRecord", filtRecord);
     //  const print13_19CmRecords = () => {
     //         if (!warranty?.records?.length) {
@@ -1057,17 +1057,17 @@ body {
     //         printWindow.print();
     //     };
 
- 
-    const print13_19CmRecords = () => {
-  if (!warranty?.records?.length) {
-    alert("No records to print.");
-    return;
-  }
 
-  const printWindow = window.open("", "", "height=800,width=1100");
-  printWindow.document.write("<html><head><title>Print Stickers</title>");
-  printWindow.document.write("<style>");
-  printWindow.document.write(`
+    const print13_19CmRecords = () => {
+        if (!warranty?.records?.length) {
+            alert("No records to print.");
+            return;
+        }
+
+        const printWindow = window.open("", "", "height=800,width=1100");
+        printWindow.document.write("<html><head><title>Print Stickers</title>");
+        printWindow.document.write("<style>");
+        printWindow.document.write(`
     /* === Page Setup === */
     @page {
       size: 13in 19in; /* exact sticker sheet size */
@@ -1198,29 +1198,42 @@ body {
       margin-bottom: 1px;
     }
   `);
-  printWindow.document.write("</style></head><body>");
+        printWindow.document.write("</style></head><body>");
 
-  const records = warranty.records || [];
+        const records = warranty.records || [];
 
-  // ✅ Split into pages of 72 stickers (6×12)
-  const chunkArray = (arr, size) => {
-    const result = [];
-    for (let i = 0; i < arr.length; i += size) {
-      result.push(arr.slice(i, i + size));
-    }
-    return result;
-  };
+        // ✅ Split into pages of 72 stickers (6×12)
+        const chunkArray = (arr, size) => {
+            const result = [];
+            for (let i = 0; i < arr.length; i += size) {
+                result.push(arr.slice(i, i + size));
+            }
+            return result;
+        };
 
-  const pages = chunkArray(records, 72);
+        const pages = chunkArray(records, 72);
 
-  pages.forEach((page) => {
-    printWindow.document.write('<div class="sticker-sheet">');
-    page.forEach((item) => {
-      const price = filtersubCategories?.stickerPrice;
-      const priceLabel =
-        price === "15" ? "(HA)" : price === "30" ? "(CF)" : price === "50" ? "(GR)" : "";
+        pages.forEach((page) => {
+            printWindow.document.write('<div class="sticker-sheet">');
+            page.forEach((item) => {
+                //   const price = filtersubCategories?.stickerPrice;
+                //   const priceLabel =
+                //     price === "15" ? "(HA)" : price === "30" ? "(CF)" : price === "50" ? "(GR)" : "";
+                const price = filtersubCategories?.stickerPrice;
+                const subCategoryName = filtersubCategories?.subCategoryName;
 
-      printWindow.document.write(`
+                let priceLabel = "";
+                if (price === "15") {
+                    priceLabel = "(FH)";
+                } else if (price === "30" && subCategoryName === "HC CEILING FAN") {
+                    priceLabel = "CF (ceil fan)";
+                } else if (price === "30") {
+                    priceLabel = "(HA)";
+                } else if (price === "50") {
+                    priceLabel = "(GR)";
+                }
+
+                printWindow.document.write(`
         <div class="sticker">
           <!-- Left -->
           <div class="section-left">
@@ -1248,15 +1261,15 @@ body {
           </div>
         </div>
       `);
-    });
-    printWindow.document.write("</div>");
-  });
+            });
+            printWindow.document.write("</div>");
+        });
 
-  printWindow.document.write("</body></html>");
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-};
+        printWindow.document.write("</body></html>");
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
 
 
 
@@ -1329,12 +1342,13 @@ body {
                                 <div>
                                     {filtersubCategories?.stickerPrice}{" "}
                                     {filtersubCategories?.stickerPrice === "15"
-                                        ? "(HA)"
-                                        : filtersubCategories?.stickerPrice === "30"
-                                            ? "(CF)"
-                                            : filtersubCategories?.stickerPrice === "50"
-                                                ? "(GR)"
-                                                : ""}
+                                        ? "(FH)"
+                                        : filtersubCategories?.stickerPrice === "30" && filtersubCategories?.subCategoryName === "HC CEILING FAN" ? " CF (ceil fan)"
+                                            : filtersubCategories?.stickerPrice === "30"
+                                                ? "(HA)"
+                                                : filtersubCategories?.stickerPrice === "50"
+                                                    ? "(GR)"
+                                                    : ""}
                                 </div>
                             </>
                         )}

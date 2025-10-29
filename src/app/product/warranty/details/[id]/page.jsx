@@ -20,6 +20,7 @@ const WarrantyDetails = ({ params }) => {
     const [result, setResult] = useState(null);
 
     const [error, setError] = useState("");
+    const [subCategories, setSubCategories] = useState([])
 
     const handleSearch = async () => {
         if (!uniqueId.trim()) {
@@ -61,8 +62,25 @@ const WarrantyDetails = ({ params }) => {
 
     useEffect(() => {
         getWarranty()
-
+        getAllSubCategories()
     }, []);
+
+
+    const getAllSubCategories = async () => {
+        try {
+            setLoading(true); // start loading
+            const response = await http_request.get("/getAllSubCategory"); // fixed endpoint
+            setSubCategories(response.data);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            setLoading(false); // stop loading
+        }
+    };
+
+
+
+
     useEffect(() => {
 
         if (warranty) {
@@ -831,69 +849,284 @@ body {
 
 
 
-    const print13_19CmRecords = () => {
-        if (!warranty?.records?.length) {
-            alert("No records to print.");
-            return;
-        }
 
-        const printWindow = window.open('', '', 'height=700,width=1100');
-        printWindow.document.write('<html><head><title>Print Stickers</title>');
-        printWindow.document.write('<style>');
-        printWindow.document.write(`
+
+
+
+    const updatedFiltRecord = {
+        ...filtRecord,
+
+        productId: filtRecord.productId || filtRecord.records?.[0]?.productId,
+        productName: brand.productName || filtRecord.records?.[0]?.productName,
+        subCategoryId: filtRecord.records?.[0]?.subCategoryId,
+    };
+
+
+    const filtersubCategories = subCategories?.find((f) => f?._id === updatedFiltRecord?.subCategoryId)
+
+    // console.log("filtersubCategories", filtersubCategories);
+    // console.log("filtRecord", filtRecord);
+    //  const print13_19CmRecords = () => {
+    //         if (!warranty?.records?.length) {
+    //             alert("No records to print.");
+    //             return;
+    //         }
+
+    //         const printWindow = window.open('', '', 'height=700,width=1100');
+    //         printWindow.document.write('<html><head><title>Print Stickers</title>');
+    //         printWindow.document.write('<style>');
+    //         printWindow.document.write(`
+    //     @page {
+    //       size: 13cm 19cm;
+    //       margin: 2mm;
+    //     }
+    //     html, body {
+    //       margin: 0;
+    //       padding: 0;
+    //       width: 13cm;
+    //       height: 19cm;
+
+    //     }
+
+    //     /* === Each page grid === */
+    //     .sticker-sheet {
+    //       display: grid;
+    //       grid-template-columns: repeat(2, 3in); /* each sticker 3in wide */
+    //       grid-template-rows: repeat(8, 1in);   /* each sticker 1in tall */
+    //       gap: 2mm;
+    //       width: 13cm;
+    //       height: 19cm;
+
+    //       page-break-after: always;
+    //     }
+
+    //     .sticker-sheet:last-child {
+    //       page-break-after: auto;
+    //     }
+
+    //     /* === Sticker === */
+    //     .sticker {
+    //       width: 3in;
+    //       height: 1in;
+    //       border: 0.25mm solid #000;
+    //       display: flex;
+    //       flex-direction: row;
+    //       justify-content: space-between;
+    //       align-items: center;
+
+    //     }
+
+    //     /* === Left section (2in × 1in) === */
+    //     .section-left {
+    //       width: 2in;
+    //       height: 100%;
+    //       display: flex;
+    //       flex-direction: row;
+    //       justify-content: space-between;
+    //       align-items: center;
+    //       border-right: 0.2mm dashed #aaa;
+
+    //     }
+
+    //     /* Inside left section (50/50 split for QR + info) */
+    //     .section-left-inner {
+    //       display: flex;
+    //       flex-direction: row;
+    //       width: 100%;
+    //       height: 100%;
+    //     }
+
+    //     .qr-half {
+    //       width: 50%;
+    //       height: 100%;
+    //       display: flex;
+    //       justify-content: center;
+    //       align-items: center;
+    //     }
+
+    //     .info-half {
+    //       width: 50%;
+    //       height: 100%;
+    //       display: flex;
+    //       flex-direction: column;
+    //       justify-content: center;
+    //       align-items: center;
+    //       text-align: center;
+    //     }
+
+    //     /* === Right section (1in × 1in) === */
+    //     .section-right {
+    //       width: 1in;
+    //       height: 100%;
+    //       display: flex;
+    //       flex-direction: column;
+    //       justify-content: center;
+    //       align-items: center;
+
+    //     }
+
+    //     /* === QR styling === */
+    //     .qr-container {
+    //       width: 0.7in;
+    //       height: 0.7in;
+    //       display: flex;
+    //       justify-content: center;
+    //       align-items: center;
+    //     }
+
+    //     .qr-container img {
+    //       width: 100%;
+    //       height: 100%;
+    //       object-fit: contain;
+    //       display: block;
+    //     }
+
+    //     /* === Text === */
+    //     .text-small {
+    //       font-size: 8px;
+    //       margin: 0;
+    //       padding: 0;
+    //       text-align: center;
+    //       line-height: 1.1;
+    //     }
+
+    //     .unique-id {
+    //       font-size: 8px;
+    //       font-weight: bold;
+    //       text-align: center;
+    //       line-height: 1;
+    //     }
+    //   `);
+    //         printWindow.document.write('</style></head><body>');
+
+    //         const records = warranty.records || [];
+
+    //         // Split array into pages of 12 stickers (2 columns × 6 rows)
+    //         const chunkArray = (arr, size) => {
+    //             const result = [];
+    //             for (let i = 0; i < arr.length; i += size) {
+    //                 result.push(arr.slice(i, i + size));
+    //             }
+    //             return result;
+    //         };
+
+    //         const pages = chunkArray(records, 16);
+
+    //         pages.forEach((page) => {
+    //             printWindow.document.write('<div class="sticker-sheet">');
+    //             page.forEach((item) => {
+    //                 printWindow.document.write(`
+    //         <div class="sticker">
+
+    //           <!-- Left Section (2in × 1in) -->
+    //           <div class="section-left">
+    //             <div class="section-left-inner">
+    //               <!-- QR (left half) -->
+    //               <div class="qr-half">
+    //                 <div class="qr-container">
+    //                   <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //                 </div>
+    //               </div>
+    //               <!-- Info (right half) -->
+    //               <div class="info-half">
+
+    //                 <div class="text-small">+91 ${brand?.tollfree || ''}</div>
+    //                 <div class="text-small">(10 AM - 6 PM)</div>
+    //                 <div class="unique-id">${item?.uniqueId || ''}</div>
+    //               </div>
+    //             </div>
+    //           </div>
+
+    //           <!-- Right Section (1in × 1in) -->
+    //           <div class="section-right">
+    //             <div class="qr-container">
+    //               <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+    //             </div>
+    //             <div class="unique-id">${item?.uniqueId || ''}</div>
+    //           </div>
+
+    //         </div>
+    //       `);
+    //             });
+    //             printWindow.document.write('</div>');
+    //         });
+
+    //         printWindow.document.write('</body></html>');
+    //         printWindow.document.close();
+    //         printWindow.focus();
+    //         printWindow.print();
+    //     };
+
+ 
+    const print13_19CmRecords = () => {
+  if (!warranty?.records?.length) {
+    alert("No records to print.");
+    return;
+  }
+
+  const printWindow = window.open("", "", "height=800,width=1100");
+  printWindow.document.write("<html><head><title>Print Stickers</title>");
+  printWindow.document.write("<style>");
+  printWindow.document.write(`
+    /* === Page Setup === */
     @page {
-      size: 13cm 19cm;
-      margin: 2mm;
+      size: 13in 19in; /* exact sticker sheet size */
+      margin: 0;
     }
+
     html, body {
+      width: 13in;
+      height: 19in;
       margin: 0;
       padding: 0;
-      width: 13cm;
-      height: 19cm;
-      
+      box-sizing: border-box;
+      background: #fff;
     }
 
-    /* === Each page grid === */
+    /* === Sticker grid (6 columns × 12 rows = 72 total) === */
     .sticker-sheet {
       display: grid;
-      grid-template-columns: repeat(2, 3in); /* each sticker 3in wide */
-      grid-template-rows: repeat(8, 1in);   /* each sticker 1in tall */
-      gap: 2mm;
-      width: 13cm;
-      height: 19cm;
-      
+      grid-template-columns: repeat(6, 1fr);
+      grid-template-rows: repeat(12, 1fr);
+      width: 13in;
+      height: 19in;
+      padding: 0.15in; /* small margin inside sheet */
+      gap: 0.05in;     /* space between stickers */
       page-break-after: always;
+      box-sizing: border-box;
     }
 
     .sticker-sheet:last-child {
       page-break-after: auto;
     }
 
-    /* === Sticker === */
+    /* === Sticker (auto-fit each grid cell) === */
     .sticker {
-      width: 3in;
-      height: 1in;
       border: 0.25mm solid #000;
+      border-radius: 0.5mm;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-     
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 0.05in;
+       margin: 20px 0px;
     }
 
-    /* === Left section (2in × 1in) === */
+    /* === Left section (2/3 width) === */
     .section-left {
-      width: 2in;
+      flex: 2;
       height: 100%;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      border-right: 0.2mm dashed #aaa;
-     
+      border-right: 0.2mm dashed #888;
+      padding-right: 0.05in;
+      box-sizing: border-box;
     }
 
-    /* Inside left section (50/50 split for QR + info) */
     .section-left-inner {
       display: flex;
       flex-direction: row;
@@ -903,7 +1136,6 @@ body {
 
     .qr-half {
       width: 50%;
-      height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -911,29 +1143,28 @@ body {
 
     .info-half {
       width: 50%;
-      height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
+      font-family: Arial, sans-serif;
     }
 
-    /* === Right section (1in × 1in) === */
+    /* === Right section (1/3 width) === */
     .section-right {
-      width: 1in;
+      flex: 1;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      
     }
 
-    /* === QR styling === */
+    /* === QR Container === */
     .qr-container {
-      width: 0.7in;
-      height: 0.7in;
+      width: 0.5in;
+      height: 0.5in;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -946,99 +1177,98 @@ body {
       display: block;
     }
 
-    /* === Text === */
+    /* === Text Styles === */
     .text-small {
-      font-size: 8px;
+      font-size: 7px;
+      line-height: 1.1;
       margin: 0;
       padding: 0;
-      text-align: center;
-      line-height: 1.1;
     }
 
     .unique-id {
-      font-size: 8px;
+      font-size: 7px;
       font-weight: bold;
-      text-align: center;
+      margin-top: 1px;
       line-height: 1;
     }
+
+    .price-label {
+      font-size: 8px;
+      font-weight: bold;
+      margin-bottom: 1px;
+    }
   `);
-        printWindow.document.write('</style></head><body>');
+  printWindow.document.write("</style></head><body>");
 
-        const records = warranty.records || [];
+  const records = warranty.records || [];
 
-        // Split array into pages of 12 stickers (2 columns × 6 rows)
-        const chunkArray = (arr, size) => {
-            const result = [];
-            for (let i = 0; i < arr.length; i += size) {
-                result.push(arr.slice(i, i + size));
-            }
-            return result;
-        };
+  // ✅ Split into pages of 72 stickers (6×12)
+  const chunkArray = (arr, size) => {
+    const result = [];
+    for (let i = 0; i < arr.length; i += size) {
+      result.push(arr.slice(i, i + size));
+    }
+    return result;
+  };
 
-        const pages = chunkArray(records, 16);
+  const pages = chunkArray(records, 72);
 
-        pages.forEach((page) => {
-            printWindow.document.write('<div class="sticker-sheet">');
-            page.forEach((item) => {
-                printWindow.document.write(`
+  pages.forEach((page) => {
+    printWindow.document.write('<div class="sticker-sheet">');
+    page.forEach((item) => {
+      const price = filtersubCategories?.stickerPrice;
+      const priceLabel =
+        price === "15" ? "(HA)" : price === "30" ? "(CF)" : price === "50" ? "(GR)" : "";
+
+      printWindow.document.write(`
         <div class="sticker">
-
-          <!-- Left Section (2in × 1in) -->
+          <!-- Left -->
           <div class="section-left">
             <div class="section-left-inner">
-              <!-- QR (left half) -->
               <div class="qr-half">
                 <div class="qr-container">
-                  <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+                  <img src="${item?.qrCodes?.[0]?.qrCodeUrl || "/placeholder.png"}" />
                 </div>
               </div>
-              <!-- Info (right half) -->
               <div class="info-half">
-                <div class="text-small">+91 ${brand?.tollfree || ''}</div>
+                <div class="price-label">  ${priceLabel}</div>
+                <div class="text-small">+91 ${brand?.tollfree || ""}</div>
                 <div class="text-small">(10 AM - 6 PM)</div>
-                <div class="unique-id">${item?.uniqueId || ''}</div>
+                <div class="unique-id">${item?.uniqueId || ""}</div>
               </div>
             </div>
           </div>
 
-          <!-- Right Section (1in × 1in) -->
+          <!-- Right -->
           <div class="section-right">
             <div class="qr-container">
-              <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" />
+              <img src="${item?.qrCodes?.[0]?.qrCodeUrl || "/placeholder.png"}" />
             </div>
-            <div class="unique-id">${item?.uniqueId || ''}</div>
+            <div class="unique-id">${item?.uniqueId || ""}</div>
           </div>
-
         </div>
       `);
-            });
-            printWindow.document.write('</div>');
-        });
+    });
+    printWindow.document.write("</div>");
+  });
 
-        printWindow.document.write('</body></html>');
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-    };
+  printWindow.document.write("</body></html>");
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+};
 
-
-
-    const updatedFiltRecord = {
-        ...filtRecord,
-
-        productId: filtRecord.productId || filtRecord.records?.[0]?.productId,
-        productName: brand.productName || filtRecord.records?.[0]?.productName,
-    };
 
 
 
     return (
         <Sidenav>
 
-            {loading === true ?
-                <div className='h-[400px] flex justify-center items-center'>
+            {loading || Object.keys(filtRecord || {}).length === 0 ? (
+                <div className="h-[400px] flex justify-center items-center">
                     <ReactLoader />
                 </div>
+            )
                 :
                 <>
                     <div className="  flex items-center mb-4 justify-center bg-gray-100">
@@ -1092,6 +1322,23 @@ body {
                         <div>
                             {filtRecord?.year ? filtRecord?.year : warranty?.year}
                         </div>
+
+                        {filtersubCategories?.stickerPrice && (
+                            <>
+                                <div className="font-bold">Sticker Price</div>
+                                <div>
+                                    {filtersubCategories?.stickerPrice}{" "}
+                                    {filtersubCategories?.stickerPrice === "15"
+                                        ? "(HA)"
+                                        : filtersubCategories?.stickerPrice === "30"
+                                            ? "(CF)"
+                                            : filtersubCategories?.stickerPrice === "50"
+                                                ? "(GR)"
+                                                : ""}
+                                </div>
+                            </>
+                        )}
+
                         <div className='font-bold'>Created At</div>
                         <div>{new Date(filtRecord?.createdAt ? filtRecord?.createdAt : warranty?.createdAt).toLocaleString()}</div>
                         <div className='font-bold'>Updated At</div>
@@ -1115,20 +1362,20 @@ body {
                             Print
                         </button>
                     )
-                        : 
-                            ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.brandId) &&
-                                ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.productId) ? (
-                                <button
-                                    onClick={print13_19CmRecords}
-                                    className="mt-5 p-2 bg-blue-500 text-white rounded"
-                                >
-                                    Print
-                                </button>
-                            )  
+                        :
+                        ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.brandId) &&
+                            ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.productId) ? (
+                            <button
+                                onClick={print13_19CmRecords}
+                                className="mt-5 p-2 bg-blue-500 text-white rounded"
+                            >
+                                Print
+                            </button>
+                        )
 
-                        : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                        Print Records
-                    </button>)
+                            : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                                Print Records
+                            </button>)
                     }
 
                     <div className='font-bold mt-5'>Generated QR codes</div>

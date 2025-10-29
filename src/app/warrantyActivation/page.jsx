@@ -832,7 +832,7 @@ const ActivateWarrantyButton = () => {
     }
   }
 
-  console.log("filterWarranty", filterWarranty)
+  // console.log("filterWarranty", filterWarranty)
 
   return (
     <>
@@ -1130,7 +1130,8 @@ const ActivateWarrantyButton = () => {
                       <input
                         id="address"
                         type="text"
-                        {...register('address', { required: 'Address is required' })}
+                        // {...register('address', { required: 'Address is required' })}
+                        {...register('address' )}
                         className=" w-full  p-0.5 border border-gray-300 rounded-md"
                       />
 
@@ -1143,21 +1144,22 @@ const ActivateWarrantyButton = () => {
                       </button>
 
                     </div>
-                    {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+                    {/* {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>} */}
                   </div>
                   <div>
                     <label htmlFor="pincode" className="block text-gray-700">Pincode:</label>
                     <input
                       id="pincode"
                       type="number"
-                      {...register('pincode', { required: 'Pincode is required' })}
+                      // {...register('pincode', { required: 'Pincode is required' })}
+                      {...register('pincode' )}
                       placeholder="Enter 6-digit pincode"
                       className="border p-1 rounded-md  w-full"
                       maxLength={6}
                     // className="w-full  p-0.5 border border-gray-300 rounded-md"
                     />
-                    {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
-                    {error && <p className="text-red-500 mt-1">{error}</p>}
+                    {/* {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
+                    {error && <p className="text-red-500 mt-1">{error}</p>} */}
                   </div>
                   <div className="mt-5">
                     <label htmlFor="warrantyImage" className="block text-gray-700">
@@ -1167,16 +1169,18 @@ const ActivateWarrantyButton = () => {
                       id="warrantyImage"
                       type="file"
                       accept="image/*" // only images
-                      {...register("warrantyImage", {
-                        required: "Warranty image is required",
-                      })}
+                      // {...register("warrantyImage", {
+                      //   required: "Warranty image is required",
+                      // })}
+                       {...register("warrantyImage" 
+                        )}
                       className="w-full p-1 border border-gray-300 rounded-md file:mr-3 file:py-1 file:px-3 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
-                    {errors.warrantyImage && (
+                    {/* {errors.warrantyImage && (
                       <p className="text-red-500 text-sm mt-1">
                         {errors.warrantyImage.message}
                       </p>
-                    )}
+                    )} */}
                   </div>
                 </form>
 

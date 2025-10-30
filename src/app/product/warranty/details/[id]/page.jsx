@@ -1221,6 +1221,14 @@ body {
                 //     price === "15" ? "(HA)" : price === "30" ? "(CF)" : price === "50" ? "(GR)" : "";
                 const price = filtersubCategories?.stickerPrice;
                 const subCategoryName = filtersubCategories?.subCategoryName;
+                const brandLogoHtml =
+                    item.brandId === "687b60524784729ee719776e"
+                        ? `<div class="qr-container">
+         <img src="${brand?.brandLogo || "/Logo.png"}" 
+              alt="Brand Logo"
+              style="width: 0.5in; height: auto; object-fit: contain;" />
+       </div>`
+                        : "";
 
                 let priceLabel = "";
                 if (price === "15") {
@@ -1244,9 +1252,10 @@ body {
                 </div>
               </div>
               <div class="info-half">
+              ${brandLogoHtml}
                 <div class="price-label">  ${priceLabel}</div>
                 <div class="text-small">+91 ${brand?.tollfree || ""}</div>
-                <div class="text-small">(10 AM - 6 PM)</div>
+                <div class="text-small"> (10 AM - 6 PM, Monday to Saturday)</div>
                 <div class="unique-id">${item?.uniqueId || ""}</div>
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client"
 import Sidenav from '@/app/components/Sidenav'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import http_request from "../../../../../../http-request";
 import { useRouter } from 'next/navigation';
 import { Edit } from '@mui/icons-material';
@@ -60,9 +60,14 @@ const WarrantyDetails = ({ params }) => {
 
     // console.log("result" ,result);
 
+    const calledRef = useRef(false);
+
     useEffect(() => {
-        getWarranty()
-        getAllSubCategories()
+        if (calledRef.current) return;
+        calledRef.current = true;
+
+        getWarranty();
+        getAllSubCategories();
     }, []);
 
 
@@ -89,20 +94,82 @@ const WarrantyDetails = ({ params }) => {
             getBrandById(warranty?.brandId)
         }
     }, [warranty]);
+
+
+    // const getWarranty = async () => {
+    //     try {
+    //         setLoading(true)
+    //         let response = await http_request.get(`/getProductWarranty/${params?.id}`)
+    //         let { data } = response
+    //         setWarranty(data);
+    //         setLoading(false)
+    //     }
+    //     catch (err) {
+    //         console.log(err)
+    //         setLoading(false)
+
+    //     }
+    // }
+
     const getWarranty = async () => {
         try {
-            setLoading(true)
-            let response = await http_request.get(`/getProductWarranty/${params?.id}`)
-            let { data } = response
-            setWarranty(data);
-            setLoading(false)
-        }
-        catch (err) {
-            console.log(err)
-            setLoading(false)
+            setLoading(true);
+            let allRecords = [];
+            let page = 1;
+            let totalPages = 1;
+            let mainData = null;
 
+            do {
+                const response = await http_request.get(`/getProductWarranty/${params?.id}?page=${page}`);
+                const data = response.data;
+
+                if (!mainData) {
+                    // store first-page meta info once
+                    mainData = {
+                        _id: data._id,
+                        brandName: data.brandName,
+                        brandId: data.brandId,
+                        productName: data.productName,
+                        numberOfGenerate: data.numberOfGenerate,
+                        warrantyInDays: data.warrantyInDays,
+                        year: data.year,
+                        isDeleted: data.isDeleted,
+                        id: data.id,
+                        records: []
+                    };
+                }
+
+                const records = Array.isArray(data.records) ? data.records : [];
+                totalPages = data.totalPages || 1;
+
+                // merge records page-wise
+                allRecords = [...allRecords, ...records];
+
+                page++;
+            } while (page <= totalPages);
+
+            // merge all into one final object
+            const finalData = {
+                ...mainData,
+                records: allRecords
+            };
+
+            console.log("✅ Final Combined Warranty Data:", finalData);
+            setWarranty(finalData);
+        } catch (err) {
+            console.error("❌ Error fetching warranty data:", err);
+        } finally {
+            setLoading(false);
         }
-    }
+    };
+
+
+
+
+
+
+
+
     const getBrandById = async (brandId) => {
         try {
             let response = await http_request.get(`/getBrandBy/${brandId}`)
@@ -1137,6 +1204,7 @@ body {
     .qr-half {
       width: 50%;
       display: flex;
+       flex-direction: column;
       justify-content: center;
       align-items: center;
     }
@@ -1247,6 +1315,10 @@ body {
           <div class="section-left">
             <div class="section-left-inner">
               <div class="qr-half">
+ ${item.brandId === "687b60524784729ee719776e"
+                        ? `<div class="price-label">${item?.productName || ""}</div>`
+                        : ""
+                    }
                 <div class="qr-container">
                   <img src="${item?.qrCodes?.[0]?.qrCodeUrl || "/placeholder.png"}" />
                 </div>

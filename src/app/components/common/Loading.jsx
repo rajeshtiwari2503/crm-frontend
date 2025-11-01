@@ -7,7 +7,7 @@ export const ReactLoader = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 100000); // 10 seconds
+    }, 120000); // 2minute
 
     // Cleanup the timer if the component is unmounted
     return () => clearTimeout(timer);

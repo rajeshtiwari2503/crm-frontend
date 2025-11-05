@@ -1440,7 +1440,7 @@ body {
                     <div class="mainpage">
                     <div class="item">
                         <div class="record">
-                            <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+                            <div class="text-12">QR Code Warranty  </div>
                             <div class="text-12">${warranty?.productName || 'Product Name'}</div>
                         </div>
                         <div>

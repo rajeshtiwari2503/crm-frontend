@@ -134,6 +134,8 @@ const WarrantyDetails = ({ params }) => {
                         warrantyInDays: data.warrantyInDays,
                         year: data.year,
                         isDeleted: data.isDeleted,
+                        createdAt: data.createdAt,
+                        updatedAt: data.updatedAt,
                         id: data.id,
                         records: []
                     };
@@ -1353,6 +1355,135 @@ body {
     };
 
 
+    const print13_19Stkr30PerPageRecordsPure = () => {
+        const logoUrl = brand?.brandLogo || "/Logo.png"; // Dynamically determine the logo URL
+        const printWindow = window.open("", "", "height=800,width=1100");
+        printWindow.document.write("<html><head><title>Print Stickers</title>");
+        printWindow.document.write("<style>");
+        printWindow.document.write(`
+    /* === Page Setup === */
+    @page {
+      size: 13in 19in; /* exact sticker sheet size */
+      margin: 0;
+    }
+
+    html, body {
+      width: 13in;
+      height: 19in;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      background: #fff;
+    }
+            .container {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr); /* Three columns */
+                // gap: 15px;
+            }
+                .mainpage{
+                 margin: 10px;
+                }
+            .item {
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+               
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+            }
+                 .item2 {
+                box-sizing: border-box;
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 5px;
+                margin-top:10px;
+            }
+            .record img {
+                width: 120px;
+                height: 120px;
+                object-fit: contain;
+            }
+                
+            .text-12 {
+                font-size: 10px;
+                margin: 2px 0;
+            }
+            .font-bold {
+                font-weight: bold;
+            }
+            .recordCenter2 {
+                 text-align: center;
+                  margin-top:40px;
+            }
+                  .recordCenter {
+                 text-align: center;
+            }
+            @media print {
+                .page-break {
+                    page-break-before: always;
+                }
+            }
+        `);
+        printWindow.document.write('</style></head><body>');
+
+        const records = warranty?.records || [];
+        const itemsPerPage = 25; // Three rows * three columns
+
+        for (let i = 0; i < records.length; i += itemsPerPage) {
+            printWindow.document.write('<div class="container">');
+            for (let j = i; j < i + itemsPerPage && j < records.length; j++) {
+                const item = records[j];
+                printWindow.document.write(`
+                    <div class="mainpage">
+                    <div class="item">
+                        <div class="record">
+                            <div class="text-12">QR Code Warranty Powered by Servsy.in</div>
+                            <div class="text-12">${warranty?.productName || 'Product Name'}</div>
+                        </div>
+                        <div>
+                            <img src="${logoUrl}" alt="Company Logo" width="50" height="50" />
+                        </div>
+                        <div>
+                            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="50" height="50" />
+                        </div>
+                        <div class="text-12">Call or WhatsApp</div>
+                        <div class="font-bold text-12">+91 ${brand?.tollfree}</div>
+                        <div class="text-12">(10 AM - 6 PM)</div>
+                        <div class="text-12">Monday to Saturday</div>
+                         
+                        <div class="text-12">Be ready with your Product Bill & Unique Code No., Address & Pincode </div>
+                       
+                        <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                     
+                    <div class="item2">
+                        
+                        
+                        <div>
+                            <img src="${item?.qrCodes?.[0]?.qrCodeUrl || '/placeholder.png'}" alt="QR Code" width="50" height="50" />
+                        </div>
+                        
+                        <div class="font-bold text-12 recordCenter">Unique Code: ${item?.uniqueId || 'N/A'}</div>
+                    </div>
+                       
+                    </div>
+                `);
+            }
+            printWindow.document.write('</div>');
+
+            if (i + itemsPerPage < records.length) {
+                printWindow.document.write('<div class="page-break"></div>');
+            }
+        }
+
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+    };
 
 
     return (
@@ -1401,12 +1532,12 @@ body {
             </div> */}
                     </div>
                     <div className='grid grid-cols-2 md:grid-cols-4 gap-4 mt-5'>
-                        <div className='font-bold mt-5'>Brand Name</div>
+                        <div className='font-bold  '>Brand Name</div>
                         <div>{filtRecord?.brandName ? filtRecord?.brandName : warranty?.brandName}</div>
-                        {/* <div className='font-bold'>Part Name</div>
+                        <div className='font-bold'>Part Name</div>
                         <div> 
-                        {filtRecord?.productName?filtRecord?.productName:warranty?.productName}
-                        </div> */}
+                          {filtRecord?.productName || warranty?.productName || "N/A"}
+                        </div>
                         <div className='font-bold'>Warranty In Days</div>
                         <div>
                             {filtRecord?.warrantyInDays ? filtRecord?.warrantyInDays : warranty?.warrantyInDays}
@@ -1457,7 +1588,7 @@ body {
                             Print
                         </button>
                     )
-                        :
+                        : 
                         ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.brandId) &&
                             ["687b60524784729ee719776e", "68ff336fcfe3d394a460c07c"].includes(updatedFiltRecord?.productId) ? (
                             <button
@@ -1468,7 +1599,11 @@ body {
                             </button>
                         )
 
-                            : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            // : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                            :  ["687b60524784729ee719776e"].includes(brand?._id) ? <button onClick={print13_19Stkr30PerPageRecordsPure} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                                Print Records
+                            </button>
+                             : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
                                 Print Records
                             </button>)
                     }

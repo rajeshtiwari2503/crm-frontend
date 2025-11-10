@@ -1600,11 +1600,18 @@ body {
                         )
 
                             // : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                            :  ["687b60524784729ee719776e"].includes(brand?._id) ? <button onClick={print13_19Stkr30PerPageRecordsPure} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                                Print Records
+                            :  ["687b60524784729ee719776e"].includes(brand?._id) ? 
+                            <div>
+                            <button onClick={print13_19Stkr30PerPageRecordsPure} className='mt-5 p-2 bg-blue-500 text-white rounded'>
+                                Print Records 13_19Stkr30PerPage
+                            </button> 
+                            <button onClick={print5_11CmRecords} className='mt-5 ml-5 p-2 bg-blue-500 text-white rounded'>
+                                Print Records print5_11CmRecords
                             </button>
+                            </div> 
+                            
                              : (<button onClick={print5_11CmRecords} className='mt-5 p-2 bg-blue-500 text-white rounded'>
-                                Print Records
+                                Print Records print5_11CmRecords
                             </button>)
                     }
 

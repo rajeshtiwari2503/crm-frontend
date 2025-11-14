@@ -16,6 +16,7 @@ import DownloadFiterDataExcel from '@/app/components/reports/DownloadFilterDataE
 
 const ServiceList = (props) => {
 
+ 
 
   const router = useRouter()
 
@@ -27,6 +28,7 @@ const ServiceList = (props) => {
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false)
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -85,6 +87,35 @@ const ServiceList = (props) => {
     router.push(`/user/service/details/${id}`)
   }
 
+  const handleStatusUpdate = async (id, currentStatus) => {
+    try {
+      setLoading(true);
+
+      // Determine the new status
+      const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+
+      // Prepare request payload
+      const req = { status: newStatus };
+
+      // Send PATCH request to backend
+      const response = await http_request.patch(`/editServiceCenterStatusUpdate/${id}`, req);
+
+      const { data } = response
+
+      ToastMessage(data)
+      setLoading(false)
+      props.RefreshData(data)
+      //   router.push(`/user/service`)
+    }
+    catch (err) {
+      setLoading(false)
+      ToastMessage(err?.response?.data)
+
+      console.log(err);
+    }
+
+  }
+
   const handleEdit = (id) => {
     router.push(`/user/service/edit/${id}`);
   };
@@ -129,170 +160,197 @@ const ServiceList = (props) => {
     doc.save("All_Service_Centers.pdf");
   };
 
-const excelData={data:{serviceCenters:filteredData}}
-// console.log("excelData",excelData);
+  const excelData = { data: { serviceCenters: filteredData } }
+  // console.log("excelData",excelData);
 
   return (
-    <div>
-      <Toaster />
-      <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Service Information</div>
-        <div className="flex">
-          {props?.user?.role === "ADMIN" && <button onClick={downloadAllPDF} className="bg-red-600 mx-3  hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
-            <PictureAsPdf className=" " />
-          </button>
-          }
-          {props?.user?.role === "ADMIN" &&  
-            <DownloadFiterDataExcel reportData={excelData} fileName="Service_Centers" />
-          
-          }
 
-          {!props?.report && (
-            <div
-              onClick={() => router.push("/user/service/add")}
-              className="ml-3 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-black items-center"
-            >
-              <Add style={{ color: "white" }} />
-              <div className="ml-2">Add Service</div>
-            </div>
-          )}
+    <>
+      {loading ?
+        <div className="flex justify-center items-center  h-[80vh]">
+          <ReactLoader />
         </div>
-      </div>
-      <div className="flex items-center mb-3">
-        <Search className="text-gray-500" />
-        <input
-          type="text"
-          placeholder="Search by Name,Contact ,District"
-          value={searchTerm}
-          onChange={handleSearch}
-          className="ml-2 border  border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      </div>
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
-        :
-        <>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'id'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('id')}
-                    >
-                      ID
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceCenterName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceCenterName')}
-                    >
-                      Service Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'email'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('email')}
-                    >
-                      Email
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'serviceCenterType'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('serviceCenterType')}
-                    >
-                      Type
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'city'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('city')}
-                    >
-                      City
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'contact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('contact')}
-                    >
-                      contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'createdAt'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('createdAt')}
-                    >
-                      Created_At
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>Actions</TableCell>
+        : <div>
+          {/* <Toaster /> */}
+          <div className='flex justify-between items-center mb-3'>
+            <div className='font-bold text-2xl'>Service Information</div>
+            <div className="flex">
+              {props?.user?.role === "ADMIN" && <button onClick={downloadAllPDF} className="bg-red-600 mx-3  hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+                <PictureAsPdf className=" " />
+              </button>
+              }
+              {props?.user?.role === "ADMIN" &&
+                <DownloadFiterDataExcel reportData={excelData} fileName="Service_Centers" />
 
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.serviceCenterName}</TableCell>
-                    <TableCell>{row?.email}</TableCell>
-                    <TableCell>{row?.serviceCenterType}</TableCell>
-                    <TableCell>{row?.city}</TableCell>
-                    <TableCell>{row?.contact}</TableCell>
-                    <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
-                    <TableCell   >
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {props?.report === true ? ""
-                        :
-                        <div className='flex'>
-                          {props?.user?.role === "ADMIN" && <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                            <EditIcon color='success' />
-                          </IconButton>
-                          }
-                          {props?.user?.role === "ADMIN" && <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
-                          }
-                          {props?.user?.role === "ADMIN" && <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
-                            <PictureAsPdf color="error" />
-                          </IconButton>
-                          }
-                        </div>
-                      }
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+              }
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={filteredData?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </>}
+              {!props?.report && (
+                <div
+                  onClick={() => router.push("/user/service/add")}
+                  className="ml-3 flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-black items-center"
+                >
+                  <Add style={{ color: "white" }} />
+                  <div className="ml-2">Add Service</div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center mb-3">
+            <Search className="text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search by Name,Contact ,District"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="ml-2 border  border-gray-300 rounded-lg py-2 px-3 text-black  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
+            :
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'id'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('id')}
+                        >
+                          ID
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'serviceCenterName'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('serviceCenterName')}
+                        >
+                          Service Name
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'email'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('email')}
+                        >
+                          Email
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'serviceCenterType'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('serviceCenterType')}
+                        >
+                          Type
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'city'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('city')}
+                        >
+                          City
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'contact'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('contact')}
+                        >
+                          contact
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'status'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('status')}
+                        >
+                          Status
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>
+                        <TableSortLabel
+                          active={sortBy === 'createdAt'}
+                          direction={sortDirection}
+                          onClick={() => handleSort('createdAt')}
+                        >
+                          Created_At
+                        </TableSortLabel>
+                      </TableCell>
+                      <TableCell>Actions</TableCell>
 
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
-    </div>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedData.map((row) => (
+                      <TableRow key={row?.i} hover>
+                        <TableCell>{row?.i}</TableCell>
+                        <TableCell>{row?.serviceCenterName}</TableCell>
+                        <TableCell>{row?.email}</TableCell>
+                        <TableCell>{row?.serviceCenterType}</TableCell>
+                        <TableCell>{row?.city}</TableCell>
+                        <TableCell>{row?.contact}</TableCell>
+                        <TableCell
+                          onClick={() => handleStatusUpdate(row._id, row.status)}
+                          style={{
+                            cursor: 'pointer',
+                            color: row.status === 'ACTIVE' ? 'green' : 'red',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {row.status}
+                        </TableCell>
+                        <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
+                        <TableCell   >
+                          <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+                            <Visibility color='primary' />
+                          </IconButton>
+                          {props?.report === true ? ""
+                            :
+                            <div className='flex'>
+                              {props?.user?.role === "ADMIN" && <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+                                <EditIcon color='success' />
+                              </IconButton>
+                              }
+                              {props?.user?.role === "ADMIN" && <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+                                <DeleteIcon color='error' />
+                              </IconButton>
+                              }
+                              {props?.user?.role === "ADMIN" && <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
+                                <PictureAsPdf color="error" />
+                              </IconButton>
+                              }
+                            </div>
+                          }
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25]}
+                component="div"
+                count={filteredData?.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </>}
+
+          <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
+        </div>
+      }
+    </>
   );
 };
 

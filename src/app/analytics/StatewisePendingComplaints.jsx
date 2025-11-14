@@ -433,8 +433,9 @@ const ComplaintAnalyticsPage = () => {
 
     return result;
   };
-
+  
   const brandOptions = [...new Set(data.map((d) => d.brandName).filter(Boolean))];
+   
   // const stateOptions = brand
   //   ? [...new Set(data.filter((d) => d.brandName === brand).map((d) => d.state).filter(Boolean))]
   //   : [];

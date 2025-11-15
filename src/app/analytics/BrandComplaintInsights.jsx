@@ -147,9 +147,9 @@ const prepareChartDataByDistrict = (data) => {
     )
     : complaintInsights.commonFaults;
   const filteredCommonDataFaults = filterBrand
-    ? complaintInsights?.complaintsByStateAndDistrict.filter(
+    ? complaintInsights?.complaintsByStateAndDistrict?.filter(
       (item) =>
-        item?.productBrand?.toLowerCase() === filterBrand.toLowerCase()
+        item?.productBrand?.toLowerCase() === filterBrand?.toLowerCase()
     )
     : complaintInsights?.complaintsByStateAndDistrict;
 
@@ -333,9 +333,9 @@ const prepareChartDataByDistrict = (data) => {
 
         {activeTab === 'brandALLData' && (<div className="col-span-1 rounded-lg shadow px-4 py-4 bg-white">
           <h3 className="text-lg font-semibold mb-4 text-gray-800">Common Faults (Detailed)</h3>
-          {filteredCommonDataFaults.length > 0 ? (
+          {filteredCommonDataFaults?.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredCommonDataFaults.map((item, index) => {
+              {filteredCommonDataFaults?.map((item, index) => {
                 const bgColor = bgColorsCommon[index % bgColorsCommon.length];
                 return (
                   <div

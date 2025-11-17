@@ -121,50 +121,14 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
     // Watch selected spare parts to prevent duplicates
     const selectedSpareParts = watch("spareParts")?.map(part => part.sparePartId);
 
-    // const onSubmit = async (data) => {
-
-    //     if (userData?.role === "SERVICE" && data?.status === "FINAL VERIFICATION" && !otpVerified) {
-    //         alert("Please verify OTP before submitting.");
-    //         return;
-    //     }
-    //     try {
-    //         console.log("data", data);
-
-    //         const reqdata =   { status: data?.status, empId: userData._id, empName: userData.name || userData.name , comments: data?.comments, }
-
-    //         const formData = new FormData();
-    //         Object.entries(reqdata).forEach(([key, value]) => {
-    //             if (value !== undefined && value !== null) {
-    //                 formData.append(key, value);
-    //             }
-    //         });
-
-
-    //         if (data?.partPendingImage && data.partPendingImage[0]) {
-    //             formData.append("partPendingImage", data.partPendingImage[0]); // Assuming file input
-    //         }
-
-    //         let response = await http_request.patch(`/updateComplaintWithImage/${complaintId}`, formData
-    //         );
-    //         let { data: responseData } = response;
-    //         if (data.comments) {
-    //             updateComment({ comments: data?.comments })
-    //         }
-    //         setStatus(false)
-    //         setAssignTech(false)
-    //         props?.RefreshData(responseData)
-    //         ToastMessage(responseData);
-    //         reset()
-    //     } catch (err) {
-    //         console.log(err);
-    //     }
-    // };
+  
+   
     const updateComment = async (data) => {
         try {
             // console.log(id);
             // console.log(data);
             const sndStatusReq = { sndStatus: data.comments, empId: userData._id, empName: userData.name }
-            userData?.role === "SERVICE" ? { status: data?.status, sndStatus: data.comments, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name }
+            userData?.role === "SERVICE" ? { status: data?.status, sndStatus: data.comments, serviceCenterId: userData._id, serviceCenterName: userData.serviceCenterName } : { sndStatus: data.comments, empId: userData._id, empName: userData.name ||userData?.brandName }
             //    console.log("sndStatusReq",sndStatusReq);
 
             const response = await http_request.patch(`/updateComplaintComments/${id}`,
@@ -209,7 +173,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                     :
                     data?.status === "FINAL VERIFICATION" && data?.useSpareParts === "yes" ? {
                         empId: userData._id,
-                        empName: userData.name,
+                        empName: userData.name ||userData?.brandName,
                         serviceCenterId: data.serviceCenterId,
                         serviceCenterName: data.serviceCenter,
                         serviceCenter: data.serviceCenter,
@@ -217,7 +181,7 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
                     }
                         : {
                             empId: userData._id,
-                            empName: userData.name,
+                            empName: userData.name ||userData?.brandName,
                             useSpareParts: data?.useSpareParts,
                             ...(data.status === "CUSTOMER SIDE PENDING" && { cspStatus: "YES" })
                         }
@@ -258,7 +222,6 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
             }
 
             // API request
-
 
 
             let response = await http_request.patch(`/updateMultiImageImage/${complaintId}`, formData);
@@ -309,7 +272,9 @@ const UpdateComplaintModal = ({ complaintId, RefreshData }) => {
 
                                     <option value="IN PROGRESS">In Progress</option>
                                     <option value="PART PENDING">Awaiting Parts</option>
-                                    {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
+                                    {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE"  || userData?.role === "BRAND" ? <option value="PARTS DELIVERED">Parts Delivered</option>
+                                        : ""}
+                                         {userData?.role === "ADMIN" || userData?.role === "EMPLOYEE" ? <option value="CUSTOMER SIDE PENDING">Customer Side Pending</option>
                                         : ""}
                                     <option value="FINAL VERIFICATION">Completed</option>
                                     <option value="CANCELED">Canceled</option>

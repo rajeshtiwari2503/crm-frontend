@@ -814,14 +814,17 @@ const ComplaintList = (props) => {
                                 >
                                   <Visibility />
                                 </div>
-                                {userData?.role === "ADMIN" ?
-                                  <div
-                                    onClick={() => handleUpdateStatus(row?._id)}
-                                    className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
-                                  >
-                                    <SystemSecurityUpdate />
-                                  </div>
-                                  : userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE" ?
+                                {
+                                // userData?.role === "ADMIN" ?
+                                  // <div
+                                  //   onClick={() => handleUpdateStatus(row?._id)}
+                                  //   className="rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black"
+                                  // >
+                                  //   <SystemSecurityUpdate />
+                                  // </div>
+                                  // : 
+                                  
+                                  userData?.role === "ADMIN" || userData?.role === "BRAND" || userData?.role === "BRAND" && userData?.brandSaas === "YES" || userData?.role === "SERVICE" || userData?.role === "TECHNICIAN" || userData?.role === "EMPLOYEE" ?
                                     <UpdateComplaintModal complaintId={row?._id} RefreshData={props?.RefreshData} />
                                     :
                                     ""}

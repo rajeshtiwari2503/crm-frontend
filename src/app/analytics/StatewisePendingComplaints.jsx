@@ -405,33 +405,34 @@ const aggregateByKey = (items, key) => {
           return (
             <div key={brandIndex} className="mb-4">
               {/* Brand Header */}
-              <div className={`text-sm md:text-base font-semibold mb-2 ${brandColor}`}>
+              <div className={`text-sm md:text-base font-semibold mb-2 bg-blue-300 p-1 rounded-md  `}>
                 {brandName} ({brandTotal})
               </div>
 
               {/* Districts */}
               {Object.entries(districts).map(([districtName, districtData], districtIndex) => {
                 const count = districtData.count || 0;
+ 
 
-                let districtColor = "text-green-600";
-                if (count > 5) districtColor = "text-red-600";
-                else if (count > 2) districtColor = "text-yellow-600";
+                let districtColor = count > 2  ? "text-green-600" :"text-red-600";
+          
+              
 
                 return (
                   <div key={districtIndex} className="ml-3 mb-3">
                     {/* District Header */}
-                    <div className="flex items-center justify-between gap-2 text-sm md:text-base py-1">
-                      <div className="flex items-center gap-2">
-                        <ReportProblem fontSize="small" className={districtColor} />
+                    <div className="flex items-center justify-between gap-2 bg-blue-100 p-1 rounded-md text-sm md:text-base py-1">
+                      <div className="flex items-center  gap-2">
+                        <ReportProblem fontSize="small" className={"text-black-400"} />
                         <span className="text-gray-700 font-medium">{districtName}</span>
                       </div>
-                      <span className={`font-semibold ${districtColor}`}>{count}</span>
+                      <span className={`font-semibold  text-black-400`}>{count}</span>
                     </div>
 
                     {/* Individual complaints */}
                     {districtData.complaints && districtData.complaints.map((c, idx) => (
                       <div key={idx} className="flex flex-col md:flex-row justify-between items-start md:items-center text-xs md:text-sm ml-5 py-1 gap-1">
-                        <span className={`px-2 py-0.5 rounded-full font-medium ${c.color === "green" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                        <span className={`px-2 py-0.5  rounded-md  font-medium ${c.color === "green" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
                           {c.status}
                         </span>
                         <span className="text-gray-500 font-mono">{c.hoursOpen}h</span>
@@ -854,7 +855,7 @@ export default ComplaintAnalyticsPage;
 //         <h3 className="text-xl font-bold mb-6 text-gray-800">Complaint Distribution Charts</h3>
 //         {loadingSBT ? (
 //           <div className="flex justify-center items-center h-60">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+//             <div className="animate-spin  rounded-md  h-12 w-12 border-b-2 border-blue-600"></div>
 //           </div>
 //         ) : filteredData.length === 0 ? (
 //           <div className="text-center py-12">
@@ -926,7 +927,7 @@ export default ComplaintAnalyticsPage;
 //         <h3 className="text-xl font-bold mb-6 text-gray-800">Pending Complaints by State</h3>
 //         {loading ? (
 //           <div className="flex justify-center items-center h-60">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+//             <div className="animate-spin  rounded-md  h-12 w-12 border-b-2 border-blue-600"></div>
 //           </div>
 //         ) : Object.keys(filteredStatewiseData).length > 0 ? (
 //           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

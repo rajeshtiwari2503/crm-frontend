@@ -1,15 +1,17 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Add, Visibility } from '@mui/icons-material';
+import { Add, PictureAsPdf, Visibility } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { ConfirmBox } from '@/app/components/common/ConfirmBox';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const DealerList = (props) => {
 
@@ -23,7 +25,9 @@ const DealerList = (props) => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortBy, setSortBy] = useState('id');
+  const [filteredDealers, setFilteredDealers] = useState([]);
 
+  const [searchCity, setSearchCity] = useState("");
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -39,7 +43,7 @@ const DealerList = (props) => {
     setSortBy(property);
   };
 
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const sortedData = stableSort(filteredDealers, getComparator(sortDirection, sortBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
@@ -70,19 +74,104 @@ const DealerList = (props) => {
   const handleEdit = (id) => {
     router.push(`/user/dealer/edit/${id}`);
   };
+
+
+  // Function to download a single service center info as PDF
+  const downloadSinglePDF = (dealer) => {
+    const doc = new jsPDF();
+    doc.text("Dealer Details", 10, 10);
+  
+    const locationDetails = dealer.locations.map((location, index) => [
+      `Location ${index + 1}`, 
+      `State: ${location.state}, City: ${location.city}, Other Cities: ${location.otherCities.join(", ")}`
+    ]);
+  
+    doc.autoTable({
+      startY: 20,
+      head: [["Field", "Details"]],
+      body: [
+        ["Dealer Name", dealer?.name],
+        ["Contact", dealer?.contact],
+        ...locationDetails, // Add multiple locations dynamically
+      ],
+    });
+  
+    doc.save(`${dealer?.name}_Details.pdf`);
+  };
+  
+
+  // Function to download all service centers as a single PDF
+  const downloadAllPDF = () => {
+    const doc = new jsPDF();
+    doc.text("All Dealers", 10, 10);
+  
+    doc.autoTable({
+      startY: 20,
+      head: [["ID", "Dealer Name", "State(s)", "City(s)", "Other City(s)", "Contact"]],
+      body: data.map((dealer, index) => {
+        const states = dealer.locations.map(loc => loc.state).join(", ");
+        const cities = dealer.locations.map(loc => loc.city).join(", ");
+        const otherCities = dealer.locations.map(loc => loc.otherCities.join(", ")).join(", ");
+  
+        return [
+          index + 1,
+          dealer.name,
+          states,
+          cities,
+          otherCities,
+          dealer.contact,
+        ];
+      }),
+    });
+  
+    doc.save("All_Dealers.pdf");
+  };
+
+  
+
+  useEffect(() => {
+    if (searchCity.trim() === "") {
+      setFilteredDealers(data);
+    } else {
+      const filtered = data.filter((dealer) =>
+        dealer.locations.some((location) =>
+          [location.state, location.city, ...location.otherCities]
+            .some((place) => place.toLowerCase().includes(searchCity.toLowerCase()))
+        )
+      );
+      setFilteredDealers(filtered);
+    }
+  }, [searchCity, data]);
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>Dealer Information</div>
+        <div className='flex'>
+          <div className='font-bold text-2xl'>Dealer Information</div>
+          {props?.user?.role === "ADMIN" || props?.user?.role === "BRAND" ? <button onClick={downloadAllPDF} className="ms-5 bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-md flex items-center">
+            <PictureAsPdf className="mr-2" />
+          </button>
+          :""
+          }
+        </div>
+        <div className="my-4">
+          <input
+            type="text"
+            placeholder="Search by City"
+            value={searchCity}
+            onChange={(e) => setSearchCity(e.target.value)}
+            className="border p-2 rounded-md w-full"
+          />
+        </div>
+
         {props?.report === true ? ""
           : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
-            <div className=' ml-2 '>Add Brand</div>
+            <div className=' ml-2 '>Add Dealer</div>
           </div>
         }
       </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>
@@ -116,33 +205,77 @@ const DealerList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'state'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('state')}
+                    >
+                      State
+                    </TableSortLabel>
+                   
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'city'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('city')}
+                    >
+                      City
+                    </TableSortLabel>
+                   
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'city'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('city')}
+                    >
+                      Other cities
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row?.i} hover>
-                    <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?.name}</TableCell>
-                    <TableCell>{row?.email}</TableCell>
-                    <TableCell>
-                      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
-                        <Visibility color='primary' />
-                      </IconButton>
-                      {props?.report === true ? ""
-                        :
-                        <> <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
-                          <EditIcon color='success' />
-                        </IconButton>
-                          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
-                            <DeleteIcon color='error' />
-                          </IconButton>
-                        </>
-                      }
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {sortedData.map((row) => (
+  <TableRow key={row?._id} hover>
+    <TableCell>{row?._id.slice(-6)}</TableCell> {/* Using a unique part of _id */}
+    <TableCell>{row?.name}</TableCell>
+    <TableCell>{row?.email}</TableCell>
+    <TableCell>
+      {row?.locations?.map((loc) => loc.state).join(", ")}
+    </TableCell>
+    <TableCell>
+      {row?.locations?.map((loc) => loc.city).join(", ")}
+    </TableCell>
+    <TableCell>
+      {row?.locations?.flatMap((loc) => loc.otherCities).join(", ")}
+    </TableCell>
+    <TableCell>
+      <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
+        <Visibility color='primary' />
+      </IconButton>
+      {props?.report !== true && (
+        <>
+          <IconButton aria-label="edit" onClick={() => handleEdit(row?._id)}>
+            <EditIcon color='success' />
+          </IconButton>
+          <IconButton aria-label="delete" onClick={() => handleDelete(row?._id)}>
+            <DeleteIcon color='error' />
+          </IconButton>
+          {(props?.user?.role === "ADMIN" || props?.user?.role === "BRAND") && (
+            <IconButton aria-label="download" onClick={() => downloadSinglePDF(row)}>
+              <PictureAsPdf color="error" />
+            </IconButton>
+          )}
+        </>
+      )}
+    </TableCell>
+  </TableRow>
+))}
+
               </TableBody>
             </Table>
           </TableContainer>

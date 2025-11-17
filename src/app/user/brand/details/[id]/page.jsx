@@ -18,15 +18,17 @@ const BrandDetails = ({ params }) => {
     const [loading, setLoading] = useState(false)
     const [dashData, setData] = React.useState("");
     const [value, setBrandValue] = React.useState(null);
+    const [brandData, setBrandData] = useState([]);
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue } = useForm();
 
     useEffect(() => {
         getBrandById()
         getAllDashboard()
-        setBrandValue({_id:params.id,role:"BRAND"})
-    }, [id,loading])
-    const RefreshData=()=>{
+        setBrandValue({ _id: params.id, role: "BRAND" })
+        getAllProductWarrantyByBrandStickers()
+    }, [id, loading])
+    const RefreshData = () => {
         setLoading(true)
     }
 
@@ -37,34 +39,47 @@ const BrandDetails = ({ params }) => {
             let { data } = response;
             setBrand(data)
             setId(data?._id)
-           
+
         }
         catch (err) {
             console.log(err);
         }
     }
 
-    const handleEdit = ( ) => {
+    const handleEdit = () => {
         router.push(`/user/brand/edit/${brand?._id}`);
-      }
-    
-      const getAllDashboard = async () => {
-      
+    }
+
+    const getAllDashboard = async () => {
+
         try {
-        
-          const endPoint=  
-          `/dashboardDetailsByBrandId/${params.id}`
-          let response = await http_request.get(endPoint)
-          let { data } = response;
-    
-          setData(data)
+
+            const endPoint =
+                `/dashboardDetailsByBrandId/${params.id}`
+            let response = await http_request.get(endPoint)
+            let { data } = response;
+
+            setData(data)
         }
         catch (err) {
-          console.log(err);
+            console.log(err);
         }
-      }
- 
+    }
+    const getAllProductWarrantyByBrandStickers = async () => {
+        try {
+            let response = await http_request.get("/getAllProductWarrantyByBrandStickers")
+            let { data } = response;
+            // console.log("data", data);
 
+            setBrandData(data?.data)
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+    }
+    const brandStickers = brandData?.find((f) => f?.brandId ===  params.id)
+    // console.log("brandStickers",brandStickers);
     return (
         <>
 
@@ -77,20 +92,21 @@ const BrandDetails = ({ params }) => {
                             </h2>
                         </div>
                         <div onClick={handleEdit} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
-                          <Edit /> <div className='ms-3'>Edit</div>
+                            <Edit /> <div className='ms-3'>Edit</div>
                         </div>
                     </div>
                     <hr />
                     <div  >
-                      <BrandProfile RefreshData={RefreshData}userData={brand} />
-                      <Recharge sidebar={false} brandData={brand}/>
-                     
+                        <BrandProfile RefreshData={RefreshData} userData={brand} />
+                        {brandStickers ? ""
+                            : <Recharge sidebar={false} brandData={brand} />
+                        }
                     </div>
                     <div>
-                    <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
-                                BrandI Information
-                            </h2>
-                    <BrandDashboard dashData={dashData} userData={value} />
+                        <h2 className="  text-xl font-bold leading-9 tracking-tight text-gray-900">
+                            Brand Information
+                        </h2>
+                        <BrandDashboard brandStickers={brandStickers} dashData={dashData} userData={value} />
                     </div>
                 </div>
 

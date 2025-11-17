@@ -55,7 +55,7 @@ const EditBrandProfile = (props) => {
     setValue('password', userData.password);
     setValue('contact', userData.contact);
     setValue('address', userData.address);
-    setValue('brandID', userData.brandID);
+    // setValue('brandID', userData.brandID);
     setValue('city', userData.city);
     setValue('contactPersonName', userData.contactPersonName);
     setValue('contactPersonPhoneNumber', userData.contactPersonPhoneNumber);
@@ -68,10 +68,19 @@ const EditBrandProfile = (props) => {
     setValue('brandDescription', userData.brandDescription);
     setValue('websiteURL', userData.websiteURL);
     setValue('state', userData.state);
+    setValue('tollfree', userData.tollfree);
     setValue('streetAddress', userData.streetAddress);
     setValue('technicianCertifications', userData.technicianCertifications);
     setValue('termsAndConditions', userData.termsAndConditions);
     setValue('privacyPolicy', userData.privacyPolicy);
+    setValue('basePrice', userData.basePrice);
+    setValue('kmPrice', userData.kmPrice);
+    setValue('crmPrice', userData.crmPrice);
+    setValue('perMonthPrice', userData.perMonthPrice);
+    setValue('inCityPrice', userData.inCityPrice);
+    setValue('outCityPrice', userData.outCityPrice);
+    setValue('shaPrice', userData.shaPrice);
+    setValue('bhaPrice', userData.bhaPrice);
 
     setValue('serviceCategories', userData?.serviceCategories);
     // Object.keys(userData).forEach(key => {
@@ -120,7 +129,7 @@ const EditBrandProfile = (props) => {
             />
             {errors.brandName && <span className="text-red-500">Brand Name is required</span>}
           </div>
-          <div className="mb-1">
+          {/* <div className="mb-1">
             <label className=" text-sm block mb-1">Brand ID</label>
             <input
               type="text"
@@ -129,6 +138,7 @@ const EditBrandProfile = (props) => {
             />
             {errors.brandID && <span className="text-red-500">Brand ID is required</span>}
           </div>
+          */}
           <div className="mb-1 md:col-span-2">
             <label className=" text-sm block mb-1">Brand Description</label>
             <textarea
@@ -166,7 +176,15 @@ const EditBrandProfile = (props) => {
             />
             {errors.contactPersonPhoneNumber && <span className="text-red-500">Contact Person Phone Number is required</span>}
           </div>
-
+          <div className="mb-1">
+            <label className=" text-sm block mb-1">  Tollfree</label>
+            <input
+              type="tel"
+              {...register('tollfree', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.tollfree && <span className="text-red-500">Tollfree Number is required</span>}
+          </div>
 
           <div className="mb-1">
             <label className=" text-sm block mb-1">Street Address</label>
@@ -295,6 +313,86 @@ const EditBrandProfile = (props) => {
             <span className="text-sm">I agree to the Privacy Policy</span>
           </label>
           {errors.privacyPolicy && <p className="text-red-500 text-sm mt-1">{errors.privacyPolicy.message}</p>}
+          <div className="mb-1">
+            <label className="text-sm block mb-1">Base Price</label>
+            <input
+              type="number"
+              {...register('basePrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.basePrice && <span className="text-red-500">Base Price is required</span>}
+          </div>
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">KM Price</label>
+            <input
+              type="number"
+              {...register('kmPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.kmPrice && <span className="text-red-500">KM Price is required</span>}
+          </div>
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">CRM Price as per plan</label>
+            <input
+              type="number"
+              {...register('crmPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.crmPrice && <span className="text-red-500">CRM Price is required</span>}
+          </div>
+
+          {/* <div className="mb-1">
+            <label className="text-sm block mb-1">Per Month Price</label>
+            <input
+              type="number"
+              {...register('perMonthPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.perMonthPrice && <span className="text-red-500">Per Month Price is required</span>}
+          </div> */}
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">In City Price</label>
+            <input
+              type="number"
+              {...register('inCityPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.inCityPrice && <span className="text-red-500">In City Price is required</span>}
+          </div>
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">Out City Price</label>
+            <input
+              type="number"
+              {...register('outCityPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.outCityPrice && <span className="text-red-500">Out City Price is required</span>}
+          </div>
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">SHA Price</label>
+            <input
+              type="number"
+              {...register('shaPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.shaPrice && <span className="text-red-500">SHA Price is required</span>}
+          </div>
+
+          <div className="mb-1">
+            <label className="text-sm block mb-1">BHA Price</label>
+            <input
+              type="number"
+              {...register('bhaPrice', { required: true })}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+            {errors.bhaPrice && <span className="text-red-500">BHA Price is required</span>}
+          </div>
+
 
           <div className='md:col-span-2'>
             <label htmlFor="captcha" className="block text-sm font-medium leading-6 text-gray-900">

@@ -39,8 +39,8 @@ const AddProduct = ({ existingProduct, RefreshData, subCategories, onClose, user
                 categoryName: selectedCategory?.categoryName,
                 categoryId: selectedCategory?._id,
 
-                userId: userData?.user?._id,
-                userName: userData?.user?.name,
+                userId: userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandId:userData?.user?._id,
+                userName: userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandName:userData?.user?.name,
                 warrantyYears: selectedYear,
                 // warrantyStatus:calculateWarrantyStatus(data.purchaseDate, selectedYear)
             };
@@ -112,8 +112,8 @@ const AddProduct = ({ existingProduct, RefreshData, subCategories, onClose, user
         if (selectedCat) {
             setValue('categoryName', selectedCat?.categoryName);
             setValue('categoryId', selectedCat?._id);
-            setValue('productBrand', userData?.user?.brandName);
-            setValue('brandId', userData?.user?._id);
+            setValue('productBrand', userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandName:userData?.user?.brandName);
+            setValue('brandId', userData?.user?.role==="BRAND EMPLOYEE"?userData?.user?.brandId:userData?.user?._id);
             const filterSabCat = subCategories?.filter((f) => f?.categoryId === selectedCat?._id)
             //   console.log(filterSabCat);
 
@@ -350,14 +350,16 @@ const AddProduct = ({ existingProduct, RefreshData, subCategories, onClose, user
                             <input
                                 id="warrantyInDays"
                                 type="number"
-                                {...register('warrantyInDays', {
-                                    required: 'Warranty In Days is required',
-                                    valueAsNumber: true,
-                                    min: { value: 10, message: 'Warranty In Days must be greater than 0' }
-                                })}
+                                {...register('warrantyInDays'
+                                //     , {
+                                //     required: 'Warranty In Days is required',
+                                //     valueAsNumber: true,
+                                //     min: { value: 10, message: 'Warranty In Days must be greater than 0' }
+                                // }
+                            )}
                                 className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.warrantyInDays ? 'border-red-500' : ''}`}
                             />
-                            {errors.warrantyInDays && <p className="text-red-500 text-sm">{errors.warrantyInDays.message}</p>}
+                            {/* {errors.warrantyInDays && <p className="text-red-500 text-sm">{errors.warrantyInDays.message}</p>} */}
                         </div>}
                     <div className='flex justify-between mt-8'>
                         <Button variant="contained" onClick={() => onClose(true)} className='hover:bg-[#fe3f49] hover:text-white' color="error">

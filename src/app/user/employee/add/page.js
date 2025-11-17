@@ -1,26 +1,36 @@
 
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import http_request from '../../../../../http-request'
 import Sidenav from '@/app/components/Sidenav'
 import { ToastMessage } from '@/app/components/common/Toastify';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/components/UserContext';
 
 
 const AddEmployee = () => {
 
+    const { user } = useUser()
     const router = useRouter()
 
     const [loading, setLoading] = useState(false)
 
     const { register, handleSubmit, formState: { errors }, getValues } = useForm();
+    // console.log("user",user);
+
+
+useEffect(()=>{
+
+},[user])
 
     const RegiterEmployee = async (reqdata) => {
         try {
             setLoading(true)
+            const reqData2 = user?.user?.role === "ADMIN" ? reqdata : { ...reqdata, brandId: user?.user?._id, brandName: user?.user?.brandName,role:"BRAND EMPLOYEE" }
+ 
 
-            let response = await http_request.post('/employeeRegistration', reqdata)
+            let response = await http_request.post('/employeeRegistration', reqData2)
             const { data } = response
             ToastMessage(data)
             setLoading(false)
@@ -43,7 +53,7 @@ const AddEmployee = () => {
 
     return (
         <>
-         
+
             <Sidenav >
                 <div className=" ">
                     <div  >
@@ -151,9 +161,9 @@ const AddEmployee = () => {
                                 type="button"
                                 disabled={loading}
                                 onClick={handleSubmit(onSubmit)}
-                                className="flex   justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                className="flex cursor-pointer  justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                             >
-                                Save
+                                {loading ? "Saving ..." : "Save"}
                             </button>
                         </div>
                     </div>

@@ -1,4 +1,5 @@
 "use client"
+import { useUser } from '@/app/components/UserContext';
 import { Delete } from '@mui/icons-material';
 import { Chip } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -18,19 +19,20 @@ function EditBasicInformation(props) {
     // let categories1 = (props?.user?.role === "RESELLER" || props?.user?.role === "ADMIN") ? unique1 : categories;
 
     const [value, setValue] = React.useState(null);
+    const {user}=useUser()
     React.useEffect(() => {
-        const storedValue = localStorage.getItem("user");
-        if (storedValue) {
-            setValue(JSON.parse(storedValue));
+      
+        if (user) {
+            setValue(user);
         }
 
         if (props?.sparePart) {
 
             setSelectedProducts(props?.sparePart.products || []); // Preload selected products (productId and productName)
         }
-    }, [props?.sparePart]);
+    }, [props?.sparePart,user]);
 
-    let products1 = props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId === value?.user?._id)
+    let products1 =value?.user?.role==="BRAND EMPLOYEE"?props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId === value?.user?.brandId): props?.products?.filter(p1 => p1?.categoryName === category && p1?.brandId === value?.user?._id)
 
     // useEffect(() => {
     //     if (props?.sparePart) {

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -12,6 +12,7 @@ import { Toaster } from 'react-hot-toast';
 import { ToastMessage } from '@/app/components/common/Toastify';
 import AddCategory from './addCategory';
 import { ReactLoader } from '@/app/components/common/Loading';
+import { useUser } from '@/app/components/UserContext';
 
 const CategoryList = (props) => {
 
@@ -28,16 +29,18 @@ const CategoryList = (props) => {
   const [sortBy, setSortBy] = useState('id');
 
   const [userData, setUserData] = React.useState(null);
+  const { user } = useUser();
 
-  React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setUserData(JSON.parse(storedValue));
+
+  useEffect(() => {
+
+    if (user) {
+      setUserData(user);
     }
-  }, []);
- 
-  const filterData=props?.data?.filter((item)=>item?.userId===userData?.user?._id)
-  const data = userData?.user?.role==="ADMIN"?props?.data:filterData;
+  }, [user]);
+
+  const filterData = props?.data?.filter((item) => item?.userId === userData?.user?._id)
+  const data = userData?.user?.role === "ADMIN" ? props?.data : filterData;
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -81,7 +84,7 @@ const CategoryList = (props) => {
     setCateId(id)
     setConfirmBoxView(true);
   }
-  const handleSubCategory=(id)=>{
+  const handleSubCategory = (id) => {
     router.push(`/product/category/subCategory/${id}`)
   }
   return (
@@ -94,7 +97,7 @@ const CategoryList = (props) => {
           <div className=' ml-2 '>Add Category</div>
         </div>
       </div>
-      {!data.length>0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>

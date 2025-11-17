@@ -8,13 +8,15 @@ import { Toaster } from 'react-hot-toast';
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ReactLoader } from "../components/common/Loading";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 
 export default function SignIn() {
 
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const [userData, setUserData] = useState("");
 
   const { register, handleSubmit, formState: { errors }, getValues } = useForm();
@@ -24,6 +26,8 @@ export default function SignIn() {
       setLoading(true);
       let response = await http_request.post('/login', reqdata);
       let { data } = response;
+
+      // Store user data in local storage
       localStorage.setItem('user', JSON.stringify(data));
       setUserData(data?.user);
 
@@ -34,29 +38,26 @@ export default function SignIn() {
           localStorage.setItem('user', JSON.stringify(data));
         }
 
-        setLoading(false);
-        router.push("/dashboard");
-        // ToastMessage(data);
-      }
-      else {
-        // console.log(userData);
-        // let response = await http_request.post('/mobileEmailSendOtp', { contact: userData?.contact });
-        // const { data } = response;
-        // if (data?.status === true) {
-        // ToastMessage(data);
-        //   setLoading(false);
-        // router.push("/verification");
-        router.push("/dashboard");
+        
+        ToastMessage(data);
 
-        // }
+        // Navigate and reload
+        window.location.href = "/dashboard"; // Ensures navigation and reload
+        // router.push('/dashboard');
+        // setLoading(false);
+      } else {
+        // Handle unverified users
+        window.location.href = "/dashboard"; // Ensures navigation and reload
+         setLoading(false);
       }
-      ToastMessage(data);
     } catch (err) {
       setLoading(false);
       ToastMessage(err?.response?.data);
       console.log(err);
-    }
+    } 
   };
+
+
 
   const onSubmit = (data) => {
     Login(data);
@@ -87,7 +88,7 @@ export default function SignIn() {
     }
     SendOtp(email);
   };
-
+  const apkDownloadUrl = "/servsyAPP.apk";
   return (
     <>
       <Toaster />
@@ -96,14 +97,18 @@ export default function SignIn() {
           {loading === true ? <ReactLoader />
             : <div className="shadow-lg flex bg-[#ade1e4] rounded-xl min-h-full flex-1 flex-col justify-center px-6 py-5 lg:px-8">
               <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-                <div className="flex justify-center">
-                  <InputIcon fontSize="large" />
+                <div className="flex justify-center  ">
+                  <img
+                    src="/Logo.png" // Replace with actual logo path
+                    alt="Servsy Logo"
+                    className="h-16 w-auto rounded-md" // Adjust size as needed
+                  />
                 </div>
-                <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+                <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
                   Sign in to your account
                 </h2>
               </div>
-              <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+              <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
                 <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -133,17 +138,29 @@ export default function SignIn() {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-2">
+                    <div className="mt-2 relative w-full">
                       <input
                         id="password"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         autoComplete="new-password"
                         required
-                        {...register('password', { required: 'Password is required', minLength: { value: 8, message: 'Password must be at least 8 characters long' } })}
-                        className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.password ? 'border-red-500' : ''}`}
+                        {...register("password", {
+                          required: "Password is required",
+                          minLength: { value: 8, message: "Password must be at least 8 characters long" },
+                        })}
+                        className={`block w-full p-3 pr-10 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.password ? "border-red-500" : ""}`}
                       />
+                      {/* Eye Icon (Properly Positioned) */}
+                      <div
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-2 flex items-center"
+                        
+                      >
+                        {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                      </div>
                     </div>
+ 
                     {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                   </div>
                   <div className="flex items-center">
@@ -176,6 +193,17 @@ export default function SignIn() {
                     Sign Up
                   </Link>
                 </p>
+                {/* <div className="signin-page flex flex-col items-center justify-center p-2 rounded-md bg-gray-100">
+                  <div className="text-md text-gray-700 mb-2">Please download our app directly ---</div>
+
+                
+                  <a href={apkDownloadUrl} download>
+                    <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-2 rounded">
+                      Download APK
+                    </button>
+                  </a>
+                </div> */}
+
               </div>
             </div>
           }

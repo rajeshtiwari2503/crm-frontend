@@ -22,7 +22,7 @@ const Workload = () => {
         try {
             let response = await http_request.get(`/getTechnicianByCenterId/${userType?.user?._id}`)
             let { data } = response;
-
+            //    const filterData=data?.filter((f)=>f?.===userType?._id)
             setTechnician(data)
         }
         catch (err) {
@@ -37,7 +37,7 @@ const Workload = () => {
     return (
         <Sidenav>
             <div className='my-8'>
-                <div className='grid grid-cols-4 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
+                <div className='grid md:grid-cols-4 grid-cols-1 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
                     {technician?.map((item, i) => (
                         <div key={i} className='justify-center flex items-center'>
                             <div onClick={()=>router.push(`/user/technician/details/${item?._id}`)}>

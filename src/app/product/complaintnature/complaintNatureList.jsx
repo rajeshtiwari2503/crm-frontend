@@ -83,7 +83,7 @@ const ComplaintNatureList = (props) => {
         </div>
       </div>
 
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>
@@ -117,7 +117,7 @@ const ComplaintNatureList = (props) => {
                       Complaint Nature
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <TableSortLabel
                       active={sortBy === 'email'}
                       direction={sortDirection}
@@ -125,7 +125,7 @@ const ComplaintNatureList = (props) => {
                     >
                       Status
                     </TableSortLabel>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'createdAt'}
@@ -150,7 +150,7 @@ const ComplaintNatureList = (props) => {
                     </TableCell>
 
                     <TableCell>{row?.nature}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
+                    {/* <TableCell>{row?.status}</TableCell> */}
                     <TableCell>{new Date(row?.createdAt)?.toLocaleDateString()}</TableCell>
                     <TableCell>
                       {/* <IconButton aria-label="view" >

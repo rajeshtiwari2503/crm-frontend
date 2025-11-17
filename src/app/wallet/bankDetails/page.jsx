@@ -3,6 +3,7 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import BankDetailsList from './BankDetailsList'
 import http_request from '../../../../http-request'
+import { useUser } from '@/app/components/UserContext'
 
 
 const BankDetails = () => {
@@ -11,13 +12,16 @@ const BankDetails = () => {
     const [refresh, setRefresh] = React.useState("");
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const storedValue = localStorage.getItem("user");
-        if (storedValue) {
-            setValue(JSON.parse(storedValue));
-        }
+    const { user } = useUser();
+         
+        
+         useEffect(() => {
+          
+           if (user) {
+               setValue(user);
+           }
         getWalletDetails();
-    }, [refresh]);
+    }, [refresh,user]);
 
 
 

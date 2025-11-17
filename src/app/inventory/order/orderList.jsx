@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle,MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Modal, TextField, TablePagination, TableSortLabel, IconButton, Dialog, DialogContent, DialogActions, DialogTitle, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Add, Close, Delete, Label, LocationSearching, Print, Search, Visibility } from '@mui/icons-material';
@@ -11,6 +11,8 @@ import { Toaster } from 'react-hot-toast';
 import http_request from '.././../../../http-request'
 import { ReactLoader } from '@/app/components/common/Loading';
 import { useForm } from 'react-hook-form';
+import SparePartsForm from './addOrder';
+import SparePartsDefcetiveForm from './addDefectiveOrder';
 
 
 const OrderList = (props) => {
@@ -29,6 +31,7 @@ const OrderList = (props) => {
   const [sortBy, setSortBy] = useState('id');
   const [searchTerm, setSearchTerm] = useState('');
   const [order, setOrder] = useState(false);
+  const [orderDefective, setOrderDefective] = useState(false);
   const [selectedSparepart, setSelectedSparepart] = useState('');
   const [selectedserviceCenter, setSelectedserviceCenter] = useState('');
   const [selectedBrand, setSelectedBrand] = useState('');
@@ -60,19 +63,30 @@ const OrderList = (props) => {
 
   //   );
   const data1 = props?.data
-  
-  
-  const brandData=props?.data?.filter((f)=>f?.brand===selectedBrandFiltr)
-  
-  
-  const data=selectedBrandFiltr===""?data1:brandData
-  const sortedData = stableSort(data, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  // console.log("data1",data1);
+  // console.log("selectedBrandFiltr",selectedBrandFiltr);
+
+
+  // const brandData = props?.data?.filter((f) => f?.brandId === selectedBrandFiltr)
+
+
+  // const data = selectedBrandFiltr === "" ? data1 : brandData
+
+
+  const filteredOrders = props?.data?.filter((order) => {
+    const lowerSearch = searchTerm.toLowerCase();
+    return (
+      order.serviceCenter.toLowerCase().includes(lowerSearch) ||
+      order.brandName.toLowerCase().includes(lowerSearch)
+    );
+  });
+  const sortedData = stableSort(filteredOrders, getComparator(sortDirection, sortBy))?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
 
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteInventory/${id}`);
+      let response = await http_request.deleteData(`/deleteOrder/${id}`);
       let { data } = response;
       setConfirmBoxView(false);
       props?.RefreshData(data)
@@ -90,7 +104,7 @@ const OrderList = (props) => {
 
         userInfo?.user?.role === 'BRAND' ?
           `/create-shipment`
-          :stockType==="Fresh Stock"?`/create-center-shipment`: `/create-defective-shipment`
+          : stockType === "Fresh Stock" ? `/create-center-shipment` : `/create-defective-shipment`
 
       let response = await http_request.post(endPoint, data);
       let { data: responseData } = response;
@@ -113,13 +127,18 @@ const OrderList = (props) => {
   }
 
   const handleAdd = () => {
+    setOrderDefective(false)
     setOrder(true)
   }
-
+  const handleAddDefective = () => {
+    setOrderDefective(true)
+    setOrder(true)
+  }
   const handleOrderClose = () => {
 
     setOrder(false)
   }
+  // console.log("orderDefective", orderDefective);
 
   const handleDetails = (id) => {
     router.push(`/inventory/order/details/${id}`)
@@ -283,19 +302,63 @@ const OrderList = (props) => {
   const handleStockTypeChange = (e) => setStockType(e.target.value);
   const handleFileChange = (e) => setSelectedFile(e.target.files[0]);
 
-  const handleApproval = () => {
 
-  }
+  const handleApproval = async (row) => {
+    // console.log("row", row);
+
+    try {
+      setLoading(true);
+
+      // Extract necessary data from the row
+      const data = {
+        orderId: row?._id, // Ensure order ID is sent
+        spareParts: row?.spareParts || [], // Ensure spare parts data
+        serviceCenterId: row?.serviceCenterId,
+        serviceCenter: row?.serviceCenter,
+        brandId: row?.brandId,
+        brandName: row?.brandName,
+      };
+
+      let response = await http_request.patch(`/approvalServiceOrder`, data);
+      let { data: responseData } = response;
+
+      setOrder(false);
+      setLoading(false);
+
+      // Refresh data after successful approval
+      props?.RefreshData(responseData);
+
+      // Show success message
+      ToastMessage(responseData);
+
+    } catch (err) {
+      setLoading(false);
+
+      console.log("Approval Error:", err);
+
+      // Handle errors safely
+      const errorMessage = err?.response?.data?.msg || "Something went wrong!";
+      ToastMessage(err.response.data);
+    }
+  };
+
 
   return (
     <div>
       <Toaster />
       <div className='flex justify-between items-center mb-8'>
         <div className='font-bold text-2xl'>Order Information</div>
-        {props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
+        {props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE" || props?.userData?.user?.role === "SERVICE" || props?.userData?.user?.role === "BRAND" ?
           <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
             <Add style={{ color: "white" }} />
             <div className=' ml-2 text-white '>Add Order</div>
+          </div>
+          : ""
+        }
+        {props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE" ?
+          <div onClick={handleAddDefective} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
+            <Add style={{ color: "white" }} />
+            <div className=' ml-2 text-white '>Add Defective Order</div>
           </div>
           : ""
         }
@@ -310,8 +373,9 @@ const OrderList = (props) => {
         className="ml-2 border border-gray-300 rounded-lg py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
       />
     </div> */}
-     {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
-        <FormControl fullWidth style={{ marginBottom: '20px' }}>
+      {(props?.userData?.user?.role === "ADMIN" || props?.userData?.user?.role === "EMPLOYEE") && (
+        <div className='mb-5'>
+          {/* <FormControl fullWidth style={{ marginBottom: '20px' }}>
           <InputLabel id="brand-select-label">Select Brand</InputLabel>
           <Select
             labelId="brand-select-label"
@@ -322,15 +386,23 @@ const OrderList = (props) => {
             <MenuItem value="">
               <em>All Brands</em>
             </MenuItem>
-            {Array.from(new Set(data1?.map(item => item.brand))).map(brand1 => (
-            <MenuItem key={brand1} value={brand1}>
-              {brand1}
-            </MenuItem>
-          ))}
+            {Array.from(new Set(props?.data?.map(item => item.brandName))).map(brand => (
+              <MenuItem key={brand} value={brand}>
+                {brand}
+              </MenuItem>
+            ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
+          <input
+            type="text"
+            placeholder="Search by Service Center or Brand"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border p-2 rounded w-full"
+          />
+        </div>
       )}
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!filteredOrders?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
 
@@ -338,164 +410,77 @@ const OrderList = (props) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'ticketID'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('ticketID')}
-                    >
-                      Sr. No.
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'partName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('partName')}
-                    >
-                      Part Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'partNumber'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('partNumber')}
-                    >
-                      Part_Number
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'brand'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('brand')}
-                    >
-                      Brand_Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'quantity'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('quantity')}
-                    >
-                      Quantity
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'status'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('status')}
-                    >
-                      Status
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'supplierInformation.name'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('supplierInformation.name')}
-                    >
-                      Send__To
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'orderDate'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('orderDate')}
-                    >
-                      Order_Date
-                    </TableSortLabel>
-                  </TableCell>
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'expectedDeliveryDate'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('expectedDeliveryDate')}
-                    >
-                      Expected_Delivery_Date
-                    </TableSortLabel>
-                  </TableCell> */}
-                  {/* <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'shippingMethod'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('shippingMethod')}
-                    >
-                      Shipping_Method
-                    </TableSortLabel>
-                  </TableCell> */}
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'brandApproval'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('brandApproval')}
-                    >
-                      Approval
-                    </TableSortLabel>
-                  </TableCell>
+                  <TableCell>Sr. No.</TableCell>
+                  <TableCell>Service Center</TableCell>
+                  <TableCell sx={{ minWidth: 300 }}>Spare_Parts</TableCell>
+                  <TableCell>Brand Name</TableCell>
+                  <TableCell>Quantity</TableCell>
+                  <TableCell>Total_Price</TableCell>
+                  <TableCell>Status</TableCell>
+                  <TableCell>Approval</TableCell>
+                  <TableCell>Docket_No.</TableCell>
+                  <TableCell>Track  </TableCell>
+                  <TableCell>Chalan </TableCell>
+                  <TableCell>Order Date</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {sortedData.map((row) => (
-                  <TableRow key={row.i} hover>
-                    <TableCell>{row.i}</TableCell>
-                    <TableCell>{row.partName}</TableCell>
-                    <TableCell>{row.partNumber}</TableCell>
-                    <TableCell>{row.brand}</TableCell>
-                    <TableCell>{row.quantity}</TableCell>
+                {sortedData.map((row, index) => (
+                  <TableRow key={row._id} hover>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{row.serviceCenter}</TableCell>
+                    <TableCell>
+                      {row.spareParts.map((part) => (
+                        <div key={part._id}>
+                          {part.sparePartName} (Qty: {part.quantity}, Price: ₹ {part.price})
+                        </div>
+                      ))}
+                    </TableCell>
+                    <TableCell>{row.brandName}</TableCell>
+                    <TableCell>{row.spareParts.reduce((sum, part) => sum + part.quantity, 0)}</TableCell>
+                    <TableCell>  ₹{row.spareParts.reduce((sum, part) => sum + part.price, 0).toLocaleString()}</TableCell>
                     <TableCell>{row.status}</TableCell>
-                    <TableCell>{row.supplierInformation?.name}</TableCell>
+                    <TableCell>
+                      {row.brandApproval === "DISAPPROVED" ? (
+                        <button
+                          onClick={() => handleApproval(row)}
+                          disabled={loading}
+                          className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
+                          {loading ? "Approval proceed..." : "Approve"}
+                        </button>
+                      ) : (
+                        row.brandApproval
+                      )}
+                    </TableCell>
+                    <TableCell>{row.docketNo}</TableCell>
+                    <TableCell>
+                      <a href={row.trackLink} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                        Track
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      {/* <img src={row.chalanImage} alt="Chalan" width="50" height="50" /> */}
+                      <a
+                        href={row.chalanImage}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View_chalan
+                      </a>
+
+                    </TableCell>
                     <TableCell>{new Date(row.orderDate).toLocaleString()}</TableCell>
-                    {/* <TableCell>{new Date(row.expectedDeliveryDate).toLocaleString()}</TableCell> */}
-                    {row?.brandApproval === "APPROVED" ? <TableCell>{row?.brandApproval}</TableCell>
-                      : <TableCell>
-                        {props?.userData?.user?.role === "BRAND" ?
-                          <button
-                            aria-label="edit"
-                            onClick={() => handleApproval(row?._id)}
-                            className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                          >
-                            <Print className='me-1' /> Approve
-                          </button>
-                          : <div>{row?.brandApproval}</div>
-                        }
-                      </TableCell>
-                    }
-                    {/* <TableCell>{new Date(row.createdAt).toLocaleString()}</TableCell> */}
-                    <TableCell className='flex'>
-                      <div className='flex'>
-
-                        <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
-                          <Visibility color='primary' />
-                        </IconButton>
-
-                        <button
-                          aria-label="edit"
-                          onClick={() => handleManifest(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
-                          className="px-2 py-2 flex  bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        >
-                          <Print className='me-1' /> Manifest
-                        </button>
-                        <button
-                          aria-label="edit"
-                          onClick={() => handleLabel(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}
-                          className="px-2 ms-1 flex  justify-between items-center py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300"
-                        >
-                          <Print className='me-1' /> <div>Label</div>
-                        </button>
-
-                        <IconButton aria-label="delete" onClick={() => handleTracking(row?.shipyariOrder?.data?.[0]?.awbs?.[0]?.tracking?.awb)}>
-                          <LocationSearching color='success' />
-                        </IconButton>
-                        <IconButton aria-label="delete" onClick={() => handleDelete(row)}>
-                          <DeleteIcon color='error' />
-                        </IconButton>
-                      </div>
+                    <TableCell className="flex">
+                      <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
+                        <Visibility color="primary" />
+                      </IconButton>
+                      {props?.userData?.user?.role === "ADMIN" ? <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                        : ""}
                     </TableCell>
                   </TableRow>
                 ))}
@@ -503,10 +488,11 @@ const OrderList = (props) => {
             </Table>
           </TableContainer>
 
+
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={data.length}
+            count={filteredOrders?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -529,188 +515,135 @@ const OrderList = (props) => {
         </IconButton>
         <DialogContent>
           {loading === true ? <div className='w-[400px]'><ReactLoader /> </div>
-            : <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
+            :
 
-              {/* <div>
-              <label className="block text-gray-700  ">Ticket ID</label>
-              <input {...register('ticketID')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.ticketID && <p className="text-red-500 text-sm mt-1">{errors.ticketID.message}</p>}
-            </div> */}
+            // <form onSubmit={handleSubmit(partOrder)} className="max-w-lg mx-auto grid grid-cols-1 gap-2 md:grid-cols-2  bg-white   rounded-md">
 
-              <div>
-                <label id="service-center-label" className="block text-sm font-medium text-black ">
-                  Sparepart Name
-                </label>
 
-                <select
-                  id="service-center-label"
-                  value={selectedSparepart}
-                  onChange={handleSparepartChange}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="" disabled>Select Sparepart</option>
-                  {props?.sparepart?.map((center) => (
-                    <option key={center.id} value={center._id}>
-                      {center.partName}
-                    </option>
-                  ))}
-                </select>
 
-              </div>
-              {props?.userData?.user?.role === "BRAND" ?
-                <div>
-                  <label id="service-center-label" className="block text-sm font-medium text-black ">
-                    Service Center Name
-                  </label>
+            //   <div>
+            //     <label id="service-center-label" className="block text-sm font-medium text-black ">
+            //       Sparepart Name
+            //     </label>
 
-                  <select
-                    id="service-center-label"
-                    value={selectedserviceCenter}
-                    onChange={handleServiceCenterChange}
-                    className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    <option value="" disabled>Select Service Center</option>
-                    {props?.serviceCenter?.map((center) => (
-                      <option key={center.id} value={center._id}>
-                        {center.serviceCenterName}
-                      </option>
-                    ))}
-                  </select>
+            //     <select
+            //       id="service-center-label"
+            //       value={selectedSparepart}
+            //       onChange={handleSparepartChange}
+            //       className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            //     >
+            //       <option value="" disabled>Select Sparepart</option>
+            //       {props?.sparepart?.map((center) => (
+            //         <option key={center.id} value={center._id}>
+            //           {center.partName}
+            //         </option>
+            //       ))}
+            //     </select>
 
-                </div>
-                :
-                <div>
-                  <label id="service-center-label" className="block text-sm font-medium text-black ">
-                    Brand Name
-                  </label>
+            //   </div>
+            //   {props?.userData?.user?.role === "BRAND" ?
+            //     <div>
+            //       <label id="service-center-label" className="block text-sm font-medium text-black ">
+            //         Service Center Name
+            //       </label>
 
-                  <select
-                    id="service-center-label"
-                    value={selectedBrand}
-                    onChange={handleBrandChange}
-                    className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  >
-                    <option value="" disabled>Select Brand</option>
-                    {props?.brand?.map((center) => (
-                      <option key={center.id} value={center._id}>
-                        {center.brandName}
-                      </option>
-                    ))}
-                  </select>
+            //       <select
+            //         id="service-center-label"
+            //         value={selectedserviceCenter}
+            //         onChange={handleServiceCenterChange}
+            //         className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            //       >
+            //         <option value="" disabled>Select Service Center</option>
+            //         {props?.serviceCenter?.map((center) => (
+            //           <option key={center.id} value={center._id}>
+            //             {center.serviceCenterName}
+            //           </option>
+            //         ))}
+            //       </select>
 
-                </div>
-              }
-              <div>
-                <label className="block text-gray-700 "> Model Number</label>
-                <input {...register('partNumber', { required: 'Part Number is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
-              </div>
-              <div>
-                <label className="block text-gray-700 ">Quantity</label>
-                <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-                {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
-              </div>
-              {props?.userData?.user?.role === "SERVICE" ? 
-               <div>
-               <div>
-                <label className="block text-gray-700">Stock Type</label>
-                <select
-                  value={stockType}
-                  onChange={(e) => setStockType(e.target.value)}
-                  className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                >
-                  <option value="fresh">Fresh Stock</option>
-                  <option value="defective">Defective Stock</option>
-                </select>
-              </div>
+            //     </div>
+            //     :
+            //     <div>
+            //       <label id="service-center-label" className="block text-sm font-medium text-black ">
+            //         Brand Name
+            //       </label>
 
-             
-              {stockType === 'defective' && (
-                <div>
-                  <label className="block text-gray-700">Attach Image</label>
-                  <input
-                    type="file"
-                    {...register('defectiveImage', { required: stockType === 'defective' })}
-                    className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  />
-                  {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
-                </div>
-              )}
-                </div>
+            //       <select
+            //         id="service-center-label"
+            //         value={selectedBrand}
+            //         onChange={handleBrandChange}
+            //         className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            //       >
+            //         <option value="" disabled>Select Brand</option>
+            //         {props?.brand?.map((center) => (
+            //           <option key={center.id} value={center._id}>
+            //             {center.brandName}
+            //           </option>
+            //         ))}
+            //       </select>
 
-              :""}
-              <div className='col-span-2'>
-                <label className="block text-gray-700 ">Comments/Notes</label>
-                <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-                {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
-              </div>
-              {/* <div>
-              <label className="block text-gray-700 ">Priority Level</label>
-              <select {...register('priorityLevel')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="Standard">Standard</option>
-                <option value="Urgent">Urgent</option>
-              </select>
-              {errors.priorityLevel && <p className="text-red-500 text-sm mt-1">{errors.priorityLevel.message}</p>}
-            </div>
+            //     </div>
+            //   }
+            //   <div>
+            //     <label className="block text-gray-700 "> Model Number</label>
+            //     <input {...register('partNumber', { required: 'Part Number is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            //     {errors.partNumber && <p className="text-red-500 text-sm mt-1">{errors.partNumber.message}</p>}
+            //   </div>
+            //   <div>
+            //     <label className="block text-gray-700 ">Quantity</label>
+            //     <input {...register('quantity', { valueAsNumber: true }, { required: 'Quantity is required' })} type="number" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            //     {errors.quantity && <p className="text-red-500 text-sm mt-1">{errors.quantity.message}</p>}
+            //   </div>
+            //   {props?.userData?.user?.role === "SERVICE" ? 
+            //    <div>
+            //    <div>
+            //     <label className="block text-gray-700">Stock Type</label>
+            //     <select
+            //       value={stockType}
+            //       onChange={(e) => setStockType(e.target.value)}
+            //       className="block w-full mt-1 p-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            //     >
+            //       <option value="fresh">Fresh Stock</option>
+            //       <option value="defective">Defective Stock</option>
+            //     </select>
+            //   </div>
 
-            <div>
-              <label className="block text-gray-700 ">Send to</label>
-              <input {...register('supplierInformation.name', { required: 'Send to is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.name && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.name.message}</p>}
-            </div>
 
-            <div>
-              <label className="block text-gray-700 "> Service Center  Contact</label>
-              <input {...register('supplierInformation.contact', { required: 'Service Center  Contactis required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.contact && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.contact.message}</p>}
-            </div>
+            //   {stockType === 'defective' && (
+            //     <div>
+            //       <label className="block text-gray-700">Attach Image</label>
+            //       <input
+            //         type="file"
+            //         {...register('defectiveImage', { required: stockType === 'defective' })}
+            //         className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            //       />
+            //       {errors.defectiveImage && <p className="text-red-500 text-sm mt-1">{errors.defectiveImage.message}</p>}
+            //     </div>
+            //   )}
+            //     </div>
 
-            <div>
-              <label className="block text-gray-700 "> Service Center Address</label>
-              <input {...register('supplierInformation.address', { required: 'Service Center Address is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
-            </div>
-            <div>
-              <label className="block text-gray-700 "> Service Center Pincode</label>
-              <input {...register('supplierInformation.pinCode', { required: 'Pincode is required' })} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.supplierInformation?.address && <p className="text-red-500 text-sm mt-1">{errors.supplierInformation.address.message}</p>}
-            </div> */}
-              {/* <div>
-              <label className="block text-gray-700 ">Order Date</label>
-              <input {...register('orderDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" defaultValue={new Date().toISOString().substr(0, 10)} />
-              {errors.orderDate && <p className="text-red-500 text-sm mt-1">{errors.orderDate.message}</p>}
-            </div>
+            //   :""}
+            //   <div className='col-span-2'>
+            //     <label className="block text-gray-700 ">Comments/Notes</label>
+            //     <textarea {...register('comments')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+            //     {errors.comments && <p className="text-red-500 text-sm mt-1">{errors.comments.message}</p>}
+            //   </div>
 
-            <div>
-              <label className="block text-gray-700 ">Expected Delivery Date</label>
-              <input {...register('expectedDeliveryDate')} type="date" className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
-              {errors.expectedDeliveryDate && <p className="text-red-500 text-sm mt-1">{errors.expectedDeliveryDate.message}</p>}
-            </div> */}
 
-              {/* <div>
-              <label className="block text-gray-700 ">Shipping Method</label>
-              <select {...register('shippingMethod')} className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                <option value="Standard">Standard</option>
-                <option value="Express">Express</option>
-              </select>
-              {errors.shippingMethod && <p className="text-red-500 text-sm mt-1">{errors.shippingMethod.message}</p>}
-            </div> */}
-             
+            //   <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
 
-              {/* <div>
-              <label className="block text-gray-700 ">Attachments</label>
-              <input {...register('attachments')} type="file" className="mt-1 block w-full text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" multiple />
-              {errors.attachments && <p className="text-red-500 text-sm mt-1">{errors.attachments.message}</p>}
-            </div> */}
+            // </form>
+            <>
+              {orderDefective ? <SparePartsDefcetiveForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
+                : <SparePartsForm sparepart={props?.sparepart} brands={props?.brand} userData={props?.userData} centers={props?.serviceCenter} RefreshData={props?.RefreshData} onClose={handleOrderClose} />
 
-              <button type="submit" className="w-full py-2 mt-3 px-4 bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Submit</button>
-
-            </form>
+              }  </>
           }
+
         </DialogContent>
 
       </Dialog>
-      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={handleDeleteOrder} />
+      <ConfirmBox bool={confirmBoxView} setConfirmBoxView={setConfirmBoxView} onSubmit={deleteData} />
     </div>
   );
 };

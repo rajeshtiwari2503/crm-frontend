@@ -38,10 +38,12 @@ const AddSubCategory = ({ existingCategory, category, RefreshData, onClose, user
         if (existingCategory) {
             setValue('subCategoryName', existingCategory?.subCategoryName);
             setValue('payout', existingCategory?.payout);
+            setValue('stickerPrice', existingCategory?.stickerPrice);
         }
         if (category) {
             setValue('categoryId', category?._id);
             setValue('categoryName', category?.categoryName);
+            setValue('stickerPrice', existingCategory?.stickerPrice);
         }
     }, [existingCategory, category, setValue]);
     // console.log(category);
@@ -88,6 +90,23 @@ const AddSubCategory = ({ existingCategory, category, RefreshData, onClose, user
                             />
                         </div>
                         {errors.payout && <p className="text-red-500 text-sm mt-1">{errors.payout.message}</p>}
+                    </div>
+                     <div className='w-[400px]'>
+                        <label htmlFor="categoryName" className="block text-sm font-medium leading-6 text-gray-900">
+                            Sticker Price
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="stickerPrice"
+                                name="stickerPrice"
+                                type="text"
+                                autoComplete="off"
+                                required
+                                {...register('stickerPrice' )}
+                                className={`block p-3 w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 ${errors.stickerPrice ? 'border-red-500' : ''}`}
+                            />
+                        </div>
+                      
                     </div>
                     <div className='flex justify-between mt-8'>
                         <Button variant="contained" onClick={() => onClose(true)} className='hover:bg-[#fe3f49] hover:text-white' color="error">

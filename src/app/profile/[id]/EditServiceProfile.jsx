@@ -24,7 +24,7 @@ const EditServiceCenter = (props) => {
             localStorage.setItem('userInfo', JSON.stringify(reqdata));
             ToastMessage(data)
             setLoading(false)
-          router.push(`/dashboard`)
+        //   router.push(`/user/service`)
         }
         catch (err) {
             setLoading(false)
@@ -277,7 +277,7 @@ const EditServiceCenter = (props) => {
                 {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>}
             </div> */}
 
-            <div className='  '>
+            {/* <div className='  '>
               <div >  <label className="text-sm">Upload Business License</label></div>
                 <input type="file" {...register('businessLicense')} />
             </div>
@@ -288,7 +288,7 @@ const EditServiceCenter = (props) => {
             <div className='md:col-span-2'>
             <div >   <label className="text-sm">Upload Certification Documents</label></div>
                 <input type="file" {...register('certificationDocuments')} />
-            </div>
+            </div> */}
             <div className='flex   items-center '>
                 <input type="checkbox" {...register('insuranceCoverage')} />
 
@@ -324,7 +324,7 @@ const EditServiceCenter = (props) => {
                 </div>
                 {errors.captcha && <p className="text-red-500 text-sm mt-1">{errors.captcha.message}</p>}
             </div>
-            <button  disabled={loading}  onClick={handleSubmit(onSubmit)} type="submit" className="bg-blue-500 text-white p-2 rounded">Submit</button>
+            <button  disabled={loading}  onClick={handleSubmit(onSubmit)} type="submit" className="bg-blue-500 text-white p-2 rounded">{loading?"Updating...":"Update"}</button>
         </form>
     );
 };

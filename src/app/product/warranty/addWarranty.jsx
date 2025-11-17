@@ -4,27 +4,69 @@ import http_request from '../../../../http-request'
 import { useForm } from 'react-hook-form';
 import { ReactLoader } from '@/app/components/common/Loading';
 
-const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onClose }) => {
+const ProductWarrantyForm = ({ product, brand, user, existingProduct, RefreshData, onClose }) => {
     const { register, handleSubmit, formState: { errors }, setValue } = useForm();
     const [loadind, setLoading] = useState(false)
     const [productBrand, setProductBrand] = useState([])
 
-    const AddProductWarranty = async (data) => {
+    // const AddProductWarranty = async (data) => {
 
+    //     try {
+    //         setLoading(true);
+    //         if (!data.brandId) {
+    //             alert("Please select Brand")
+    //         } else {
+
+    //             const endpoint = existingProduct?._id ? `/editProductWarranty/${existingProduct._id}` : '/addProductWarranty';
+    //             const response = existingProduct?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, data);
+    //             const { data: responseData } = response;
+    //             ToastMessage(responseData);
+    //             setLoading(false);
+    //             RefreshData(responseData);
+    //             onClose(true);
+
+    //         }
+    //     } catch (err) {
+    //         setLoading(false);
+    //         ToastMessage(err?._message);
+    //         // onClose(true);
+    //         console.log(err);
+    //     }
+    // };
+    const AddProductWarranty = async (data) => {
         try {
             setLoading(true);
-            const endpoint = existingProduct?._id ? `/editProductWarranty/${existingProduct._id}` : '/addProductWarranty';
-            const response = existingProduct?._id ? await http_request.patch(endpoint, data) : await http_request.post(endpoint, data);
+            console.log(data);
+
+            // Validate the brandId
+            if (!data.brandId) {
+                alert("Please select Brand");
+                setLoading(false);
+                return; // Stop further execution
+            }
+
+            // Determine endpoint and method
+            const endpoint = existingProduct?._id
+                ? `/editProductWarranty/${existingProduct._id}`
+                : '/addProductWarranty';
+            const method = existingProduct?._id ? 'patch' : 'post';
+
+            // Make API request
+            const response = await http_request[method](endpoint, data);
             const { data: responseData } = response;
+
+            // Handle success
             ToastMessage(responseData);
-            setLoading(false);
             RefreshData(responseData);
             onClose(true);
         } catch (err) {
+            // Handle error
+            const errorMessage = err?.response?.data?.message || "An error occurred"; // Fallback error message
+            ToastMessage(errorMessage);
+            console.error(err);
+        } finally {
+            // Always stop loading
             setLoading(false);
-            ToastMessage(err?._message);
-            // onClose(true);
-            console.log(err);
         }
     };
 
@@ -47,6 +89,8 @@ const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onC
             setValue('brandId', selectedProduct.brandId);
             setValue('categoryId', selectedProduct.categoryId);
             setValue('categoryName', selectedProduct.categoryName);
+            setValue('subCategoryId', selectedProduct?.subCategoryId);
+            setValue('subCategoryName', selectedProduct?.subCategory);
             setValue('year', new Date());
         }
     };
@@ -54,18 +98,22 @@ const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onC
         const selectedBrandId = e.target.value;
         const selectedBrand = brand?.find(prod => prod._id === selectedBrandId);
 
+
         const selectedProduct = product?.filter(prod => prod?.brandId === selectedBrand?._id);
         if (selectedProduct) {
             setProductBrand(selectedProduct)
         }
         if (selectedBrand) {
-
-            setValue('brandName', selectedProduct.productBrand);
-            setValue('brandId', selectedProduct.brandId);
+            setValue('brandName', selectedBrand.brandName);
+            setValue('brandId', selectedBrand._id);
+            // setValue('brandName', selectedProduct.productBrand);
+            // setValue('brandId', selectedProduct.brandId);
 
         }
     };
 
+
+    const brandData = user?.role === "ADMIN" ? brand : user?.role === "BRAND EMPLOYEE" ? brand?.filter((f) => f?._id === user?.brandId) : brand?.filter((f) => f?._id === user?._id)
     return (
         <div className="max-w-4xl mx-auto">
             {loadind === true ? <div className='w-[400px]'><ReactLoader /></div>
@@ -82,7 +130,7 @@ const ProductWarrantyForm = ({ product, brand, existingProduct, RefreshData, onC
                                 className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.productName ? 'border-red-500' : ''}`}
                             >
                                 <option value="">Select a Brand</option>
-                                {brand?.map((prod) => (
+                                {brandData?.map((prod) => (
                                     <option key={prod._id} value={prod._id}>
                                         {prod.brandName}
                                     </option>

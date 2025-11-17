@@ -18,7 +18,28 @@ const ComplaintList = (props) => {
 
   const router = useRouter()
 
-  const data = props?.data;
+
+
+  // const sortData = props?.userData?.user?.role==="EMPLOYEE"?props?.data?.filter((f1) => props?.userData?.user?.stateZone?.includes(f1?.state)):props?.data;
+ 
+  const selectedBrandIds = props?.userData?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = props?.userData?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+  
+  const sortData = props?.userData?.user?.role === "EMPLOYEE"
+    ? props?.data?.filter(f1 => {
+        const matchState = hasStateZone ? props?.userData?.user?.stateZone.includes(f1?.state) : true;
+        const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+        return matchState && matchBrand;
+      })
+    : props?.data;
+
+    
+  const data = sortData?.map((item, index) => ({
+    ...item,
+    i: index + 1,
+  }));;
+     
   const [status, setStatus] = useState(false);
 
   const [confirmBoxView, setConfirmBoxView] = useState(false);
@@ -312,7 +333,7 @@ const ComplaintList = (props) => {
                 {sortedData.map((row) => (
                   <TableRow key={row?.i} hover>
                     <TableCell>{row?.i}</TableCell>
-                    <TableCell>{row?._id}</TableCell>
+                    <TableCell>{row?.complaintId}</TableCell>
                     <TableCell>{row?.fullName}</TableCell>
                     <TableCell>{row?.emailAddress}</TableCell>
                     <TableCell>{row?.serviceAddress}</TableCell>

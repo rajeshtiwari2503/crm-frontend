@@ -71,20 +71,36 @@ const BrandList = (props) => {
     router.push(`/user/brand/edit/${id}`);
   };
 
-const handleSaas=async(id)=>{
-try{
-  let response = await http_request.patch(`/editBrand/${id}`,{brandSaas:"YES"});
-  let { data } = response;
- 
-  props?.RefreshData(data)
-  ToastMessage(data);
-}
-catch(err){
-  console.log(err);
-  
-}
-}
+  const handleSaas = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "YES" ? "NO" : "YES";
+      let response = await http_request.patch(`/editBrand/${id}`, { brandSaas: newStatus });
+      let { data } = response;
 
+      props?.RefreshData(data);
+      ToastMessage(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleActive = async (id, currentStatus) => {
+    try {
+
+
+      const newStatus = currentStatus === "ACTIVE" ? "INACTIVE" : "ACTIVE";
+
+      let response = await http_request.patch(`/editBrand/${id}`, { status: newStatus });
+      let { data } = response;
+
+      props?.RefreshData(data)
+      ToastMessage(data);
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
   return (
     <div>
       <Toaster />
@@ -97,7 +113,7 @@ catch(err){
           </div>
         }
       </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>
@@ -161,23 +177,45 @@ catch(err){
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.brandName}</TableCell>
                     <TableCell>{row?.email}</TableCell>
-                    <TableCell>{row?.status}</TableCell>
+                    <TableCell>
+                      {props?.userData?.role === "ADMIN" ?
+                        <>
+                          <button
+                            onClick={() => handleActive(row?._id, row?.status)}
+                            className={`flex items-center justify-center px-4 py-2 text-white font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50
+    ${row?.status === "ACTIVE"
+                                ? "bg-red-500 hover:bg-red-600 focus:ring-red-300"
+                                : "bg-green-500 hover:bg-green-600 focus:ring-green-300"}`}
+                            aria-label="edit"
+                          >
+                            {row?.status === "ACTIVE" ? "Deactivate" : "Activate"}
+                          </button>
+
+                        </>
+                        : ""
+                      }
+                    </TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell>
                       {props?.userData?.role === "ADMIN" ?
                         <>
-                          {row?.brandSaas === "YES" ? <IconButton aria-label="edit"  >
-                            <div className=''> <Verified color='success'/> SAAS</div>
-                          </IconButton>
-                            : <button
-                              onClick={() => handleSaas(row?._id)}
+                          {row?.brandSaas === "YES" ? (
+                            <IconButton aria-label="edit" onClick={() => handleSaas(row?._id, row?.brandSaas)}>
+                              <div className="flex items-center text-green-600 font-semibold">
+                                <Verified color="success" className="mr-1" /> SAAS
+                              </div>
+                            </IconButton>
+                          ) : (
+                            <button
+                              onClick={() => handleSaas(row?._id, row?.brandSaas)}
                               className="flex items-center justify-center px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50"
                               aria-label="edit"
                             >
-                              <div className="">   Add SAAS</div>
+                              <div className="">Add SAAS</div>
                             </button>
-                          }
+                          )}
                         </>
+
                         : ""
                       }
 

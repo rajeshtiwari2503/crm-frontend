@@ -50,7 +50,7 @@ const BankDetailsList = ({ RefreshData, data, value }) => {
     const AddBankDetails = async (data) => {
         try {
 
-            const reqData = { ...data, userId: value?.user?._id, userName: value?.user?.serviceCenterName }
+            const reqData = { ...data, userId: value?.user?._id, userName: value?.user?.role==="BRAND"?value?.user?.brandName: value?.user?.serviceCenterName }
 
             setLoading(true);
             const endpoint = existingDetails?._id ? `/editBankDetails/${existingDetails._id}` : '/addBankDetails';

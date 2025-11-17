@@ -58,7 +58,7 @@ const WarrantyList = (props) => {
 
   const deleteData = async () => {
     try {
-      let response = await http_request.deleteData(`/deleteProductWarranty/${cateId}`);
+      let response = await http_request.patch(`/deleteProductWarranty/${cateId}`);
       let { data } = response;
       setConfirmBoxView(false);
       ToastMessage(data)
@@ -174,9 +174,11 @@ const WarrantyList = (props) => {
                       <IconButton aria-label="view" onClick={() => handleDetails(row._id)}>
                         <Visibility color='primary' />
                       </IconButton>
+                     {props?.user.role==="ADMIN"?
                       <IconButton aria-label="delete" onClick={() => handleDelete(row._id)}>
                         <Delete color='error' />
                       </IconButton>
+                      :""}
 
                     </TableCell>
                   </TableRow>
@@ -205,6 +207,7 @@ const WarrantyList = (props) => {
             product={props?.product}
             existingProduct={editData}
             RefreshData={props?.RefreshData}
+            user={props?.user}
             onClose={handleEditModalClose}
           />
         </DialogContent>

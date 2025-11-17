@@ -16,6 +16,9 @@ import TechnicianList from '../user/technician/technicianList';
 import ServiceList from '../user/service/serviceList';
 import dynamic from 'next/dynamic';
 import DealerReport from './DealerReport';
+import BrandReport from './BrandReport';
+import { useUser } from '../components/UserContext';
+import ServiceCenterRepot from './ServiceCenterReport';
 
 
 const AreaChart = dynamic(() => import("../analytics/charts/areaChart"), {
@@ -53,7 +56,7 @@ const Report = () => {
   const [includeCharts, setIncludeCharts] = useState(false);
   const [reportData, setReportData] = useState({ summary: '', details: {}, labels: [], data: [] });
 
-  const handleGenerateReport = async () => {
+  const handleGenerateReportold = async () => {
     try {
       setLoading(true)
       const response = await http_request.post('/filterData', {
@@ -63,7 +66,7 @@ const Report = () => {
         filters,
         includeCharts,
       });
-
+      console.log(response.data);
       setReportData(response.data);
       setLoading(false)
 
@@ -73,23 +76,97 @@ const Report = () => {
       console.error('Error generating report:', error);
     }
   };
+  const handleGenerateReport = async () => {
+    try {
+      setLoading(true);
+  
+      // Example: Assuming userRole and brandId are available in the component's state or context
+   
+      const storedValue = localStorage.getItem("user");
+         const brand=JSON.parse(storedValue)
+         const userRole =brand?.user?.role;  
+         const brandId =brand?.user?._id;   
+  
+      // const payload = {
+      //   reportType,
+      //   startDate,
+      //   endDate,
+      //   filters,
+      //   includeCharts,
+      // };
+   const formatDateWithoutTimezone = (date) => {
+      if (!date) return null;
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    };
+
+    const payload = {
+      reportType,
+      startDate: startDate ? formatDateWithoutTimezone(startDate) : null,
+      endDate: endDate ? formatDateWithoutTimezone(endDate) : null,
+      filters,
+      includeCharts, // e.g., true/false
+    };
+      // Add brandId to filters if user role is "brand"
+      if (userRole === "BRAND") {
+        payload.filters = {
+          ...filters,
+          brandId,userRole, // Add brandId filter
+        };
+      }
+  // console.log("ajjhj",payload);
+  
+      const response = await http_request.post('/filterData', payload);
+      // console.log(response.data);
+     
+      setReportData(response?.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.error('Error generating report:', error);
+    }
+  };
+  
+  // const handleGenerateReport = async () => {
+  //   try{
+  //     setLoading(true)
+      
+  //     const storedValue = localStorage.getItem("user");
+  //    const brand=JSON.parse(storedValue)
+  //     let response = await http_request.get(`/getCustomers/${brand?.user?._id}`)
+  //     let { data } = response;
+  // console.log(data);
+  
+  //     setReportData({data:data});
+  //     setLoading(false)
+  //   }
+  
+  //   catch(err){
+  //     console.log(err);
+  //     setLoading(false)
+
+      
+  //   }
+  // }
   const [userData, setUserData] = useState([])
   const [complaints, setComplaints] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
   const [value, setValue] = React.useState(null);
-
+const { user } = useUser();
   useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+     
+    if (user) {
+      setValue(user);
     }
     getAllUserAndProducts()
     fetchComplaints()
     // applyFilters();
-  }, [ ])
+  }, [user ])
 // }, [filters,  startDate, endDate])
 
-console.log(filteredComplaints,"gggggf");
+// console.log(filteredComplaints,"gggggf");
   const fetchComplaints = async () => {
     setLoading(true);
     try {
@@ -148,8 +225,10 @@ console.log(filteredComplaints,"gggggf");
         return complaintDate >= startDate && complaintDate <= endDate;
       });
     }
-    console.log(filtered,"dghghgd");
-    setFilteredComplaints(filtered);
+    
+  const sortData = user?.user?.role==="EMPLOYEE"?filtered?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):filtered;
+  console.log(sortData,"sortData");
+    setFilteredComplaints(sortData);
   };
   const getAllUserAndProducts = async () => {
     let response = await http_request.get("/getUserAndProduct")
@@ -157,12 +236,20 @@ console.log(filteredComplaints,"gggggf");
 
     setUserData(data)
   }
-  // console.log(reportData);
+
+  
   return (
     <Sidenav>
-     {value?.user?.role==="DEALER"?
+     {value?.user?.role==="DEALER" ?
      <DealerReport  userData={value?.user}/>
-     : <div className="container mx-auto p-2">
+     :value?.user?.role==="BRAND"|| value?.user?.role==="BRAND EMPLOYEE"? 
+     <BrandReport userData={value?.user}/>:
+     value?.user?.role==="SERVICE"? 
+     <ServiceCenterRepot userData={value?.user}/>
+     : 
+     <>
+     {value?.user?.role==="ADMIN"|| value?.user?.role==="EMPLOYEE"? 
+     <div className="container mx-auto p-2">
         <h2 className="text-xl font-semibold mb-2">Reports and Analytics</h2>
         <div className="mb-4 grid grid-cols-1 gap-2">
 
@@ -173,10 +260,11 @@ console.log(filteredComplaints,"gggggf");
             setStartDate={setStartDate}
             setEndDate={setEndDate}
           />
-          <FilterOptions userData={userData} filters={filters} setFilters={setFilters} />
+          <FilterOptions userData={userData} userValue={value}filters={filters} setFilters={setFilters} />
           <VisualizationOptions includeCharts={includeCharts} setIncludeCharts={setIncludeCharts} />
 
-          <div className='flex mt-2'>
+          <div className='flex justify-between items-center mt-2'>
+            <div>
             <button
               className="px-4 py-2 me-3 bg-green-500 text-white rounded-lg hover:bg-green-600"
               onClick={handleGenerateReport}
@@ -184,13 +272,240 @@ console.log(filteredComplaints,"gggggf");
             >
               {loading ? 'Generating...' : 'Generate Report'}
             </button>
-
+            </div>
             {reportType === "USER" ?
               <>{reportData?.data?.brands?.length > 0 || reportData?.data?.customers?.length > 0 || reportData?.data?.serviceCenters?.length > 0 || reportData?.data?.technicians?.length > 0 ?
-                <DownloadFiterDataExcel reportData={reportData} fileName="UserReport" /> : ""}
+               <div> 
+                <DownloadFiterDataExcel reportData={reportData} fileName="User_Report" /></div>
+                 : ""}
+               
               </>
               : <>
-                {reportData?.complaints?.length > 0 ? <DownloadExcel data={reportData?.complaints} fileName="ComplaintsList" /> : ""}
+              <div> 
+                {reportData?.complaints?.length > 0 ? 
+  //               <DownloadExcel  userData={user} 
+  //               // data={reportData?.complaints} 
+  //               data={reportData?.complaints?.map(complaint => ({
+  //                 ...complaint,
+  //                 sndStatus: complaint.updateComments?.map(comment => 
+  //                   `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+  //                 ).join(", ") || "", // Join all statuses with timestamps, separated by a comma
+  //                 // Find "FINAL VERIFICATION" status and extract its comment
+  // closerComment: complaint.updateHistory?.find(entry => 
+  //   entry.changes?.status === "FINAL VERIFICATION"
+  // )?.changes?.comments || " ",
+                
+  //               empName: complaint.updateHistory?.find(entry => 
+  //                 entry.changes?.status === "FINAL VERIFICATION"
+  //               )?.changes?.empName || " "
+  //                             })
+  //             )} 
+  //               fileName="ComplaintsList" 
+  //               fieldsToInclude={[ 
+  //                 "complaintId",
+  //                 "productBrand",   
+  //                 "categoryName",
+  //                 "subCategoryName",
+  //                "productName",
+  //                 "modelNo",
+  //                 "warrantyStatus",
+  //                 "userName",
+  //                 "fullName",
+  //                 "phoneNumber",
+  //                 "serviceAddress",
+  //                 "detailedDescription",
+  //                 "status",
+  //                 "empName",
+  //                 "state",
+  //                 "district",
+  //                 "pincode",
+  //                 "serialNo",
+  //                 "purchaseDate",
+  //                 "assignServiceCenter", 
+  //                 "serviceCenterContact", 
+  //                 "assignTechnician", 
+  //                 "paymentServiceCenter",              
+  //                 "paymentBrand", 
+  //                 "closerComment",
+  //                 "updatedAt",
+  //                 "createdAt",
+                 
+  //                 "sndStatus", // Include concatenated status with timestamps 
+  //                 ]}
+  <DownloadExcel 
+  userData={user}
+  data={reportData?.complaints?.map(complaint => {
+    const createdAt = new Date(complaint.createdAt);
+const now = new Date();
+
+// Use complaintCloseTime if available, else use today
+const isClosed = !!complaint.complaintCloseTime;
+const endDate = isClosed
+  ? new Date(complaint.complaintCloseTime)
+  : new Date(now);
+
+// Normalize both dates to midnight
+const start = new Date(createdAt.setHours(0, 0, 0, 0));
+const end = new Date(endDate.setHours(0, 0, 0, 0));
+
+// Exclude the closing day or today
+end.setDate(end.getDate() - 1);
+
+let agingDays = 0;
+const current = new Date(start);
+
+while (current <= end) {
+  const dayOfWeek = current.getDay(); // 0 = Sunday
+  if (dayOfWeek !== 0) {
+    agingDays++;
+  }
+  current.setDate(current.getDate() + 1);
+}
+
+let aging = `${agingDays}d`;
+
+    // if (durationDays > 0) {
+    //   edge = `${durationDays}d`; // Only show days if it's more than 24h
+    // } else if (durationHours > 0) {
+    //   edge = `${durationHours}h ${durationMinutes}m`;
+    // } else {
+    //   edge = `${durationMinutes}m`;
+    // }
+
+
+ // 🔑 Calculate aging per status
+ const statusAging = {};
+
+complaint.updateHistory?.forEach((update, index) => {
+  // Determine start and end of the period for this status
+  const prevDate = index === 0 
+    ? new Date(complaint.createdAt) 
+    : new Date(complaint.updateHistory[index - 1].updatedAt);
+  const currDate = new Date(update.updatedAt);
+
+  // Normalize dates to midnight
+  const temp = new Date(prevDate.setHours(0, 0, 0, 0));
+  const endTemp = new Date(currDate.setHours(0, 0, 0, 0));
+  endTemp.setDate(endTemp.getDate() - 1); // Exclude the closing day
+
+  // Count days excluding Sundays
+  let days = 0;
+  while (temp <= endTemp) {
+    if (temp.getDay() !== 0) days++; // Skip Sundays
+    temp.setDate(temp.getDate() + 1);
+  }
+
+  const status = update.changes?.status || "UNKNOWN";
+  statusAging[status] = (statusAging[status] || 0) + days;
+});
+
+console.log(statusAging);
+
+
+
+
+// 🔑 Build UpdateFullHistory string with date & details
+  const updateFullHistory = complaint.updateHistory?.map(update => {
+    const updatedAt = update.updatedAt
+      ? new Date(update.updatedAt).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      : "";
+
+    const status = update.changes?.status || "";
+    const empName = update.changes?.empName || "";
+    const comments =
+      update.changes?.comments || update.changes?.finalComments || "";
+    const assignServiceCenter = update.changes?.assignServiceCenter || "";
+    const kilometer = update.changes?.kilometer || "";
+    const spareParts = update.changes?.spareParts || "";
+
+    return `${updatedAt} → Status: ${status} (By ${empName}${
+      comments ? `, Comments: ${comments}` : ""
+    }${assignServiceCenter ? `, ServiceCenter: ${assignServiceCenter}` : ""}${
+      kilometer ? `, Km: ${kilometer}` : ""
+    }${spareParts ? `, SpareParts: ${spareParts}` : ""})`;
+  }).join("\n") || "";
+
+ const assignedByEmp =
+    complaint.updateHistory?.find(entry =>
+      entry.changes?.assignServiceCenter
+    )?.changes?.empName || " ";
+
+
+    return {
+      ...complaint,
+      sndStatus: complaint.updateComments?.map(comment => 
+        `${comment.changes?.sndStatus || ""} (${comment.updatedAt})`
+      ).join(", ") || "",
+
+      closerComment: complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "FINAL VERIFICATION"
+      )?.changes?.comments || " ",
+
+      empName: complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "FINAL VERIFICATION"
+      )?.changes?.empName || " ",
+      finalComments:complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "COMPLETED"
+      )?.changes?.finalComments || " ",
+      kilometer:complaint.updateHistory?.find(entry => 
+        entry.changes?.status === "COMPLETED"
+      )?.changes?.kilometer || " ",
+      aging:aging ,// ⏳ Add the computed edge field to the exported row
+       agingPerStatus: JSON.stringify(statusAging),
+      UpdateFullHistory: updateFullHistory ,
+       assignedByEmp: assignedByEmp
+    };
+  })}
+  fileName="ComplaintsList"
+  fieldsToInclude={[ 
+    "complaintId",
+    "uniqueId",
+    "productBrand",   
+    "categoryName",
+    "subCategoryName",
+    "productName",
+    "modelNo",
+    "warrantyStatus",
+    "userName",
+    "fullName",
+    "phoneNumber",
+    "serviceAddress",
+    "detailedDescription",
+    "status",
+    "empName",
+      "assignedByEmp",
+    "state",
+    "district",
+    "pincode",
+    "serialNo",
+    "purchaseDate",
+    "aging" ,// ⏳ Include the edge (duration) field in Excel
+    "agingPerStatus",
+    "assignServiceCenter", 
+    "serviceCenterContact", 
+    "assignTechnician", 
+    "paymentServiceCenter",              
+    "paymentBrand",
+    "finalComments", 
+    "kilometer", 
+    "closerComment",
+    "updatedAt",
+    "createdAt",
+    "sndStatus",
+    "UpdateFullHistory"
+   
+  ]}
+
+
+                /> : ""
+                }
+               </div>
               </>
             }
 
@@ -208,7 +523,7 @@ console.log(filteredComplaints,"gggggf");
           }
         </div>
         {reportType === "COMPLAINT" && reportData?.complaints?.length > 0 ?
-          <ComplaintList data={reportData?.complaints} />
+          <ComplaintList userData={user}data={reportData?.complaints} />
           : ""}
         {reportType === "USER" && reportData?.data?.customers?.length > 0 ?
           <CustomerList data={reportData?.data?.customers} report={true} />
@@ -224,6 +539,8 @@ console.log(filteredComplaints,"gggggf");
           : ""}
         {/* <ReportDisplayArea reportData={reportData} /> */}
       </div>
+      :""}
+      </>
 }
     </Sidenav>
   );

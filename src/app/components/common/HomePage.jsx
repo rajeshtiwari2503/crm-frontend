@@ -2,23 +2,17 @@
 import React, { useEffect, useState } from 'react'
 import Dashboard from '@/app/dashboard/page';
 import SignIn from '@/app/sign_in/page';
+import { useUser } from '../UserContext';
 
 
 
 const HomePageCRM = () => {
-
-    const [value, setValue] = useState("");
-
-    useEffect(() => {
-        const storedValue = localStorage.getItem("user");
-        if (storedValue) {
-            setValue(JSON.parse(storedValue));
-        }
-    }, []);
+  const { user } = useUser();
+   
     return (
         <main className="   ">
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER" || value?.user?.role === "USER"|| value?.user?.role === "TECHNICIAN"
+            {user?.user?.role === "ADMIN" || user?.user?.role === "BRAND" || user?.user?.role === "SERVICE" || user?.user?.role === "DEALER" || user?.user?.role === "USER"|| user?.user?.role === "TECHNICIAN"
                 ? <Dashboard />
                 : <SignIn />
             }

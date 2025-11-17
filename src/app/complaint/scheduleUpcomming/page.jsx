@@ -1,0 +1,94 @@
+
+"use client"
+import React, { useEffect, useState } from 'react'
+import http_request from "../../../../http-request"
+import { Toaster } from 'react-hot-toast';
+import Sidenav from '@/app/components/Sidenav';
+
+import { useUser } from '@/app/components/UserContext';
+import ScheduleComplaintList from './scheduleComplaintList';
+import { ReactLoader } from '@/app/components/common/Loading';
+
+
+
+const Service = () => {
+
+  const [complaint, setComplaint] = useState([])
+  const [serviceCenter, setServiceCenter] = useState([])
+  const [refresh, setRefresh] = useState("")
+  const [value, setValue] = React.useState(null);
+  const [loading, setloading] = React.useState(false);
+
+  const { user } = useUser()
+  useEffect(() => {
+    getAllComplaint()
+    getAllServiceCenter()
+
+    if (user) {
+      setValue(user);
+    }
+  }, [refresh, user])
+
+  const getAllComplaint = async () => {
+    try {
+      setloading(true)
+      let response = await http_request.get("/getComplaintsByUpcomming")
+      let { data } = response;
+
+      setComplaint(data)
+      setloading(false)
+    }
+    catch (err) {
+      setloading(false)
+      console.log(err);
+    }
+  }
+  const getAllServiceCenter = async () => {
+    try {
+      let response = await http_request.get("/getAllService")
+      let { data } = response;
+
+      setServiceCenter(data)
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
+  // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+
+  const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = user?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+
+  const sortData = user?.user?.role === "EMPLOYEE"
+    ? complaint?.filter(f1 => {
+      const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
+    : complaint;
+
+  const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
+
+  const RefreshData = (data) => {
+    setRefresh(data)
+  }
+
+  return (
+    <Sidenav>
+      <Toaster />
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
+          <ScheduleComplaintList data={data} serviceCenter={serviceCenter} userData={value?.user} RefreshData={RefreshData} />
+        </>
+      )}
+    </Sidenav>
+  )
+}
+
+export default Service

@@ -76,10 +76,10 @@ const UserAllServicesList = (props) => {
     setStatus(false)
   }
   return (
-    <div>
+    <div className=' '>
       <Toaster />
       <div className='flex justify-between items-center mb-3'>
-        <div className='font-bold text-2xl'>  User All Service Information</div>
+        <div className='font-bold text-2xl md:w-full w-[260px]'>  User All Service Information</div>
         {/* {props?.dashboard===true?""
         : <div onClick={handleAdd} className='flex bg-[#0284c7] hover:bg-[#5396b9] hover:text-black rounded-md p-2 cursor-pointer text-white justify-between items-center '>
           <Add style={{ color: "white" }} />
@@ -88,9 +88,10 @@ const UserAllServicesList = (props) => {
         } */}
       </div>
 
-      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data?.length > 0 ? <div className='h-[400px] flex justify-center items-center'>  Data not available !</div>
         :
-        <>
+        <div className='flex justify-center'>
+        <div className='md:w-full w-[260px]'>
              <TableContainer component={Paper}>
             <Table>
             <TableHead>
@@ -110,7 +111,7 @@ const UserAllServicesList = (props) => {
                       direction={sortDirection}
                       onClick={() => handleSort('_id')}
                     >
-                      Ticket Id
+                      Complaint Id
                     </TableSortLabel>
                   </TableCell>
                   <TableCell>
@@ -240,33 +241,7 @@ const UserAllServicesList = (props) => {
                       Assign Service Center
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianName'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianName')}
-                    >
-                      Technician Name
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianContact'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianContact')}
-                    >
-                      Technician Contact
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell>
-                    <TableSortLabel
-                      active={sortBy === 'technicianComments'}
-                      direction={sortDirection}
-                      onClick={() => handleSort('technicianComments')}
-                    >
-                      Technician Comments
-                    </TableSortLabel>
-                  </TableCell>
+                  
                   <TableCell>
                     <TableSortLabel
                       active={sortBy === 'status'}
@@ -308,9 +283,7 @@ const UserAllServicesList = (props) => {
                     <TableCell>{row?.detailedDescription}</TableCell>
                     <TableCell>{row?.errorMessages}</TableCell>
                     <TableCell>{row?.assignServiceCenter}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
-                    <TableCell>{row?.phoneNumber1}</TableCell>
+                    
                     <TableCell>{row?.status}</TableCell>
                     <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                     <TableCell className="p-0">
@@ -337,7 +310,9 @@ const UserAllServicesList = (props) => {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
-        </>}
+        </div>
+        </div>
+        }
      
     </div>
   );

@@ -3,18 +3,22 @@ import http_request from '../../../http-request'; // Assuming this is your API u
 import CountUp from 'react-countup'; // For counting animations
 import { Chart } from 'react-google-charts'; // For charts
 import RecentServicesList from '../complaint/RecentServices'; // Assuming this component displays recent services
+import { AccessTime, Assignment, AssignmentTurnedIn, Cancel, FactCheck, LocalShipping, PausePresentation, Pending, PendingActions, PeopleAlt, ProductionQuantityLimits, QrCodeScanner, Settings, ShoppingBag, Wallet } from '@mui/icons-material';
 
 const TechnicianDashboard = (props) => {
   const userData = props?.userData; // Technician's user data
   const dashData = props?.dashData; // Dashboard data for counts and summaries
   const [complaint, setComplaint] = useState([]); // State to hold complaint data
   const [refresh, setRefresh] = useState(""); // State for triggering data refresh
-  const [averageTAT, setAverageTAT] = useState(0); // State for average TAT
+   // State for average TAT
   const [averageClosingTime, setAverageClosingTime] = useState(0); // State for average closing time (CT)
   const [averageResponseTime, setAverageResponseTime] = useState(0); // State for average response time (RT)
   const [tatPercentage, setTatPercentage] = useState(0); // State for TAT percentage
   const [ctPercentage, setCtPercentage] = useState(0); // State for CT percentage
   const [rtPercentage, setRtPercentage] = useState(0); // State for RT percentage
+ const [averageCT, setAverageCT] = useState(0);
+    const [averageRT, setAverageRT] = useState(0);
+    const [averageTAT, setAverageTAT] = useState(0);
 
   const actualTAT = 12;
   const actualCT = 6;
@@ -48,7 +52,7 @@ const TechnicianDashboard = (props) => {
       let { data } = response;
 
       // Filter complaints assigned to this technician
-      const techComp = data.filter((item) => item?.technicianId === userData._id);
+      const techComp = data?.data?.filter((item) => item?.technicianId === userData._id);
 
       // Filter completed complaints for TAT calculation
       const completedComplaints1 = techComp.filter(c => c.status === 'COMPLETED');
@@ -89,7 +93,7 @@ const TechnicianDashboard = (props) => {
       const rtPercent = completedComplaints.length ? (avgCT / targetRT) * 100 : 0;
       setRtPercentage(rtPercent.toFixed(2));
 
-      setComplaint(data); // Store all fetched complaints
+      setComplaint(data?.data); // Store all fetched complaints
     } catch (err) {
       console.log(err); // Handle errors if any
     }
@@ -144,162 +148,418 @@ const TechnicianDashboard = (props) => {
       {/* Render additional content or sections as needed */}
 
       {/* Display summary statistics */}
-      <div className='my-8'>
-        <div className='grid grid-cols-5 gap-4 items-center bg-sky-100 rounded-xl shadow-lg p-5'>
-          {/* Example count display with CountUp */}
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+      <div className='mb-10'>
+        <div className=' h-8 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mb-3'>Complaints</div>
+
+        <div className='grid md:grid-cols-5 grid-cols-1 gap-4  '>
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/pending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Total Service  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/inprogress")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Completed  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Pending fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>In Progress</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-red-400 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/assign")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Assigned  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AssignmentTurnedIn fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Assign</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.assign} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.inProgress} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/partpending")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>In Progress </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Part Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.partPending} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Part Pending  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Total Pending</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-green-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.pending} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/scheduleUpcomming")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>Pending  </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>  Upcomming Schedule</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.schedule} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/cancel")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> 0-1 days service </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Cancel fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Cancel</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.cancel} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/finalVerification")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> 2-5 days service </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <FactCheck fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Final Verification</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.finalVerification} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-yellow-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/close")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'> More than Five Days  Service</div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AssignmentTurnedIn fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Close</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.complete} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {/* Continue with other statistics like assigned, pending, etc. */}
-          {/* Include average TAT, CT, RT, and their percentages */}
-          {/* Example for average closing time (CT) */}
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageClosingTime} delay={1} /> {"%"}
+
+
+
+          <div className=' '>
+            <div onClick={() => router.push("/complaint/allComplaint")} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
               </div>
-              <div className='text-center mt-2'>CT</div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Assignment fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Total Complaints</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.allComplaints} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          {/* Display CT percentage */}
-          {/* <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={ctPercentage} delay={1} /> %
-              </div>
-              <div className='text-center mt-2'>CT</div>
-            </div>
-          </div> */}
-          {/* Continue with other statistics like RT, TAT, etc. */}
-          {/* Example for average response time (RT) */}
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageResponseTime} delay={1} /> {"%"}
-              </div>
-              <div className='text-center mt-2'>RT</div>
-            </div>
-          </div>
-          {/* Display RT percentage */}
-          {/* <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={rtPercentage} delay={1} /> %
-              </div>
-              <div className='text-center mt-2'>RT</div>
-            </div>
-          </div> */}
-          {/* Continue with other statistics like TAT, etc. */}
-          {/* Example for average TAT */}
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={averageTAT} delay={1} /> {"%"}
-              </div>
-              <div className='text-center mt-2'>TAT</div>
-            </div>
-          </div>
-          <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={100} delay={1} />
-              </div>               <div className='text-center mt-2'>Wallet Amount</div>
-            </div>
-          </div>
-          {/* Display TAT percentage */}
-          {/* <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={tatPercentage} delay={1} /> %
-              </div>
-              <div className='text-center mt-2'>TAT</div>
-            </div>
-          </div> */}
-          {/* Continue with other statistics like CT, RT, etc. */}
-          {/* Example for TAT percentage */}
-          {/* <div className='justify-center flex items-center'>
-            <div>
-              <div className='bg-gray-300 rounded-md mt-3 cursor-pointer p-4'>
-                <CountUp start={0} end={tatPercentage} delay={1} /> %
-              </div>
-              <div className='text-center mt-2'>TAT</div>
-            </div>
-          </div> */}
-          {/* Continue with other statistics like RT, CT, etc. */}
         </div>
-      </div>
+
+        <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Pending Complaints</div>
+
+        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/pending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center justify-between'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>0-1 day</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.zeroToOneDays} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/pending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>2-5 Days</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.twoToFiveDays} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/pending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>more than 5 days</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.moreThanFiveDays} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/pending/${"schedule"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center justify-between'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Schedule   Today</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.scheduleUpcomming} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/close`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <PendingActions fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Today completed</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.completedToday} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className=' h-8  md:col-span-4 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Day wise Part Pending Complaints</div>
+
+        <div className='grid md:grid-cols-5 sm:grid-cols-1 gap-4'>
+        
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/partpending/${"0-1"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>0-1 day</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.zeroToOneDaysPartPending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/partpending/${"2-5"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>2-5 Days</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.twoToFiveDaysPartPending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div onClick={() => router.push(`/complaint/partpending/${"more-than-week"}`)} className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Settings fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>more than 5 days</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.moreThanFiveDaysPartPending} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' h-8  md:col-span-5 col-span-1 rounded-md flex items-center pl-5 bg-white shadow-lg   transi duration-150 text-1xl text-[#09090b] font-bold mt-5 mb-3'>Other details</div>
+
+           
+            
+          <div className=' '>
+            <div   className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Wallet fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Wallet Amount</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.walletAmount} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div  className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <Wallet fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>Pay Amount</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={dashData?.complaints?.totalAmount} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AccessTime fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>R T</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageRT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AccessTime fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>C T</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageCT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className=' '>
+            <div className='mx-auto bg-sky-50 rounded-xl shadow-lg hover:scale-105 transi duration-150 cursor-pointer' >
+              <div className='flex justify-between'>
+              </div>
+              <div className='pl-5 py-1 flex justify-between items-center'>
+                <div className='flex items-center'>
+                  <AccessTime fontSize='medium' />
+                  <div className='ml-2'>
+                    <div className='text-blue-500 font-semibold'>TAT</div>
+                    <div className=' text-2xl font-semibold'>
+                      <CountUp start={0} end={averageTAT} delay={1} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
 
       {/* Display charts for visualization */}
-      <div className='grid grid-cols-2 gap-4'>
+      <div className='grid md:grid-cols-2 grid-cols-1 gap-4 '>
         {/* Example: Pie Chart */}
         <div className='bg-gray-200 rounded-xl shadow-lg p-5'>
           <Chart
@@ -328,8 +588,10 @@ const TechnicianDashboard = (props) => {
 
       {/* Display recent services list */}
       {props?.performance === true ? ""
-        : <div className='mt-8'>
-          <RecentServicesList data={data} />
+        :   <div className="mt-8 flex justify-center ">
+      <div className="  md:w-full w-[260px] ">
+          <RecentServicesList data={data} userData={props?.userData}/>
+        </div>
         </div>
       }
       {/* Include other components or sections as required */}

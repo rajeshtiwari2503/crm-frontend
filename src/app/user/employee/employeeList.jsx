@@ -62,7 +62,7 @@ const EmployeeList = (props) => {
   const handleAdd = () => {
     router.push("/user/employee/add")
   }
-  
+
   const handleDetails = (id) => {
     router.push(`/user/employee/details/${id}`)
   }
@@ -80,7 +80,7 @@ const EmployeeList = (props) => {
           <div className=' ml-2 '>Add Employee</div>
         </div>
       </div>
-      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> <ReactLoader /></div>
+      {!data.length > 0 ? <div className='h-[400px] flex justify-center items-center'> Data not available !</div>
         :
         <>
           <TableContainer component={Paper}>
@@ -114,6 +114,24 @@ const EmployeeList = (props) => {
                       Email
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'brandName'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('brandName')}
+                    >
+                      Creator
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell>
+                    <TableSortLabel
+                      active={sortBy === 'salary'}
+                      direction={sortDirection}
+                      onClick={() => handleSort('salary')}
+                    >
+                      Salary
+                    </TableSortLabel>
+                  </TableCell>
                   <TableCell>Actions</TableCell>
 
                 </TableRow>
@@ -124,6 +142,9 @@ const EmployeeList = (props) => {
                     <TableCell>{row?.i}</TableCell>
                     <TableCell>{row?.name}</TableCell>
                     <TableCell>{row?.email}</TableCell>
+
+                    <TableCell>{row?.brandName ? row?.brandName : "ADMIN"}</TableCell>
+                    <TableCell>{row?.salary}</TableCell>
                     <TableCell>
                       <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>
                         <Visibility color='primary' />

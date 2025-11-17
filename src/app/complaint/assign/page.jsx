@@ -5,6 +5,8 @@ import http_request from "../../../../http-request"
 import { Toaster } from 'react-hot-toast';
 import Sidenav from '@/app/components/Sidenav';
 import AssignComplaintList from './assignComplaintList';
+import { useUser } from '@/app/components/UserContext';
+import { ReactLoader } from '@/app/components/common/Loading';
 
 
 
@@ -15,26 +17,29 @@ const Assign = () => {
   const [sparepart, setSparepart] = useState([])
   const [refresh, setRefresh] = useState("")
   const [value, setValue] = React.useState(null);
+  const [loading, setloading] = React.useState(false);
 
-  
+  const { user } = useUser()
   useEffect(() => {
     getAllComplaint()
     getAllTechnician()
     getAllSparepart()
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+    if (user) {
+      setValue(user);
     }
-  }, [refresh])
+  }, [refresh, user])
   const getAllComplaint = async () => {
     try {
-      let response = await http_request.get("/getAllComplaint")
+      setloading(true)
+      let response = await http_request.get("/getComplaintsByAssign")
       let { data } = response;
 
       setComplaint(data)
+      setloading(false)
     }
     catch (err) {
       console.log(err);
+      setloading(false)
     }
   }
   const getAllTechnician = async () => {
@@ -59,10 +64,21 @@ const Assign = () => {
       console.log(err);
     }
   }
-  const techData =value?.user?.role==="SERVICE"? technicians?.filter((f1) => f1?.serviceCenterId ===value?.user?._id):technicians
+  const techData = value?.user?.role === "SERVICE" ? technicians?.filter((f1) => f1?.serviceCenterId === value?.user?._id) : technicians
 
 
-  const sortData = complaint?.filter((f1) => f1?.status ==="ASSIGN")
+  // const sortData = user?.user?.role==="EMPLOYEE"?complaint?.filter((f1) => user?.user?.stateZone?.includes(f1?.state)):complaint;
+  const selectedBrandIds = user?.user?.brand?.map(b => b.value) || [];
+  const hasStateZone = user?.user?.stateZone?.length > 0;
+  const hasBrand = selectedBrandIds.length > 0;
+
+  const sortData = user?.user?.role === "EMPLOYEE"
+    ? complaint?.filter(f1 => {
+      const matchState = hasStateZone ? user?.user?.stateZone.includes(f1?.state) : true;
+      const matchBrand = hasBrand ? selectedBrandIds.includes(f1?.brandId) : true;
+      return matchState && matchBrand;
+    })
+    : complaint;
   const data = sortData?.map((item, index) => ({ ...item, i: index + 1 }));
 
 
@@ -74,9 +90,14 @@ const Assign = () => {
   return (
     <Sidenav>
       <Toaster />
-      <>
-        <AssignComplaintList  sparepart={sparepart} data={data}technicians={techData}userData={value?.user} RefreshData={RefreshData} />
-      </>
+      {loading === true ? (
+        <div className="flex items-center justify-center h-[80vh]">
+          <ReactLoader />
+        </div>
+      ) : (
+        <>
+          <AssignComplaintList sparepart={sparepart} data={data} technicians={techData} userData={value?.user} RefreshData={RefreshData} />
+        </>)}
     </Sidenav>
   )
 }

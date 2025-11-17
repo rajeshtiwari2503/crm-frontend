@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 
-const FilterOptions = ({ filters, setFilters,userData }) => {
+const FilterOptions = ({ filters,userValue, setFilters,userData }) => {
   const handleCheckboxChange = (category, value) => {
     setFilters(prevFilters => ({
       ...prevFilters,
@@ -18,20 +18,28 @@ const FilterOptions = ({ filters, setFilters,userData }) => {
       [category]: selectedOptions.map(option => option.value),
     }));
   };
-
-  const userTypeOptions = [
+//  console.log(userValue);
+ 
+  const userTypeOptions = userValue?.user?.role==="ADMIN" ?[
     { value: 'customer', label: 'Customer' },
     { value: 'serviceCenter', label: 'Service Center' },
     { value: 'technician', label: 'Technician' },
     { value: 'brand', label: 'Brand' },
-  ];
+  ]
+  :[
+    { value: 'customer', label: 'Customer' },
+    
+  ]
 
   const statusOptions = [
     { value: 'PENDING', label: 'PENDING' },
     { value: 'ASSIGN', label: 'ASSIGN' },
     { value: 'IN PROGRESS', label: 'IN PROGRESS' },
+    { value: 'PART PENDING', label: 'PART PENDING' },
+    { value: 'CUSTOMER SIDE PENDING', label: 'CUSTOMER SIDE PENDING' },
     { value: 'COMPLETED', label: 'COMPLETED' },
     { value: 'CANCELED', label: 'CANCELED' },
+    { value: 'FINAL VERIFICATION', label: 'FINAL VERIFICATION' },
   ];
 
   const productOptions = userData?.product?.map(product => ({
@@ -74,7 +82,8 @@ const cityOptions = [{
     value: technician._id,
     label: technician.name,
   }));
-  const brandOptions =  userData?.brands?.map(brand => ({
+  const brand =userValue?.user?.role==="ADMIN"||userValue?.user?.role==="EMPLOYEE" ?userData?.brands:userData?.brands?.filter((f)=>f?._id===userValue?.user?._id)
+  const brandOptions =  brand?.map(brand => ({
     value: brand._id,
     label: brand.brandName,
   }));

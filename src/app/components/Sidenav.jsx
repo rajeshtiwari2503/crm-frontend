@@ -18,7 +18,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Collapse } from '@mui/material';
-import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, ExpandLess, ExpandMore, Feedback, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, NotificationsNone, Payment, Person, Report, ReportOff, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Wallet, Warning, Work } from '@mui/icons-material';
+import { AccountBalance, AccountCircle, Analytics, Assignment, BrandingWatermark, Category, Chat, ContactPage, Dashboard, DeveloperMode, Event, ExpandLess, ExpandMore, FactCheck, Feedback, GppGood, HowToReg, Info, Inventory, LiveHelp, LocalShipping, LocationOn, Logout, MarkChatRead, NotificationsNone, Payment, Person, Report, ReportOff, RequestPage, Settings, Summarize, Support, SupportAgent, UsbRounded, VerifiedUserRounded, Visibility, Wallet, Warning, Work } from '@mui/icons-material';
 import Image from 'next/image';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
@@ -26,6 +26,9 @@ import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { ReactLoader } from './common/Loading';
 import http_request from "../../../http-request"
+import { useUser } from './UserContext';
+import OneSignal from "react-onesignal";
+import ApkDownload from './AppAPK';
 
 const drawerWidth = 240;
 
@@ -52,6 +55,7 @@ function Sidenav(props) {
   const [isCollapseTechnician, setIsCollapseTechnician] = React.useState(false);
 
   const [isOpen, setIsOpen] = React.useState(false);
+  const { user } = useUser();
   const [value, setValue] = React.useState(null);
   const [notifications, setNotifications] = React.useState([]);
 
@@ -62,28 +66,35 @@ function Sidenav(props) {
   const notificationsPerPage = 5;
 
   React.useEffect(() => {
-    const storedValue = localStorage.getItem("user");
-    if (storedValue) {
-      setValue(JSON.parse(storedValue));
+    if (user) {
+      setValue(user)
+      getAllNotification()
+      if (user?.user.role === "EMPLOYEE") {
+        getAllEmpDashboard()
+
+      } else {
+        getAllDashboard()
+      }
+
     }
-    getAllNotification()
-    getAllDashboard()
-  }, [refresh]);
+
+  }, [refresh, user]);
 
   const getAllDashboard = async () => {
-    const storedValue = localStorage.getItem("user");
-    const user1 = JSON.parse(storedValue);
+
     try {
 
-      const endPoint = user1?.user.role === "ADMIN" || user1?.user.role === "EMPLOYEE" ? "/dashboardDetails"
-        : user1?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user1?.user?._id}`
-          : user1?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user1?.user?._id}`
-            : user1?.user.role === "USER" ? `/dashboardDetailsByUserId/${user1?.user?._id}`
-              : user1?.user.role === "TECHNICIAN" ? `/dashboardDetailsByTechnicianId/${user1?.user?._id}`
-                : user1?.user.role === "SERVICE" ? `/dashboardDetailsBySeviceCenterId/${user1?.user?._id}`
-                  : ""
+      const endPoint = user?.user.role === "ADMIN" ? "/dashboardDetails"
+        : user?.user.role === "DEALER" ? `/dashboardDetailsByDealerId/${user?.user?._id}`
+          : user?.user.role === "BRAND" ? `/dashboardDetailsByBrandId/${user?.user?._id}`
+            : user?.user.role === "BRAND EMPLOYEE" ? `/dashboardDetailsByBrandId/${user?.user?.brandId}`
+              : user?.user.role === "USER" ? `/dashboardDetailsByUserId/${user?.user?._id}`
+                : user?.user.role === "TECHNICIAN" ? `/dashboardDetailsByTechnicianId/${user?.user?._id}`
+                  : user?.user.role === "SERVICE" ? `/dashboardDetailsBySeviceCenterId/${user?.user?._id}`
+                    : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
+      // console.log(data);
 
       setData(data)
     }
@@ -91,21 +102,82 @@ function Sidenav(props) {
       console.log(err);
     }
   }
-  // console.log(dashData);
-
-  const getAllNotification = async () => {
-    const storedValue = localStorage.getItem("user");
-    const userType = JSON.parse(storedValue)
+  const getAllEmpDashboard = async () => {
     try {
 
-      const endPoint = (userType?.user?.role) === "ADMIN" ? `/getAllNotification` : (userType?.user?.role) === "USER" ? `/getNotificationByUserId/${userType?.user?._id}`
-        : (userType?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${userType?.user?._id}`
-          : (userType?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${userType?.user?._id}`
-            : (userType?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${userType?.user?._id}`
-              : (userType?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${userType?.user?._id}`
+      let response = await http_request.post("/dashboardDetailsByEmployeeStateZone", { stateZone: user?.user?.stateZone, brand: user?.user?.brand }); // ✅ Send POST request with body
+      let { data } = response;
+      console.log(data);
+
+      setData(data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  // console.log(dashData);
+  //   React.useEffect(() => {
+  //     const initializeOneSignal = async () => {
+  //         await OneSignal.init({
+  //             appId: "76885bff-4272-407d-88b2-87fd195a9130",
+  //             allowLocalhostAsSecureOrigin: true,
+  //         });
+
+  //         // Ask user permission for notifications
+  //         OneSignal.Slidedown.promptPush();
+  //     };
+
+  //     initializeOneSignal();
+  // }, []);
+  // React.useEffect(() => {
+  //   if (Notification.permission !== "granted") {
+  //     Notification.requestPermission().then((permission) => {
+  //       console.log("Notification permission:", permission);
+  //       if (permission === "granted") {
+  //         new Notification("Notifications Enabled!", {
+  //           body: "You will receive updates in your browser.",
+  //           icon: "Logo.png", // Replace with your logo
+  //         });
+  //       } else {
+  //         console.warn("User denied notifications.");
+  //       }
+  //     });
+  //   }
+  // }, []);
+
+  // const sendBrowserNotification = (notification) => {
+  //   // console.log("Notification data:", notification);
+
+  //   if (Notification.permission === "granted") {
+  //     new Notification(notification.title, {
+  //       body: notification.message,
+  //       icon: "https://your-website.com/logo.png", // Replace with your logo URL
+  //     });
+  //   } else {
+  //     console.warn("Notification permission not granted.");
+  //   }
+  // };
+
+  const getAllNotification = async () => {
+
+
+    try {
+
+      const endPoint = (user?.user?.role) === "ADMIN" ? `/getAllNotification` : (user?.user?.role) === "USER" ? `/getNotificationByUserId/${user?.user?._id}`
+        : (user?.user?.role) === "BRAND" ? `/getNotificationByBrandId/${user?.user?._id}`
+          : (user?.user?.role) === "SERVICE" ? `/getNotificationByServiceCenterId/${user?.user?._id}`
+            : (user?.user?.role) === "TECHNICIAN" ? `/getNotificationByTechnicianId/${user?.user?._id}`
+              : (user?.user?.role) === "DEALER" ? `/getNotificationByDealerId/${user?.user?._id}`
                 : ""
       let response = await http_request.get(endPoint)
       let { data } = response;
+      // if(user?.user?.role=== "TECHNICIAN"){
+      //   data.forEach(notification => {
+      //     if (notification.adminStatus === "UNREAD") {
+      //       sendBrowserNotification(notification);
+      //     }
+      // });
+      // }   
+
       setNotifications(data)
     }
     catch (err) {
@@ -129,6 +201,7 @@ function Sidenav(props) {
   const indexOfLastNotification = (currentPage + 1) * notificationsPerPage;
   const indexOfFirstNotification = indexOfLastNotification - notificationsPerPage;
   const currentNotifications = notifications.slice(indexOfFirstNotification, indexOfLastNotification);
+  // console.log("currentNotifications",currentNotifications);
 
   const unreadNoti = value?.user?.role === "ADMIN" ? notifications?.filter((item) => item?.adminStatus === "UNREAD")
     : value?.user?.role === "BRAND" ? notifications?.filter((item) => item?.brandStatus === "UNREAD")
@@ -140,16 +213,15 @@ function Sidenav(props) {
 
 
   const handleReadMark = async (id) => {
-    const storedValue = localStorage.getItem("user");
-    const userType = JSON.parse(storedValue)
+
     try {
 
-      const status = (userType?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
-        : (userType?.user?.role) === "USER" ? { userStatus: "READ" }
-          : (userType?.user?.role) === "BRAND" ? { brandStatus: "READ" }
-            : (userType?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
-              : (userType?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
-                : (userType?.user?.role) === "DEALER" ? { dealerStatus: "READ" }
+      const status = (user?.user?.role) === "ADMIN" ? { adminStatus: "READ" }
+        : (user?.user?.role) === "USER" ? { userStatus: "READ" }
+          : (user?.user?.role) === "BRAND" ? { brandStatus: "READ" }
+            : (user?.user?.role) === "SERVICE" ? { serviceCenterStatus: "READ" }
+              : (user?.user?.role) === "TECHNICIAN" ? { technicianStatus: "READ" }
+                : (user?.user?.role) === "DEALER" ? { dealerStatus: "READ" }
                   : ""
 
       let response = await http_request.patch(`/editNotification/${id}`, status)
@@ -316,6 +388,7 @@ function Sidenav(props) {
   const handleLogout = () => {
     localStorage.removeItem("user")
     router.push("/sign_in")
+
   }
 
 
@@ -323,50 +396,79 @@ function Sidenav(props) {
   const primaryText = "#007BFF"
   const secondaryText = "#007BFF"
 
-  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "BRAND" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Close', 'All Service']
-  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Dealer', 'Customer', 'Technician', 'Employee'] : value?.user?.role === "BRAND" ? ['Service', 'Dealer', 'Customer'] : []
-  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" ? ['Product', 'SparePart', 'Complaint Nature'] : ['Product']
-  const inventory = value?.user?.role === "ADMIN" ? ["Stock", "Order"] : value?.user?.role === "BRAND" ? ["Stock", "Order"] : ["Stock", "Order"]
+  const complaints = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'In Progress', 'Part Pending', 'Assign', 'Upcomming', 'Final Verification', 'Cancel', 'Close', 'Out of Warranty', 'All Service'] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Create', 'Bulk Upload', 'Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Final Verification', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "SERVICE" ? ['Pending', 'Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "TECHNICIAN" ? ['Assign', 'In Progress', 'Part Pending', 'Upcomming', 'Cancel', 'Close', 'All Service'] : value?.user?.role === "USER" ? ['Create', 'All Service', 'Pending', 'Upcomming', 'Assign', 'Close',] : ['Create', 'Pending', 'Assign', 'Upcomming', 'Close', 'All Service']
+  const userSide = value?.user?.role === "ADMIN" ? ['Brand', 'Service', 'Employee', 'Dealer', 'Customer', 'Technician'] : (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES") ? ['Service', 'Dealer', 'Customer', 'Employee'] : value?.user?.role === "BRAND" ? ['Dealer', 'Customer',] : value?.user?.role === "EMPLOYEE" ? ['Service'] : []
+  const productSide = value?.user?.role === "ADMIN" ? ['Category', 'Product', 'SparePart', 'Complaint Nature', "Warranty"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ['Product', 'SparePart', 'Complaint Nature', "Warranty"] : ['Product']
+  const inventory = value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? ["inventory", "Stock", "Order"] : value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" ? ["Stock", "Order"] : ["Stock", "Order"]
   const drawer = (
     <>
       {value ?
-        <>
+        <div >
           <div>
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-              <div>
-                <img src="/Logo.png" height={40} width={60} alt='logo' className='rounded-lg' />
+            <Toolbar sx={{ display: "flex", justifyContent: "space-between", bgcolor: "#09090b", color: "#fafafa", padding: "1px" }}>
+              <div className='bg-white p-1  rounded-lg'>
+                <img src="/Logo.png" height={35} width={50} alt='logo' className='rounded-lg' />
               </div>
               <div className='font-bold text-ml'>
-                {value?.user?.role}
+                {value?.user?.role === "BRAND EMPLOYEE" ? "EMPLOYEE" : value?.user?.role}
               </div>
             </Toolbar>
             <Divider />
 
-            {value?.user?.role === "EMPLOYEE" ? ""
-              : <ListItem disablePadding onClick={() => { router.push("/dashboard") }} className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/dashboard") ? "bg-[#f1f5f9] text-[#007BFF]" : "text-slate-700"}>
-                    <Dashboard style={{ color: pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
-                  </ListItemIcon  >
-                  <ListItemText primary={"Dashboard"} />
 
-                </ListItemButton>
-              </ListItem>
-            }
-            { value?.user?.role === "ADMIN" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-              <ListItemButton>
-                <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                  <Analytics style={{ color: pathname.startsWith('/analytics') ? '#007BFF' : '#64748b' }}/>
+            <ListItem
+              disablePadding
+              onClick={() => { router.push("/dashboard") }}
+              className={pathname === "/" || pathname.startsWith("/dashboard") ?
+                "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" :
+                "text-slate-700 pl-2"}
+            >
+              <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                <ListItemIcon className={pathname === "/" || pathname.startsWith("/dashboard") ?
+                  "bg-[#09090b] text-[#007BFF]" :
+                  "text-slate-700"}>
+                  <Dashboard style={{ color: pathname === "/" || pathname.startsWith('/dashboard') ? '#007BFF' : '#64748b' }} />
+                </ListItemIcon>
+                <ListItemText primary={"Dashboard"} />
+              </ListItemButton>
+            </ListItem>
+
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                  <Analytics style={{ color: pathname.startsWith('/analytics') ? '#007BFF' : '#64748b' }} />
                 </ListItemIcon>
                 <ListItemText primary={"Analytics"} />
-                
+
               </ListItemButton>
             </ListItem>
               : ""}
+            {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" ? <ListItem disablePadding onClick={() => { router.push("/attendance") }} className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+              <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                <ListItemIcon className={pathname.startsWith("/attendance") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                  <FactCheck style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} />
+                  {/* <HowToReg style={{ color: pathname.startsWith('/attendance') ? '#007BFF' : '#64748b' }} /> */}
+                </ListItemIcon>
+                <ListItemText primary={"Attendance"} />
+
+              </ListItemButton>
+            </ListItem>
+              : ""}
+            {value?.user?.role === "EMPLOYEE" ?
+              <ListItem disablePadding onClick={() => { router.push("/wallet/servicetransactions") }} className={pathname.startsWith("/wallet/servicetransactions") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/wallet/servicetransactions") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <Payment style={{ color: pathname.startsWith('/wallet/servicetransactions') ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Service Transactions"} />
+
+                </ListItemButton>
+              </ListItem>
+              : ""}
             {/* {value?.user?.role === "ADMIN" || value?.user?.role === "USER"
-              ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+                  <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <AccountBalance />
                   </ListItemIcon>
                   <ListItemText primary={"Products"} />
@@ -389,7 +491,7 @@ function Sidenav(props) {
                           router.push(`/product/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
                       <ListItemIcon
                         className={
                           text === "Product" ? (pathname === "/product" ? 'text-sky-600  ' : 'text-slate-700  ') :
@@ -409,9 +511,9 @@ function Sidenav(props) {
 
 
             {/* {value?.user?.role === "DEALER"
-              ? <ListItem disablePadding onClick={() => { router.push("/wallet") }} className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              ? <ListItem disablePadding onClick={() => { router.push("/wallet") }} className={pathname.startsWith("/wallet") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <AccountBalance />
                   </ListItemIcon>
                   <ListItemText primary={"Wallet"} />
@@ -420,9 +522,9 @@ function Sidenav(props) {
               </ListItem>
               : ""} */}
             {/* {value?.user?.role === "ADMIN"
-        ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-          <ListItemButton>
-            <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+        ? <ListItem disablePadding onClick={() => { router.push("/analytics") }} className={pathname.startsWith("/analytics") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+          <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+            <ListItemIcon className={pathname.startsWith("/analytics") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
               <Analytics />
             </ListItemIcon>
             <ListItemText primary={"Analytics"} />
@@ -432,10 +534,10 @@ function Sidenav(props) {
         : "dfdfd"} */}
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "USER"
-              ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" || value?.user?.role === "USER"
+              ? <ListItem onClick={handleCollapseProduct} disablePadding className={pathname.startsWith("/product") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/product") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Category style={{ color: pathname.startsWith('/product') ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Products"} />
@@ -458,7 +560,7 @@ function Sidenav(props) {
                           router.push(`/product/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon
                         className={
                           text === "Product" ? (pathname === "/product" ? 'text-sky-600  ' : 'text-slate-700  ') :
@@ -484,10 +586,10 @@ function Sidenav(props) {
             </Collapse>
 
 
-            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")
-              ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+            {value?.user?.role === "ADMIN" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES") || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE"
+              ? <ListItem onClick={handleCollapseUser} disablePadding className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/user") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Person style={{ color: pathname.startsWith('/user') ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"User"} />
@@ -505,7 +607,7 @@ function Sidenav(props) {
                     }
                     onClick={(event) => { text === "User" ? router.push(`/user/${text.toLowerCase()}`) : router.push(`/user/${text.toLowerCase()}`) }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon className={pathname.startsWith(`/user/${text.toLowerCase()}`) ? "  text-sky-600" : "text-slate-700"}>
                         {text?.toLocaleLowerCase() === "brand" ? <BrandingWatermark style={{ color: pathname.startsWith(`/user/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : <Person style={{ color: pathname.startsWith(`/user/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} />}
                       </ListItemIcon>
@@ -515,10 +617,10 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "USER" || value?.user?.role === "DEALER" || value?.user?.role === "TECHNICIAN"
-              ? <ListItem onClick={handleCollapseComplaint} disablePadding className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/complaint") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "USER" || value?.user?.role === "DEALER" || value?.user?.role === "TECHNICIAN"
+              ? <ListItem onClick={handleCollapseComplaint} disablePadding className={pathname.startsWith("/complaint") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/complaint") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Assignment style={{ color: pathname.startsWith("/complaint") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Service  "} />
@@ -534,26 +636,35 @@ function Sidenav(props) {
                       text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                         text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                           text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                            text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
-                              pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
+                            text === "Upcomming" ? (pathname === "/complaint/scheduleUpcomming" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                              text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                                text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                                  text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
+                                    pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => {
 
                       text === "All Service" ? router.push(`/complaint/allComplaint`) :
                         text === "Bulk Upload" ? router.push(`/complaint/bulkUpload`) :
-                          text === "In Progress" ? router.push(`/complaint/inprogress`) :
-                            text === "Part Pending" ? router.push(`/complaint/partpending`) :
-                              router.push(`/complaint/${text.toLowerCase()}`)
+                          text === "Upcomming" ? router.push(`/complaint/scheduleUpcomming`) :
+                            text === "In Progress" ? router.push(`/complaint/inprogress`) :
+                              text === "Part Pending" ? router.push(`/complaint/partpending`) :
+                                text === "Out of Warranty" ? router.push(`/complaint/outOfWarranty`) :
+                                  text === "Final Verification" ? router.push(`/complaint/finalVerification`) :
+                                    router.push(`/complaint/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon
                         className={
                           text === "All Service" ? (pathname === "/complaint/allComplaint" ? 'text-sky-600  ' : 'text-slate-700 ') :
                             text === "Bulk Upload" ? (pathname === "/complaint/bulkUpload" ? 'text-sky-600  ' : 'text-slate-700  ') :
-                              text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
-                                text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
-                                  pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
+                              text === "Upcomming" ? (pathname === "/complaint/scheduleUpcomming" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                                text === "In Progress" ? (pathname === "/complaint/inprogress" ? 'text-sky-600  ' : 'text-slate-700  ') :
+                                  text === "Part Pending" ? (pathname === "/complaint/partpending" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                    text === "Out of Warranty" ? (pathname === "/complaint/outOfWarranty" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                      text === "Final Verification" ? (pathname === "/complaint/finalVerification" ? 'text-sky-600  ' : 'text-slate-700 ') :
+                                        pathname === `/complaint/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                         }
                       >
                         <Assignment style={{
@@ -569,13 +680,25 @@ function Sidenav(props) {
                                 ? pathname === "/complaint/inprogress"
                                   ? '#007BFF' // text-sky-600
                                   : '#64748b' // text-slate-700
-                                : text === "Part Pending"
-                                  ? pathname === "/complaint/partpending"
+                                : text === "Upcomming"
+                                  ? pathname === "/complaint/scheduleUpcomming"
                                     ? '#007BFF' // text-sky-600
                                     : '#64748b' // text-slate-700
-                                  : pathname === `/complaint/${text.toLowerCase()}`
-                                    ? '#007BFF' // text-sky-600
-                                    : '#64748b', // text-slate-700
+                                  : text === "Final Verification"
+                                    ? pathname === "/complaint/finalVerification"
+                                      ? '#007BFF' // text-sky-600
+                                      : '#64748b' // text-slate-700
+                                    : text === "Part Pending"
+                                      ? pathname === "/complaint/partpending"
+                                        ? '#007BFF' // text-sky-600
+                                        : '#64748b' // text-slate-700
+                                      : text === "Out of Warranty"
+                                        ? pathname === "/complaint/outOfWarranty"
+                                          ? '#007BFF' // text-sky-600
+                                          : '#64748b' // text-slate-700
+                                        : pathname === `/complaint/${text.toLowerCase()}`
+                                          ? '#007BFF' // text-sky-600
+                                          : '#64748b', // text-slate-700
 
                         }} />
                       </ListItemIcon>
@@ -583,20 +706,36 @@ function Sidenav(props) {
                       {text === "Pending" ? dashData?.complaints?.pending
                         : text === "Assign" ? dashData?.complaints?.assign
                           : text === "In Progress" ? dashData?.complaints?.inProgress
-                            : text === "Part Pending" ? dashData?.complaints?.partPending
-                              : text === "Cancel" ? dashData?.complaints?.cancel
-                                : text === "Close" ? dashData?.complaints?.complete
-                                  : text === "All Service" ? dashData?.complaints?.allComplaints
-                                    : ""}
+                            : text === "Upcomming" ? dashData?.complaints?.schedule
+                              : text === "Final Verification" ? dashData?.complaints?.finalVerification
+                                : text === "Part Pending" ? dashData?.complaints?.partPending
+                                  : text === "Cancel" ? dashData?.complaints?.cancel
+                                    : text === "Close" ? dashData?.complaints?.complete
+                                      : text === "All Service" ? dashData?.complaints?.allComplaints
+                                        : ""}
                     </ListItemButton>
                   </ListItem>
                 ))}
               </List>
             </Collapse>
+
+            {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE"
+              ? <ListItem onClick={(event) => {
+                router.push(`/warrantyActivations`)
+              }} disablePadding className={pathname.startsWith("/warrantyActivations") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/warrantyActivations") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <GppGood style={{ color: pathname.startsWith("/warrantyActivations") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Active Warranty "} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+              : ""}
             {/* {value?.user?.role === "ADMIN"
-              ? <ListItem onClick={handleCollapseSettings} disablePadding className={pathname.startsWith("/settings") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/settings") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              ? <ListItem onClick={handleCollapseSettings} disablePadding className={pathname.startsWith("/settings") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+                  <ListItemIcon className={pathname.startsWith("/settings") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Settings />
                   </ListItemIcon>
                   <ListItemText primary={"Settings"} />
@@ -615,7 +754,7 @@ function Sidenav(props) {
                       router.push(`/settings/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
                       <ListItemIcon
                         className={
                           pathname === `/settings/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
@@ -630,9 +769,9 @@ function Sidenav(props) {
               </List>
             </Collapse> */}
             {/* {value?.user?.role === "DEALER"
-              ? <ListItem onClick={handleCollapseReports} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              ? <ListItem onClick={handleCollapseReports} disablePadding className={pathname.startsWith("/reports") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}> 
+                  <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Summarize />
                   </ListItemIcon>
                   <ListItemText primary={"Reports"} />
@@ -653,7 +792,7 @@ function Sidenav(props) {
                         : router.push(`/reports/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon
                         className={
                           text === "Service Center" ? (pathname === "/reports/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  ') :
@@ -669,10 +808,11 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER"
-              ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+
+            {value?.user?.role === "ADMIN" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER" || (value?.user?.role === "BRAND" && value?.user?.brandSaas === "YES")
+              ? <ListItem onClick={handleCollapseWallet} disablePadding className={pathname.startsWith("/wallet") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/wallet") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <AccountBalance style={{ color: pathname.startsWith("/wallet") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Wallet"} />
@@ -682,14 +822,14 @@ function Sidenav(props) {
               : ""}
             <Collapse in={isCollapseWallet} timeout={"auto"} unmountOnExit >
               <List className=' '>
-                {["Bank Details", "Transactions"]?.map((text, index) => (
+                {["ServiceTransactions"]?.map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4') :
                       pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'
                     }
                     onClick={(event) => { text === "Bank Details" ? router.push(`/wallet/bankDetails`) : router.push(`/wallet/${text.toLowerCase()}`) }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon className={text === "Bank Details" ? (pathname === "/wallet/bankDetails" ? 'text-sky-600  ' : 'text-slate-700  ') :
                         pathname === `/wallet/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '
                       }>
@@ -714,9 +854,9 @@ function Sidenav(props) {
               <ListItem onClick={(event) => {
                 router.push(`/feedback`)
               }}
-                disablePadding className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/feedback") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                disablePadding className={pathname.startsWith("/feedback") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/feedback") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Feedback style={{ color: pathname.startsWith("/feedback") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Feedback"} />
@@ -732,9 +872,9 @@ function Sidenav(props) {
                 <ListItem onClick={(event) => {
                   router.push(`/skillDevelopment`)
                 }}
-                  disablePadding className={pathname.startsWith("/skillDevelopment") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                  <ListItemButton>
-                    <ListItemIcon className={pathname.startsWith("/skillDevelopment") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                  disablePadding className={pathname.startsWith("/skillDevelopment") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                  <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                    <ListItemIcon className={pathname.startsWith("/skillDevelopment") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                       <DeveloperMode style={{ color: pathname.startsWith("/skillDevelopment") ? '#007BFF' : '#64748b' }} />
                     </ListItemIcon>
                     <ListItemText primary={"Skill Development"} />
@@ -744,9 +884,9 @@ function Sidenav(props) {
                 <ListItem onClick={(event) => {
                   router.push(`/performance`)
                 }}
-                  disablePadding className={pathname.startsWith("/performance") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                  <ListItemButton>
-                    <ListItemIcon className={pathname.startsWith("/performance") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                  disablePadding className={pathname.startsWith("/performance") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                  <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                    <ListItemIcon className={pathname.startsWith("/performance") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                       <Analytics style={{ color: pathname.startsWith("/performance") ? '#007BFF' : '#64748b' }} />
                     </ListItemIcon>
                     <ListItemText primary={"Performance"} />
@@ -758,47 +898,27 @@ function Sidenav(props) {
             }
 
 
-            {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER"
-              ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
-                    <Support style={{ color: pathname.startsWith("/support") ? '#007BFF' : '#64748b' }} />
+
+            {value?.user?.role === "ADMIN"
+              ? <ListItem onClick={(event) => {
+                router.push(`/courier-services/orders`)
+              }} disablePadding className={pathname.startsWith("/courier-services/orders") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/courier-services/orders") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <LocalShipping style={{ color: pathname.startsWith("/courier-services/orders") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Support"} />
-                  {isCollapseSupport ? <ExpandLess /> : <ExpandMore />}
+                  <ListItemText primary={"Courier Services "} />
+                 
                 </ListItemButton>
               </ListItem>
               : ""}
-            <Collapse in={isCollapseSupport} timeout={"auto"} unmountOnExit >
-              <List className=' '>
-                {['Knowledge', "Contact", "Chat"].map((text, index) => (
-                  <ListItem key={text} disablePadding
-                    className={
-                      pathname === `/support/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
-                    }
-                    onClick={(event) => {
-                      router.push(`/support/${text.toLowerCase()}`)
-                    }}
-                  >
-                    <ListItemButton>
-                      <ListItemIcon
-                        className={
-                          pathname === "/support/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  '}
-                      >
-                        {text?.toLocaleLowerCase() === "chat" ? <LiveHelp style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : text?.toLocaleLowerCase() === "knowledge" ? <Info style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : <ContactPage style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} />}
-                      </ListItemIcon>
-                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
-                    </ListItemButton>
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+
             {value?.user?.role === "ADMIN" || value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND" || value?.user?.role === "SERVICE"
               ?
 
-              <ListItem onClick={handleCollapseInventory} disablePadding className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/inventory") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              <ListItem onClick={handleCollapseInventory} disablePadding className={pathname.startsWith("/inventory") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/inventory") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Inventory style={{ color: pathname.startsWith("/inventory") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Inventory"} />
@@ -807,7 +927,7 @@ function Sidenav(props) {
               </ListItem>
               : ""}
             <Collapse in={isCollapseInventory} timeout={"auto"} unmountOnExit >
-              <List className=' '>
+              {/* <List className=' '>
                 {inventory?.map((text, index) => (
                   <ListItem key={text} disablePadding
                     className={
@@ -817,7 +937,7 @@ function Sidenav(props) {
                       router.push(`/inventory/${text.toLowerCase()}`)
                     }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon
                         className={
                           pathname === `/inventory/${text.toLowerCase()}` ? 'text-sky-600  ' : 'text-slate-700  '}
@@ -829,17 +949,51 @@ function Sidenav(props) {
                     </ListItemButton>
                   </ListItem>
                 ))}
+              </List> */}
+              <List>
+                {inventory?.map((text) => {
+                  const lowerText = text.toLowerCase();
+                  const isInventoryMain = lowerText === 'inventory';
+                  const isActive = isInventoryMain
+                    ? pathname === '/inventory'
+                    : pathname === `/inventory/${lowerText}`;
+                  const iconColor = isActive ? '#007BFF' : '#64748b';
+
+                  // Set the correct icon
+                  let icon;
+                  if (lowerText === "stock") icon = <Category style={{ color: iconColor }} />;
+                  else if (lowerText === "order") icon = <LocalShipping style={{ color: iconColor }} />;
+                  else icon = <Inventory style={{ color: iconColor }} />; // default for "inventory"
+
+                  return (
+                    <ListItem
+                      key={text}
+                      disablePadding
+                      className={isActive ? 'text-sky-600 pl-4' : 'text-slate-700 pl-4'}
+                      onClick={() =>
+                        isInventoryMain
+                          ? router.push('/inventory')
+                          : router.push(`/inventory/${lowerText}`)
+                      }
+                    >
+                      <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                        <ListItemIcon>{icon}</ListItemIcon>
+                        <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                      </ListItemButton>
+                    </ListItem>
+                  );
+                })}
               </List>
             </Collapse>
             {value?.user?.role === "SERVICE1" || value?.user?.role === "TECHNICIAN1"
               ? <ListItem onClick={handleCollapseCustomer} disablePadding className={`pl-2 ${pathname.startsWith("/user/customer")
-                ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
                 : pathname.startsWith("/feedback")
-                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                  ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
                   : "text-slate-700"
                 }`}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/user/customer") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/user/customer") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Person style={{ color: pathname.startsWith("/user/customer") || pathname.startsWith("/feedback") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Customer"} />
@@ -856,7 +1010,7 @@ function Sidenav(props) {
                     }
                     onClick={(event) => { text === "Customer" ? router.push(`/user/customer`) : router.push(`/${text.toLowerCase()}`) }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon style={{
                         color: text === "Customer"
                           ? pathname === "/user/customer"
@@ -879,13 +1033,13 @@ function Sidenav(props) {
 
             {value?.user?.role === "SERVICE"
               ? <ListItem onClick={handleCollapseTechnician} disablePadding className={`pl-2 ${pathname.startsWith("/user/technician")
-                ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
-                : pathname.startsWith("/feedback")
-                  ? "bg-[#f1f5f9] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
+                : pathname.startsWith("/user/technician")
+                  ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full"
                   : "text-slate-700"
                 }`}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/user/technician") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/user/technician") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Person style={{ color: pathname.startsWith("/user/technician") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Technician"} />
@@ -902,7 +1056,7 @@ function Sidenav(props) {
                     }
                     onClick={(event) => { text === "Technician List" ? router.push(`/user/technician`) : router.push(`/user/technician/workload`) }}
                   >
-                    <ListItemButton>
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
                       <ListItemIcon className={text === "Technician List" ? (pathname === "/user/technician" ? 'text-sky-600  ' : 'text-slate-700  ') :
                         pathname === `/user/technician/workload` ? 'text-sky-600  ' : 'text-slate-700  '
                       }>
@@ -922,14 +1076,14 @@ function Sidenav(props) {
                 ))}
               </List>
             </Collapse>
-            {value?.user?.role === "EMPLOYEE" ? ""
+            {value?.user?.role === "EMPLOYEE" || value?.user?.role === "BRAND EMPLOYEE" ? ""
               : <ListItem disablePadding
                 onClick={(event) => {
                   router.push(`/notification`)
                 }}
-                className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+                className={pathname.startsWith("/notification") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/notification") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <NotificationsNone style={{ color: pathname.startsWith("/notification") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
                   <ListItemText primary={"Notification"} />
@@ -937,25 +1091,76 @@ function Sidenav(props) {
                 </ListItemButton>
               </ListItem>
             }
-            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
+            {value?.user?.role === "ADMIN" ?
+              <ListItem disablePadding
+                onClick={(event) => {
+                  router.push(`/websiteServiceRequest`)
+                }}
+                className={pathname.startsWith("/websiteServiceRequest") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/websiteServiceRequest") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <RequestPage style={{ color: pathname.startsWith("/websiteServiceRequest") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Service Request"} />
+                  {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
+                </ListItemButton>
+              </ListItem>
+              : ""
+            }
+            {value?.user?.role === "ADMIN" || value?.user?.role === "BRAND" || value?.user?.role === "BRAND EMPLOYEE" || value?.user?.role === "SERVICE" || value?.user?.role === "DEALER" || value?.user?.role === "EMPLOYEE"
               ? <ListItem onClick={(event) => {
                 router.push(`/reports`)
-              }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
-                <ListItemButton>
-                  <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#f1f5f9] text-sky-600" : "text-slate-700"}>
+              }} disablePadding className={pathname.startsWith("/reports") ? "bg-[#09090b] text-sky-600 pl-2 rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/reports") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
                     <Report style={{ color: pathname.startsWith("/reports") ? '#007BFF' : '#64748b' }} />
                   </ListItemIcon>
-                  <ListItemText primary={"Report & Analysis"} />
+                  <ListItemText primary={"Report "} />
                   {/* {isCollapse ? <ExpandLess /> : <ExpandMore />} */}
                 </ListItemButton>
               </ListItem>
               : ""}
 
-
+            {value?.user?.role === "ADMIN" || value?.user?.role === "USER" || value?.user?.role === "DEALER" || value?.user?.role === "SERVICE"
+              ? <ListItem onClick={handleCollapseSupport} disablePadding className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600 pl-2   rounded-tl-full rounded-bl-full" : "text-slate-700 pl-2"}>
+                <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                  <ListItemIcon className={pathname.startsWith("/support") ? "bg-[#09090b] text-sky-600" : "text-slate-700"}>
+                    <Support style={{ color: pathname.startsWith("/support") ? '#007BFF' : '#64748b' }} />
+                  </ListItemIcon>
+                  <ListItemText primary={"Support"} />
+                  {isCollapseSupport ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+              </ListItem>
+              : ""}
+            <Collapse in={isCollapseSupport} timeout={"auto"} unmountOnExit >
+              <List className=' '>
+                {['Knowledge', "Contact", "Chat"].map((text, index) => (
+                  <ListItem key={text} disablePadding
+                    className={
+                      pathname === `/support/${text.toLowerCase()}` ? 'text-sky-600 pl-4 ' : 'text-slate-700 pl-4'
+                    }
+                    onClick={(event) => {
+                      router.push(`/support/${text.toLowerCase()}`)
+                    }}
+                  >
+                    <ListItemButton sx={{ padding: "5px", fontSize: "1rem", fontWeight: "500" }}>
+                      <ListItemIcon
+                        className={
+                          pathname === "/support/serviceCenter" ? 'text-sky-600  ' : 'text-slate-700  '}
+                      >
+                        {text?.toLocaleLowerCase() === "chat" ? <LiveHelp style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : text?.toLocaleLowerCase() === "knowledge" ? <Info style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} /> : <ContactPage style={{ color: pathname.startsWith(`/support/${text.toLowerCase()}`) ? '#007BFF' : '#64748b' }} />}
+                      </ListItemIcon>
+                      <ListItemText sx={{ marginLeft: "-20px" }} primary={text} />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
 
 
           </div>
-        </>
+          {/* <ApkDownload /> */}
+        </div>
         : <ReactLoader />
       }
     </>
@@ -974,8 +1179,9 @@ function Sidenav(props) {
             sx={{
               width: { sm: `calc(100% - ${drawerWidth}px)` },
               ml: { sm: `${drawerWidth}px` },
-              bgcolor: "#ffffff",
-              color: "#2F2F2F"
+              bgcolor: "#09090b",
+              color: "#fafafa",
+
             }}
           >
             <Toolbar>
@@ -990,16 +1196,17 @@ function Sidenav(props) {
               </IconButton>
               <div className='w-full flex justify-between'>
                 <div className='flex'>
-                  <div className='font-bold text-xl'  >
+                  <div className='font-bold md:text-xl sm:text-sm'  >
                     Dashboard
                   </div>
+
                   {/* <div className='font-bold text-xl ms-8 flex items-center'  >
                     <Wallet fontSize='large' color='secondary' />
                     <div className='text-sm'>1000.0 INR</div>
                   </div> */}
                 </div>
                 <div className='flex items-center'>
-                  <div className='font-semibold'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>
+                  <div className='font-semibold md:text-xl text-sm md:block hidden'>{value?.user?.role === "SERVICE" ? (value?.user?.serviceCenterName) : value?.user?.role === "BRAND" ? (value?.user?.brandName) : value?.user?.name}</div>
                   <div onClick={() => {
                     router.push(`/profile/${value?.user?._id}`)
                   }}
@@ -1013,26 +1220,34 @@ function Sidenav(props) {
                     >
                       <NotificationsNone />
                       {unreadNoti?.length > 0 && (
-                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-[10px]">
-                          {unreadNoti?.length}
+                        <div className="absolute -top-1 -right-1 bg-white text-red-400 px-2 py-1 rounded-full text-[8px]">
+                          {unreadNoti.length > 99 ? '+99' : unreadNoti.length}
                         </div>
                       )}
                     </div>
                     {isOpen && (
-                      <div className='absolute right-0 mt-2 w-[420px] bg-white rounded-md shadow-lg z-20'>
+                      <div className='absolute right-0 mt-2  md:w-[500px] w-[300px] bg-white rounded-md shadow-lg z-20'>
                         <div className='p-2  '>
                           {currentNotifications.length > 0 ? (
                             currentNotifications.map((notification, i) => (
-                              <div key={notification?._id} className='p-2 flex justify-left items-center'>
+                              <div key={notification?._id} className='p-2 text-black border-b flex justify-left items-center'>
                                 <div className='  me-3'>
-                                  <div className=' flex justify-center items-center bg-slate-400  rounded-full w-[30px] h-[30px] text-white'>
+                                  <div className=' flex justify-center items-center bg-black  rounded-full w-[30px] h-[30px] text-white'>
                                     {i + 1 + currentPage * notificationsPerPage}
                                   </div>
                                 </div>
-                                <div className='flex  border-b'>
+                                <div className='flex items-center '>
                                   <div>
-                                    {notification?.message}
+                                    {`${notification?.message}  Complaint_Id : ${notification?.compId || 'NA'}`}
                                   </div>
+                                  {notification?.compId &&
+                                    <button onClick={() => {
+                                      handleReadMark(notification?._id);
+                                      router.push(`/complaint/details/${notification?.complaintId}`);
+                                    }} className=" rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
+                                      <Visibility />
+                                    </button>
+                                  }
                                   {(value?.user?.role === "ADMIN" ? notification?.adminStatus === "UNREAD"
                                     : value?.user?.role === "BRAND" ? notification?.brandStatus === "UNREAD"
                                       : value?.user?.role === "USER" ? notification?.userStatus === "UNREAD"
@@ -1041,9 +1256,10 @@ function Sidenav(props) {
                                             : value?.user?.role === "DEALER" ? notification?.userStatus === "UNREAD"
                                               : ""
                                   ) && (
-                                      <div>
-                                        <button onClick={() => handleReadMark(notification?._id)} className="bg-green-500 hover:bg-green-700 text-white font-medium py-1 px-2 rounded">
-                                          Mark_Read
+                                      <div className='flex items-center'>
+
+                                        <button onClick={() => handleReadMark(notification?._id)} className="ms-2 rounded-md p-2 cursor-pointer bg-[#09090b] border border-gray-500 text-white hover:bg-[#ffffff] hover:text-black">
+                                          <MarkChatRead />
                                         </button>
                                       </div>
                                     )}

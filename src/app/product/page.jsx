@@ -3,66 +3,120 @@ import Sidenav from '@/app/components/Sidenav'
 import React, { useEffect, useState } from 'react'
 import http_request from '.././../../http-request'
 import ProductList from './ProductList'
- 
+import { ReactLoader } from '../components/common/Loading'
+
 
 
 const Product = () => {
-    const [brands, setBrands] = useState([])
-    const [products, setProducts] = useState([])
-    const [categories, setCategories] = useState([])
-    const [subCategories, setSubCategories] = useState([])
+  const [brands, setBrands] = useState([])
+  const [products, setProducts] = useState([])
+  const [categories, setCategories] = useState([])
+  const [subCategories, setSubCategories] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [refresh, setRefresh] = useState("")
 
-    const [refresh, setRefresh] = useState("")
+  // useEffect(() => {
+  //   getAllProducts()
+  //   getAllCategories()
+  //   getAllSubCategories()
+  //   getAllBrands()
+  // }, [refresh])
+  useEffect(() => {
+    fetchData()
+  }, [refresh])
 
-    useEffect(() => {
-      getAllProducts()
-      getAllCategories()
-      getAllSubCategories()
-      getAllBrands()
-    }, [refresh])
-  
-  
-    const getAllProducts = async () => {
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+       setLoading(true)
+      await Promise.all([
+        getAllProducts(),
+        getAllCategories(),
+        getAllSubCategories(),
+        getAllBrands()
+      ])
+    } catch (err) {
+      console.log("Error loading product data:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getAllProducts = async () => {
+    try {
       let response = await http_request.get("/getAllProduct")
       let { data } = response;
-  
+
       setProducts(data)
     }
-    const getAllCategories = async () => {
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+
+
+  const getAllCategories = async () => {
+    try {
       let response = await http_request.get("/getAllProductCategory")
       let { data } = response;
-  
+
       setCategories(data)
     }
-    const getAllSubCategories = async () => {
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  const getAllSubCategories = async () => {
+    try {
       let response = await http_request.get("/getAllSubCategory")
       let { data } = response;
-  
+
       setSubCategories(data)
     }
-    const getAllBrands = async () => {
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+
+
+  const getAllBrands = async () => {
+    try {
       let response = await http_request.get("/getAllBrand")
       let { data } = response;
-  
+
       setBrands(data)
     }
-    const data = products?.map((item, index) => ({ ...item, i: index + 1}));
-   
 
-    const RefreshData = (data) => {
-      setRefresh(data)
+    catch (err) {
+      console.log(err);
+
     }
+  }
+  const data = products
 
-    
 
-    return (
-        <>
-            <Sidenav>
-               
-                <ProductList subCategories={subCategories}categories={categories} brands={brands}  data={data}RefreshData={RefreshData}/>
-            </Sidenav>
-        </>
-    )
+  const RefreshData = (data) => {
+    setRefresh(data)
+  }
+
+
+
+  return (
+    <>
+      <Sidenav>
+        {loading ? (
+          <div className="flex justify-center items-center  h-[80vh]">
+            <ReactLoader />
+          </div>
+        ) : (
+          <ProductList subCategories={subCategories} categories={categories} brands={brands} data={data} RefreshData={RefreshData} />
+        )}
+      </Sidenav>
+    </>
+  )
 }
 
 export default Product

@@ -177,7 +177,7 @@ const UserDashboard = (props) => {
                   <div className='ml-2'>
                     <div className='text-blue-500 font-semibold'>Total Pending</div>
                     <div className=' text-2xl font-semibold'>
-                      <CountUp start={0} end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign} delay={1} />
+                      <CountUp start={0}   end={dashData?.complaints?.partPending + dashData?.complaints?.inProgress + dashData?.complaints?.pending + dashData?.complaints?.assign + dashData?.complaints?.customerSidePending +dashData?.complaints?.partDelivered} delay={1} />
                     </div>
                   </div>
                 </div>

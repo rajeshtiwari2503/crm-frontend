@@ -16,7 +16,7 @@ import DownloadFiterDataExcel from '@/app/components/reports/DownloadFilterDataE
 
 const ServiceList = (props) => {
 
- 
+
 
   const router = useRouter()
 
@@ -298,15 +298,21 @@ const ServiceList = (props) => {
                         <TableCell>{row?.city}</TableCell>
                         <TableCell>{row?.contact}</TableCell>
                         <TableCell
-                          onClick={() => handleStatusUpdate(row._id, row.status)}
+                          onClick={
+                            props?.user?.role === "ADMIN"
+                              ? () => handleStatusUpdate(row._id, row.status)
+                              : undefined
+                          }
                           style={{
-                            cursor: 'pointer',
-                            color: row.status === 'ACTIVE' ? 'green' : 'red',
-                            fontWeight: 'bold',
+                            cursor: props?.user?.role === "ADMIN" ? "pointer" : "default",
+                            color: row.status === "ACTIVE" ? "green" : "red",
+                            fontWeight: "bold",
+                            opacity: props?.user?.role === "ADMIN" ? 1 : 0.7,
                           }}
                         >
                           {row.status}
                         </TableCell>
+
                         <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                         <TableCell   >
                           <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>

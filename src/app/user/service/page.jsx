@@ -25,24 +25,30 @@ const [loading, setLoading] = useState(true);
 
     if (user) {
       setValue(user);
+       getAllService()
     }
-    getAllService()
+   
 
   }, [refresh, user])
 
   const getAllService = async () => {
-    try {
-        setLoading(true);
-      let response = await http_request.get("/getAllService")
-      let { data } = response;
+   try {
+  setLoading(true);
 
-      setService(data)
-        setLoading(false);
-    }
-    catch (err) {
-      console.log(err);
-        setLoading(false);
-    }
+  const endpoint =
+    user?.user?.role === "ADMIN"
+      ? "/getAllServiceCenterAdmin"
+      : "/getAllService";
+
+  const response = await http_request.get(endpoint);
+  const { data } = response;
+
+  setService(data);
+  setLoading(false);
+} catch (err) {
+  console.log(err);
+  setLoading(false);
+}
   }
   // const filData = value?.user?.role === "BRAND" ? service?.filter((f) => f?.brandId === value?.user?._id) :
   //   value?.user?.role === "EMPLOYEE" ? service?.filter((f1) => user?.user?.stateZone?.includes(f1?.state))

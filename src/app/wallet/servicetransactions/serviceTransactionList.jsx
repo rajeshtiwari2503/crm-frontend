@@ -349,7 +349,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             </div>
                         </div>
                     </div>
-                    <div className="md:col-span-3 mb-4 border-gray-300 rounded-md mt-4">
+                    {/* <div className="md:col-span-3 mb-4 border-gray-300 rounded-md mt-4">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 justify-center">
 
                             <button onClick={() => setFilterServiceCenterType("allServiceCenters")} className={`px-4 py-2 rounded ${filterServiceCenterType === "allServiceCenters" ? "bg-blue-500 text-white" : "bg-gray-300"}`}>All Service Centers</button>
@@ -358,7 +358,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                             <button onClick={() => setFilterServiceCenterType("Independent")} className={`px-4 py-2 rounded ${filterServiceCenterType === "Independent" ? "bg-purple-500 text-white" : "bg-gray-300"}`}>Independent</button>
                         </div>
 
-                    </div>
+                    </div> */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 justify-center items-center mb-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Start Date</label>
@@ -380,7 +380,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                         </div>
                     </div>
 
-                    <div className=" flex justify-center">
+                    {/* <div className=" flex justify-center">
                         <div className="  ">
                             <input
                                 type="text"
@@ -390,7 +390,7 @@ const ServiceTransactionList = ({ data, RefreshData, wallet, bankDetails, loadin
                                 className="px-4 py-2 border border-gray-300 rounded-md w-full"
                             />
                         </div>
-                    </div>
+                    </div> */}
 
                 </div>
 

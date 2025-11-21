@@ -16,7 +16,7 @@ import DownloadFiterDataExcel from '@/app/components/reports/DownloadFilterDataE
 
 const ServiceList = (props) => {
 
- 
+
 
   const router = useRouter()
 
@@ -297,16 +297,29 @@ const ServiceList = (props) => {
                         <TableCell>{row?.serviceCenterType}</TableCell>
                         <TableCell>{row?.city}</TableCell>
                         <TableCell>{row?.contact}</TableCell>
-                        <TableCell
-                          onClick={() => handleStatusUpdate(row._id, row.status)}
-                          style={{
-                            cursor: 'pointer',
-                            color: row.status === 'ACTIVE' ? 'green' : 'red',
-                            fontWeight: 'bold',
-                          }}
-                        >
-                          {row.status}
+                        <TableCell>
+                          <div
+                            onClick={
+                              props?.user?.role === "ADMIN"
+                                ? () => handleStatusUpdate(row._id, row.status)
+                                : undefined
+                            }
+                            className={`
+    inline-block px-3 py-1 rounded-md font-bold text-center transition-all duration-200
+    ${props?.user?.role === "ADMIN" ? "cursor-pointer opacity-100" : "cursor-default opacity-70"}
+    ${row.status === "ACTIVE"
+                                ? "bg-green-100 text-green-700 hover:bg-green-200"
+                                : "bg-red-100 text-red-700 hover:bg-red-200"
+                              }
+    ${props?.user?.role !== "ADMIN" ? "pointer-events-none hover:none" : ""}
+  `}
+                          >
+                            {row.status}
+                          </div>
+
                         </TableCell>
+
+
                         <TableCell>{new Date(row?.createdAt).toLocaleString()}</TableCell>
                         <TableCell   >
                           <IconButton aria-label="view" onClick={() => handleDetails(row?._id)}>

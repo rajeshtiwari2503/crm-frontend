@@ -89,7 +89,7 @@
 //         ) : (
 //           <>
 //           <WarrantyAnalytics />
-        
+
 //           <WarrantyActivationList
 //             page={page}
 //             setPage={setPage}
@@ -133,6 +133,7 @@ const WarrantyActivation = (props) => {
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(0);
+  const [totalItems, setTotalItems] = useState(0);
 
   useEffect(() => {
     if (user) {
@@ -142,15 +143,36 @@ const WarrantyActivation = (props) => {
     getAllProduct();
   }, [refresh, user, page]);
 
+  // const getAllWarrantyActivation = async (pageNum) => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await http_request.get(
+  //       `/getAllActivationWarrantyWithPage?page=${pageNum + 1}&limit=${limit}`
+  //     );
+  //     const { data } = response;
+  //     setWarrantyActivation(data?.data || []);
+  //     setTotalPages(data?.totalPages || 0);
+  //   } catch (err) {
+  //     console.log(err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const getAllWarrantyActivation = async (pageNum) => {
     setLoading(true);
     try {
-      const response = await http_request.get(
-        `/getAllActivationWarrantyWithPage?page=${pageNum + 1}&limit=${limit}`
-      );
+      let url = `/getAllActivationWarrantyWithPage?page=${pageNum + 1}&limit=${limit}`;
+
+      if (user.user?.role==="BRAND") {
+        url += `&brandId=${user.user?._id}`;
+      }
+
+      const response = await http_request.get(url);
+
       const { data } = response;
       setWarrantyActivation(data?.data || []);
       setTotalPages(data?.totalPages || 0);
+      setTotalItems(data?.totalItems || 0)
     } catch (err) {
       console.log(err);
     } finally {
@@ -171,6 +193,7 @@ const WarrantyActivation = (props) => {
       : warrantyActivation?.filter(f => f?.brandId === userData?.user?._id);
 
   const RefreshData = (data) => setRefresh(data);
+  // console.log("filterData", filterData);
 
   return (
     <Sidenav>
@@ -212,6 +235,7 @@ const WarrantyActivation = (props) => {
               limit={limit}
               setLimit={setLimit}
               totalPage={totalPages}
+              totalItems={totalItems}
               data={filterData}
               userData={userData?.user}
               brandData={props?.brandData}

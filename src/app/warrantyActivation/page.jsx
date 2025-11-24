@@ -262,14 +262,14 @@ const ActivateWarrantyButton = () => {
   // console.log(filterWarranty);
   const onSubmit = async (data) => {
     try {
-      if (!productID) {
-        alert("Please select a product model");
-        return;
-      }
-      if (!location) {
-        alert("Please enter valid pincode!");
-        return;
-      }
+      // if (!productID) {
+      //   alert("Please select a product model");
+      //   return;
+      // }
+      // if (!location) {
+      //   alert("Please enter valid pincode!");
+      //   return;
+      // }
 
       setLoading(true);
 
@@ -297,7 +297,7 @@ const ActivateWarrantyButton = () => {
         setRefresh(result);
       } else {
         setRefresh(result);
-        ToastMessage(result);
+        // ToastMessage(result);
       }
       setLoading(false);
     } catch (error) {
@@ -841,7 +841,7 @@ const ActivateWarrantyButton = () => {
         <ReactLoader />
       </div>
         : <div className="flex justify-center items-center min-h-screen bg-white p-5">
-          <Toaster />
+          
           <div className="bg-[#e5f2f8] p-8 rounded-lg shadow-lg w-full max-w-md">
             <div className="flex justify-center mb-3 ">
               <img
@@ -907,7 +907,7 @@ const ActivateWarrantyButton = () => {
                       value={contactNo}
                       onChange={(e) => setContactNo(e.target.value)}
                       placeholder='Please enter your register number'
-                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                      className="w-full  px-3 border border-gray-300 rounded-md"
                     />
                     {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                   </div>
@@ -1014,7 +1014,7 @@ const ActivateWarrantyButton = () => {
                       {filterWarranty?.brandId === "68a2fec108ab22c128f63b9f" ?
                         <div className="mt-5">
                           <label className="block text-sm font-medium text-gray-700">
-                            Category
+                            Category <span className="text-red-500">*</span>
                           </label>
                           <select
                             id="category"
@@ -1038,7 +1038,7 @@ const ActivateWarrantyButton = () => {
                       }
                       <div className='mt-5'>
                         <label className="block text-sm font-medium text-gray-700">
-                          Product Name
+                          Product Name  <span className="text-red-500">*</span>
                         </label>
                         <select
                           id="productName"
@@ -1071,28 +1071,51 @@ const ActivateWarrantyButton = () => {
 
                   }
                   <div className='mt-5'>
-                    <label htmlFor="name" className="block text-gray-700">Full Name:</label>
+                    <label htmlFor="name" className="block text-gray-700">Full Name <span className="text-red-500">*</span> :</label>
                     <input
                       id="name"
                       type="text"
                       {...register('name', { required: 'Name is required' })}
-                      className="w-full p-0.5 border border-gray-300 rounded-md"
+                      className="w-full px-3 px-3 border border-gray-300 rounded-md"
                     />
                     {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                   </div>
                   <div>
-                    <label htmlFor="contact" className="block text-gray-700">Contact:</label>
+                    <label htmlFor="contact" className="block text-gray-700">Contact <span className="text-red-500">*</span> :</label>
                     <input
                       id="contact"
                       type="text"
                       {...register('contact', { required: 'Contact is required' })}
-                      className="w-full  p-0.5 border border-gray-300 rounded-md"
+                      className="w-full  px-3 border border-gray-300 rounded-md"
                     />
                     {errors.contact && <p className="text-red-500 text-sm mt-1">{errors.contact.message}</p>}
                   </div>
-                  {/* <div>
-                  <label htmlFor="email" className="block text-gray-700">Email:</label>
-                  <input
+                  <div>
+                    <label htmlFor="purchaseDate" className="block text-sm font-medium text-gray-700">
+                      Purchase Date
+                    </label>
+                    <input
+                      id="purchaseDate"
+                      type="date"
+                      {...register("purchaseDate")}
+                      className="w-full px-3 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-gray-700">Email:</label>
+                    <input
+                      id="email"
+                      type="email"
+                      {...register("email", {
+                        pattern: {
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                          message: "Invalid email address",
+                        },
+                      })}
+                      className="w-full px-3 border border-gray-300 rounded-md"
+                    />
+
+                    {/* <input
                     id="email"
                     type="email"
                     {...register('email', {
@@ -1102,10 +1125,10 @@ const ActivateWarrantyButton = () => {
                         message: 'Invalid email address',
                       },
                     })}
-                    className="w-full  p-0.5 border border-gray-300 rounded-md"
-                  />
-                  {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
-                </div> */}
+                    className="w-full  px-3 border border-gray-300 rounded-md"
+                  /> */}
+                    {/* {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>} */}
+                  </div>
                   {/* <div>
                   <label htmlFor="password" className="block text-gray-700">Password:</label>
                   <input
@@ -1118,7 +1141,7 @@ const ActivateWarrantyButton = () => {
                         message: 'Password must be at least 6 characters long',
                       },
                     })}
-                    className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    className="w-full  px-3 border border-gray-300 rounded-md"
                   />
                   {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
                 </div> */}
@@ -1131,8 +1154,8 @@ const ActivateWarrantyButton = () => {
                         id="address"
                         type="text"
                         // {...register('address', { required: 'Address is required' })}
-                        {...register('address' )}
-                        className=" w-full  p-0.5 border border-gray-300 rounded-md"
+                        {...register('address')}
+                        className=" w-full  px-3 border border-gray-300 rounded-md"
                       />
 
 
@@ -1152,11 +1175,11 @@ const ActivateWarrantyButton = () => {
                       id="pincode"
                       type="number"
                       // {...register('pincode', { required: 'Pincode is required' })}
-                      {...register('pincode' )}
+                      {...register('pincode')}
                       placeholder="Enter 6-digit pincode"
                       className="border p-1 rounded-md  w-full"
                       maxLength={6}
-                    // className="w-full  p-0.5 border border-gray-300 rounded-md"
+                    // className="w-full  px-3 border border-gray-300 rounded-md"
                     />
                     {/* {errors.pincode && <p className="text-red-500 text-sm mt-1">{errors.pincode.message}</p>}
                     {error && <p className="text-red-500 mt-1">{error}</p>} */}
@@ -1172,8 +1195,8 @@ const ActivateWarrantyButton = () => {
                       // {...register("warrantyImage", {
                       //   required: "Warranty image is required",
                       // })}
-                       {...register("warrantyImage" 
-                        )}
+                      {...register("warrantyImage"
+                      )}
                       className="w-full p-1 border border-gray-300 rounded-md file:mr-3 file:py-1 file:px-3 file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                     />
                     {/* {errors.warrantyImage && (

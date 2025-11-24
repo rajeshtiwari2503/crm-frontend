@@ -19,6 +19,7 @@ const WarrantyActivationList = ({ data,
   limit,
   setLimit,
   totalPage,
+  totalItems,
   RefreshData }) => {
   const router = useRouter();
 
@@ -32,7 +33,7 @@ const WarrantyActivationList = ({ data,
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [searchData, setSearchData] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [totalSerItems, setTotalSerItems] = useState(0);
 
   const { user } = useUser();
 
@@ -49,8 +50,11 @@ const WarrantyActivationList = ({ data,
       http_request
         .get(`/getActivationWarrantySearch?search=${encodeURIComponent(searchTerm)}`)
         .then((response) => {
-          console.log("response", response);
+          // console.log("response", response);
           setSearchData(response?.data?.data || []);
+          console.log("response?.data",response?.data);
+          
+          setTotalSerItems(response?.data?.count)
           setLoading(false);
         })
         .catch((err) => {
@@ -356,7 +360,7 @@ const WarrantyActivationList = ({ data,
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={totalPage * limit} // total items = totalPage * limit
+                count={searchTerm ? totalSerItems :  totalItems} // total items = totalPage * limit
                 rowsPerPage={limit}
                 page={page}
                 onPageChange={handleChangePage}

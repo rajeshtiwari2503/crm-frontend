@@ -151,6 +151,7 @@ const WarrantyActivationList = ({ data,
 
   const handleApproval = async (uniqueId, status) => {
     try {
+      setLoading(true);
       const adminName = user?.user?.name; // your admin name from state/context
 
       const response = await http_request.put(`/warranty/${uniqueId}/status`, {
@@ -161,6 +162,7 @@ const WarrantyActivationList = ({ data,
       if (response.data.success) {
         ToastMessage(response.data);
         RefreshData(response.data); // refresh table
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);

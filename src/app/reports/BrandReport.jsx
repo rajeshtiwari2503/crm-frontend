@@ -246,7 +246,7 @@ const BrandReport = (props) => {
   const [loading, setLoading] = useState(false);
     
   const statusOptions = [
-    "PENDING", "PART PENDING", "ASSIGN", "IN PROGRESS","CUSTOMER SIDE PENDING",
+    "PENDING", "PART PENDING","PARTS DELIVERED","ASSIGN", "IN PROGRESS","CUSTOMER SIDE PENDING",
      "FINAL VERIFICATION" ,"COMPLETED","CANCELED"
   ];
 

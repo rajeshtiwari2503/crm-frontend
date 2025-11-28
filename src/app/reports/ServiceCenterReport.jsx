@@ -246,7 +246,7 @@
    const [loading, setLoading] = useState(false);
    
    const statusOptions = [
-     "PENDING", "PART PENDING", "ASSIGN", "IN PROGRESS",
+     "PENDING", "PART PENDING","PARTS DELIVERED", "ASSIGN", "IN PROGRESS",
      "COMPLETED", "CANCELED", "FINAL VERIFICATION"
    ];
  

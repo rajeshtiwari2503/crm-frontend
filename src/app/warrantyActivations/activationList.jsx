@@ -52,8 +52,8 @@ const WarrantyActivationList = ({ data,
         .then((response) => {
           // console.log("response", response);
           setSearchData(response?.data?.data || []);
-          console.log("response?.data",response?.data);
-          
+          console.log("response?.data", response?.data);
+
           setTotalSerItems(response?.data?.count)
           setLoading(false);
         })
@@ -279,7 +279,7 @@ const WarrantyActivationList = ({ data,
                           Status
                         </TableSortLabel>
                       </TableCell>
-                       <TableCell>
+                      <TableCell>
                         <TableSortLabel
                           active={sortBy === 'status'}
                           direction={sortDirection}
@@ -288,7 +288,7 @@ const WarrantyActivationList = ({ data,
                           Image
                         </TableSortLabel>
                       </TableCell>
-                     
+
                       <TableCell>
                         <TableSortLabel
                           active={sortBy === 'createdAt'}
@@ -321,8 +321,8 @@ const WarrantyActivationList = ({ data,
                         >
                           {row.status}
                         </span></TableCell>
-                        
-                      <WarrantyImageCell row={row} />
+
+                        <WarrantyImageCell row={row} />
                         <TableCell>{new Date(row.activationDate).toLocaleString()}</TableCell>
 
                         <TableCell>
@@ -333,22 +333,29 @@ const WarrantyActivationList = ({ data,
                             </IconButton>
 
                             {/* Approve / Disapprove buttons for ADMIN */}
-                            {user?.user?.role === "ADMIN" && (
+                            {(user?.user?.role === "ADMIN" || user?.user?.role === "BRAND") && (
                               <>
-                                <IconButton
-                                  aria-label="approve"
-                                  onClick={() => handleApproval(row.uniqueId, "APPROVE")}
-                                >
-                                  <CheckCircle sx={{ color: "green" }} />
-                                </IconButton>
+                                {/* Show Approve button only when status is NOT "APPROVE" */}
+                                {row.status !== "APPROVE" && (
+                                  <IconButton
+                                    aria-label="approve"
+                                    onClick={() => handleApproval(row.uniqueId, "APPROVE")}
+                                  >
+                                    <CheckCircle sx={{ color: "green" }} />
+                                  </IconButton>
+                                )}
 
-                                <IconButton
-                                  aria-label="disapprove"
-                                  onClick={() => handleApproval(row.uniqueId, "DISAPPROVE")}
-                                >
-                                  <Cancel sx={{ color: "red" }} />
-                                </IconButton>
+                                {/* Show Disapprove button only when status is NOT "DISAPPROVE" */}
+                                {row.status !== "DISAPPROVE" && (
+                                  <IconButton
+                                    aria-label="disapprove"
+                                    onClick={() => handleApproval(row.uniqueId, "DISAPPROVE")}
+                                  >
+                                    <Cancel sx={{ color: "red" }} />
+                                  </IconButton>
+                                )}
                               </>
+
                             )}
                           </div>
                         </TableCell>
@@ -362,7 +369,7 @@ const WarrantyActivationList = ({ data,
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"
-                count={searchTerm ? totalSerItems :  totalItems} // total items = totalPage * limit
+                count={searchTerm ? totalSerItems : totalItems} // total items = totalPage * limit
                 rowsPerPage={limit}
                 page={page}
                 onPageChange={handleChangePage}
@@ -377,7 +384,7 @@ const WarrantyActivationList = ({ data,
     </div>
   );
 };
- 
+
 export default WarrantyActivationList;
 
 function stableSort(array, comparator) {
